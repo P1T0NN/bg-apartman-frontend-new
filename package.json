@@ -73,7 +73,7 @@
 		"convex-svelte": "^0.0.12",
 		"d3-scale": "^4.0.2",
 		"d3-shape": "^3.2.0",
-		"layerchart": "2.0.0-next.48",
+		"layerchart": "2.0.0-next.65",
 		"little-date": "^1.2.1",
 		"nuqs-svelte": "^1.2.2",
 		"resend": "^6.12.2",
