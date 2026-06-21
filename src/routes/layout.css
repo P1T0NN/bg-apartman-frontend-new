@@ -1,0 +1,253 @@
+@import "tailwindcss";
+
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 0.625rem;
+  
+  /* Base Colors - Light Mode */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.15 0.015 265);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0.015 265);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.015 265);
+  
+  /* Primary - Refined Deep Blue (Professional AI) */
+  --primary: oklch(0.35 0.12 265);
+  --primary-foreground: oklch(0.99 0.005 265);
+  
+  /* Secondary - Cool Slate */
+  --secondary: oklch(0.96 0.005 265);
+  --secondary-foreground: oklch(0.20 0.015 265);
+  
+  /* Muted - Neutral Backgrounds */
+  --muted: oklch(0.97 0.003 265);
+  --muted-foreground: oklch(0.50 0.01 265);
+  
+  /* Accent - Sophisticated Purple (Subtle Energy) */
+  --accent: oklch(0.55 0.15 285);
+  --accent-foreground: oklch(0.99 0.005 285);
+  
+  /* Destructive - Professional Red */
+  --destructive: oklch(0.55 0.20 25);
+  --destructive-foreground: oklch(0.99 0.005 25);
+  
+  /* Borders & Inputs */
+  --border: oklch(0.90 0.005 265);
+  --input: oklch(0.90 0.005 265);
+  --ring: oklch(0.35 0.12 265);
+  
+  /* Chart Colors - Professional Palette */
+  --chart-1: oklch(0.50 0.18 265);   /* Deep Blue */
+  --chart-2: oklch(0.55 0.15 285);   /* Purple */
+  --chart-3: oklch(0.60 0.14 200);   /* Teal */
+  --chart-4: oklch(0.60 0.12 340);   /* Subtle Pink */
+  --chart-5: oklch(0.55 0.14 150);   /* Green */
+  
+  /* Sidebar */
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+  
+  /* Custom Emotional Design Tokens */
+  --color-viral: oklch(0.55 0.14 330);       /* Subtle magenta for trending */
+  --color-engagement: oklch(0.60 0.12 50);   /* Soft coral for interactions */
+  --color-ai: oklch(0.35 0.12 265);          /* Deep blue for AI features */
+  --color-growth: oklch(0.55 0.14 150);      /* Professional green */
+  --color-warning: oklch(0.65 0.13 80);      /* Refined amber */
+  --color-info: oklch(0.50 0.14 240);        /* Clear blue */
+  
+  /* Gradients for Premium Feel */
+  --gradient-primary: linear-gradient(135deg, oklch(0.35 0.12 265), oklch(0.45 0.14 275));
+  --gradient-hero: linear-gradient(135deg, oklch(0.30 0.13 265) 0%, oklch(0.45 0.14 275) 60%, oklch(0.55 0.12 285) 100%);
+  --gradient-card: linear-gradient(145deg, oklch(1 0 0), oklch(0.98 0.005 265));
+  --gradient-glow: radial-gradient(circle at 50% 0%, oklch(0.45 0.14 275 / 0.08), transparent 70%);
+}
+
+.dark {
+  /* Base Colors - Dark Mode */
+  --background: oklch(0.12 0.015 265);
+  --foreground: oklch(0.97 0.005 265);
+  --card: oklch(0.18 0.020 265);
+  --card-foreground: oklch(0.97 0.005 265);
+  --popover: oklch(0.18 0.020 265);
+  --popover-foreground: oklch(0.97 0.005 265);
+  
+  /* Primary - Refined Bright Blue */
+  --primary: oklch(0.65 0.18 265);
+  --primary-foreground: oklch(0.12 0.015 265);
+  
+  /* Secondary - Elevated Surface */
+  --secondary: oklch(0.24 0.025 265);
+  --secondary-foreground: oklch(0.97 0.005 265);
+  
+  /* Muted - Subtle Elevation */
+  --muted: oklch(0.22 0.020 265);
+  --muted-foreground: oklch(0.65 0.015 265);
+  
+  /* Accent - Professional Purple */
+  --accent: oklch(0.68 0.18 285);
+  --accent-foreground: oklch(0.12 0.015 265);
+  
+  /* Destructive - Clear Red */
+  --destructive: oklch(0.62 0.22 25);
+  --destructive-foreground: oklch(0.97 0.005 25);
+  
+  /* Borders & Inputs - Refined */
+  --border: oklch(1 0 0 / 0.10);
+  --input: oklch(1 0 0 / 0.15);
+  --ring: oklch(0.65 0.18 265);
+  
+  /* Chart Colors - Elegant Dark Mode */
+  --chart-1: oklch(0.65 0.20 265);   /* Bright Blue */
+  --chart-2: oklch(0.68 0.18 285);   /* Bright Purple */
+  --chart-3: oklch(0.70 0.16 200);   /* Bright Teal */
+  --chart-4: oklch(0.68 0.14 340);   /* Soft Pink */
+  --chart-5: oklch(0.65 0.16 150);   /* Bright Green */
+  
+  /* Sidebar - Professional Dark */
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.439 0 0);
+  
+  /* Custom Emotional Design Tokens - Dark Mode */
+  --color-viral: oklch(0.68 0.16 330);       /* Refined magenta */
+  --color-engagement: oklch(0.70 0.14 50);   /* Clear coral */
+  --color-ai: oklch(0.65 0.18 265);          /* Bright blue */
+  --color-growth: oklch(0.65 0.16 150);      /* Professional green */
+  --color-warning: oklch(0.72 0.15 80);      /* Clear amber */
+  --color-info: oklch(0.65 0.16 240);        /* Bright info blue */
+  
+  /* Gradients - Sophisticated Dark Mode */
+  --gradient-primary: linear-gradient(135deg, oklch(0.65 0.18 265), oklch(0.68 0.16 280));
+  --gradient-hero: linear-gradient(135deg, oklch(0.55 0.20 265) 0%, oklch(0.65 0.18 275) 60%, oklch(0.68 0.16 285) 100%);
+  --gradient-card: linear-gradient(145deg, oklch(0.18 0.020 265), oklch(0.22 0.025 270));
+  --gradient-glow: radial-gradient(circle at 50% 0%, oklch(0.65 0.18 275 / 0.12), transparent 70%);
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  
+  /* Custom Token Mappings */
+  --color-viral: var(--color-viral);
+  --color-engagement: var(--color-engagement);
+  --color-ai: var(--color-ai);
+  --color-growth: var(--color-growth);
+  --color-warning: var(--color-warning);
+  --color-info: var(--color-info);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Smooth gradient backgrounds for hero sections */
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+  
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+  
+  /* Glow effects for interactive elements */
+  .glow-effect {
+    position: relative;
+  }
+  
+  .glow-effect::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: var(--gradient-glow);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  .glow-effect:hover::before {
+    opacity: 1;
+  }
+  
+  /* Custom scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: var(--muted);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: var(--radius);
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+  }
+}

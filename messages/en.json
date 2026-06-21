@@ -1,0 +1,537 @@
+{
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+
+	"Header": {
+		"login": "Login"
+	},
+
+	"LoginButton": {
+		"login": "Login"
+	},
+
+	"LogoutButton": {
+		"logout": "Logout",
+		"logoutSuccess": "Logged out successfully."
+	},
+
+	"LoginPage": {
+		"continueWithGoogle": "Continue with Google"
+	},
+
+	"CreatedByOmnilabs": {
+		"label": "Created by"
+	},
+
+	"ProtectedSidebar": {
+		"dashboard": "Dashboard",
+		"myAccommodations": "My Accommodations",
+		"addAccommodation": "Add Accommodation",
+		"bookings": "Bookings",
+		"goToAdminPage": "Go to Admin Page",
+		"backToHome": "Back to Home"
+	},
+
+	"GoogleMap": {
+		"failedToLoad": "Failed to load Google Maps."
+	},
+
+	"ContactSection": {
+		"ContactRightContent": {
+			"sendMessage": "Send a message",
+			"shareEnquiry": "Share your enquiry and Teresa will reply as soon as she can — usually within 24 hours.",
+			"yourName": "Your name",
+			"yourFullName": "Your full name",
+			"email": "Email",
+			"yourEmail": "you@example.com",
+			"message": "Message",
+			"messagePlaceholder": "Dates, venue, vibe, allergies — whatever helps Teresa prepare.",
+			"noSpam": "No spam — just a thoughtful reply when she is back at her desk."
+		},
+		"ContactSubmitButton": {
+			"sendMessage": "Send message"
+		},
+		"ContactLeftContent": {
+			"contact": "Contact",
+			"preferEmail": "Prefer email?"
+		}
+	},
+
+	"LoginForm": {
+		"LoginFormNoImage": {
+			"title": "Login",
+			"description": "Enter your email below to login to your account",
+			"email": "Email",
+			"password": "Password",
+			"forgotPassword": "Forgot your password?",
+			"submit": "Login",
+			"dontHaveAccount": "Don't have an account?",
+			"signUp": "Sign up",
+			"signInFailed": "Sign in failed. Please check your credentials and try again.",
+			"signedInToast": "Signed in successfully."
+		},
+		"LoginFormWithImage": {
+			"title": "Login to your account",
+			"description": "Enter your email below to login to your account",
+			"email": "Email",
+			"password": "Password",
+			"forgotPassword": "Forgot your password?",
+			"submit": "Login",
+			"orContinueWith": "Or continue with",
+			"dontHaveAccount": "Don't have an account?",
+			"signUp": "Sign up",
+			"signInFailed": "Sign in failed. Please check your credentials and try again.",
+			"signedInToast": "Signed in successfully."
+		}
+	},
+
+	"EmailVerificationForm": {
+		"title": "Check your email",
+		"description": "We sent a verification code to {email}. Enter it below to continue.",
+		"code": "Verification code",
+		"codeHint": "Enter the 8-digit code from your email.",
+		"resendPrompt": "Didn't receive the code?",
+		"resend": "Resend",
+		"resendIn": "Resend in {seconds}s",
+		"continue": "Continue",
+		"cancel": "Cancel",
+		"verificationFailed": "Invalid or expired code. Please try again."
+	},
+
+	"PasswordResetForm": {
+		"titleRequest": "Reset your password",
+		"descriptionRequest": "Enter the email for your account. We will send you a one-time code you can use to choose a new password.",
+		"titleReset": "Choose a new password",
+		"descriptionReset": "We sent a code to {email}. Enter it below along with your new password. The code is valid for 5 minutes.",
+		"email": "Email",
+		"sendCode": "Send code",
+		"code": "Code",
+		"newPassword": "New password",
+		"confirmNewPassword": "Confirm new password",
+		"continue": "Continue",
+		"cancel": "Cancel",
+		"passwordResetToast": "Password reset successfully."
+	},
+
+	"PasswordInput": {
+		"showPassword": "Show password",
+		"hidePassword": "Hide password"
+	},
+
+	"SignUpForm": {
+		"SignUpFormNoImage": {
+			"title": "Create an account",
+			"description": "Enter your information below to create your account",
+			"fullName": "Full Name",
+			"email": "Email",
+			"emailHelp": "We'll use this to contact you. We will not share your email with anyone else.",
+			"password": "Password",
+			"passwordHelp": "Must be at least 8 characters long.",
+			"confirmPassword": "Confirm Password",
+			"confirmPasswordHelp": "Please confirm your password.",
+			"submit": "Create Account",
+			"alreadyHaveAccount": "Already have an account?",
+			"signIn": "Sign in",
+			"signUpFailed": "We couldn't create your account. Check your details and try again, or sign in if you already have one.",
+			"accountCreatedToast": "Account created successfully."
+		},
+		"SignUpFormWithImage": {
+			"title": "Create your account",
+			"description": "Fill in the form below to create your account",
+			"fullName": "Full Name",
+			"email": "Email",
+			"emailHelp": "We'll use this to contact you. We will not share your email with anyone else.",
+			"password": "Password",
+			"passwordHelp": "Must be at least 8 characters long.",
+			"confirmPassword": "Confirm Password",
+			"confirmPasswordHelp": "Please confirm your password.",
+			"submit": "Create Account",
+			"orContinueWith": "Or continue with",
+			"alreadyHaveAccount": "Already have an account?",
+			"signIn": "Sign in",
+			"signUpFailed": "We couldn't create your account. Check your details and try again, or sign in if you already have one.",
+			"accountCreatedToast": "Account created successfully."
+		}
+	},
+
+	"DatePicker": {
+		"dateOfBirth": "Date of birth",
+		"selectDate": "Select date",
+		"date": "Date",
+		"time": "Time",
+		"scheduleDate": "Schedule date",
+		"scheduleDatePlaceholder": "Tomorrow or next week"
+	},
+
+	"LocalizedCalendar": {
+		"title": "Book an appointment",
+		"description": "Select the dates for your appointment"
+	},
+
+	"UploadFile": {
+		"UploadFileMultiple": {
+			"dropzoneDescription": "Use the drop zone to add files — it stays put while previews show in a grid below. Remove any file with the",
+			"instruction": "control on the top-right of each preview card",
+			"placeholder": "Uploaded files. Drop more files here to add.",
+			"unknown": "Unknown",
+			"remove": "Remove {name}"
+		},
+		"UploadFileSingle": {
+			"dropzoneDescription": "Choose or drop a file, preview it, then save. Use",
+			"remove": "Remove",
+			"or": "or",
+			"replace": "Replace",
+			"ifYouChangeYourMind": "on the file card if you change your mind.",
+			"placeholder": "File preview. Drop a file here to replace.",
+			"unknownType": "Unknown type"
+		},
+		"UploadFileEmpty": {
+			"choose": "Choose",
+			"orDrag": "or drag",
+			"here": "here",
+			"files": "files",
+			"file": "file",
+			"them": "them",
+			"it": "it",
+			"accepted": "Accepted"
+		}
+	},
+
+	"PaginatedData": {
+		"paginationText": "Page {page} of {totalPages}",
+		"paginationTextCursor": "Page {page}"
+	},
+
+	"PlacesAutocomplete": {
+		"placeholder": "Start typing an address...",
+		"error": "Could not load the selected place.",
+		"noMatches": "No matches found."
+	},
+
+	"DataTable": {
+		"itemsSelected": "{count} selected",
+		"clearSelection": "Clear",
+		"selectAllOnPage": "Select all on page",
+		"selectAllRowsOnThisPage": "Select all rows on this page",
+		"selectRow": "Select row",
+		"deselectRow": "Deselect row",
+		"ariaDataTable": "Data table",
+		"ariaDataRows": "Data rows",
+		"emptyTitle": "No results",
+		"emptyDescription": "Nothing to show yet. Try adjusting filters or add new data.",
+		"delete": "Delete",
+		"searchPlaceholder": "Search…",
+		"sortAscending": "Sort ascending",
+		"sortDescending": "Sort descending",
+		"clearSort": "Clear sort",
+		"sortBy": "Sort by",
+		"sortDefault": "Default order"
+	},
+
+	"AlertDialogButton": {
+		"title": "Action cannot be reversed",
+		"description": "Are you sure you want to do this? This action cannot be undone.",
+		"cancel": "Cancel",
+		"proceed": "Proceed"
+	},
+
+	"SearchInput": {
+		"placeholder": "Search...",
+		"ariaLabel": "Search",
+		"resultsLabel": "Search results",
+		"loading": "Searching...",
+		"searchFailed": "Search failed. Please try again.",
+		"tooManyRequests": "Too many search requests. Please try again shortly.",
+		"unknownSource": "Unknown search source.",
+		"rateLimitKeyUnavailable": "Search rate limit key could not be resolved.",
+		"rateLimitNotConfigured": "Search rate limit is not configured.",
+		"clientAddressRequired": "Client address is required for public search.",
+		"SearchEmpty": {
+			"title": "No results found",
+			"description": "Try a different search term."
+		},
+		"SearchPage": {
+			"title": "Search input",
+			"description": "Search public test rows through the remote source.",
+			"placeholder": "Search test rows...",
+			"selected": "Selected:"
+		}
+	},
+
+	"Amenities": {
+		"wifi": "Wi-Fi",
+		"airConditioning": "Air conditioning",
+		"heating": "Heating",
+		"kitchen": "Kitchen",
+		"washer": "Washer",
+		"dryer": "Dryer",
+		"freeParking": "Free parking",
+		"pool": "Pool",
+		"tv": "TV",
+		"dedicatedWorkspace": "Dedicated workspace",
+		"elevator": "Elevator",
+		"balcony": "Balcony",
+		"dishwasher": "Dishwasher",
+		"coffeeMaker": "Coffee maker",
+		"selfCheckin": "Self check-in",
+		"smokeAlarm": "Smoke alarm"
+	},
+
+	"LocationMap": {
+		"mapLocation": "Map location picker",
+		"description": "The pin and coordinates appear here automatically once you select an address above.",
+		"error": "Could not load the map."
+	},
+
+	"AdminUsersPage": {
+		"title": "Users",
+		"description": "Search, filter, and manage user accounts.",
+		"caption": "Users",
+		"searchPlaceholder": "Search by {field}…",
+		"columnUser": "User",
+		"columnEmail": "Email",
+		"columnRole": "Role",
+		"columnVerified": "Verified",
+		"columnStatus": "Status",
+		"columnCreated": "Created",
+		"verifiedYes": "Yes",
+		"verifiedNo": "No",
+		"statusBanned": "Banned",
+		"statusActive": "Active",
+		"UsersFilters": {
+			"searchLabel": "Search: {field}",
+			"searchEmail": "Email",
+			"searchName": "Name",
+			"roleLabel": "Role: {role}",
+			"anyRole": "Any role",
+			"roleUser": "User",
+			"roleAdmin": "Admin",
+			"anyStatus": "Any status",
+			"statusBanned": "Banned",
+			"statusActive": "Active",
+			"anyVerification": "Any verification",
+			"verified": "Verified",
+			"unverified": "Unverified",
+			"clear": "Clear"
+		}
+	},
+
+	"SearchPage": {
+		"SearchFiltersEmpty": {
+			"description": "No stays match your filters.",
+			"clearFilters": "Clear filters"
+		}
+	},
+
+	"MyAccommodationsPage": {
+		"MyAccommodationsHeader": {
+			"title": "My accommodations",
+			"description": "Review listing status, pricing and capacity from one focused workspace.",
+			"addAccommodation": "Add accommodation"
+		}
+	},
+
+	"AddAccommodationPage": {
+		"SEO": {
+			"title": "List your accommodation",
+			"description": "Fill in the details below. Everything can be edited later — your listing goes live after a quick review."
+		},
+		"AddAccommodationHeader": {
+			"title": "List your accommodation",
+			"description": "Fill in the details below. Everything can be edited later — your listing goes live after a quick review."
+		},
+		"ConvexMutationForm": {
+			"submitLabel": "Submit for review"
+		},
+		"PhotosField": {
+			"title": "Photos",
+			"description": "Great photos get more bookings. Upload arrives in the next step."
+		}
+	},
+
+	"AdminUserPage": {
+		"UserTabs": {
+			"overview": "Overview",
+			"sessions": "Sessions",
+			"accounts": "Accounts",
+			"activity": "Activity",
+			"danger": "Danger zone"
+		},
+		"UserOverview": {
+			"verified": "Verified",
+			"unverified": "Unverified",
+			"role": "Role",
+			"status": "Status",
+			"banReason": "Ban reason",
+			"created": "Created",
+			"updated": "Updated",
+			"userId": "User ID",
+			"copyUserId": "Copy user ID",
+			"bannedUntil": "Banned until {date}",
+			"bannedPermanent": "Banned (permanent)",
+			"active": "Active"
+		},
+		"UserSessions": {
+			"title": "Active sessions",
+			"description": "Devices currently signed in. Revoking signs the device out immediately.",
+			"revokeAll": "Revoke all",
+			"failedLoad": "Failed to load sessions.",
+			"noSessions": "No active sessions.",
+			"unknownDevice": "Unknown device",
+			"ip": "IP",
+			"created": "Created",
+			"expires": "Expires",
+			"revoke": "Revoke"
+		},
+		"UserAccounts": {
+			"title": "Linked accounts",
+			"description": "Sign-in providers connected to this user.",
+			"failedLoad": "Failed to load accounts.",
+			"noAccounts": "No linked accounts.",
+			"passwordSet": "Password set",
+			"noPassword": "No password",
+			"id": "ID",
+			"created": "Created",
+			"scope": "Scope"
+		},
+		"UserActivity": {
+			"title": "Activity",
+			"description": "Audit log entries scoped to this user. Newest first.",
+			"caption": "Activity",
+			"colAction": "Action",
+			"colStatus": "Status",
+			"colResource": "Resource",
+			"colIp": "IP",
+			"colWhen": "When",
+			"statusFailed": "Failed",
+			"statusSuccess": "Success"
+		},
+		"UserDangerZone": {
+			"title": "Danger zone",
+			"description": "Account-level actions. Changes here are audited and may be irreversible.",
+			"role": "Role: {role}",
+			"removeAdmin": "Remove admin privileges from this account.",
+			"grantAdmin": "Grant admin privileges to this account.",
+			"banned": "Banned",
+			"active": "Active",
+			"liftBan": "Lift the ban so the user can sign in again.",
+			"signOutPrevent": "Sign the user out and prevent further sign-ins."
+		},
+		"BanUserDialog": {
+			"ban": "Ban",
+			"title": "Ban {email}",
+			"description": "The user is signed out and cannot sign in again until unbanned. The optional reason is shown on next sign-in attempt.",
+			"reason": "Reason (optional)",
+			"reasonPlaceholder": "Violation of terms…",
+			"expires": "Expires",
+			"permanent": "Permanent",
+			"oneDay": "1 day",
+			"sevenDays": "7 days",
+			"thirtyDays": "30 days"
+		},
+		"UnbanUserButton": {
+			"unban": "Unban"
+		},
+		"ChangeRoleButton": {
+			"demote": "Demote to user",
+			"promote": "Promote to admin",
+			"demoteTitle": "Demote {email} to user?",
+			"promoteTitle": "Promote {email} to admin?",
+			"demoteDescription": "Are you sure you want to do this? The user will immediately lose admin privileges.",
+			"promoteDescription": "Are you sure you want to do this? The user will gain full admin privileges, including the ability to ban and delete other accounts."
+		},
+		"DeleteUserDialog": {
+			"delete": "Delete…",
+			"title": "Delete {email}?",
+			"description": "This is permanent and cascades to sessions and accounts. Type the email below to confirm.",
+			"adminTitle": "Cannot delete {email}",
+			"adminDescription": "Admins must be demoted to \"user\" before they can be deleted."
+		},
+		"UserPageEmpty": {
+			"title": "User not found",
+			"description": "The user you're looking for doesn't exist or may have been deleted.",
+			"backToUsers": "Back to users"
+		},
+		"UserPageError": {
+			"title": "Failed to load user",
+			"description": "Something went wrong while fetching this user. Please try again.",
+			"retry": "Retry"
+		}
+	},
+
+	"ValidationMessages": {
+		"LoginForm": {
+			"emailRequired": "Enter your email.",
+			"invalidEmail": "Invalid email.",
+			"passwordRequired": "Enter your password.",
+			"passwordMinLength": "At least 8 characters."
+		},
+		"PasswordResetRequestForm": {
+			"emailRequired": "Enter your email.",
+			"invalidEmail": "Invalid email."
+		},
+		"PasswordResetVerifyForm": {
+			"codeRequired": "Enter the code.",
+			"codeFormat": "Use the 8-digit code from your email.",
+			"newPasswordRequired": "Enter a new password.",
+			"newPasswordMinLength": "At least 8 characters.",
+			"passwordTooCommon": "That password is too common. Please choose a stronger one.",
+			"confirmPasswordRequired": "Confirm your new password.",
+			"passwordsMustMatch": "Passwords must match.",
+			"invalidEmail": "Invalid email."
+		},
+		"SignUpForm": {
+			"nameRequired": "Enter your full name.",
+			"emailRequired": "Enter your email.",
+			"invalidEmail": "Invalid email.",
+			"passwordRequired": "Enter your password.",
+			"passwordMinLength": "At least 8 characters.",
+			"passwordTooCommon": "That password is too common. Please choose a stronger one.",
+			"confirmPasswordRequired": "Confirm your password.",
+			"passwordsMustMatch": "Passwords must match."
+		},
+		"EmailVerificationForm": {
+			"codeRequired": "Enter the code.",
+			"codeFormat": "Use the 8-digit code from your email.",
+			"invalidEmail": "Invalid email."
+		}
+	},
+
+	"GenericMessages": {
+		"PASSWORD_TOO_SHORT": "Password must be at least {min} characters.",
+		"PASSWORD_TOO_LONG": "Password is too long.",
+		"PASSWORD_TOO_COMMON": "That password is too common. Please choose a stronger one.",
+
+		"NO_ITEMS_PROVIDED": "No items provided.",
+		"NO_MATCHING_ITEMS": "No matching items found.",
+		"DATA_TABLE_DELETED_ALL": "Deleted {count} item(s).",
+		"DATA_TABLE_DELETED_WITH_MISSING": "Deleted {count} item(s); {missing} were already gone.",
+
+		"STORAGE_DELETE_FAILED": "Couldn't delete the file from storage. Nothing was removed.",
+		"STORAGE_URL_UNAVAILABLE": "Couldn't resolve the file URL.",
+		"UPLOAD_SAVE_FAILED": "Could not save the uploaded file. Please try again.",
+		"UPLOAD_URL_READY": "Upload URL generated.",
+
+		"EMAIL_SENT_SUCCESSFULLY": "Email sent successfully.",
+		"TEST_ROW_CREATED": "Test row created.",
+		"ACCOMMODATION_CREATED": "Accommodation submitted for review.",
+
+		"YOU_NEED_TO_CORRECT_FORM_ERRORS": "You need to correct form errors",
+		"BATCH_TOO_LARGE": "Too many items in a single request (max {limit}).",
+		"FORBIDDEN": "You're not allowed to perform this action.",
+		"NOT_AUTHENTICATED": "Please sign in to continue.",
+		"ADMIN_ACCESS_REQUIRED": "This action requires admin privileges.",
+		"ADMIN_CANNOT_BE_DELETED": "Admins can't be deleted. Demote to \"user\" first.",
+		"USER_NOT_FOUND": "User not found.",
+		"USER_DELETED": "User deleted.",
+		"USER_BANNED": "User banned.",
+		"USER_UNBANNED": "User unbanned.",
+		"USER_ROLE_UPDATED": "User role updated.",
+		"SESSION_REVOKED": "Session revoked.",
+		"ALL_SESSIONS_REVOKED": "All sessions revoked.",
+		"TOO_MANY_REQUESTS": "Too many requests. Please try again later.",
+		"TOO_MANY_REQUESTS_SECONDS": "Too many requests. Try again in {seconds}s.",
+		"TOO_MANY_REQUESTS_MINUTES": "Too many requests. Try again in {minutes} min.",
+		
+		"UNEXPECTED_ERROR": "An unexpected error occurred. Please try again."
+	}
+}

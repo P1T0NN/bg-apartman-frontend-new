@@ -1,0 +1,47 @@
+<script lang="ts">
+	// LIBRARIES
+	import { toast } from 'svelte-sonner';
+
+	// COMPONENTS
+	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
+	import BookingsHeader from '@/shared/components/pages/(protected)/bookings/bookings-header.svelte';
+	import BookingsStats from '@/shared/components/pages/(protected)/bookings/bookings-stats.svelte';
+	import BookingsTable from '@/shared/components/pages/(protected)/bookings/bookings-table.svelte';
+
+	// DATA
+	import { bookingsDummyData } from '@/features/bookings/data/bookingsDummyData';
+
+	// UTILS
+	import {
+		actionToast,
+		applyBookingAction,
+		guestFullName
+	} from '@/features/bookings/utils/bookingsPresentation';
+
+	// TYPES
+	import type { BookingRecord } from '@/features/bookings/data/bookingsDummyData';
+	import type { BookingAction } from '@/features/bookings/utils/bookingsPresentation';
+
+	// Local, mutable copy of the fixture so host actions feel live without a backend.
+	// Swap this for a Convex query once the bookings endpoints exist.
+	let bookings = $state<BookingRecord[]>(bookingsDummyData.map((b) => ({ ...b })));
+
+	function handleAction(booking: BookingRecord, action: BookingAction) {
+		bookings = bookings.map((b) => (b._id === booking._id ? applyBookingAction(b, action) : b));
+		toast.success(actionToast(action), { description: guestFullName(booking) });
+	}
+</script>
+
+<SvelteHead
+	title="Bookings"
+	description="Review booking requests, track upcoming stays and manage your guests."
+	noIndex
+/>
+
+<section class="flex w-full flex-col gap-6 p-4 md:p-6">
+	<BookingsHeader />
+
+	<BookingsStats {bookings} />
+
+	<BookingsTable {bookings} onAction={handleAction} />
+</section>
