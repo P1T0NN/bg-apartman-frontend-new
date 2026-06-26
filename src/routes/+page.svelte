@@ -1,17 +1,23 @@
 <script lang="ts">
-	// LIBRARIES
+	// SVELTEKIT IMPORTS
 	import { goto } from '$app/navigation';
+
+	// LIBRARIES
 	import { getLocalTimeZone, today } from '@internationalized/date';
 	import { createSerializer, parseAsString } from 'nuqs-svelte';
-	import type { DateRange } from 'bits-ui';
+	import { formatRegionLabel, type PlaceDetails } from '@/shared/lib/google-maps/places';
+	import { localizeHref } from '@/shared/lib/paraglide/runtime';
 
 	// COMPONENTS
-	import { Input } from '@/shared/components/ui/input/index.js';
 	import { Label } from '@/shared/components/ui/label/index.js';
 	import { Button } from '@/shared/components/ui/button/index.js';
+	import PlacesAutocomplete from '@/shared/components/ui/places-autocomplete/places-autocomplete.svelte';
 	import * as Popover from '@/shared/components/ui/popover/index.js';
 	import { RangeCalendar } from '@/shared/components/ui/range-calendar/index.js';
 	import * as Select from '@/shared/components/ui/select/index.js';
+
+	// TYPES
+	import type { DateRange } from 'bits-ui';
 
 	// LUCIDE ICONS
 	import CalendarIcon from '@lucide/svelte/icons/calendar';
@@ -26,6 +32,8 @@
 	];
 
 	let location = $state('');
+	let locationPlaceId = $state(''); // Google place id of the picked region (city or country)
+	let locationLabel = $state(''); // label captured when a place is picked, to spot manual edits
 	let dates = $state<DateRange | undefined>();
 	let bedrooms = $state<string | undefined>();
 	let bathrooms = $state<string | undefined>();
@@ -49,6 +57,7 @@
 	// nuqs serializer: turns values into a `/search?...` query string.
 	const serializeSearch = createSerializer({
 		location: parseAsString,
+		placeId: parseAsString,
 		checkIn: parseAsString,
 		checkOut: parseAsString,
 		bedrooms: parseAsString,
@@ -60,9 +69,21 @@
 	// `?? null` wouldn't cut it: the Select hands back '' (not nullish) when untouched.
 	const filter = (value?: string) => (value && value !== 'any' ? value : null);
 
+	// The chosen region resolves to its place id, which is what search filters on
+	// (a free-typed label has no place id to match listings against).
+	function handlePlaceSelect(place: PlaceDetails) {
+		locationPlaceId = place.placeId;
+		locationLabel = formatRegionLabel(place);
+	}
+
 	function handleSearch() {
-		const url = serializeSearch('/search', {
-			location: location.trim() || null,
+		const trimmed = location.trim();
+		// Only forward the place id while the text still matches the picked place (else stale).
+		const placeId = trimmed && trimmed === locationLabel ? locationPlaceId || null : null;
+
+		const url = serializeSearch(localizeHref('/search'), {
+			location: trimmed || null,
+			placeId,
 			checkIn: dates?.start?.toString() ?? null,
 			checkOut: dates?.end?.toString() ?? null,
 			bedrooms: filter(bedrooms),
@@ -79,7 +100,13 @@
 		<!-- Location -->
 		<div class="space-y-2">
 			<Label for="location">Location</Label>
-			<Input id="location" placeholder="Where to?" bind:value={location} />
+			<PlacesAutocomplete
+			id="location"
+			variant="region"
+			placeholder="Where to?"
+			bind:value={location}
+			onSelect={handlePlaceSelect}
+		/>
 		</div>
 
 		<!-- Stay Dates -->

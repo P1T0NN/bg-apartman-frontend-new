@@ -13,6 +13,10 @@ export const COOKIE_NAMES = {
     DEVICE_FINGERPRINT: 'device_fingerprint',
 } as const;
 
+export const LOCAL_STORAGE_KEYS = {
+	GUEST_FAVORITES: 'bg-apartman:guest-favorites'
+} as const;
+
 /**
  * Routes instrumented by `initBotId` on the client and verified by
  * `checkBotId` on the server via `safeCommand`.

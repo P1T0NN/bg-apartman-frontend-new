@@ -16,8 +16,6 @@
 </script>
 
 <Sidebar.Group class="group-data-[collapsible=icon]:hidden">
-	<Sidebar.GroupLabel>Projects</Sidebar.GroupLabel>
-
 	<Sidebar.Menu class="gap-2">
 		{#each items as item (item.name)}
 			<Sidebar.MenuItem>

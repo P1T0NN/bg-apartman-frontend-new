@@ -5,6 +5,9 @@
 	// LIBRARIES
 	import { deLocalizeUrl } from '@/shared/lib/paraglide/runtime';
 
+	// CLASSES
+	import { siteHeaderBreadcrumb } from './site-header-breadcrumb.svelte.js';
+
 	// CONFIG
 	import { COMPANY_DATA } from '@/shared/constants.js';
 
@@ -42,6 +45,10 @@
 	 * carries the cumulative `href` so intermediate items can link back. The
 	 * last entry is rendered as the current page (no link).
 	 */
+	const lastCrumbLabel = $derived(
+		siteHeaderBreadcrumb.lastLabel ?? page.data.pageTitle
+	);
+
 	const trail = $derived.by(() => {
 		const pathname = new URL(deLocalizeUrl(page.url.href)).pathname;
 		const segments = pathname.split('/').filter(Boolean);
@@ -53,6 +60,14 @@
 			if (hidden.has(href)) continue;
 			items.push({ label: labelFromSegment(segment), href });
 		}
+
+		if (lastCrumbLabel && items.length > 0) {
+			items[items.length - 1] = {
+				...items[items.length - 1],
+				label: lastCrumbLabel
+			};
+		}
+
 		return items;
 	});
 
@@ -83,7 +98,7 @@
 						<Breadcrumb.Separator />
 						<Breadcrumb.Item>
 							{#if i === trail.length - 1}
-								<Breadcrumb.Page>{crumb.label}</Breadcrumb.Page>
+								<Breadcrumb.Page class="max-w-48 truncate">{crumb.label}</Breadcrumb.Page>
 							{:else}
 								<Breadcrumb.Link href={crumb.href}>{crumb.label}</Breadcrumb.Link>
 							{/if}

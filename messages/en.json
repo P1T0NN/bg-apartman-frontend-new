@@ -2,7 +2,10 @@
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 
 	"Header": {
-		"login": "Login"
+		"login": "Login",
+		"guestDashboard": "Guest Dashboard",
+		"becomeAHost": "Become a Host",
+		"accountMenu": "Account menu"
 	},
 
 	"LoginButton": {
@@ -203,6 +206,7 @@
 
 	"PlacesAutocomplete": {
 		"placeholder": "Start typing an address...",
+		"regionPlaceholder": "Search for a city or country...",
 		"error": "Could not load the selected place.",
 		"noMatches": "No matches found."
 	},
@@ -282,6 +286,129 @@
 		"error": "Could not load the map."
 	},
 
+	"ShareButton": {
+		"label": "Share",
+		"copiedMessage": "Link copied to clipboard"
+	},
+
+	"ToggleFavoriteButton": {
+		"removeFromSaved": "Remove from saved",
+		"savedMessage": "Saved to your list",
+		"removedMessage": "Removed from your list",
+		"saved": "Saved",
+		"save": "Save"
+	},
+
+	"CountLabels": {
+		"guests": [
+			{
+				"declarations": ["input count", "local countPlural = count: plural"],
+				"selectors": ["countPlural"],
+				"match": {
+					"countPlural=one": "{count} guest",
+					"countPlural=other": "{count} guests"
+				}
+			}
+		],
+		"bedrooms": [
+			{
+				"declarations": ["input count", "local countPlural = count: plural"],
+				"selectors": ["countPlural"],
+				"match": {
+					"countPlural=one": "{count} bedroom",
+					"countPlural=other": "{count} bedrooms"
+				}
+			}
+		],
+		"bathrooms": [
+			{
+				"declarations": ["input count", "local countPlural = count: plural"],
+				"selectors": ["countPlural"],
+				"match": {
+					"countPlural=one": "{count} bathroom",
+					"countPlural=other": "{count} bathrooms"
+				}
+			}
+		],
+		"children": [
+			{
+				"declarations": ["input count", "local countPlural = count: plural"],
+				"selectors": ["countPlural"],
+				"match": {
+					"countPlural=one": "{count} child",
+					"countPlural=other": "{count} children"
+				}
+			}
+		],
+		"adults": [
+			{
+				"declarations": ["input count", "local countPlural = count: plural"],
+				"selectors": ["countPlural"],
+				"match": {
+					"countPlural=one": "{count} adult",
+					"countPlural=other": "{count} adults"
+				}
+			}
+		],
+		"nights": [
+			{
+				"declarations": ["input count", "local countPlural = count: plural"],
+				"selectors": ["countPlural"],
+				"match": {
+					"countPlural=one": "{count} night",
+					"countPlural=other": "{count} nights"
+				}
+			}
+		],
+		"days": [
+			{
+				"declarations": ["input count", "local countPlural = count: plural"],
+				"selectors": ["countPlural"],
+				"match": {
+					"countPlural=one": "{count} day",
+					"countPlural=other": "{count} days"
+				}
+			}
+		],
+		"places": [
+			{
+				"declarations": ["input count", "local countPlural = count: plural"],
+				"selectors": ["countPlural"],
+				"match": {
+					"countPlural=one": "{count} place",
+					"countPlural=other": "{count} places"
+				}
+			}
+		],
+		"squareMeters": "{count} m²"
+	},
+
+	"FavoritesPage": {
+		"title": "Saved stays",
+		"metaDescription": "Places you've saved for later.",
+		"subtitleDefault": "Places you've saved for later.",
+		"savedPlacesSubtitle": "{places} you've saved for later.",
+		"Empty": {
+			"title": "No saved stays yet",
+			"description": "Tap the heart on any place you like and it'll show up here, ready for your next trip.",
+			"browseStays": "Browse stays"
+		}
+	},
+
+	"SuperhostBadge": {
+		"superhost": "Superhost"
+	},
+
+	"SameDayDisplay": {
+		"available": "Same-day check-in available",
+		"unavailable": "No same-day check-in"
+	},
+
+	"SingleStayDisplay": {
+		"available": "Single-night stays available",
+		"unavailable": "No single-night stays"
+	},
+
 	"AdminUsersPage": {
 		"title": "Users",
 		"description": "Search, filter, and manage user accounts.",
@@ -317,8 +444,11 @@
 
 	"SearchPage": {
 		"SearchFiltersEmpty": {
-			"description": "No stays match your filters.",
-			"clearFilters": "Clear filters"
+			"title": "No stays found",
+			"descriptionLocation": "We couldn't find any stays in {location}. Try loosening your filters or searching nearby.",
+			"descriptionFilters": "Nothing matches your current filters. Try removing some to see more places.",
+			"clearFilters": "Clear filters",
+			"newSearch": "New search"
 		}
 	},
 
@@ -327,6 +457,110 @@
 			"title": "My accommodations",
 			"description": "Review listing status, pricing and capacity from one focused workspace.",
 			"addAccommodation": "Add accommodation"
+		}
+	},
+
+	"AccommodationCapacity": {
+		"upToGuests": [
+			{
+				"declarations": ["input count", "local countPlural = count: plural"],
+				"selectors": ["countPlural"],
+				"match": {
+					"countPlural=one": "Up to {count} guest",
+					"countPlural=other": "Up to {count} guests"
+				}
+			}
+		],
+		"maxGuestsAllowed": [
+			{
+				"declarations": ["input count", "local countPlural = count: plural"],
+				"selectors": ["countPlural"],
+				"match": {
+					"countPlural=one": "This place allows up to {count} guest.",
+					"countPlural=other": "This place allows up to {count} guests."
+				}
+			}
+		],
+		"nightsSelected": [
+			{
+				"declarations": ["input count", "local countPlural = count: plural"],
+				"selectors": ["countPlural"],
+				"match": {
+					"countPlural=one": "{count} night selected",
+					"countPlural=other": "{count} nights selected"
+				}
+			}
+		],
+		"daysSelected": [
+			{
+				"declarations": ["input count", "local countPlural = count: plural"],
+				"selectors": ["countPlural"],
+				"match": {
+					"countPlural=one": "{count} day selected",
+					"countPlural=other": "{count} days selected"
+				}
+			}
+		]
+	},
+
+	"AccommodationPage": {
+		"AccommodationGalleryDesktop": {
+			"ariaLabel": "View photo {index} of {total}",
+			"showAllPhotos": "Show all photos",
+			"openPhoto": "Open photo {index} fullscreen",
+			"previousThumbnails": "Previous photos",
+			"nextThumbnails": "Next photos"
+		},
+		"AccommodationGalleryLightbox": {
+			"ariaLabel": "{title} — photo gallery",
+			"closeGallery": "Close gallery"
+		},
+		"AccommodationOverview": {
+			"in": "in"
+		},
+		"AccommodationSummaryDescription": {
+			"title": "About this apartment"
+		},
+		"AccommodationsAmenitiesSection": {
+			"title": "What this place offers",
+			"showAll": "Show all {count} amenities"
+		},
+		"AccommodationLocationSection": {
+			"title": "Where you’ll be"
+		},
+		"AccommodationPoliciesSection": {
+			"checkInAfter": "Check-in after {time}",
+			"checkoutBefore": "Checkout before {time}",
+			"petsAllowed": "Pets allowed",
+			"petsNotAllowed": "No pets",
+			"smokingAllowed": "Smoking allowed",
+			"smokingNotAllowed": "No smoking",
+			"partiesAllowed": "Events allowed",
+			"partiesNotAllowed": "No parties or events",
+			"quietHours": "Quiet hours {start}–{end}",
+			"minimumStay": "Minimum stay {nights} nights",
+			"maximumStay": "Maximum stay {nights} nights",
+			"instantBooking": "Instant booking",
+			"requestToBook": "Request to book",
+			"sameDayBookingsAccepted": "Same-day bookings accepted",
+			"noSameDayBookings": "No same-day bookings",
+			"title": "Things to know",
+			"houseRules": "House rules",
+			"bookingAndStay": "Booking & stay"
+		},
+		"AccommodationHostSection": {
+			"title": "Meet your host",
+			"hostingSince": "Hosting since"
+		},
+		"AccommodationBookingPanel": {
+			"checkAvailability": "Check availability",
+			"youWillNotBeChargedYet": "You won’t be charged yet",
+			"instantBooking": "Instant booking",
+			"payWithCashAtCheckIn": "Pay with cash at check-in"
+		},
+		"BookingPanelPrice": {
+			"from": "from",
+			"night": "night"
 		}
 	},
 
@@ -514,6 +748,21 @@
 		"EMAIL_SENT_SUCCESSFULLY": "Email sent successfully.",
 		"TEST_ROW_CREATED": "Test row created.",
 		"ACCOMMODATION_CREATED": "Accommodation submitted for review.",
+		"ACCOMMODATION_UPDATED": "Listing updated.",
+		"ACCOMMODATION_STATUS_UPDATED": "Listing visibility updated.",
+
+		"FAVORITE_SAVED": "Saved to your list.",
+		"FAVORITE_REMOVED": "Removed from your list.",
+		"FAVORITES_MERGED": "Saved stays synced to your account.",
+		"LISTING_NOT_AVAILABLE_TO_SAVE": "This listing is not available to save.",
+
+		"BOOKING_CREATED": "Booking confirmed.",
+		"INVALID_BOOKING_DATES": "Check-out must be after check-in.",
+
+		"UPLOAD_NOT_FOUND": "Upload not found. Please try again.",
+		"UPLOAD_TOO_LARGE": "File is too large.",
+		"UPLOAD_TYPE_NOT_ALLOWED": "That file type is not allowed.",
+		"UPLOAD_SAVED": "File saved.",
 
 		"YOU_NEED_TO_CORRECT_FORM_ERRORS": "You need to correct form errors",
 		"BATCH_TOO_LARGE": "Too many items in a single request (max {limit}).",

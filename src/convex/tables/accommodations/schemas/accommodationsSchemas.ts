@@ -1,5 +1,5 @@
 // LIBRARIES
-import { v } from "convex/values";
+import { v } from 'convex/values';
 
 export const apartmentType = v.union(
 	v.literal('apartment'),
@@ -17,6 +17,8 @@ export const apartmentStatus = v.union(
 	v.literal('suspended'),
 	v.literal('archived')
 );
+
+export const paymentMethod = v.union(v.literal('cash')); // extend later: v.literal('card'), etc.
 
 export const coordinates = v.object({
 	lat: v.number(),

@@ -9,9 +9,11 @@ import { auditLogTable } from './tables/auditLog/schemas/auditLogSchema';
 import {
 	apartmentType,
 	apartmentStatus,
+	paymentMethod,
 	coordinates,
 	apartmentImage
 } from './tables/accommodations/schemas/accommodationsSchemas';
+import { bookingStatus, paymentStatus } from './tables/bookings/schemas/bookingsSchemas';
 
 const schema = defineSchema({
 	// Users (with `role` and other custom fields) live in the better-auth component;
@@ -45,6 +47,11 @@ const schema = defineSchema({
 		// Better-auth user id stored as a plain string (no `users` table in this
 		// deployment — see the schema note above). Matches `uploadedFilesR2.ownerId`.
 		hostId: v.string(),
+		// Denormalized from the host user (better-auth `user.isSuperhost`) so search/list
+		// reads never join to the auth component — see fetchSearchAccommodationsSafe. Stamped
+		// at create; optional so rows predating this field stay valid (readers treat as false).
+		// ponytail: re-stamp on host status change (and in updateApartment) to bound drift.
+		isSuperhost: v.optional(v.boolean()),
 
 		// === BASIC INFO ===
 		title: v.string(),
@@ -54,16 +61,24 @@ const schema = defineSchema({
 
 		// === LOCATION ===
 		address: v.string(),
+		// House/street number, entered manually (kept separate from the route name).
+		addressNumber: v.optional(v.string()),
 		city: v.string(),
 		country: v.optional(v.string()),
-		cityPlaceId: v.optional(v.string()),
+		// The listing's city + country Google place ids, space-joined into one string (e.g.
+		// "<cityId> <countryId>"). Resolved via Places Autocomplete at save — the same source the
+		// search box uses — so the ids are identical and language-independent ("Beograd" and
+		// "Belgrade" share a place id). Search matches when the picked place id is one of the parts,
+		// so a listing surfaces for a city search AND a country search.
+		placeId: v.optional(v.string()),
 		coordinates: v.optional(coordinates),
+		// IANA zone resolved from the pin (e.g. 'Europe/Belgrade'). The availability
+		// calendar runs in this zone, not the viewer's. Optional for rows created before
+		// resolution existed — readers fall back to DEFAULT_TIME_ZONE.
+		timeZone: v.optional(v.string()),
 
 		// === CAPACITY ===
 		bedrooms: v.number(),
-		// Deprecated legacy field. New writes omit this; keep optional until old
-		// apartment documents are migrated to remove stored `beds` values.
-		beds: v.optional(v.number()),
 		bathrooms: v.number(),
 		maxGuests: v.number(),
 		squareMeters: v.number(),
@@ -79,6 +94,7 @@ const schema = defineSchema({
 
 		// === BOOKING RULES ===
 		instantBooking: v.boolean(),
+		paymentMethod: v.optional(paymentMethod), // optional for rows created before host payment settings existed
 		sameDayReservation: v.boolean(),
 		singleDayReservation: v.boolean(), // allows check-in and check-out on same day
 		petsAllowed: v.boolean(),
@@ -112,35 +128,36 @@ const schema = defineSchema({
 		apartmentSubscriptionExpiryDate: v.optional(v.number()), // timestamp when subscription expires (3 months from paidAt)
 
 		// === TIMESTAMPS ===
-		updatedAt: v.number(),
-		publishedAt: v.optional(v.number())
+		updatedAt: v.number()
 	})
 		.index('by_host', ['hostId'])
 		.index('by_slug', ['slug'])
-		.index('by_city', ['city'])
 		.index('by_status', ['status'])
 		.index('by_type', ['type'])
 		.index('by_price', ['pricePerNight'])
 		.index('by_featured', ['isFeatured', 'status'])
-		.index('by_payment_order_id', ['paymentOrderId'])
 		// Compound indexes used by fetchFilteredApartments pagination.
 		// by_status_price: lets us eq('status','published') then filter by price range
 		// at the DB level before post-fetch filters run — cuts down how many rows
 		// the fill-to-page-size loop needs to examine.
 		.index('by_status_price', ['status', 'pricePerNight'])
 		// by_status_bedrooms: same idea for bedroom count filter
-		.index('by_status_bedrooms', ['status', 'bedrooms'])
-		// by_status_cityPlaceId: filter by city at DB level when cityPlaceId is provided
-		.index('by_status_cityPlaceId', ['status', 'cityPlaceId']),
+		.index('by_status_bedrooms', ['status', 'bedrooms']),
 
 	bookings: defineTable({
 		// === BOOKING CODE ===
 		bookingCode: v.string(), // unique 10-character code for guest access (e.g., "BK7X9M2P4Q")
 
 		// === RELATIONSHIPS ===
-		apartmentId: v.id('apartments'),
-		hostId: v.id('users'),
-		guestId: v.optional(v.id('users')), // if guest has an account
+		// `apartmentId` points at the real apartment row once listings are persisted; it's
+		// omitted during the current dummy-data phase (no apartments are stored yet), so
+		// `apartmentSlug` carries the listing reference the reservation page resolves + links.
+		apartmentId: v.optional(v.id('apartments')),
+		apartmentSlug: v.string(),
+		// Better-auth user ids stored as plain strings — there is no `users` table in this
+		// deployment (see the schema note at the top). Mirrors `apartments.hostId`.
+		hostId: v.string(),
+		guestId: v.optional(v.string()), // set when the guest has an account
 
 		// === GUEST INFORMATION ===
 		guestFirstName: v.string(),
@@ -161,25 +178,13 @@ const schema = defineSchema({
 		cleaningFee: v.number(),
 		total: v.number(),
 		currency: v.literal('EUR'),
-		// DEPRECATED — kept optional so existing documents pass schema validation
-		pricePerNight: v.optional(v.number()),
 
 		// === PAYMENT ===
-		paymentMethod: v.union(v.literal('cash')), // extend later: v.literal('card'), etc.
-		paymentStatus: v.union(
-			v.literal('pending'),
-			v.literal('paid'),
-			v.literal('refunded')
-		),
+		paymentMethod,
+		paymentStatus,
 
 		// === BOOKING STATUS ===
-		status: v.union(
-			v.literal('pending'),
-			v.literal('confirmed'),
-			v.literal('checked_in'),
-			v.literal('checked_out'),
-			v.literal('cancelled')
-		),
+		status: bookingStatus,
 
 		// === TIMESTAMPS ===
 		updatedAt: v.number(),
@@ -191,11 +196,15 @@ const schema = defineSchema({
 		.index('by_booking_code', ['bookingCode'])
 		.index('by_apartment', ['apartmentId'])
 		.index('by_host', ['hostId'])
-		.index('by_guest', ['guestId'])
 		.index('by_guest_email', ['guestEmail'])
+		// Guest-scoped reads. `by_guest` = a user's whole booking list (the "my bookings" page,
+		// which shows every status). `by_guest_status_checkin` lets a page pull a single status
+		// slice in date order — e.g. confirmed + checkInDate ≥ today, soonest first — so "next
+		// trip" / "upcoming" reads only matching rows via .first()/.take() instead of scanning.
+		.index('by_guest', ['guestId'])
+		.index('by_guest_status_checkin', ['guestId', 'status', 'checkInDate'])
 		.index('by_status', ['status'])
-		.index('by_payment_status', ['paymentStatus'])
-		.index('by_apartment_dates', ['apartmentId', 'checkInDate', 'checkOutDate']),
+		.index('by_apartment_dates', ['apartmentId', 'checkInDate', 'checkOutDate'])
 });
 
 export default schema;

@@ -21,7 +21,7 @@
 	import Link from '@/shared/components/ui/link/link.svelte';
 	import Logo from '@/shared/components/ui/logo/logo.svelte';
 	import LanguageSelector from '@/shared/components/ui/language-selector/language-selector.svelte';
-	import LogoutButton from '@/features/auth/components/logout-button/logout-button.svelte';
+	import NormalHeaderAuthActions from './normal-header-auth-actions.svelte';
 	import NormalHeaderMobile from './normal-header-mobile.svelte';
 	import LoginButton from '@/features/auth/components/login-button/login-button.svelte';
 
@@ -125,13 +125,13 @@
 		<div
 			class="ml-auto flex shrink-0 items-center justify-end gap-1.5 sm:gap-2 lg:ml-0"
 		>
-			<div class="hidden sm:block">
-				{#if isAuthenticated}
-					<LogoutButton />
-				{:else}
+			{#if isAuthenticated}
+				<NormalHeaderAuthActions />
+			{:else}
+				<div class="hidden sm:block">
 					<LoginButton />
-				{/if}
-			</div>
+				</div>
+			{/if}
 
 			<LanguageSelector variant="default" />
 

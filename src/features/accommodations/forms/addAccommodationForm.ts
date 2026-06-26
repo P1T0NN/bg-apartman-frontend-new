@@ -1,4 +1,5 @@
 // DATA
+import { PAYMENT_METHOD_OPTIONS } from '@/features/bookings/data/paymentMethods';
 import { ACCOMMODATION_TYPES } from '@/shared/data/accommodationsData';
 
 // TYPES
@@ -20,6 +21,12 @@ import PawPrintIcon from '@lucide/svelte/icons/paw-print';
 import CigaretteIcon from '@lucide/svelte/icons/cigarette';
 import PartyPopperIcon from '@lucide/svelte/icons/party-popper';
 import ImagesIcon from '@lucide/svelte/icons/images';
+
+// Check-in / check-out hour choices: 12:00 → 22:00.
+const HOUR_OPTIONS = Array.from({ length: 11 }, (_, i) => {
+	const time = `${String(12 + i).padStart(2, '0')}:00`;
+	return { value: time, label: time };
+});
 
 export const addAccommodationForm: MutationFormSection[] = [
 	{
@@ -64,29 +71,34 @@ export const addAccommodationForm: MutationFormSection[] = [
 		icon: MapPinIcon,
 		fields: [
 			{
-				id: 'cityPlaceId',
-				label: 'Address',
-				kind: 'input',
-				description:
-					'Search for your address and pick it from the list — we’ll fill in the city, country and map pin automatically.',
-				required: true,
-				colSpan: 2
-			},
-			{
-				id: 'city',
+				id: 'placeId',
 				label: 'City',
 				kind: 'input',
-				placeholder: 'Filled from address search',
-				disabled: true,
+				description:
+					'Search for your city and pick it from the list — we set the country automatically and unlock the street search below.',
 				required: true,
-				colSpan: 1
+				colSpan: 2
 			},
 			{
 				id: 'country',
 				label: 'Country',
 				kind: 'input',
-				placeholder: 'Filled from address search',
+				placeholder: 'Set automatically from your city',
 				disabled: true,
+				colSpan: 2
+			},
+			{
+				id: 'address',
+				label: 'Street name',
+				kind: 'input',
+				description: 'Pick your country or city first, then search for the street.',
+				colSpan: 2
+			},
+			{
+				id: 'addressNumber',
+				label: 'Street number',
+				kind: 'input',
+				placeholder: 'e.g. 12a',
 				colSpan: 1
 			},
 			{ id: 'coordinates', label: 'Pin on map', kind: 'input', colSpan: 2 }
@@ -101,27 +113,25 @@ export const addAccommodationForm: MutationFormSection[] = [
 			{
 				id: 'bedrooms',
 				label: 'Bedrooms',
-				kind: 'input',
-				type: 'number',
-				placeholder: '1',
+				kind: 'counter',
+				placeholder: 'Number of bedrooms',
+				description: 'Pick a number, or use Custom (e.g. 0 for a studio).',
 				required: true,
 				colSpan: 1
 			},
 			{
 				id: 'bathrooms',
 				label: 'Bathrooms',
-				kind: 'input',
-				type: 'number',
-				placeholder: '1',
+				kind: 'counter',
+				placeholder: 'Number of bathrooms',
 				required: true,
 				colSpan: 1
 			},
 			{
 				id: 'maxGuests',
 				label: 'Max guests',
-				kind: 'input',
-				type: 'number',
-				placeholder: '2',
+				kind: 'counter',
+				placeholder: 'Number of guests',
 				required: true,
 				colSpan: 1
 			},
@@ -139,7 +149,8 @@ export const addAccommodationForm: MutationFormSection[] = [
 	{
 		id: 'pricing',
 		title: 'Pricing',
-		description: 'All amounts are in whole euros (€).',
+		description:
+			'Set your nightly price below. Every other field is optional — leave it empty to skip it. All amounts are in whole euros (€).',
 		icon: BanknoteIcon,
 		fields: [
 			{
@@ -148,15 +159,18 @@ export const addAccommodationForm: MutationFormSection[] = [
 				kind: 'input',
 				type: 'number',
 				placeholder: '80',
+				description: 'The standard rate a guest pays for one night.',
 				required: true,
-				colSpan: 1
+				colSpan: 2
 			},
 			{
 				id: 'cleaningFee',
 				label: 'Cleaning fee',
 				kind: 'input',
 				type: 'number',
-				placeholder: 'Optional',
+				placeholder: 'Leave empty for none',
+				description:
+					'A one-time fee added once per booking, on top of the nightly price. Leave empty if you don’t charge one.',
 				colSpan: 1
 			},
 			{
@@ -164,7 +178,9 @@ export const addAccommodationForm: MutationFormSection[] = [
 				label: 'Weekend price (Fri–Sat)',
 				kind: 'input',
 				type: 'number',
-				placeholder: 'Optional',
+				placeholder: 'Leave empty for none',
+				description:
+					'Charged instead of the nightly price on Friday & Saturday nights. Leave empty to keep one price all week.',
 				colSpan: 1
 			},
 			{
@@ -172,8 +188,9 @@ export const addAccommodationForm: MutationFormSection[] = [
 				label: 'Discounted nightly price',
 				kind: 'input',
 				type: 'number',
-				placeholder: 'Optional',
-				description: 'When set, the regular price is shown crossed out.',
+				placeholder: 'Leave empty for none',
+				description:
+					'A lower nightly price shown to guests, with the regular price crossed out beside it. Leave empty for no discount.',
 				colSpan: 1
 			},
 			{
@@ -181,7 +198,9 @@ export const addAccommodationForm: MutationFormSection[] = [
 				label: 'Weekly discount (%)',
 				kind: 'input',
 				type: 'number',
-				placeholder: 'Optional',
+				placeholder: 'Leave empty for none',
+				description:
+					'Percent off the total for stays of 7+ nights (e.g. 10 = 10% off). Leave empty for none.',
 				colSpan: 1
 			},
 			{
@@ -189,7 +208,9 @@ export const addAccommodationForm: MutationFormSection[] = [
 				label: 'Monthly discount (%)',
 				kind: 'input',
 				type: 'number',
-				placeholder: 'Optional',
+				placeholder: 'Leave empty for none',
+				description:
+					'Percent off the total for stays of 28+ nights (e.g. 20 = 20% off). Leave empty for none.',
 				colSpan: 1
 			}
 		]
@@ -203,16 +224,18 @@ export const addAccommodationForm: MutationFormSection[] = [
 			{
 				id: 'checkInTime',
 				label: 'Check-in time',
-				kind: 'input',
-				type: 'time',
+				kind: 'select',
+				options: HOUR_OPTIONS,
+				selectPlaceholder: 'Select time',
 				required: true,
 				colSpan: 1
 			},
 			{
 				id: 'checkOutTime',
 				label: 'Check-out time',
-				kind: 'input',
-				type: 'time',
+				kind: 'select',
+				options: HOUR_OPTIONS,
+				selectPlaceholder: 'Select time',
 				required: true,
 				colSpan: 1
 			},
@@ -222,6 +245,7 @@ export const addAccommodationForm: MutationFormSection[] = [
 				kind: 'input',
 				type: 'number',
 				placeholder: '1',
+				description: 'The fewest nights a guest can book in a single stay.',
 				required: true,
 				colSpan: 1
 			},
@@ -231,16 +255,26 @@ export const addAccommodationForm: MutationFormSection[] = [
 				kind: 'input',
 				type: 'number',
 				placeholder: 'No limit',
+				description: 'The most nights a guest can book in a single stay. Leave empty for no limit.',
 				colSpan: 1
 			},
 			{
 				id: 'quietHoursStart',
 				label: 'Quiet hours start',
-				kind: 'input',
-				type: 'time',
+				kind: 'time',
+				placeholder: 'HH:MM',
+				description:
+					'When guests should start keeping noise down (e.g. 22:00). Leave empty for none.',
 				colSpan: 1
 			},
-			{ id: 'quietHoursEnd', label: 'Quiet hours end', kind: 'input', type: 'time', colSpan: 1 }
+			{
+				id: 'quietHoursEnd',
+				label: 'Quiet hours end',
+				kind: 'time',
+				placeholder: 'HH:MM',
+				description: 'When quiet hours end the next morning (e.g. 08:00). Leave empty for none.',
+				colSpan: 1
+			}
 		]
 	},
 	{
@@ -250,12 +284,20 @@ export const addAccommodationForm: MutationFormSection[] = [
 		icon: ShieldCheckIcon,
 		fields: [
 			{
+				id: 'paymentMethod',
+				label: 'Guest payment method',
+				kind: 'radio',
+				options: PAYMENT_METHOD_OPTIONS,
+				description: 'Choose how guests pay for their stay.',
+				colSpan: 2
+			},
+			{
 				id: 'instantBooking',
 				label: 'Instant booking',
 				kind: 'toggle',
 				icon: ZapIcon,
 				description: 'Guests can book without waiting for your approval.',
-				colSpan: 1
+				colSpan: 2
 			},
 			{
 				id: 'sameDayReservation',
@@ -302,7 +344,7 @@ export const addAccommodationForm: MutationFormSection[] = [
 	{
 		id: 'amenities',
 		title: 'Amenities',
-		description: 'Select everything your place offers.',
+		description: 'Select everything your place offers — pick at least 5 to continue.',
 		icon: SparklesIcon,
 		fields: [{ id: 'amenities', label: 'What this place offers', kind: 'input', colSpan: 2 }]
 	},

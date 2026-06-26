@@ -7,13 +7,10 @@
 	import { Separator } from '@/shared/components/ui/separator/index.js';
 
 	// UTILS
-	import {
-		formatCurrency,
-		formatDateRange,
-		formatGuestsShort,
-		nightsBetween,
-		priceQuote
-	} from '@/features/accommodations/utils/accommodationPresentation';
+	import { formatDateRange, nightsBetween } from '@/shared/utils/dateUtils';
+	import { calculatePrice } from '@/shared/features/pricing/utils/calculatePrice';
+	import { formatCurrency, formatGuestsShort } from '@/shared/utils/formatters';
+	import { paymentMethodLabel } from '@/features/bookings/data/paymentMethods';
 
 	// LUCIDE ICONS
 	import CircleCheckIcon from '@lucide/svelte/icons/circle-check';
@@ -21,6 +18,7 @@
 
 	// TYPES
 	import type { AccommodationDetail } from '@/features/accommodations/data/accommodationDummyData';
+	import type { PaymentMethod } from '@/features/bookings/data/paymentMethods';
 
 	let {
 		accommodation,
@@ -30,6 +28,7 @@
 		checkOut,
 		adults,
 		children,
+		paymentMethod,
 		listingHref
 	}: {
 		accommodation: AccommodationDetail;
@@ -39,11 +38,12 @@
 		checkOut: string | null;
 		adults: number;
 		children: number;
+		paymentMethod: PaymentMethod;
 		listingHref: string;
 	} = $props();
 
 	const nights = $derived(nightsBetween(checkIn, checkOut));
-	const quote = $derived(priceQuote(accommodation, nights));
+	const quote = $derived(calculatePrice(accommodation, nights));
 	const confirmed = $derived(accommodation.instantBooking);
 </script>
 
@@ -85,7 +85,7 @@
 				<dd class="text-right font-medium">{formatGuestsShort(adults, children)}</dd>
 			</div>
 			<div class="flex items-center justify-between gap-3">
-				<dt class="text-muted-foreground">Total (cash at check-in)</dt>
+				<dt class="text-muted-foreground">Total ({paymentMethodLabel(paymentMethod)})</dt>
 				<dd class="text-right font-semibold tabular-nums">{formatCurrency(quote.total)}</dd>
 			</div>
 		</dl>

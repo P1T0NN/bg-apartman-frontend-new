@@ -44,8 +44,8 @@ export type FetchOptimizedStrategy = 'cursor' | 'offset';
  * callers don't branch on `strategy` to render a list. `totalCount` is `null` in cursor and
  * search modes — computing it would defeat the optimization.
  */
-export type FetchOptimizedResult<T extends TableNames> = {
-	page: Doc<T>[];
+export type FetchOptimizedResult<T extends TableNames, Item = Doc<T>> = {
+	page: Item[];
 	isDone: boolean;
 	continueCursor: string;
 	totalCount: number | null;
@@ -137,7 +137,8 @@ export type FetchOptimizedAuth = 'user' | 'admin';
 
 export type FetchOptimizedOptions<
 	T extends TableNames,
-	Extra extends PropertyValidators
+	Extra extends PropertyValidators,
+	Item = Doc<T>
 > = {
 	/** Target table. The validator + return type are derived from this. */
 	table: T;
@@ -178,6 +179,22 @@ export type FetchOptimizedOptions<
 	 * (search results come back relevance-ordered).
 	 */
 	search?: AccessBuilder<ObjectType<Extra>, FetchOptimizedSearch<T>>;
+	/**
+	 * Resolve the full row set in application code instead of via index/search, then
+	 * paginate it in memory. Use when the rows can't be expressed as an index range — e.g.
+	 * a client-held id list resolved with per-id `ctx.db.get`. Mutually exclusive with
+	 * `where`/`search` (they're skipped when `collect` is supplied).
+	 *
+	 * Prefer `strategy: 'offset'` so the UI gets an exact `totalCount`. Cost is O(rows
+	 * resolved); keep the input bounded (the builder should cap its own list).
+	 */
+	collect?: AccessBuilder<ObjectType<Extra>, Doc<T>[]>;
+	/**
+	 * Map each row of the returned page to a public DTO (e.g. strip internal fields, project
+	 * to a lean card shape). Applied uniformly across every strategy/access path. When set,
+	 * the query's `page` is `Item[]`; when omitted, `page` stays `Doc<T>[]`.
+	 */
+	projectPage?: (doc: Doc<T>, ctx: QueryCtx, args: BuiltinArgs & ObjectType<Extra>) => Item;
 };
 
 // ─── Internal helpers ────────────────────────────────────────────────────────
@@ -318,29 +335,32 @@ function applyIndexBounds(
  */
 export function fetchOptimized<
 	T extends TableNames,
-	Extra extends PropertyValidators = Record<string, never>
+	Extra extends PropertyValidators = Record<string, never>,
+	Item = Doc<T>
 >(
 	name: ConvexRateLimitName,
-	options: FetchOptimizedOptions<T, Extra>
+	options: FetchOptimizedOptions<T, Extra, Item>
 ): ReturnType<typeof query>;
 export function fetchOptimized<
 	T extends TableNames,
-	Extra extends PropertyValidators = Record<string, never>
+	Extra extends PropertyValidators = Record<string, never>,
+	Item = Doc<T>
 >(
-	options: FetchOptimizedOptions<T, Extra>
+	options: FetchOptimizedOptions<T, Extra, Item>
 ): ReturnType<typeof query>;
 export function fetchOptimized<
 	T extends TableNames,
-	Extra extends PropertyValidators = Record<string, never>
+	Extra extends PropertyValidators = Record<string, never>,
+	Item = Doc<T>
 >(
-	nameOrOptions: ConvexRateLimitName | FetchOptimizedOptions<T, Extra>,
-	maybeOptions?: FetchOptimizedOptions<T, Extra>
+	nameOrOptions: ConvexRateLimitName | FetchOptimizedOptions<T, Extra, Item>,
+	maybeOptions?: FetchOptimizedOptions<T, Extra, Item>
 ) {
 	const rateLimitName =
 		typeof nameOrOptions === 'string' ? nameOrOptions : null;
 	const options =
 		typeof nameOrOptions === 'string'
-			? (maybeOptions as FetchOptimizedOptions<T, Extra>)
+			? (maybeOptions as FetchOptimizedOptions<T, Extra, Item>)
 			: nameOrOptions;
 
 	return buildFetchOptimizedQuery(options, rateLimitName);
@@ -348,9 +368,10 @@ export function fetchOptimized<
 
 function buildFetchOptimizedQuery<
 	T extends TableNames,
-	Extra extends PropertyValidators = Record<string, never>
+	Extra extends PropertyValidators = Record<string, never>,
+	Item = Doc<T>
 >(
-	options: FetchOptimizedOptions<T, Extra>,
+	options: FetchOptimizedOptions<T, Extra, Item>,
 	rateLimitName: ConvexRateLimitName | null
 ) {
 	const {
@@ -360,7 +381,9 @@ function buildFetchOptimizedQuery<
 		auth,
 		args: extraArgs,
 		where,
-		search
+		search,
+		collect,
+		projectPage
 	} = options;
 
 	if (search && strategy === 'offset') {
@@ -381,7 +404,7 @@ function buildFetchOptimizedQuery<
 
 	return query({
 		args: validators,
-		handler: async (ctx: QueryCtx, rawArgsRaw): Promise<FetchOptimizedResult<T>> => {
+		handler: async (ctx: QueryCtx, rawArgsRaw): Promise<FetchOptimizedResult<T, Item>> => {
 			const rawArgs = rawArgsRaw as BuiltinArgs & ObjectType<Extra>;
 			const opts = rawArgs.paginationOpts ?? defaultPaginationOpts;
 
@@ -420,7 +443,44 @@ function buildFetchOptimizedQuery<
 				}
 			}
 
-			// 1. Resolve the access spec at request time. Builders may read auth/ctx/args.
+			// Project a page of rows to the public DTO. Identity when no `projectPage` is set
+			// (Item defaults to Doc<T>), so non-projecting callers are unaffected.
+			const projectRows = async (rows: Doc<T>[]): Promise<Item[]> => {
+				if (!projectPage) return rows as unknown as Item[];
+				return rows.map((doc) => projectPage(doc, ctx, rawArgs));
+			};
+
+			// 1. In-memory collect path — paginate a caller-resolved row set (e.g. an id list
+			//    resolved with per-id `ctx.db.get`). Skips index/search access entirely.
+			if (collect) {
+				const all = (await collect(ctx, rawArgs)) ?? [];
+
+				if (strategy === 'cursor') {
+					const parsed = opts.cursor ? Number.parseInt(opts.cursor, 10) : 0;
+					const start = Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
+					const slice = all.slice(start, start + opts.numItems);
+					const nextStart = start + slice.length;
+					return {
+						page: await projectRows(slice),
+						isDone: nextStart >= all.length,
+						continueCursor: String(nextStart),
+						totalCount: null
+					};
+				}
+
+				const page1BasedCollect = normalizeOneBasedPage(rawArgs.page);
+				const totalCountCollect = all.length;
+				const startCollect = Math.max(0, (page1BasedCollect - 1) * opts.numItems);
+				const sliceCollect = all.slice(startCollect, startCollect + opts.numItems);
+				return {
+					page: await projectRows(sliceCollect),
+					isDone: startCollect + sliceCollect.length >= totalCountCollect,
+					continueCursor: '',
+					totalCount: totalCountCollect
+				};
+			}
+
+			// 2. Resolve the access spec at request time. Builders may read auth/ctx/args.
 			//    Both can be supplied so a single endpoint can switch between search / index
 			//    access by inspecting `args` — but only one may be active per request, since
 			//    Convex picks exactly one access pattern. Builders express "not active" by
@@ -435,7 +495,7 @@ function buildFetchOptimizedQuery<
 
 			const resolvedOrder = typeof order === 'function' ? order(rawArgs) : order;
 
-			// 2. Build the base query. Three branches: search > where > full-table.
+			// 3. Build the base query. Three branches: search > where > full-table.
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			let q: OrderedQuery<NamedTableInfo<DataModel, T>> | any;
 
@@ -463,11 +523,11 @@ function buildFetchOptimizedQuery<
 				q = ctx.db.query(table).order(resolvedOrder);
 			}
 
-			// 3. Paginate per strategy. Cursor uses native paginate; offset still slices.
+			// 4. Paginate per strategy. Cursor uses native paginate; offset still slices.
 			if (strategy === 'cursor') {
 				const result = await q.paginate(opts);
 				return {
-					page: result.page as Doc<T>[],
+					page: await projectRows(result.page as Doc<T>[]),
 					isDone: result.isDone,
 					continueCursor: result.continueCursor,
 					totalCount: null
@@ -482,7 +542,7 @@ function buildFetchOptimizedQuery<
 			const isDone = start + slice.length >= totalCount;
 
 			return {
-				page: slice,
+				page: await projectRows(slice),
 				isDone,
 				continueCursor: '',
 				totalCount

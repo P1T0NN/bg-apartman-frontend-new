@@ -15,6 +15,8 @@
 		accept?: string;
 		disabled?: boolean;
 		id?: string;
+		/** Render the dropzone with a destructive border (failed validation). */
+		invalid?: boolean;
 	};
 
 	let {
@@ -23,7 +25,8 @@
 		files = $bindable<File[]>([]),
 		accept,
 		disabled = false,
-		id: inputId
+		id: inputId,
+		invalid = false
 	}: Props = $props();
 
 	const pickerInputId = $derived(inputId ?? 'upload-file-input-multiple');
@@ -55,6 +58,7 @@
 			{pickerInputId}
 			{accept}
 			{disabled}
+			{invalid}
 			multipleFiles={true}
 			dragOver={upload.dragOver}
 			bind:fileInputRef={upload.inputRef}

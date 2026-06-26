@@ -12,6 +12,9 @@
 	import { Spinner } from '@/shared/components/ui/spinner/index.js';
 	import LogoutButton from '@/features/auth/components/logout-button/logout-button.svelte';
 
+	// UTILS
+	import { initials } from '@/shared/utils/stringUtils';
+
 	// LUCIDE ICONS
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
 
@@ -45,7 +48,7 @@
 						{:else}
 							<Avatar.Root class="size-8 rounded-lg">
 								<Avatar.Image src={user?.image} alt={user?.name ?? ''} />
-								<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
+								<Avatar.Fallback class="rounded-lg">{initials(user?.name)}</Avatar.Fallback>
 							</Avatar.Root>
 
 							<div class="grid flex-1 text-start text-sm leading-tight">
@@ -69,7 +72,7 @@
 					<div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
 						<Avatar.Root class="size-8 rounded-lg">
 							<Avatar.Image src={user?.image} alt={user?.name ?? ''} />
-							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
+							<Avatar.Fallback class="rounded-lg">{initials(user?.name)}</Avatar.Fallback>
 						</Avatar.Root>
 
 						<div class="grid flex-1 text-start text-sm leading-tight">

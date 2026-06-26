@@ -21,6 +21,7 @@ export const tables = {
     createdAt: v.number(),
     updatedAt: v.number(),
     role: v.string(),
+    isSuperhost: v.optional(v.union(v.null(), v.boolean())),
     banned: v.optional(v.union(v.null(), v.boolean())),
     banReason: v.optional(v.union(v.null(), v.string())),
     banExpires: v.optional(v.union(v.null(), v.number())),

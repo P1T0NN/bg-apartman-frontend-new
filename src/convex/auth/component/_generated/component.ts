@@ -38,6 +38,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   email: string;
                   emailVerified: boolean;
                   image?: null | string;
+                  isSuperhost?: null | boolean;
                   name: string;
                   role: string;
                   updatedAt: number;
@@ -117,6 +118,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "createdAt"
                     | "updatedAt"
                     | "role"
+                    | "isSuperhost"
                     | "banned"
                     | "banReason"
                     | "banExpires"
@@ -315,6 +317,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "createdAt"
                     | "updatedAt"
                     | "role"
+                    | "isSuperhost"
                     | "banned"
                     | "banReason"
                     | "banExpires"
@@ -584,6 +587,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   email?: string;
                   emailVerified?: boolean;
                   image?: null | string;
+                  isSuperhost?: null | boolean;
                   name?: string;
                   role?: string;
                   updatedAt?: number;
@@ -599,6 +603,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "createdAt"
                     | "updatedAt"
                     | "role"
+                    | "isSuperhost"
                     | "banned"
                     | "banReason"
                     | "banExpires"
@@ -832,6 +837,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   email?: string;
                   emailVerified?: boolean;
                   image?: null | string;
+                  isSuperhost?: null | boolean;
                   name?: string;
                   role?: string;
                   updatedAt?: number;
@@ -847,6 +853,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "createdAt"
                     | "updatedAt"
                     | "role"
+                    | "isSuperhost"
                     | "banned"
                     | "banReason"
                     | "banExpires"

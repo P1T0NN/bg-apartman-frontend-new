@@ -7,20 +7,16 @@
 	import { dev } from '$app/environment';
 
 	// LIBRARIES
-	import { deLocalizeUrl } from '@/shared/lib/paraglide/runtime';
 	import { createSvelteAuthClient } from '@mmailaender/convex-better-auth-svelte/svelte';
 	import { authClient } from '@/features/auth/lib/auth-client';
 	import { useQuery } from '@mmailaender/convex-svelte';
 	import { api } from '@/convex/_generated/api';
 	import { useAuth } from '@mmailaender/convex-better-auth-svelte/svelte';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
-	import { NuqsAdapter } from "nuqs-svelte/adapters/svelte-kit";
+	import { NuqsAdapter } from 'nuqs-svelte/adapters/svelte-kit';
 
 	// CLASSES
 	import { authClass, type CurrentUser } from '@/features/auth/classes/authClass.svelte';
-
-	// CONFIG
-	import { PROTECTED_PAGE_ENDPOINTS, UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants.js';
 
 	// COMPONENTS
 	import { Toaster } from '@/shared/components/ui/sonner';
@@ -30,11 +26,8 @@
 
 	let { children, data } = $props();
 
-	const pathnameLogical = $derived(new URL(deLocalizeUrl(page.url.href)).pathname);
-	const isLoginPage = $derived(pathnameLogical === UNPROTECTED_PAGE_ENDPOINTS.LOGIN);
-	const isProtectedPage = $derived(
-		(Object.values(PROTECTED_PAGE_ENDPOINTS) as string[]).includes(pathnameLogical)
-	);
+	const isLoginPage = $derived(page.route.id === '/(unprotected)/login');
+	const isProtectedPage = $derived(page.route.id?.startsWith('/(protected)') ?? false);
 
 	createSvelteAuthClient({
 		authClient,

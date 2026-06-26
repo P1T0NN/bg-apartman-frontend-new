@@ -3,11 +3,12 @@ import { v } from 'convex/values';
 
 // UTILS
 import { authMutation } from '@/convex/auth/middleware/authMiddleware';
+import { authComponent } from '@/convex/auth/auth';
 import { num, optNum, optStr } from '@/convex/utils/convexValidationUtils';
 import { r2PublicUrl } from '@/convex/storage/r2/r2';
 
 // SCHEMAS
-import { apartmentType, coordinates } from '../schemas/accommodationsSchemas';
+import { apartmentType, coordinates, paymentMethod } from '../schemas/accommodationsSchemas';
 import { createResult, type CreateResult } from '@/convex/schemas/schemas';
 
 /**
@@ -22,8 +23,9 @@ import { createResult, type CreateResult } from '@/convex/schemas/schemas';
  * `images` in submission order.
  *
  * Backend-derived fields (not collected from the form): `hostId` (caller),
- * `slug` (from title), `currency` ('EUR'), `status` ('pending_review'),
- * `isFeatured` (false), `updatedAt` (now). Payment/published fields are left unset.
+ * `isSuperhost` (denormalized from the host user), `slug` (from title),
+ * `currency` ('EUR'), `status` ('pending_review'), `isFeatured` (false),
+ * `updatedAt` (now). Payment/published fields are left unset.
  */
 export const createApartment = authMutation('createApartment')({
 	args: {
@@ -32,12 +34,14 @@ export const createApartment = authMutation('createApartment')({
 		type: apartmentType,
 		description: v.string(),
 
-		// Location — `cityPlaceId` / `coordinates` are populated by Google Places later.
-		cityPlaceId: v.optional(v.string()),
+		// Location — `placeId` (merged city+country) / `coordinates` come from the Google place.
+		placeId: v.optional(v.string()),
 		address: v.string(),
+		addressNumber: v.optional(v.string()),
 		city: v.string(),
 		country: v.optional(v.string()),
 		coordinates: v.optional(coordinates),
+		timeZone: v.optional(v.string()),
 
 		// Capacity (numbers-as-strings)
 		bedrooms: v.string(),
@@ -54,6 +58,7 @@ export const createApartment = authMutation('createApartment')({
 		monthlyDiscount: v.optional(v.string()),
 
 		// Booking rules
+		paymentMethod,
 		minReservationDays: v.string(),
 		maxReservationDays: v.optional(v.string()),
 		checkInTime: v.string(),
@@ -78,6 +83,10 @@ export const createApartment = authMutation('createApartment')({
 	handler: async (ctx, args): Promise<CreateResult> => {
 		const title = args.title.trim();
 
+		// Denormalize the host's superhost flag onto the listing so search/list reads never
+		// join to the auth component (see fetchSearchAccommodationsSafe). One read, at create.
+		const host = await authComponent.getAuthUser(ctx);
+
 		// URL-friendly slug; short base36 suffix keeps it unique enough for the MVP.
 		const slugBase =
 			title
@@ -90,6 +99,8 @@ export const createApartment = authMutation('createApartment')({
 		await ctx.db.insert('apartments', {
 			// `hostId` is the better-auth user id stored as a plain string.
 			hostId: ctx.userId,
+			// Denormalized host reputation (see schema + handler note above).
+			isSuperhost: (host as { isSuperhost?: boolean | null } | null)?.isSuperhost ?? false,
 
 			title,
 			slug,
@@ -97,10 +108,12 @@ export const createApartment = authMutation('createApartment')({
 			type: args.type,
 
 			address: args.address.trim(),
+			addressNumber: optStr(args.addressNumber),
 			city: args.city.trim(),
 			country: optStr(args.country),
-			cityPlaceId: optStr(args.cityPlaceId),
+			placeId: optStr(args.placeId),
 			coordinates: args.coordinates,
+			timeZone: optStr(args.timeZone),
 
 			bedrooms: num(args.bedrooms),
 			bathrooms: num(args.bathrooms),
@@ -116,6 +129,7 @@ export const createApartment = authMutation('createApartment')({
 			currency: 'EUR',
 
 			instantBooking: args.instantBooking,
+			paymentMethod: args.paymentMethod,
 			sameDayReservation: args.sameDayReservation,
 			singleDayReservation: args.singleDayReservation,
 			petsAllowed: args.petsAllowed,

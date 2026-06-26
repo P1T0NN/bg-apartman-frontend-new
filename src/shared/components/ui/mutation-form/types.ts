@@ -3,6 +3,8 @@ import type { FullAutoFill, HTMLInputTypeAttribute } from 'svelte/elements';
 
 export type MutationFormFieldKind =
 	| 'input'
+	| 'time'
+	| 'counter'
 	| 'textarea'
 	| 'select'
 	| 'checkbox'

@@ -115,6 +115,9 @@ export const convexRateLimitRegistry = {
 
 	// Accommodations
 	createApartment: limitPresets.interactiveWrite,
+	updateApartment: limitPresets.interactiveWrite,
+	setApartmentStatus: limitPresets.interactiveWrite,
+	deleteApartment: limitPresets.bulkDelete,
 
 	// Convex storage uploads
 	generateConvexUploadUrl: limitPresets.fileUpload,

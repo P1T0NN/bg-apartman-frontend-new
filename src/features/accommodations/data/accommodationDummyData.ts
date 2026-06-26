@@ -5,6 +5,9 @@
 // (the `hostId` joined to the better-auth user) and `bookedRanges` (derived from
 // the bookings table) so the date picker can grey out unavailable nights.
 
+// TYPES
+import type { PaymentMethod } from '@/features/bookings/data/paymentMethods';
+
 export type AccommodationImage = {
 	key: string;
 	url: string;
@@ -18,9 +21,6 @@ export type AccommodationHost = {
 	avatarUrl?: string;
 	joinedAt: number; // timestamp
 	isSuperhost: boolean;
-	responseRate: number; // percent
-	responseTime: string; // e.g. "within an hour"
-	bio: string;
 };
 
 /** ISO date range (check-in inclusive, check-out exclusive) already reserved. */
@@ -38,6 +38,8 @@ export type AccommodationDetail = {
 	city: string;
 	country?: string;
 	coordinates?: { lat: number; lng: number };
+	/** IANA zone the availability calendar runs in; falls back to DEFAULT_TIME_ZONE when unset. */
+	timeZone?: string;
 
 	bedrooms: number;
 	bathrooms: number;
@@ -53,6 +55,7 @@ export type AccommodationDetail = {
 	currency: 'EUR';
 
 	instantBooking: boolean;
+	paymentMethod: PaymentMethod;
 	sameDayReservation: boolean;
 	singleDayReservation: boolean;
 	petsAllowed: boolean;
@@ -94,6 +97,7 @@ export const accommodationDummyData: AccommodationDetail = {
 	city: 'Belgrade',
 	country: 'Serbia',
 	coordinates: { lat: 44.8198, lng: 20.4685 },
+	timeZone: 'Europe/Belgrade',
 
 	bedrooms: 1,
 	bathrooms: 1,
@@ -109,6 +113,7 @@ export const accommodationDummyData: AccommodationDetail = {
 	currency: 'EUR',
 
 	instantBooking: true,
+	paymentMethod: 'cash',
 	sameDayReservation: false,
 	singleDayReservation: false,
 	petsAllowed: true,
@@ -138,13 +143,33 @@ export const accommodationDummyData: AccommodationDetail = {
 	],
 
 	images: [
-		img(0, 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688', 'Sunlit open-plan living room'),
-		img(1, 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85', 'Bedroom with courtyard view'),
-		img(2, 'https://images.unsplash.com/photo-1484154218962-a197022b5858', 'Fully equipped kitchen'),
+		img(
+			0,
+			'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688',
+			'Sunlit open-plan living room'
+		),
+		img(
+			1,
+			'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85',
+			'Bedroom with courtyard view'
+		),
+		img(
+			2,
+			'https://images.unsplash.com/photo-1484154218962-a197022b5858',
+			'Fully equipped kitchen'
+		),
 		img(3, 'https://images.unsplash.com/photo-1560185007-cde436f6a4d0', 'Modern bathroom'),
-		img(4, 'https://images.unsplash.com/photo-1493809842364-78817add7ffb', 'Dining nook by the window'),
+		img(
+			4,
+			'https://images.unsplash.com/photo-1493809842364-78817add7ffb',
+			'Dining nook by the window'
+		),
 		img(5, 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267', 'Cozy reading corner'),
-		img(6, 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2', 'Balcony overlooking the courtyard')
+		img(
+			6,
+			'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2',
+			'Balcony overlooking the courtyard'
+		)
 	],
 	coverImageIndex: 0,
 
@@ -157,10 +182,7 @@ export const accommodationDummyData: AccommodationDetail = {
 		avatarUrl:
 			'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
 		joinedAt: new Date('2021-04-01').getTime(),
-		isSuperhost: true,
-		responseRate: 99,
-		responseTime: 'within an hour',
-		bio: 'Born and raised in Belgrade, I love helping guests discover the city beyond the guidebooks. I live nearby and am always a message away if you need anything during your stay.'
+		isSuperhost: true
 	},
 
 	// Reference date: 2026-06-19. A few upcoming stays are already on the books.

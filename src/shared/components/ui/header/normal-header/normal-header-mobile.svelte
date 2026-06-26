@@ -7,7 +7,7 @@
 	import { useAuth } from '@mmailaender/convex-better-auth-svelte/svelte';
 
 	// CONFIG
-	import { COMPANY_DATA } from '@/shared/constants.js';
+	import { COMPANY_DATA, PROTECTED_PAGE_ENDPOINTS } from '@/shared/constants.js';
 
 	// CLASSES
 	import {
@@ -28,6 +28,8 @@
 	import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from '@/shared/components/ui/drawer';
 	import { Separator } from '@/shared/components/ui/separator';
 	import LoginButton from '@/features/auth/components/login-button/login-button.svelte';
+	import { localizeHref } from '@/shared/lib/paraglide/runtime';
+	import { m } from '@/shared/lib/paraglide/messages';
 
 	// UTILS
 	import { cn } from '@/shared/utils/utils.js';
@@ -128,7 +130,26 @@
 
 			<div class="sm:hidden">
 				{#if isAuthenticated}
-					<LogoutButton />
+					<div class="flex flex-col gap-2">
+						<Button
+							variant="outline"
+							class="w-full justify-start"
+							href={localizeHref(PROTECTED_PAGE_ENDPOINTS.GUEST_DASHBOARD)}
+							onclick={normalHeader.closeMenu}
+						>
+							{m['Header.guestDashboard']()}
+						</Button>
+
+						<Button
+							variant="outline"
+							class="w-full justify-start"
+							href={localizeHref(PROTECTED_PAGE_ENDPOINTS.HOST_DASHBOARD)}
+							onclick={normalHeader.closeMenu}
+						>
+							{m['Header.becomeAHost']()}
+						</Button>
+						<LogoutButton class="w-full" />
+					</div>
 				{:else}
 					<LoginButton />
 				{/if}

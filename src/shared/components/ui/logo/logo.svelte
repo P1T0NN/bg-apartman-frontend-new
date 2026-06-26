@@ -13,6 +13,8 @@
 
 	type Props = {
 		class?: string;
+		/** Logo image URL (defaults to the optimized static asset). */
+		src?: string;
 		/** Passed through to `<img>` (e.g. brightness on dark heroes). */
 		imgClass?: string;
 		href?: string;
@@ -23,6 +25,7 @@
 
 	let {
 		class: className,
+		src = COMPANY_DATA.LOGO,
 		imgClass,
 		href = UNPROTECTED_PAGE_ENDPOINTS.ROOT,
 		alt = `${COMPANY_DATA.NAME} logo`,
@@ -43,7 +46,7 @@
 	{...restProps}
 >
 	<img
-		src={COMPANY_DATA.LOGO}
+		{src}
 		{alt}
 		class={cn('object-contain object-left', sizeStyles, imgClass)}
 		width="160"

@@ -9,16 +9,16 @@
 	import {
 		BOOKING_FILTERS,
 		BOOKING_STATUS_CONFIG,
-		PAYMENT_STATUS_CONFIG,
+		PAYMENT_STATUS_CONFIG
+	} from '@/features/bookings/data/bookingsData';
+	import {
 		countByFilter,
-		formatCurrency,
-		formatDateShort,
-		formatNights,
-		guestFullName,
-		guestInitials,
 		matchesFilter,
 		matchesSearch
 	} from '@/features/bookings/utils/bookingsPresentation';
+	import { formatDateShort } from '@/shared/utils/dateUtils';
+	import { formatCurrency, formatNights } from '@/shared/utils/formatters';
+	import { initials } from '@/shared/utils/stringUtils';
 
 	// LUCIDE ICONS
 	import ArrowRightIcon from '@lucide/svelte/icons/arrow-right';
@@ -26,7 +26,7 @@
 
 	// TYPES
 	import type { BookingRecord } from '@/features/bookings/data/bookingsDummyData';
-	import type { BookingFilter, BookingAction } from '@/features/bookings/utils/bookingsPresentation';
+	import type { BookingFilter, BookingAction } from '@/features/bookings/types/bookingsTypes';
 	import type {
 		ColumnDef,
 		DataTableCellSnippetProps,
@@ -35,16 +35,22 @@
 
 	let {
 		bookings,
-		onAction
+		onAction,
+		activeFilter: controlledFilter,
+		onFilterChange
 	}: {
 		bookings: BookingRecord[];
-		onAction: (booking: BookingRecord, action: BookingAction) => void;
+		/** Omitted for read-only views (e.g. guest my-bookings). */
+		onAction?: (booking: BookingRecord, action: BookingAction) => void;
+		/** Controlled status filter — used with `onFilterChange` for URL-backed filters. */
+		activeFilter?: BookingFilter;
+		onFilterChange?: (filter: BookingFilter) => void;
 	} = $props();
 
 	const PAGE_SIZE = 8;
 
 	// --- View state -----------------------------------------------------------
-	let activeFilter = $state<BookingFilter>('all');
+	let localFilter = $state<BookingFilter>('all');
 	let search = $state('');
 	let page = $state(1);
 	let sortColumn = $state<string | undefined>(undefined);
@@ -53,13 +59,19 @@
 	let selected = $state<BookingRecord | null>(null);
 	let sheetOpen = $state(false);
 
+	const activeFilter = $derived(controlledFilter ?? localFilter);
+
 	function openDetail(booking: BookingRecord) {
 		selected = booking;
 		sheetOpen = true;
 	}
 
 	function setFilter(filter: BookingFilter) {
-		activeFilter = filter;
+		if (onFilterChange) {
+			onFilterChange(filter);
+		} else {
+			localFilter = filter;
+		}
 		page = 1;
 	}
 
@@ -99,8 +111,12 @@
 		if (page > totalPages) page = totalPages;
 	});
 
+	function guestName(b: BookingRecord): string {
+		return `${b.guestFirstName} ${b.guestLastName}`;
+	}
+
 	const columns: ColumnDef<BookingRecord>[] = [
-		{ id: 'guest', header: 'Guest', accessor: (r) => guestFullName(r), cellClass: 'min-w-[15rem]', wrap: true },
+		{ id: 'guest', header: 'Guest', accessor: (r) => guestName(r), cellClass: 'min-w-[15rem]', wrap: true },
 		{ id: 'apartment', header: 'Property', accessor: (r) => r.apartment.title, hideBelow: 'sm', wrap: true },
 		{ id: 'stay', header: 'Stay', accessor: (r) => r.checkInDate, sortable: true, wrap: true },
 		{ id: 'guests', header: 'Guests', accessor: (r) => `${r.numberOfAdults + r.numberOfChildren}`, hideBelow: 'lg' },
@@ -178,11 +194,11 @@
 			class="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold text-foreground ring-1 ring-border"
 			aria-hidden="true"
 		>
-			{guestInitials(row)}
+			{initials(guestName(row))}
 		</span>
 		<span class="min-w-0">
 			<span class="block truncate text-sm font-medium group-hover/guest:underline">
-				{guestFullName(row)}
+				{guestName(row)}
 			</span>
 			<span class="block truncate font-mono text-xs text-muted-foreground">{row.bookingCode}</span>
 		</span>

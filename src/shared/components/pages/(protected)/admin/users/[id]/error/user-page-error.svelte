@@ -1,12 +1,12 @@
 <script lang="ts">
 	// LIBRARIES
-	import { invalidateAll } from '$app/navigation';
 	import { m } from '@/shared/lib/paraglide/messages';
-	import AlertTriangleIcon from '@lucide/svelte/icons/triangle-alert';
-	import RefreshCwIcon from '@lucide/svelte/icons/refresh-cw';
 
 	// COMPONENTS
-	import { Button } from '@/shared/components/ui/button/index.js';
+	import { RefreshQueryButton } from '@/shared/components/ui/refresh-query-button/index.js';
+
+	// LUCIDE ICONS
+	import AlertTriangleIcon from '@lucide/svelte/icons/triangle-alert';
 
 	let { message }: { message?: string } = $props();
 </script>
@@ -23,8 +23,9 @@
 		</p>
 	</div>
 
-	<Button variant="outline" size="sm" onclick={() => invalidateAll()}>
-		<RefreshCwIcon class="size-4" />
-		{m['AdminUserPage.UserPageError.retry']()}
-	</Button>
+	<RefreshQueryButton
+		variant="outline"
+		size="sm"
+		label={m['AdminUserPage.UserPageError.retry']()}
+	/>
 </div>

@@ -25,6 +25,8 @@
 		FieldError
 	} from '@/shared/components/ui/field/index.js';
 	import InputField from './input-field.svelte';
+	import TimeInput from '@/shared/components/ui/time-input/time-input.svelte';
+	import CounterField from './counter-field.svelte';
 	import TextareaField from './textarea-field.svelte';
 	import SelectField from './select-field.svelte';
 	import CheckboxField from './checkbox-field.svelte';
@@ -35,6 +37,7 @@
 	// UTILS
 	import { cn } from '@/shared/utils/utils.js';
 	import { zodIssuesToFieldErrors } from '@/shared/utils/validationUtils.js';
+	import { focusFirstError } from '@/shared/utils/focusFirstError.js';
 	import { useProgress } from '@/features/uploadFile/utils/useProgress.svelte';
 	import { Progress } from '@/shared/components/ui/progress/index.js';
 	import { hasUploadFields } from './utils.js';
@@ -163,7 +166,11 @@
 		if (!step) return {};
 		return step.kind === 'extra'
 			? (step.meta ?? {})
-			: { title: step.section.title, description: step.section.description, icon: step.section.icon };
+			: {
+					title: step.section.title,
+					description: step.section.description,
+					icon: step.section.icon
+				};
 	});
 
 	function stepFieldIds(index: number): string[] {
@@ -177,10 +184,7 @@
 		return zodIssuesToFieldErrors<keyof T & string>(result.error.issues);
 	}
 
-	function pickErrors(
-		all: MutationFormFieldErrors<T>,
-		ids: string[]
-	): MutationFormFieldErrors<T> {
+	function pickErrors(all: MutationFormFieldErrors<T>, ids: string[]): MutationFormFieldErrors<T> {
 		const out: MutationFormFieldErrors<T> = {};
 		for (const fid of ids) {
 			const key = fid as keyof T & string;
@@ -200,6 +204,7 @@
 		if (Object.keys(stepErrors).length > 0) {
 			fieldErrors = stepErrors;
 			toast.error(m['GenericMessages.YOU_NEED_TO_CORRECT_FORM_ERRORS']());
+			void focusFirstError(formEl);
 			return;
 		}
 		fieldErrors = {};
@@ -241,9 +246,10 @@
 				if (firstBad >= 0) {
 					hasNavigated = true;
 					currentStep = firstBad;
-					void scrollToTop();
 				}
 			}
+			// Jump to the first invalid field (after the wizard re-renders the bad step).
+			void focusFirstError(formEl);
 			return;
 		}
 		fieldErrors = {};
@@ -343,6 +349,23 @@
 					error: err,
 					inputId
 				})}
+			{:else if field.kind === 'time'}
+				<TimeInput
+					id={inputId}
+					value={getValue(field.id) as string}
+					setValue={(v) => setValue(field.id, v)}
+					placeholder={field.placeholder}
+					disabled={field.disabled}
+					invalid={!!err}
+				/>
+			{:else if field.kind === 'counter'}
+				<CounterField
+					{field}
+					{inputId}
+					value={getValue(field.id)}
+					setValue={(v) => setValue(field.id, v)}
+					invalid={!!err}
+				/>
 			{:else if field.kind === 'textarea'}
 				<TextareaField
 					{field}
@@ -357,6 +380,7 @@
 					{inputId}
 					value={getValue(field.id)}
 					setValue={(v) => setValue(field.id, v)}
+					invalid={!!err}
 				/>
 			{:else if field.kind === 'select'}
 				<SelectField
@@ -400,30 +424,30 @@
 		{#if meta.icon}
 			{@const Icon = meta.icon}
 			<span
-				class="bg-primary/10 text-primary flex size-11 shrink-0 items-center justify-center rounded-xl"
+				class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"
 			>
 				<Icon class="size-5" />
 			</span>
 		{/if}
 		<div class="min-w-0 flex-1">
 			{#if meta.title}
-				<h2 class="text-foreground text-xl font-semibold tracking-tight sm:text-2xl">
+				<h2 class="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
 					{meta.title}
 				</h2>
 			{/if}
 			{#if meta.description}
-				<p class="text-muted-foreground mt-1 text-sm">{meta.description}</p>
+				<p class="mt-1 text-sm text-muted-foreground">{meta.description}</p>
 			{/if}
 		</div>
 	</div>
 {/snippet}
 
 {#snippet wizardBody()}
-	<div class="bg-card rounded-2xl border p-5 shadow-sm sm:p-7">
+	<div class="rounded-2xl border bg-card p-5 shadow-sm sm:p-7">
 		<!-- Progress -->
 		<div class="flex flex-col gap-2">
 			<div class="flex items-center justify-end">
-				<span class="text-muted-foreground text-xs font-medium tabular-nums">
+				<span class="text-xs font-medium text-muted-foreground tabular-nums">
 					Step {currentStep + 1} of {wizardSteps.length}
 				</span>
 			</div>
@@ -437,7 +461,7 @@
 						onclick={() => goToStep(i)}
 						class={cn(
 							'h-1.5 flex-1 rounded-full transition-all duration-300',
-							i < currentStep && 'bg-primary hover:opacity-70 cursor-pointer',
+							i < currentStep && 'cursor-pointer bg-primary hover:opacity-70',
 							i === currentStep && 'bg-primary',
 							i > currentStep && 'bg-muted'
 						)}
@@ -470,7 +494,7 @@
 		{#if busy && showUploadProgress}
 			<div class="mt-6 flex w-full flex-col gap-2">
 				<Progress value={progress.percent} class="h-2" />
-				<p class="text-muted-foreground text-xs tabular-nums">{progress.label}</p>
+				<p class="text-xs text-muted-foreground tabular-nums">{progress.label}</p>
 			</div>
 		{/if}
 
@@ -504,7 +528,7 @@
 	bind:this={formEl}
 	onsubmit={onFormSubmit}
 	novalidate
-	class={cn('flex flex-col gap-6 scroll-mt-6', className)}
+	class={cn('flex scroll-mt-6 flex-col gap-6', className)}
 >
 	{@render header?.()}
 
@@ -548,7 +572,7 @@
 		{#if busy && showUploadProgress}
 			<div class="flex w-full flex-col gap-2">
 				<Progress value={progress.percent} class="h-2" />
-				<p class="text-muted-foreground text-xs tabular-nums">{progress.label}</p>
+				<p class="text-xs text-muted-foreground tabular-nums">{progress.label}</p>
 			</div>
 		{/if}
 

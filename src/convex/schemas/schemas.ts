@@ -1,13 +1,41 @@
 // LIBRARIES
-import { v, type Infer } from 'convex/values';
+import { v, type GenericValidator, type Infer } from 'convex/values';
 
 /**
- * Result envelope consumed by `convex-mutation-form` → `translateFromBackend`.
- * `success: true` toasts `message` as success; `false` toasts it as an error.
+ * Locale-agnostic message descriptor returned by mutations/actions.
+ * The frontend resolves `key` (+ optional `params`) via Paraglide.
  */
-export const createResult = v.object({
-	success: v.boolean(),
-	message: v.object({ key: v.string() })
+export const translatableMessage = v.object({
+	key: v.string(),
+	params: v.optional(
+		v.record(v.string(), v.union(v.string(), v.number(), v.boolean()))
+	)
 });
 
-export type CreateResult = Infer<typeof createResult>;
+export type TranslatableMessage = Infer<typeof translatableMessage>;
+
+/**
+ * Standard mutation envelope — `success: true` toasts `message` as success;
+ * `success: false` toasts it as an error. No `data` on message-only mutations.
+ */
+export const mutationResult = v.object({
+	success: v.boolean(),
+	message: translatableMessage
+});
+
+export type MutationResult = Infer<typeof mutationResult>;
+
+/** @deprecated Use {@link mutationResult} / {@link MutationResult}. */
+export const createResult = mutationResult;
+
+/** @deprecated Use {@link MutationResult}. */
+export type CreateResult = MutationResult;
+
+/** Mutation envelope with optional typed `data` (meaningful on success paths). */
+export function mutationResultData<T extends GenericValidator>(data: T) {
+	return v.object({
+		success: v.boolean(),
+		message: translatableMessage,
+		data: v.optional(data)
+	});
+}

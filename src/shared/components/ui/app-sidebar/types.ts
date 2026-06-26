@@ -5,6 +5,8 @@ export type AppSidebarNavItem = {
 	name: string;
 	url: string;
 	icon: Component;
+	/** Render as a stand-out CTA (filled primary) instead of a plain link. */
+	highlight?: boolean;
 };
 
 export type AppSidebarNavItemWithActive = AppSidebarNavItem & {

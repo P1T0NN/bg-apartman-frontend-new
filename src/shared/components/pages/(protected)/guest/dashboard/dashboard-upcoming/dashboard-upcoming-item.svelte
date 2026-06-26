@@ -1,0 +1,48 @@
+<script lang="ts">
+	// LIBRARIES
+	import { localizeHref } from '@/shared/lib/paraglide/runtime.js';
+
+	// CONFIG
+	import { PROTECTED_PAGE_ENDPOINTS } from '@/shared/constants.js';
+
+	// COMPONENTS
+	import * as Card from '@/shared/components/ui/card/index.js';
+	import { Badge } from '@/shared/components/ui/badge/index.js';
+
+	// UTILS
+	import { cn } from '@/shared/utils/utils.js';
+	import { BOOKING_STATUS_CONFIG } from '@/features/bookings/data/bookingsData';
+	import { formatDate } from '@/shared/utils/dateUtils';
+
+	// TYPES
+	import type { GuestTripSummary } from '@/convex/pages/guest/dashboard/types/guestDashboardTypes';
+
+	// LUCIDE ICONS
+	import ArrowRightIcon from '@lucide/svelte/icons/arrow-right';
+
+	let { trip }: { trip: GuestTripSummary } = $props();
+
+	const status = $derived(BOOKING_STATUS_CONFIG[trip.status]);
+</script>
+
+<a
+	href={localizeHref(PROTECTED_PAGE_ENDPOINTS.GUEST_MY_BOOKINGS)}
+	class="rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring"
+>
+	<Card.Root class="flex-row items-center gap-4 p-3 transition hover:bg-muted/40">
+		<img
+			src={trip.apartment.imageUrl}
+			alt={trip.apartment.title}
+			loading="lazy"
+			class="size-16 shrink-0 rounded-lg object-cover"
+		/>
+		<div class="min-w-0 flex-1">
+			<p class="truncate font-medium">{trip.apartment.title}</p>
+			<p class="truncate text-sm text-muted-foreground">
+				{trip.apartment.city} · {formatDate(trip.checkInDate)} – {formatDate(trip.checkOutDate)}
+			</p>
+		</div>
+		<Badge class={cn(status.badgeClass, 'ring-1 max-sm:hidden')}>{status.label}</Badge>
+		<ArrowRightIcon class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+	</Card.Root>
+</a>

@@ -40,6 +40,11 @@
 	const isAdminRoute = $derived(
 		pathnameLogical === '/admin' || pathnameLogical.startsWith('/admin/')
 	);
+	// Guest routes carry their own sidebar shell (src/routes/(protected)/guest/+layout.svelte),
+	// so the host shell below skips them — same delegation as the admin shell.
+	const isGuestRoute = $derived(
+		pathnameLogical === '/guest' || pathnameLogical.startsWith('/guest/')
+	);
 	const isAdmin = $derived(authClass.currentUser?.role === 'admin');
 
 	const navItems = $derived.by((): AppSidebarNavItems => {
@@ -81,14 +86,14 @@
 					name: m['ProtectedSidebar.bookings'](),
 					url: PROTECTED_PAGE_ENDPOINTS.BOOKINGS,
 					icon: CalendarCheckIcon
-				},
+				}
 			],
 			navSecondary
 		};
 	});
 </script>
 
-{#if isAdminRoute}
+{#if isAdminRoute || isGuestRoute}
 	{@render children()}
 {:else}
 	<Sidebar.Provider

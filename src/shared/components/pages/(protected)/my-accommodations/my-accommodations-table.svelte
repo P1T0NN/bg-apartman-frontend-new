@@ -1,33 +1,43 @@
 <script lang="ts">
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
+	import { localizeHref } from '@/shared/lib/paraglide/runtime';
 
 	// CONFIG
 	import { ACCOMMODATION_TYPES } from '@/shared/data/accommodationsData';
+	import {
+		PROTECTED_PAGE_ENDPOINTS,
+		UNPROTECTED_PAGE_ENDPOINTS,
+		fillRoutePattern
+	} from '@/shared/constants';
 
 	// COMPONENTS
 	import DataTable from '@/shared/components/ui/data-table/convex-data-table.svelte';
+	import { Button } from '@/shared/components/ui/button/index.js';
+
+	// UTILS
+	import { formatCurrency } from '@/shared/utils/formatters';
 
 	// LUCIDE ICONS
 	import ImageIcon from '@lucide/svelte/icons/image';
+	import EyeIcon from '@lucide/svelte/icons/eye';
+	import SquarePenIcon from '@lucide/svelte/icons/square-pen';
 
 	// TYPES
-	import type { Doc } from '@/convex/_generated/dataModel';
+	import type { typesAccommodation } from '@/features/accommodations/types/types';
+	import type { typesAccommodationStatus } from '@/features/accommodations/types/types';
 	import type {
 		ColumnDef,
 		DataTableCellSnippetProps,
 		DataTableSortDirection
 	} from '@/shared/components/ui/data-table/types.js';
 
-	type Apartment = Doc<'apartments'>;
-	type ApartmentStatus = Apartment['status'];
-
 	let sortColumn = $state<string | undefined>('createdAt');
 	let sortDirection = $state<DataTableSortDirection | undefined>('desc');
 
 	const propertyTypeLabels = new Map(ACCOMMODATION_TYPES.map((type) => [type.value, type.label]));
 
-	const columns: ColumnDef<Apartment>[] = [
+	const columns: ColumnDef<typesAccommodation>[] = [
 		{
 			id: 'title',
 			header: 'Listing',
@@ -64,10 +74,17 @@
 			accessor: (row) => formatDate(row._creationTime),
 			sortable: true,
 			hideBelow: 'lg'
+		},
+		{
+			id: 'actions',
+			header: '',
+			accessor: () => null,
+			cellClass: 'w-0',
+			wrap: true
 		}
 	];
 
-	function statusLabel(status: ApartmentStatus): string {
+	function statusLabel(status: typesAccommodationStatus): string {
 		switch (status) {
 			case 'pending_review':
 				return 'Pending review';
@@ -80,7 +97,7 @@
 		}
 	}
 
-	function statusClass(status: ApartmentStatus): string {
+	function statusClass(status: typesAccommodationStatus): string {
 		switch (status) {
 			case 'pending_review':
 				return 'bg-amber-500/10 text-amber-700 ring-amber-500/20 dark:text-amber-300';
@@ -93,14 +110,6 @@
 		}
 	}
 
-	function formatCurrency(amount: number): string {
-		return new Intl.NumberFormat('en', {
-			style: 'currency',
-			currency: 'EUR',
-			maximumFractionDigits: 0
-		}).format(amount);
-	}
-
 	function formatDate(timestamp: number): string {
 		return new Intl.DateTimeFormat('en', {
 			month: 'short',
@@ -109,7 +118,7 @@
 		}).format(new Date(timestamp));
 	}
 
-	function propertyTypeLabel(type: Apartment['type']): string {
+	function propertyTypeLabel(type: typesAccommodation['type']): string {
 		return propertyTypeLabels.get(type) ?? type;
 	}
 </script>
@@ -124,7 +133,8 @@
 		payment: paymentCell,
 		price: priceCell,
 		capacity: capacityCell,
-		createdAt: createdAtCell
+		createdAt: createdAtCell,
+		actions: actionsCell
 	}}
 	bind:sortColumn
 	bind:sortDirection
@@ -132,7 +142,7 @@
 	borderless
 />
 
-{#snippet listingCell({ row }: DataTableCellSnippetProps<Apartment>)}
+{#snippet listingCell({ row }: DataTableCellSnippetProps<typesAccommodation>)}
 	<div class="flex min-w-0 items-center gap-3">
 		<div class="relative size-12 shrink-0 overflow-hidden rounded-md bg-muted ring-1 ring-border">
 			{#if row.images[0]?.url}
@@ -161,7 +171,7 @@
 	</div>
 {/snippet}
 
-{#snippet statusCell({ row }: DataTableCellSnippetProps<Apartment>)}
+{#snippet statusCell({ row }: DataTableCellSnippetProps<typesAccommodation>)}
 	<span
 		class={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ${statusClass(row.status)}`}
 	>
@@ -169,13 +179,13 @@
 	</span>
 {/snippet}
 
-{#snippet paymentCell({ row }: DataTableCellSnippetProps<Apartment>)}
+{#snippet paymentCell({ row }: DataTableCellSnippetProps<typesAccommodation>)}
 	<span class="text-sm text-muted-foreground">
 		{row.paidAt ? `Paid ${formatDate(row.paidAt)}` : 'Unpaid'}
 	</span>
 {/snippet}
 
-{#snippet priceCell({ row }: DataTableCellSnippetProps<Apartment>)}
+{#snippet priceCell({ row }: DataTableCellSnippetProps<typesAccommodation>)}
 	<div class="flex flex-col">
 		<span class="text-sm font-medium"
 			>{formatCurrency(row.discountAmount || row.pricePerNight)}</span
@@ -188,12 +198,39 @@
 	</div>
 {/snippet}
 
-{#snippet capacityCell({ row }: DataTableCellSnippetProps<Apartment>)}
+{#snippet capacityCell({ row }: DataTableCellSnippetProps<typesAccommodation>)}
 	<span class="text-sm text-muted-foreground">
 		{row.maxGuests} guests, {row.bedrooms} bedrooms
 	</span>
 {/snippet}
 
-{#snippet createdAtCell({ row }: DataTableCellSnippetProps<Apartment>)}
+{#snippet createdAtCell({ row }: DataTableCellSnippetProps<typesAccommodation>)}
 	<span class="text-sm text-muted-foreground">{formatDate(row._creationTime)}</span>
+{/snippet}
+
+{#snippet actionsCell({ row }: DataTableCellSnippetProps<typesAccommodation>)}
+	<div class="flex items-center justify-end gap-1">
+		<Button
+			href={localizeHref(
+				fillRoutePattern(UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION, { slug: row.slug })
+			)}
+			variant="ghost"
+			size="icon-sm"
+			aria-label="View listing"
+			title="View"
+		>
+			<EyeIcon class="size-4" aria-hidden="true" />
+		</Button>
+		<Button
+			href={localizeHref(
+				fillRoutePattern(PROTECTED_PAGE_ENDPOINTS.EDIT_ACCOMMODATION, { id: row._id })
+			)}
+			variant="ghost"
+			size="icon-sm"
+			aria-label="Edit listing"
+			title="Edit"
+		>
+			<SquarePenIcon class="size-4" aria-hidden="true" />
+		</Button>
+	</div>
 {/snippet}

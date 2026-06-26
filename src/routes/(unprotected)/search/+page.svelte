@@ -1,18 +1,20 @@
 <script lang="ts">
+	// CLASSES
+	import {
+		useSearchState,
+		parseCount,
+		type AccommodationSearchParams
+	} from '@/shared/components/pages/(unprotected)/search/search-state';
+
+	// LIBRARIES
+	import { api } from '@/convex/_generated/api';
+	import { useQuery } from 'convex-svelte';
+
 	// COMPONENTS
 	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
 	import { Button } from '@/shared/components/ui/button/index.js';
 	import SearchLeftContent from '@/shared/components/pages/(unprotected)/search/search-left-content/search-left-content.svelte';
 	import SearchRightContent from '@/shared/components/pages/(unprotected)/search/search-right-content/search-right-content.svelte';
-
-	// STATE
-	import {
-		useSearchState,
-		atLeast
-	} from '@/shared/components/pages/(unprotected)/search/search-state';
-
-	// DATA
-	import { searchListings } from '@/features/accommodations/data/searchResultsDummyData';
 
 	// TYPES
 	import type { GoogleMapHandle } from '@/shared/components/ui/google-map/types.js';
@@ -31,20 +33,36 @@
 
 	const location = $derived(search.location.current?.trim());
 
-	// Both panes (list + map) render the same filtered set, so they always agree.
-	const filtered = $derived(
-		searchListings.filter(
-			(l) =>
-				atLeast(l.bedrooms, search.bedrooms.current) &&
-				atLeast(l.bathrooms, search.bathrooms.current) &&
-				atLeast(l.maxGuests, search.guests.current)
-		)
+	// The query args, decoded from the URL. `location` is the display label only; the query
+	// keeps listings whose merged `placeId` contains the picked region's `placeId`.
+	const params = $derived<AccommodationSearchParams>({
+		placeId: search.placeId.current || undefined,
+		location,
+		checkIn: search.checkIn.current || undefined,
+		checkOut: search.checkOut.current || undefined,
+		bedrooms: parseCount(search.bedrooms.current),
+		bathrooms: parseCount(search.bathrooms.current),
+		guests: parseCount(search.guests.current)
+	});
+
+	// Live results from Convex. Both panes (list + map) render the same set, so they agree.
+	const resultsQuery = useQuery(
+		api.tables.accommodations.queries.fetchSearchAccommodationsSafe.fetchSearchAccommodationsSafe,
+		() => ({
+			placeId: params.placeId,
+			checkIn: params.checkIn,
+			checkOut: params.checkOut,
+			bedrooms: params.bedrooms,
+			bathrooms: params.bathrooms,
+			guests: params.guests
+		})
 	);
+	const filtered = $derived(resultsQuery.data ?? []);
 </script>
 
 <SvelteHead
 	title={`Stays in ${location}`}
-	description={`Browse ${searchListings.length} places to stay in ${location}.`}
+	description={`Browse ${filtered.length} places to stay in ${location}.`}
 />
 
 <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,42%)] xl:grid-cols-[minmax(0,1fr)_38rem]">

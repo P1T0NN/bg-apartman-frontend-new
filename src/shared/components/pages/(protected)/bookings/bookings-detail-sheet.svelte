@@ -12,17 +12,11 @@
 
 	// UTILS
 	import { cn } from '@/shared/utils/utils.js';
-	import {
-		BOOKING_STATUS_CONFIG,
-		PAYMENT_STATUS_CONFIG,
-		availableActions,
-		formatCurrency,
-		formatDateWithWeekday,
-		formatGuests,
-		formatNights,
-		guestFullName,
-		guestInitials
-	} from '@/features/bookings/utils/bookingsPresentation';
+	import { BOOKING_STATUS_CONFIG, PAYMENT_STATUS_CONFIG } from '@/features/bookings/data/bookingsData';
+	import { availableActions } from '@/features/bookings/utils/bookingsPresentation';
+	import { formatDateWithWeekday } from '@/shared/utils/dateUtils';
+	import { formatAdultsAndChildren, formatCurrency, formatNights } from '@/shared/utils/formatters';
+	import { initials } from '@/shared/utils/stringUtils';
 
 	// LUCIDE ICONS
 	import MailIcon from '@lucide/svelte/icons/mail';
@@ -35,7 +29,11 @@
 
 	// TYPES
 	import type { BookingRecord } from '@/features/bookings/data/bookingsDummyData';
-	import type { BookingAction } from '@/features/bookings/utils/bookingsPresentation';
+	import type { BookingAction } from '@/features/bookings/types/bookingsTypes';
+
+	function guestName(b: BookingRecord): string {
+		return `${b.guestFirstName} ${b.guestLastName}`;
+	}
 
 	let {
 		booking,
@@ -44,13 +42,13 @@
 	}: {
 		booking: BookingRecord | null;
 		open?: boolean;
-		onAction: (booking: BookingRecord, action: BookingAction) => void;
+		onAction?: (booking: BookingRecord, action: BookingAction) => void;
 	} = $props();
 
-	const actions = $derived(booking ? availableActions(booking.status) : []);
+	const actions = $derived(booking && onAction ? availableActions(booking.status) : []);
 
 	function runAction(action: BookingAction) {
-		if (!booking) return;
+		if (!booking || !onAction) return;
 		onAction(booking, action);
 		open = false;
 	}
@@ -68,10 +66,10 @@
 						class="flex size-11 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold text-foreground ring-1 ring-border"
 						aria-hidden="true"
 					>
-						{guestInitials(booking)}
+						{initials(guestName(booking))}
 					</div>
 					<div class="min-w-0 flex-1">
-						<SheetTitle class="truncate text-base">{guestFullName(booking)}</SheetTitle>
+						<SheetTitle class="truncate text-base">{guestName(booking)}</SheetTitle>
 						<p class="font-mono text-xs text-muted-foreground">{booking.bookingCode}</p>
 					</div>
 				</div>
@@ -116,7 +114,7 @@
 						<Separator class="my-3" />
 						<div class="flex items-center gap-2 text-sm text-muted-foreground">
 							<UsersIcon class="size-4 shrink-0" aria-hidden="true" />
-							<span>{formatGuests(booking)}</span>
+							<span>{formatAdultsAndChildren(booking.numberOfAdults, booking.numberOfChildren)}</span>
 						</div>
 					</section>
 

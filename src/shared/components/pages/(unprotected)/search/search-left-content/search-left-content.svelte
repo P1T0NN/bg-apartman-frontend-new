@@ -3,7 +3,7 @@
 	import { PAGINATION_DATA } from '@/shared/config.js';
 
 	// COMPONENTS
-	import SearchCard from './search-card.svelte';
+	import AccommodationCard from '@/features/accommodations/components/accommodation-card/accommodation-card.svelte';
 	import SearchLeftContentHeader from './search-left-content-header.svelte';
 	import SearchFiltersEmpty from '../empty/search-filters-empty.svelte';
 
@@ -14,7 +14,7 @@
 	// TYPES
 	import type { Id } from '@/convex/_generated/dataModel';
 	import type { GoogleMapHandle } from '@/shared/components/ui/google-map/types';
-	import type { SearchListing } from '@/features/accommodations/data/searchResultsDummyData';
+	import type { SearchListing } from '@/features/accommodations/types/searchListing';
 	import type { SearchState } from '../types';
 
 	let {
@@ -64,11 +64,15 @@
 	<SearchLeftContentHeader count={searchListings.length} {location} {search} />
 
 	{#if searchListings.length === 0}
-		<SearchFiltersEmpty {search} />
+		<SearchFiltersEmpty {search} {location} />
 	{:else}
 		<div class="grid grid-cols-1 gap-x-5 gap-y-7 sm:grid-cols-2 xl:grid-cols-3">
 			{#each visible as listing (listing.id)}
-				<SearchCard {listing} selected={listing.id === selectedId} onhover={handleListingHover} />
+				<AccommodationCard 
+					{listing} 
+					selected={listing.id === selectedId} 
+					onhover={handleListingHover} 
+				/>
 			{/each}
 		</div>
 

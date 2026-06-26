@@ -19,8 +19,7 @@ export type TranslatableMessage = {
  * Shared return envelope for mutations/actions across the Convex backend.
  *
  * `success: false` is a soft outcome (e.g. "nothing to do", "not found", a validation message
- * the client should surface as-is). Genuine failures should still `throw` so Convex can roll
- * the transaction back; don't swallow errors just to stuff them into this shape.
+ * the client should surface as-is). Auth and rate-limit failures may still throw from middleware.
  *
  * `message` is always a {@link TranslatableMessage} so the client can render it in the user's
  * current locale. `data` is optional and only meaningful on success paths.

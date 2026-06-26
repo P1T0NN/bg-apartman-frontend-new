@@ -29,6 +29,16 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
 					// Block clients from setting role via signUp/updateUser — only
 					// trusted server code can change it.
 					input: false
+				},
+				// Host reputation flag. Optional (not `required`) so existing user rows
+				// created before this field still pass schema validation; new users get
+				// `false` via defaultValue. Server-only — clients can't set it via
+				// signUp/updateUser. Readers should treat undefined as false.
+				isSuperhost: {
+					type: 'boolean',
+					required: false,
+					defaultValue: false,
+					input: false
 				}
 			}
 		},

@@ -9,10 +9,10 @@
 
 	// UTILS
 	import { cn } from '@/shared/utils/utils.js';
-	import { formatCurrency } from '@/features/accommodations/utils/accommodationPresentation';
+	import { formatCurrency } from '@/shared/utils/formatters';
 
 	// TYPES
-	import type { SearchListing } from '@/features/accommodations/data/searchResultsDummyData';
+	import type { SearchListing } from '@/features/accommodations/types/searchListing';
 	import type { Id } from '@/convex/_generated/dataModel';
 	import type { GoogleMapHandle } from '@/shared/components/ui/google-map/types';
 

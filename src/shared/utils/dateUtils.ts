@@ -1,96 +1,85 @@
-/**
- * Get a date X days from now
- * @param days - Number of days to add (can be negative for past dates)
- */
-export function getDaysFromNow(days: number): Date {
-	return new Date(Date.now() + days * 24 * 60 * 60 * 1000);
-}
+// LIBRARIES
+import { getLocale } from '@/shared/lib/paraglide/runtime';
 
-/**
- * Get a date X hours from now
- * @param hours - Number of hours to add (can be negative for past dates)
- */
-export function getHoursFromNow(hours: number): Date {
-	return new Date(Date.now() + hours * 60 * 60 * 1000);
-}
-
-/**
- * Get a date X minutes from now
- * @param minutes - Number of minutes to add (can be negative for past dates)
- */
-export function getMinutesFromNow(minutes: number): Date {
-	return new Date(Date.now() + minutes * 60 * 1000);
-}
-
-/**
- * Get a date X seconds from now
- * @param seconds - Number of seconds to add (can be negative for past dates)
- */
-export function getSecondsFromNow(seconds: number): Date {
-	return new Date(Date.now() + seconds * 1000);
-}
-
-/**
- * Get a date X days from a specific date
- * @param date - Base date
- * @param days - Number of days to add (can be negative for past dates)
- */
-export function addDays(date: Date, days: number): Date {
-	const result = new Date(date);
-	result.setDate(result.getDate() + days);
-	return result;
-}
-
-/**
- * Get a date X hours from a specific date
- * @param date - Base date
- * @param hours - Number of hours to add (can be negative for past dates)
- */
-export function addHours(date: Date, hours: number): Date {
-	const result = new Date(date);
-	result.setHours(result.getHours() + hours);
-	return result;
-}
-
-/**
- * Get a date X minutes from a specific date
- * @param date - Base date
- * @param minutes - Number of minutes to add (can be negative for past dates)
- */
-export function addMinutes(date: Date, minutes: number): Date {
-	const result = new Date(date);
-	result.setMinutes(result.getMinutes() + minutes);
-	return result;
-}
-
-/**
- * Check if a date is in the past
- */
-export function isPast(date: Date): boolean {
-	return date < new Date();
-}
-
-/**
- * Check if a date is in the future
- */
-export function isFuture(date: Date): boolean {
-	return date > new Date();
-}
-
-/**
- * Get the difference in days between two dates
- */
-export function getDaysDifference(date1: Date, date2: Date): number {
-	const diffTime = Math.abs(date1.getTime() - date2.getTime());
-	return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-}
-
-/**
- * Format a timestamp (epoch number or ISO string) as a locale-formatted
- * date/time. Returns an em-dash for unparseable input so callers can render
- * the result directly without re-checking validity.
- */
+/** Format a timestamp (epoch number or ISO string) as a locale-formatted date/time. */
 export function formatTs(ts: number | string): string {
 	const d = new Date(ts);
 	return Number.isNaN(d.getTime()) ? '—' : d.toLocaleString();
+}
+
+/** "15:00" → "3:00 PM". Falls back to the raw value if it can't be parsed. */
+export function formatTime12(time: string): string {
+	const [hStr, mStr] = time.split(':');
+	const h = Number(hStr);
+	const m = Number(mStr);
+	if (Number.isNaN(h) || Number.isNaN(m)) return time;
+	const period = h < 12 ? 'AM' : 'PM';
+	const hour12 = h % 12 === 0 ? 12 : h % 12;
+	
+	return `${hour12}:${String(m).padStart(2, '0')} ${period}`;
+}
+
+/** Whole nights between two ISO dates (check-out exclusive). 0 when either is missing. */
+export function nightsBetween(startISO?: string | null, endISO?: string | null): number {
+	if (!startISO || !endISO) return 0;
+	const start = new Date(startISO).getTime();
+	const end = new Date(endISO).getTime();
+	if (Number.isNaN(start) || Number.isNaN(end)) return 0;
+
+	return Math.max(0, Math.round((end - start) / 86_400_000));
+}
+
+/** "Jun 25, 2026" — used where the year matters. */
+export function formatDate(value: string | number): string {
+	return new Intl.DateTimeFormat(getLocale(), {
+		month: 'short',
+		day: 'numeric',
+		year: 'numeric'
+	}).format(new Date(value));
+}
+
+/** "Jun 25" — compact form for dense table cells. */
+export function formatDateShort(value: string | number): string {
+	return new Intl.DateTimeFormat(getLocale(), {
+		month: 'short',
+		day: 'numeric'
+	}).format(new Date(value));
+}
+
+/** Weekday + date, e.g. "Thu, Jun 25" — used in stay timelines. */
+export function formatDateWithWeekday(value: string | number): string {
+	return new Intl.DateTimeFormat(getLocale(), {
+		weekday: 'short',
+		month: 'short',
+		day: 'numeric'
+	}).format(new Date(value));
+}
+
+/** "Starts today", "Tomorrow", "In 3 days" — calendar days until an ISO date. */
+export function countdownLabel(iso: string): string {
+	const todayMid = new Date().setHours(0, 0, 0, 0);
+	const n = Math.round((Date.parse(`${iso}T00:00:00`) - todayMid) / 86_400_000);
+	
+	// ponytail: product copy for same-day check-in; Intl only gives "today"
+	if (n <= 0) return 'Starts today';
+
+	const label = new Intl.RelativeTimeFormat(getLocale(), { numeric: 'auto' }).format(n, 'day');
+	return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+/** "Jun 25 – Jun 28, 2026", collapsing the month when both dates share it. */
+export function formatDateRange(startISO: string, endISO: string): string {
+	const locale = getLocale();
+
+	const start = new Date(startISO);
+	const end = new Date(endISO);
+	const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+
+	const startFmt = new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric' }).format(start);
+
+	const endFmt = new Intl.DateTimeFormat(locale, sameMonth
+		? { day: 'numeric', year: 'numeric' } : { month: 'short', day: 'numeric', year: 'numeric' }
+	).format(end);
+
+	return `${startFmt} – ${endFmt}`;
 }

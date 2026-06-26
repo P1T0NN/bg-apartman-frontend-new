@@ -7,6 +7,9 @@ import type { FilterKey, SearchState } from './types';
 // `?location=Belgrade` stays clean until a real filter is chosen.
 const keymap = {
 	location: parseAsString.withDefault(''),
+	// Google place id of the picked region (a city or a country). Search keeps listings whose
+	// merged city+country `placeId` contains it. Set only when a place is selected.
+	placeId: parseAsString.withDefault(''),
 	checkIn: parseAsString,
 	checkOut: parseAsString,
 	bedrooms: parseAsString.withDefault('any'),
@@ -27,12 +30,28 @@ export const FILTER_DEFS = [
 
 export const FILTER_OPTIONS = ['any', '1', '2', '3', '4+'] as const;
 
-/** Minimum-match: 'any' passes everything; '4+' / '2' mean ">= that number". */
-export function atLeast(value: number, filter: string): boolean {
-	if (filter === 'any') return true;
+/** Parse a count filter for the query: 'any'/'' → undefined, '4+' → 4, '2' → 2. */
+export function parseCount(filter: string | null | undefined): number | undefined {
+	if (!filter || filter === 'any') return undefined;
 	const min = Number.parseInt(filter, 10); // '4+' -> 4
-	return Number.isNaN(min) || value >= min;
+	return Number.isNaN(min) ? undefined : min;
 }
+
+/**
+ * Everything a search needs, decoded from the URL — the shape the Convex query accepts. It keeps
+ * listings whose merged `placeId` contains the picked region's `placeId`, plus the count minimums,
+ * and (later) drops apartments with a booking overlapping [checkIn, checkOut). `location` is the
+ * display label only.
+ */
+export type AccommodationSearchParams = {
+	placeId?: string;
+	location?: string;
+	checkIn?: string;
+	checkOut?: string;
+	bedrooms?: number;
+	bathrooms?: number;
+	guests?: number;
+};
 
 /** Active (non-'any') filters as removable chips. Read inside a $derived to stay reactive. */
 export function activeFilters(search: SearchState) {

@@ -4,7 +4,7 @@
 
 	// UTILS
 	import { cn } from '@/shared/utils/utils.js';
-	import { formatCurrency } from '@/features/bookings/utils/bookingsPresentation';
+	import { formatCurrency } from '@/shared/utils/formatters';
 
 	// LUCIDE ICONS
 	import InboxIcon from '@lucide/svelte/icons/inbox';
