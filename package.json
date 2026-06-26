@@ -17,7 +17,7 @@
 		"optimize-images": "bun scripts/optimize-images.mjs"
 	},
 	"devDependencies": {
-		"@eslint/compat": "^1.4.0",
+		"@eslint/compat": "^2.1.0",
 		"@eslint/js": "^9.39.1",
 		"@inlang/paraglide-js": "^2.19.0",
 		"@internationalized/date": "^3.12.0",
