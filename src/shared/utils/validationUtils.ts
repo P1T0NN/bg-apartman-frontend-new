@@ -27,36 +27,25 @@ export function zodIssuesToFieldErrors<T extends string>(
 }
 
 /**
- * Clear one field’s validation error (immutable snapshot). Prefer {@link clearFieldErrorOn} for bindings.
+ * Coerce a form value into a number. `convex-mutation-form` submits the *raw*
+ * field values, and every `<input>` (even `type="number"`) yields a **string** —
+ * so numeric fields arrive here as strings (`""` when blank).
  */
-export function clearZodFieldError<T extends string>(
-	fieldErrors: FieldErrors<T>,
-	key: T
-): FieldErrors<T> {
-	if (!(key in fieldErrors)) return fieldErrors;
-	const next = { ...fieldErrors };
-	delete next[key];
-	return next;
-}
-
-/** Any reactive object exposing `fieldErrors` (e.g. booking / contact section stores). */
-export type FieldErrorsContext<T extends string = string> = {
-	fieldErrors: FieldErrors<T>;
+export const num = (value: string | undefined, fallback = 0): number => {
+	if (value === undefined || value.trim() === '') return fallback;
+	const n = Number(value);
+	return Number.isFinite(n) ? n : fallback;
 };
 
-/**
- * Returns a handler suitable for `oninput` / `onchange`: clears validation for `key` on `context.fieldErrors`.
- *
- * @example
- * ```svelte
- * oninput={clearFieldErrorOn(contactSectionClass, 'name')}
- * ```
- */
-export function clearFieldErrorOn<T extends string>(
-	context: FieldErrorsContext<T>,
-	key: T
-): () => void {
-	return () => {
-		context.fieldErrors = clearZodFieldError(context.fieldErrors, key);
-	};
-}
+/** Optional numeric: blank → `undefined` (so the column stays unset). */
+export const optNum = (value: string | undefined): number | undefined => {
+	if (value === undefined || value.trim() === '') return undefined;
+	const n = Number(value);
+	return Number.isFinite(n) ? n : undefined;
+};
+
+/** Empty string → `undefined`, so optional text columns aren't stored as `""`. */
+export const optStr = (value: string | undefined): string | undefined => {
+	const trimmed = value?.trim();
+	return trimmed ? trimmed : undefined;
+};

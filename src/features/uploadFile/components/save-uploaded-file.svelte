@@ -13,10 +13,10 @@
 
 	// UTILS
 	import { optimizeImages } from '@/features/uploadFile/utils/optimizeImages';
-	import { uploadFileToR2, uploadFileToConvexStorage } from '@/shared/utils/convexHelpers';
+	import { uploadFileToR2, uploadFileToConvexStorage } from '@/utils/convexHelpers';
 
 	// CONFIG
-	import { FEATURES } from '@/convex/projectSettings';
+	import { FEATURES } from '@/shared/config.js';
 
 	type Props = {
 		file: File | null;

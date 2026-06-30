@@ -2,8 +2,11 @@
 import { v, type Infer } from 'convex/values';
 
 // UTILS
-import { authMutation } from '@/convex/auth/middleware/authMiddleware';
-import { num, optNum, optStr } from '@/convex/utils/convexValidationUtils';
+import { authMutation, adminMutation } from '@/convex/auth/middleware/authMiddleware';
+import { authComponent } from '@/convex/auth/auth';
+import { sendAccommodationPublishedEmail } from '@/convex/email/sendAccommodationPublishedEmail';
+import { sendAccommodationSuspendedEmail } from '@/convex/email/sendAccommodationSuspendedEmail';
+import { num, optNum, optStr } from '@/shared/utils/validationUtils';
 import { r2PublicUrl } from '@/convex/storage/r2/r2';
 
 // HELPERS
@@ -16,11 +19,11 @@ import {
 	apartmentImage,
 	paymentMethod
 } from '../schemas/accommodationsSchemas';
-import { createResult, type CreateResult } from '@/convex/schemas/schemas';
+import { mutationResult, type MutationResult } from '@/convex/schemas/schemas';
 
 type ApartmentImage = Infer<typeof apartmentImage>;
 
-const forbiddenResult = (): CreateResult => ({
+const forbiddenResult = (): MutationResult => ({
 	success: false,
 	message: { key: 'GenericMessages.FORBIDDEN' }
 });
@@ -93,8 +96,8 @@ export const updateApartment = authMutation('updateApartment')({
 		keepImageKeys: v.optional(v.array(v.string())),
 		photos: v.optional(v.array(v.string()))
 	},
-	returns: createResult,
-	handler: async (ctx, args): Promise<CreateResult> => {
+	returns: mutationResult,
+	handler: async (ctx, args): Promise<MutationResult> => {
 		const apartment = await ctx.db.get(args.id);
 		if (!apartment || apartment.hostId !== ctx.userId) return forbiddenResult();
 
@@ -185,12 +188,58 @@ export const setApartmentStatus = authMutation('setApartmentStatus')({
 		id: v.id('apartments'),
 		status: v.union(v.literal('archived'), v.literal('pending_review'))
 	},
-	returns: createResult,
-	handler: async (ctx, args): Promise<CreateResult> => {
+	returns: mutationResult,
+	handler: async (ctx, args): Promise<MutationResult> => {
 		const apartment = await ctx.db.get(args.id);
 		if (!apartment || apartment.hostId !== ctx.userId) return forbiddenResult();
 
 		await ctx.db.patch(args.id, { status: args.status, updatedAt: Date.now() });
+
+		return { success: true, message: { key: 'GenericMessages.ACCOMMODATION_STATUS_UPDATED' } };
+	}
+});
+
+/**
+ * Admin moderation: publish or suspend a listing. Hosts cannot set these statuses
+ * themselves — see {@link setApartmentStatus}.
+ */
+export const moderateApartmentStatus = adminMutation('moderateApartmentStatus')({
+	args: {
+		id: v.id('apartments'),
+		status: v.union(v.literal('published'), v.literal('suspended')),
+		locale: v.optional(v.string())
+	},
+	returns: mutationResult,
+	handler: async (ctx, args): Promise<MutationResult> => {
+		const apartment = await ctx.db.get(args.id);
+		if (!apartment) {
+			return { success: false, message: { key: 'GenericMessages.FORBIDDEN' } };
+		}
+
+		await ctx.db.patch(args.id, { status: args.status, updatedAt: Date.now() });
+
+		const host = await authComponent.getAnyUserById(ctx, apartment.hostId);
+
+		const hostEmail = host?.email?.trim();
+		if (!hostEmail) {
+			return { success: true, message: { key: 'GenericMessages.ACCOMMODATION_STATUS_UPDATED' } };
+		}
+
+		const locale = args.locale ?? 'en';
+		const hostName = host?.name?.trim() || 'Host';
+		const emailInput = {
+			locale,
+			apartmentId: args.id,
+			hostName,
+			hostEmail,
+			apartmentTitle: apartment.title
+		};
+
+		if (args.status === 'published') {
+			await sendAccommodationPublishedEmail(ctx, { ...emailInput, city: apartment.city });
+		} else {
+			await sendAccommodationSuspendedEmail(ctx, emailInput);
+		}
 
 		return { success: true, message: { key: 'GenericMessages.ACCOMMODATION_STATUS_UPDATED' } };
 	}

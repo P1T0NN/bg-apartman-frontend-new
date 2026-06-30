@@ -1,5 +1,5 @@
 // CONFIG
-import { FEATURES } from '@/convex/projectSettings';
+import { FEATURES } from '@/shared/config.js';
 import { internal } from '@/convex/_generated/api';
 
 // UTILS

@@ -4,19 +4,19 @@
 	import { localizeHref } from '@/shared/lib/paraglide/runtime';
 
 	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
 
 	// COMPONENTS
 	import { Button } from '@/shared/components/ui/button/index.js';
 
 	// UTILS
 	import { effectiveNightlyPrice } from '@/shared/features/pricing/utils/calculatePrice';
-	import { formatCurrency } from '@/shared/utils/formatters';
+	import { formatCurrency } from '@/utils/formatters';
 
 	// TYPES
-	import type { AccommodationDetail } from '@/features/accommodations/data/accommodationDummyData';
+	import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
 
-	let { accommodation }: { accommodation: AccommodationDetail } = $props();
+	let { accommodation }: { accommodation: typesAccommodationEnriched } = $props();
 
 	const nightly = $derived(effectiveNightlyPrice(accommodation));
 	const bookHref = $derived(

@@ -9,7 +9,7 @@ import { requireAdmin } from '@/convex/auth/middleware/authMiddleware';
 
 // TYPES
 import type { QueryCtx } from '@/convex/_generated/server';
-import type { ConvexErrorPayload } from '@/convex/types/convexTypes';
+import type { ConvexErrorPayload } from '@/shared/types/types';
 
 /**
  * Stable event-name constants for product code. The library is the analytics

@@ -17,11 +17,11 @@
 	import FavoritesPageEmpty from '@/shared/components/pages/(protected)/guest/favorites/empty/favorites-page-empty.svelte';
 
 	// UTILS
-	import { formatPlaces } from '@/shared/utils/formatters';
+	import { formatPlaces } from '@/utils/formatters';
 
 	// TYPES
 	import type { Id } from '@/convex/_generated/dataModel';
-	import type { SearchListing } from '@/features/accommodations/types/searchListing';
+	import type { SearchListing } from '@/shared/features/accommodation/types/accommodationTypes';
 
 	// This page reads the favorites set directly (no heart mounts first), so hydrate here too.
 	// Idempotent + client-only — a no-op if a card already triggered it.
@@ -39,10 +39,10 @@
 	noIndex
 />
 
-<section class="mx-auto w-full max-w-6xl flex-1 px-4 py-6 md:px-6 md:py-8">
-	<header class="mb-6">
-		<h1 class="text-2xl font-semibold tracking-tight">{m['FavoritesPage.title']()}</h1>
-		<p class="mt-1 text-sm text-muted-foreground">
+<section class="flex w-full flex-col gap-6 p-4 md:p-6">
+	<header class="flex flex-col gap-1 border-b pb-5">
+		<h1 class="text-2xl font-semibold tracking-tight md:text-3xl">{m['FavoritesPage.title']()}</h1>
+		<p class="max-w-2xl text-sm leading-relaxed text-muted-foreground">
 			{#if hasSavedIds}
 				{m['FavoritesPage.savedPlacesSubtitle']({ places: formatPlaces(favoriteIds.length) })}
 			{:else}

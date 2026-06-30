@@ -8,7 +8,7 @@ import { convexRateLimiter } from '@/convex/convexRateLimiter';
 // TYPES
 import type { ActionCtx, MutationCtx } from '@/convex/_generated/server';
 import type { ConvexRateLimitName } from '@/convex/rateLimits/registry';
-import type { ConvexErrorPayload } from '@/convex/types/convexTypes';
+import type { ConvexErrorPayload } from '@/shared/types/types';
 
 /**
  * Assert auth AND charge {@link convexRateLimiter} in one call. Bucket is keyed by

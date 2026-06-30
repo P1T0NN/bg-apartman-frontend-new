@@ -13,7 +13,7 @@ import { convexRateLimiter } from '../convexRateLimiter.js';
 
 // TYPES
 import type { QueryCtx } from '../_generated/server';
-import type { ConvexErrorPayload } from '../types/convexTypes.js';
+import type { ConvexErrorPayload } from '@/shared/types/types.js';
 import type { ConvexRateLimitName } from '../rateLimits/registry.js';
 import type { DataModel, Doc, TableNames } from '../_generated/dataModel';
 import type {

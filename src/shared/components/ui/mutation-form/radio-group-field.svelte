@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { RadioGroup } from 'bits-ui';
 	import CircleIcon from '@lucide/svelte/icons/circle';
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 	import { Field, FieldLabel } from '@/shared/components/ui/field/index.js';
 	import type { MutationFormFieldDef } from './types.js';
 

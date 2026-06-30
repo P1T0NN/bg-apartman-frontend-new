@@ -7,7 +7,7 @@ import { emailOTPClient } from 'better-auth/client/plugins';
 import { toast } from 'svelte-sonner';
 
 // UTILS
-import { rateLimitMessage } from '@/shared/utils/rateLimitMessages';
+import { rateLimitMessage } from '@/utils/rateLimitMessages';
 
 // All admin actions (delete/ban/unban/role-change/session-revoke) go through
 // Convex mutations in `src/convex/tables/users/userMutations.ts`, so the BA

@@ -7,16 +7,11 @@
 	import { useAuth } from '@mmailaender/convex-better-auth-svelte/svelte';
 
 	// CONFIG
-	import { COMPANY_DATA, PROTECTED_PAGE_ENDPOINTS } from '@/shared/constants.js';
-
+	import { COMPANY_DATA } from '@/shared/constants.js';
+	import { PROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
+	
 	// CLASSES
-	import {
-		isNavItemActive,
-		normalHeader,
-		navItems,
-		navLinkActiveClass,
-		navLinkClass
-	} from './normal-header.svelte.ts';
+	import { normalHeader, navItems, navLinkActiveClass, navLinkClass } from './normal-header.svelte.ts';
 
 	// COMPONENTS
 	import { buttonVariants } from '@/shared/components/ui/button/button.svelte';
@@ -32,7 +27,8 @@
 	import { m } from '@/shared/lib/paraglide/messages';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
+	import { isNavItemActive } from '@/utils/isNavItemActive.js';
 
 	// TYPES
 	import type { ClassValue } from 'clsx';

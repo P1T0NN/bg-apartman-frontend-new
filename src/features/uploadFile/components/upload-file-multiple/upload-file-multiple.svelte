@@ -4,7 +4,7 @@
 	import UploadFileMultipleList from './upload-file-multiple-list.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 	import { useFileUpload } from '../../utils/useFileUpload.svelte';
 
 	type Props = {

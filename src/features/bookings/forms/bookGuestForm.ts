@@ -1,6 +1,3 @@
-// DATA
-import { PAYMENT_METHOD_OPTIONS } from '@/features/bookings/data/paymentMethods';
-
 // TYPES
 import type { MutationFormSection } from '@/shared/components/ui/mutation-form/types';
 
@@ -51,20 +48,6 @@ export const bookGuestForm: MutationFormSection[] = [
 				placeholder: 'Arrival time, special requests, anything the host should know…',
 				description: 'Optional',
 				rows: 4
-			}
-		]
-	},
-	{
-		id: 'payment',
-		title: 'Payment',
-		plain: true,
-		fields: [
-			{
-				id: 'paymentMethod',
-				label: 'Payment method',
-				kind: 'radio',
-				options: PAYMENT_METHOD_OPTIONS,
-				description: 'Choose how you’ll pay for your stay.'
 			}
 		]
 	}

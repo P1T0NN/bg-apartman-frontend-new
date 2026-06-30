@@ -8,13 +8,13 @@
 	import SearchFiltersEmpty from '../empty/search-filters-empty.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 	import { infiniteScroll } from '@/shared/components/ui/infinite-scroll/infinite-scroll.svelte.js';
 
 	// TYPES
 	import type { Id } from '@/convex/_generated/dataModel';
 	import type { GoogleMapHandle } from '@/shared/components/ui/google-map/types';
-	import type { SearchListing } from '@/features/accommodations/types/searchListing';
+	import type { SearchListing } from '@/shared/features/accommodation/types/accommodationTypes';
 	import type { SearchState } from '../types';
 
 	let {

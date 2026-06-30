@@ -3,7 +3,7 @@
 	import { m } from '@/shared/lib/paraglide/messages';
 
 	// CONFIG
-	import { ADMIN_PAGE_ENDPOINTS } from '@/shared/constants.js';
+	import { ADMIN_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
 
 	// COMPONENTS
 	import UserDangerZoneItem from './user-danger-zone-item.svelte';

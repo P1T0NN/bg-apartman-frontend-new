@@ -7,7 +7,7 @@
 	import { Button } from '@/shared/components/ui/button/index.js';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 
 	// LUCIDE ICONS
 	import CheckIcon from '@lucide/svelte/icons/check';

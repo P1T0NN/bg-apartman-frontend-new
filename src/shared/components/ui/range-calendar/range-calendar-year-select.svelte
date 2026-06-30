@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { RangeCalendar as RangeCalendarPrimitive } from "bits-ui";
-	import { cn, type WithoutChildrenOrChild } from "@/shared/utils/utils.js";
+	import { cn, type WithoutChildrenOrChild } from "@/utils/utils.js";
 	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
 
 	let {

@@ -2,7 +2,7 @@
 import { Resend as ResendAPI } from 'resend';
 
 // CONFIG
-import { CONVEX_PROJECT_SETTINGS } from '../../projectSettings';
+import { COMPANY_DATA } from '@/shared/constants.js';
 
 type OtpType = 'sign-in' | 'email-verification' | 'forget-password' | 'change-email';
 
@@ -20,14 +20,14 @@ export async function sendVerificationOTP({
 	const resend = new ResendAPI(apiKey);
 
 	const subjects: Record<OtpType, string> = {
-		'sign-in': `Sign in to ${CONVEX_PROJECT_SETTINGS.NAME}`,
-		'email-verification': `Verify your email for ${CONVEX_PROJECT_SETTINGS.NAME}`,
-		'forget-password': `Reset your ${CONVEX_PROJECT_SETTINGS.NAME} password`,
-		'change-email': `Confirm your new email for ${CONVEX_PROJECT_SETTINGS.NAME}`
+		'sign-in': `Sign in to ${COMPANY_DATA.NAME}`,
+		'email-verification': `Verify your email for ${COMPANY_DATA.NAME}`,
+		'forget-password': `Reset your ${COMPANY_DATA.NAME} password`,
+		'change-email': `Confirm your new email for ${COMPANY_DATA.NAME}`
 	};
 
 	const { error } = await resend.emails.send({
-		from: `${CONVEX_PROJECT_SETTINGS.NAME} <${CONVEX_PROJECT_SETTINGS.RESEND_EMAIL}>`,
+		from: `${COMPANY_DATA.NAME} <${COMPANY_DATA.RESEND_EMAIL}>`,
 		to: [email],
 		subject: subjects[type],
 		text: `Your code is ${otp}`

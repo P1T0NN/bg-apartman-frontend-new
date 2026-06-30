@@ -3,7 +3,7 @@
 	import { m } from '@/shared/lib/paraglide/messages';
 
 	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
 
 	// COMPONENTS
 	import { Button } from '@/shared/components/ui/button/index.js';
@@ -22,7 +22,7 @@
 	import Link from '@/shared/components/ui/link/link.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 
 	// TYPES
 	import type { SignUpFormWithImageProps } from './signUpFormTypes.js';

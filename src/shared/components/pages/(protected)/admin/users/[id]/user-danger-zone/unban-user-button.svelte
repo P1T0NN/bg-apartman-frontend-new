@@ -8,8 +8,8 @@
 	import { Button } from '@/shared/components/ui/button/index.js';
 
 	// UTILS
-	import { safeMutation } from '@/shared/utils/convexHelpers';
-	import { toastResult } from '@/shared/utils/toastResult';
+	import { safeMutation } from '@/utils/convexHelpers';
+	import { toastResult } from '@/utils/toastResult';
 
 	/**
 	 * Self-contained "Unban" button. Calls the `unbanUser` Convex mutation. No

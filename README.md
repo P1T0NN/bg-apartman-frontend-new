@@ -56,9 +56,9 @@ Production-leaning starter combining:
 
 ## Customizing
 
-- **Branding** — edit `src/convex/projectSettings.ts` (company name, contact email, sender domain).
+- **Branding** — edit `COMPANY_DATA` in `src/shared/constants.ts`.
 - **Roles** — `role` is an `additionalField` on the BA `user` table (`src/convex/auth.ts`). Default `'user'`. Promote to `'admin'` via Convex dashboard or a server-only mutation. `requireAdmin` (`src/convex/auth/helpers/requireAdmin.ts`) gates admin endpoints.
-- **Feature flags** — `src/convex/features.ts` (e.g. enable audit logging).
+- **Feature flags** — `FEATURES` in `src/shared/config.ts` (e.g. enable audit logging, R2 uploads).
 
 ## Regenerating the Better Auth schema
 

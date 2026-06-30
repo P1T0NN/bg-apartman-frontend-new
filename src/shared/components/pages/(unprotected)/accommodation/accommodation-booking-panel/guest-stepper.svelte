@@ -1,10 +1,13 @@
 <script lang="ts">
+	// LIBRARIES
+	import { m } from '@/shared/lib/paraglide/messages';
+
 	// COMPONENTS
 	import { Separator } from '@/shared/components/ui/separator/index.js';
 	import { NumberStepper } from '@/shared/components/ui/increment-decrement-component/index.js';
 
 	// UTILS
-	import { formatMaxGuestsAllowed } from '@/shared/utils/formatters';
+	import { formatMaxGuestsAllowed } from '@/utils/formatters';
 
 	let {
 		maxGuests,
@@ -21,23 +24,25 @@
 
 <div class="space-y-4">
 	<NumberStepper
-		label="Adults"
-		hint="Age 13+"
+		label={m['BookAccommodationPage.GuestStepper.adults']()}
+		hint={m['BookAccommodationPage.GuestStepper.age13']()}
 		bind:value={adults}
 		min={1}
 		incrementDisabled={totalGuests >= maxGuests}
-		decrementLabel="Decrease adults"
-		incrementLabel="Increase adults"
+		decrementLabel={m['BookAccommodationPage.GuestStepper.decreaseAdults']()}
+		incrementLabel={m['BookAccommodationPage.GuestStepper.increaseAdults']()}
 	/>
+
 	<Separator />
+	
 	<NumberStepper
-		label="Children"
-		hint="Ages 2–12"
+		label={m['BookAccommodationPage.GuestStepper.children']()}
+		hint={m['BookAccommodationPage.GuestStepper.ages212']()}
 		bind:value={children}
 		min={0}
 		incrementDisabled={totalGuests >= maxGuests}
-		decrementLabel="Decrease children"
-		incrementLabel="Increase children"
+		decrementLabel={m['BookAccommodationPage.GuestStepper.decreaseChildren']()}
+		incrementLabel={m['BookAccommodationPage.GuestStepper.increaseChildren']()}
 	/>
 	<p class="text-xs text-muted-foreground">
 		{formatMaxGuestsAllowed(maxGuests)}

@@ -3,7 +3,7 @@ import { effectiveNightlyPrice } from '@/shared/features/pricing/utils/calculate
 
 // TYPES
 import type { Doc } from '@/convex/_generated/dataModel';
-import type { SearchListing } from '@/features/accommodations/types/searchListing';
+import type { SearchListing } from '@/shared/features/accommodation/types/accommodationTypes';
 
 /**
  * Map a published apartment row to the lean search card/marker shape.

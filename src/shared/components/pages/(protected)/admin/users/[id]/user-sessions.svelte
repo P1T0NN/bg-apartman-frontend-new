@@ -14,16 +14,16 @@
 	import { authClass } from '@/features/auth/classes/authClass.svelte';
 
 	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants.js';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
 
 	// COMPONENTS
 	import { Button } from '@/shared/components/ui/button/index.js';
 	import { Skeleton } from '@/shared/components/ui/skeleton/index.js';
 
 	// UTILS
-	import { safeMutation } from '@/shared/utils/convexHelpers';
-	import { toastResult } from '@/shared/utils/toastResult';
-	import { formatTs } from '@/shared/utils/dateUtils';
+	import { safeMutation } from '@/utils/convexHelpers';
+	import { toastResult } from '@/utils/toastResult';
+	import { formatTs } from '@/utils/formatters';
 
 	// TYPES
 	import type { Doc } from '@/convex/auth/component/_generated/dataModel';

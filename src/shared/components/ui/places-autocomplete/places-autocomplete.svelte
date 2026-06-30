@@ -16,7 +16,7 @@
 	import Spinner from '../spinner/spinner.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 
 	// LUCIDE ICONS
 	import SearchIcon from '@lucide/svelte/icons/search';

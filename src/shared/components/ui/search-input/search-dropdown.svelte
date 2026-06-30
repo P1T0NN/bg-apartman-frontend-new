@@ -7,7 +7,7 @@
 	import SearchEmpty from './search-empty.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 
 	// TYPES
 	import type { SearchDropdownProps } from './types.js';

@@ -1,6 +1,6 @@
 <script lang="ts">
 	// CONFIG
-	import { PROTECTED_PAGE_ENDPOINTS, UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants.js';
+	import { PROTECTED_PAGE_ENDPOINTS, UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
 
 	// COMPONENTS
 	import * as Sidebar from '@/shared/components/ui/sidebar/index.js';

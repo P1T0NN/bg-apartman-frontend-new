@@ -3,8 +3,8 @@
 	import { localizeHref } from '@/shared/lib/paraglide/runtime';
 
 	// UTILS
-	import { shouldSkipLocalePrefix } from '@/shared/utils/paraglideHref';
-	import { cn, type WithElementRef } from '@/shared/utils/utils.js';
+	import { shouldSkipLocalePrefix } from '@/utils/paraglideHref';
+	import { cn, type WithElementRef } from '@/utils/utils.js';
 
 	// TYPES
 	import type { HTMLAnchorAttributes } from 'svelte/elements';

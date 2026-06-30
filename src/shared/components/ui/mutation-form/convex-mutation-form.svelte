@@ -6,7 +6,7 @@
 	import type { ZodType } from 'zod';
 
 	// CONFIG
-	import { FEATURES } from '@/convex/projectSettings';
+	import { FEATURES } from '@/shared/config.js';
 
 	// COMPONENTS
 	import MutationForm from './mutation-form.svelte';
@@ -16,8 +16,8 @@
 		safeMutation,
 		uploadFileToConvexStorage,
 		uploadFileToR2
-	} from '@/shared/utils/convexHelpers';
-	import { translateFromBackend } from '@/shared/utils/translateFromBackend';
+	} from '@/utils/convexHelpers';
+	import { translateFromBackend } from '@/utils/translateFromBackend';
 	import { processUploadFields } from './utils.js';
 
 	// TYPES
@@ -47,6 +47,7 @@
 		values = $bindable(),
 		initialValues,
 		runFunction,
+		mapArgs,
 		schema,
 		onSuccess,
 		submitLabel = 'Submit',
@@ -68,8 +69,14 @@
 		values: T;
 		initialValues?: T;
 		runFunction: ConvexFormMutation;
+		/** Build the mutation payload from the validated values — inject server context (ids,
+		    counts) and rename to the mutation's arg names. Defaults to sending the values as-is.
+		    `args` is the auto-built `{...values}` after any upload fields have been resolved. */
+		mapArgs?: (values: T, args: Record<string, unknown>) => Record<string, unknown>;
 		schema: ZodType<T>;
-		onSuccess?: (values: T) => void;
+		/** Runs after a successful mutation with the mutation's returned `data` (e.g. to redirect
+		    with a returned id). Unlike MutationForm's own `onSuccess`, this sees the result. */
+		onSuccess?: (data: unknown, values: T) => void | Promise<void>;
 		submitLabel?: string;
 		resetOnSuccess?: boolean;
 		customFields?: MutationFormCustomFields<T>;
@@ -107,10 +114,12 @@
 		});
 	};
 
-	const submitMutation: MutationFormSubmitHandler<T> = async (args) => {
+	const submitMutation: MutationFormSubmitHandler<T> = async (args, values) => {
+		const payload = mapArgs ? mapArgs(values, args) : args;
+
 		let result: Awaited<ReturnType<typeof safeMutation>>;
 		try {
-			result = await safeMutation(convex, runFunction, args);
+			result = await safeMutation(convex, runFunction, payload);
 		} catch (error) {
 			console.error('[convex-mutation-form] submitMutation failed:', error);
 			toast.error(m['GenericMessages.UNEXPECTED_ERROR']());
@@ -126,6 +135,9 @@
 		}
 
 		toast.success(translateFromBackend(result.message));
+		// Fire the result-aware hook here, where the mutation result is in scope (MutationForm's
+		// own `onSuccess` only gets the values, so a redirect-by-returned-id can't go through it).
+		await onSuccess?.((result as { data?: unknown }).data, values);
 		return true;
 	};
 </script>
@@ -138,7 +150,6 @@
 	onSubmit={submitMutation}
 	prepareSubmit={prepareUploads}
 	{schema}
-	{onSuccess}
 	{submitLabel}
 	{resetOnSuccess}
 	{customFields}

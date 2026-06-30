@@ -6,7 +6,7 @@
 
 	// TYPES
 	import type { Component } from 'svelte';
-	import type { AccommodationDetail } from '@/features/accommodations/data/accommodationDummyData';
+	import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
 
 	// LUCIDE ICONS
 	import ZapIcon from '@lucide/svelte/icons/zap';
@@ -15,7 +15,7 @@
 	import DogIcon from '@lucide/svelte/icons/dog';
 	import CarIcon from '@lucide/svelte/icons/car';
 
-	let { accommodation }: { accommodation: AccommodationDetail } = $props();
+	let { accommodation }: { accommodation: typesAccommodationEnriched } = $props();
 
 	let expanded = $state(false);
 

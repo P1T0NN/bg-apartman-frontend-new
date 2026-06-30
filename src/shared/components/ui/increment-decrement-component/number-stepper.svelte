@@ -1,4 +1,7 @@
 <script lang="ts">
+	// LIBRARIES
+	import { m } from '@/shared/lib/paraglide/messages';
+
 	// COMPONENTS
 	import { Button } from '@/shared/components/ui/button/index.js';
 
@@ -67,7 +70,7 @@
 			class="rounded-full"
 			disabled={!canDecrement}
 			onclick={decrement}
-			aria-label={decrementLabel ?? (label ? `Decrease ${label}` : 'Decrease')}
+			aria-label={decrementLabel ?? m['NumberStepper.decrease']({ label: label ?? '' })}
 		>
 			<MinusIcon />
 		</Button>
@@ -80,7 +83,7 @@
 			class="rounded-full"
 			disabled={!canIncrement}
 			onclick={increment}
-			aria-label={incrementLabel ?? (label ? `Increase ${label}` : 'Increase')}
+			aria-label={incrementLabel ?? m['NumberStepper.increase']({ label: label ?? '' })}
 		>
 			<PlusIcon />
 		</Button>

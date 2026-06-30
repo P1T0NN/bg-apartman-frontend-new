@@ -20,7 +20,7 @@ const schema = defineSchema({
 	// access via `authComponent.getAuthUser(ctx)`. Foreign-key columns below store the
 	// better-auth user id as a plain string.
 
-	// Audit logs — toggle population via FEATURES.AUDIT_LOGS in projectSettings.ts.
+	// Audit logs — toggle population via FEATURES.AUDIT_LOGS in shared/config.ts.
 	// The table itself is always declared so flipping the flag needs no migration.
 	auditLogs: auditLogTable,
 
@@ -74,7 +74,7 @@ const schema = defineSchema({
 		coordinates: v.optional(coordinates),
 		// IANA zone resolved from the pin (e.g. 'Europe/Belgrade'). The availability
 		// calendar runs in this zone, not the viewer's. Optional for rows created before
-		// resolution existed — readers fall back to DEFAULT_TIME_ZONE.
+		// resolution existed — readers fall back to DEFAULT_TIME_ZONE in shared/config.ts.
 		timeZone: v.optional(v.string()),
 
 		// === CAPACITY ===
@@ -188,8 +188,10 @@ const schema = defineSchema({
 
 		// === TIMESTAMPS ===
 		updatedAt: v.number(),
+		/** Pending requests only — host must respond before this (now + 48h at creation). */
+		pendingExpiresAt: v.optional(v.number()),
 		cancelledAt: v.optional(v.number()),
-		cancelledBy: v.optional(v.union(v.literal('guest'), v.literal('host'))),
+		cancelledBy: v.optional(v.union(v.literal('guest'), v.literal('host'), v.literal('system'))),
 		cancelReason: v.optional(v.string()),
 		archivedAt: v.optional(v.number())
 	})

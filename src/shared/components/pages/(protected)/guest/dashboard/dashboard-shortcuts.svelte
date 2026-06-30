@@ -3,7 +3,7 @@
 	import { localizeHref } from '@/shared/lib/paraglide/runtime.js';
 
 	// CONFIG
-	import { PROTECTED_PAGE_ENDPOINTS } from '@/shared/constants.js';
+	import { PROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
 
 	// COMPONENTS
 	import * as Card from '@/shared/components/ui/card/index.js';

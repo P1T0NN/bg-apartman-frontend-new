@@ -1,6 +1,6 @@
 <script lang="ts">
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 
 	// TYPES
 	import type { MutationFormFieldDef } from './types.js';

@@ -8,7 +8,7 @@ import { query } from '@/convex/_generated/server';
 import { apartmentToSearchListing } from '../utils/apartmentToSearchListing';
 
 // TYPES
-import type { SearchListing } from '@/features/accommodations/types/searchListing';
+import type { SearchListing } from '@/shared/features/accommodation/types/accommodationTypes';
 
 // Upper bound on rows scanned/returned. The search UI loads the whole set at once (the map
 // shows every marker; the list paginates client-side), so we cap reads here.

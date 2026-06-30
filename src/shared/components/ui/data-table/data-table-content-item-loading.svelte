@@ -5,7 +5,7 @@
 	import { Card } from '@/shared/components/ui/card/index.js';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 	import { breakpointTableClass } from './dataTableUtils.js';
 
 	// TYPES

@@ -3,7 +3,7 @@
 	import { m } from '@/shared/lib/paraglide/messages';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 
 	let {
 		enabled,

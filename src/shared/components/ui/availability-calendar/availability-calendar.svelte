@@ -1,4 +1,8 @@
 <script module lang="ts">
+	// LIBRARIES
+	import { m } from '@/shared/lib/paraglide/messages';
+
+	// TYPES
 	import type { DateValue as CalendarDateValue } from '@internationalized/date';
 	import type { DateRange } from 'bits-ui';
 	import type { Snippet } from 'svelte';
@@ -60,8 +64,8 @@
 	} from '@/shared/components/ui/range-calendar/index.js';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
-	import { formatDaysSelected, formatNights } from '@/shared/utils/formatters';
+	import { cn } from '@/utils/utils.js';
+	import { formatDaysSelected, formatNights } from '@/utils/formatters';
 
 	const defaultTimeZone = getLocalTimeZone();
 
@@ -72,7 +76,7 @@
 		allowToday = true,
 		minNights,
 		maxNights,
-		invalidSelectionMessage = 'That range includes booked dates. Pick dates that are free.',
+		invalidSelectionMessage = m['AvailabilityCalendar.invalidSelectionMessage'](),
 		onInvalidSelection,
 		onValueChange,
 		isDateDisabled,
@@ -82,7 +86,7 @@
 		locale = 'en',
 		numberOfMonths = 2,
 		minValue,
-		calendarLabel = 'Availability calendar',
+		calendarLabel = m['AvailabilityCalendar.calendarLabel'](),
 		class: className,
 		...restProps
 	}: AvailabilityCalendarProps = $props();
@@ -231,9 +235,9 @@
 
 		const nights = countNights(start, end);
 		if (minNights !== undefined && nights < minNights)
-			return `Minimum stay is ${formatNights(minNights)}.`;
+			return m['AvailabilityCalendar.minimumStay']({ nights: formatNights(minNights) });
 		if (maxNights !== undefined && nights > maxNights)
-			return `Maximum stay is ${formatNights(maxNights)}.`;
+			return m['AvailabilityCalendar.maximumStay']({ nights: formatNights(maxNights) });
 
 		return undefined;
 	}
@@ -269,30 +273,33 @@
 			minValue={calendarMinValue}
 			{locale}
 			{calendarLabel}
+			disableDaysOutsideMonth={true}
 			isDateDisabled={isCalendarDateDisabled}
 			isDateUnavailable={isCalendarDateUnavailable}
 			onValueChange={handleValueChange}
 			class={cn('rounded-xl border', className)}
 			{...restProps}
 		>
-			{#snippet day({ day: date }: { day: DateValue; outsideMonth: boolean })}
-				{@const status = getAvailabilityStatus(date)}
-				{@const booked = status === 'booked'}
-				{@const blocked = status === 'blocked'}
-				{@const todayCell = isToday(date)}
-				{@const todaySelectable = todayCell && allowToday && !status}
-				{@const todayUnavailable = todayCell && !allowToday && !status}
-				<RangeCalendarDay
-					data-availability-status={status}
-					class={cn(
-						'availability-calendar-day',
-						todaySelectable && 'font-semibold ring-1 ring-primary/50',
-						todayUnavailable && 'availability-calendar-day--today-unavailable',
-						blocked && 'availability-calendar-day--blocked',
-						booked && 'availability-calendar-day--booked',
-						todayCell && status && 'font-semibold ring-2 ring-primary'
-					)}
-				/>
+			{#snippet day({ day: date, outsideMonth }: { day: DateValue; outsideMonth: boolean })}
+				{#if !outsideMonth}
+					{@const status = getAvailabilityStatus(date)}
+					{@const booked = status === 'booked'}
+					{@const blocked = status === 'blocked'}
+					{@const todayCell = isToday(date)}
+					{@const todaySelectable = todayCell && allowToday && !status}
+					{@const todayUnavailable = todayCell && !allowToday && !status}
+					<RangeCalendarDay
+						data-availability-status={status}
+						class={cn(
+							'availability-calendar-day',
+							todaySelectable && 'font-semibold ring-1 ring-primary/50',
+							todayUnavailable && 'availability-calendar-day--today-unavailable',
+							blocked && 'availability-calendar-day--blocked',
+							booked && 'availability-calendar-day--booked',
+							todayCell && status && 'font-semibold ring-2 ring-primary'
+						)}
+					/>
+				{/if}
 			{/snippet}
 		</RangeCalendar>
 	</div>

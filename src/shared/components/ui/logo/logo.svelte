@@ -1,12 +1,13 @@
 <script lang="ts">
 	// CONFIG
-	import { COMPANY_DATA, UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants.js';
+	import { COMPANY_DATA } from '@/shared/constants.js';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
 
 	// COMPONENTS
 	import Link from '@/shared/components/ui/link/link.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 
 	// TYPES
 	import type { HTMLAnchorAttributes } from 'svelte/elements';

@@ -8,7 +8,7 @@ import { getTextDirection } from '@/shared/lib/paraglide/runtime';
 import { withServerConvexToken } from '@mmailaender/convex-svelte/sveltekit/server';
 
 // UTILS
-import { getSecurityHeaders, getHstsHeader } from '@/shared/utils/securityHeaders.js';
+import { getSecurityHeaders, getHstsHeader } from '@/utils/securityHeaders.js';
 
 // TYPES
 import type { Handle } from '@sveltejs/kit';

@@ -1,0 +1,96 @@
+{
+	"footer": {
+		"allRightsReserved": "All rights reserved."
+	},
+	"createBookingForGuest": {
+		"subjectConfirmed": "Your booking is confirmed · {code}",
+		"subjectPending": "We received your request · {code}",
+		"headingConfirmed": "Your stay is booked!",
+		"headingPending": "Request received",
+		"introConfirmed": "Hi {name}, you're all set for {title}. Here are your booking details.",
+		"introPending": "Hi {name}, we've sent your request for {title} to the host. We'll email you the moment it's confirmed.",
+		"confirmationCode": "Confirmation code",
+		"rowStay": "Stay",
+		"rowCheckIn": "Check-in",
+		"rowCheckOut": "Check-out",
+		"rowGuests": "Guests",
+		"rowTotal": "Total",
+		"guestsAdults": "{count} adults",
+		"guestsAdultsChildren": "{adults} adults · {children} children",
+		"cta": "View your reservation"
+	},
+	"createBookingForOwner": {
+		"subjectConfirmed": "New booking · {code}",
+		"subjectPending": "New booking request · {code}",
+		"headingConfirmed": "You have a new booking",
+		"headingPending": "New booking request",
+		"introConfirmed": "Hi {hostName}, {guestName} just booked {title}.",
+		"introPending": "Hi {hostName}, {guestName} requested to book {title}. Confirm or decline it from your reservations.",
+		"rowGuest": "Guest",
+		"rowContact": "Contact",
+		"rowStay": "Stay",
+		"rowCheckIn": "Check-in",
+		"rowCheckOut": "Check-out",
+		"rowGuests": "Guests",
+		"rowTotal": "Total",
+		"guestsAdults": "{count} adults",
+		"guestsAdultsChildren": "{adults} adults · {children} children",
+		"cta": "View booking"
+	},
+	"createAccommodation": {
+		"subjectLive": "Your listing is live · {title}",
+		"subjectPending": "Your listing was submitted · {title}",
+		"headingLive": "Your listing is live",
+		"headingReview": "Listing submitted for review",
+		"introLive": "Hi {name}, {title} is now published and guests can book it. You can edit it anytime.",
+		"introReview": "Hi {name}, thanks for listing {title}. We're reviewing it and will let you know as soon as it's live.",
+		"rowListing": "Listing",
+		"rowLocation": "Location",
+		"rowStatus": "Status",
+		"statusPublished": "Published",
+		"statusInReview": "In review",
+		"cta": "Manage your listing"
+	},
+	"accommodationPublished": {
+		"subject": "Your listing is now live · {title}",
+		"heading": "Your listing is approved",
+		"intro": "Hi {name}, {title} has been reviewed and is now live. Guests can book it right away.",
+		"rowListing": "Listing",
+		"rowLocation": "Location",
+		"rowStatus": "Status",
+		"statusPublished": "Published",
+		"cta": "View your listing"
+	},
+	"accommodationSuspended": {
+		"subject": "Your listing has been suspended · {title}",
+		"heading": "Your listing was suspended",
+		"intro": "Hi {name}, {title} has been suspended and is no longer visible to guests. If you think this is a mistake, reply to this email and we'll help.",
+		"rowListing": "Listing",
+		"rowStatus": "Status",
+		"statusSuspended": "Suspended",
+		"cta": "Manage your listing"
+	},
+	"bookingConfirmed": {
+		"subject": "Your booking is confirmed · {code}",
+		"heading": "Your booking is confirmed!",
+		"intro": "Hi {name}, good news — the host confirmed your booking for {title}. We can't wait to host you.",
+		"confirmationCode": "Confirmation code",
+		"rowStay": "Stay",
+		"rowCheckIn": "Check-in",
+		"rowCheckOut": "Check-out",
+		"rowGuests": "Guests",
+		"rowTotal": "Total",
+		"guestsAdults": "{count} adults",
+		"guestsAdultsChildren": "{adults} adults · {children} children",
+		"cta": "View your reservation"
+	},
+	"bookingCancelled": {
+		"subject": "Your booking was cancelled · {code}",
+		"heading": "Booking cancelled",
+		"intro": "Hi {name}, your booking for {title} ({code}) has been cancelled. If this wasn't expected, reply to this email and we'll help.",
+		"rowStay": "Stay",
+		"rowCheckIn": "Check-in",
+		"rowCheckOut": "Check-out",
+		"cta": "Browse other stays"
+	}
+}

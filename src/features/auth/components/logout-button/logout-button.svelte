@@ -8,7 +8,7 @@
 	import Spinner from '@/shared/components/ui/spinner/spinner.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 	import { useLogout } from './logout-button.svelte.js';
 
 	// TYPES

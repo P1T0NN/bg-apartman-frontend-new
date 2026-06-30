@@ -11,7 +11,7 @@ import { authMutation } from '../../auth/middleware/authMiddleware';
 
 // TYPES
 import type { DataModel } from '../../_generated/dataModel';
-import type { ConvexMutationResult } from '../../types/convexTypes.js';
+import type { ConvexMutationResult } from '@/shared/types/types.js';
 
 /**
  * R2 client bound to the registered component. All server-side R2 work (upload URL minting,

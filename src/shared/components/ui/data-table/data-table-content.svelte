@@ -22,7 +22,7 @@
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
 
 	// UTILS
-	import { cn, type WithElementRef } from '@/shared/utils/utils.js';
+	import { cn, type WithElementRef } from '@/utils/utils.js';
 	import { breakpointTableClass, defaultRowKey, showColumnInMobileCard } from './dataTableUtils.js';
 
 	// TYPES

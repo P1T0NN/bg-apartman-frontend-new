@@ -5,7 +5,7 @@
 	import SearchFiltersClearButton from './search-filters-clear-button.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 	import { FILTER_DEFS, FILTER_OPTIONS, setFilter } from '../search-state';
 	import type { FilterKey, SearchState } from '../types';
 

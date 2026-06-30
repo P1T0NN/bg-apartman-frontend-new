@@ -55,6 +55,7 @@
 		"@convex-dev/better-auth": "^0.12.1",
 		"@convex-dev/r2": "^0.10.1",
 		"@convex-dev/rate-limiter": "^0.3.2",
+		"@convex-dev/resend": "^0.2.5",
 		"@googlemaps/js-api-loader": "^2.1.1",
 		"@googlemaps/markerclusterer": "^2.6.2",
 		"@mmailaender/convex-auth-svelte": "^0.1.3",

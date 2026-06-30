@@ -10,7 +10,7 @@ import { api } from '@/convex/_generated/api';
 import { m } from '@/shared/lib/paraglide/messages';
 
 // UTILS
-import { resolveClientAddress } from '@/shared/utils/clientAddress.js';
+import { resolveClientAddress } from '@/utils/clientAddress.js';
 
 // SCHEMAS
 import type { SearchInputRemoteSchemaInput } from './searchInputSchemas.js';

@@ -8,8 +8,8 @@
 	import ActionButton from '@/shared/components/ui/action-button/action-button.svelte';
 
 	// UTILS
-	import { safeMutation } from '@/shared/utils/convexHelpers';
-	import { toastResult } from '@/shared/utils/toastResult';
+	import { safeMutation } from '@/utils/convexHelpers';
+	import { toastResult } from '@/utils/toastResult';
 
 	/**
 	 * Admin-only promote/demote control for this app’s two-role model (`user` ↔ `admin`).

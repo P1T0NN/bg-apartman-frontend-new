@@ -15,10 +15,10 @@
 		formatBedrooms,
 		formatBathrooms,
 		formatSquareMeters
-	} from '@/shared/utils/formatters';
+	} from '@/utils/formatters';
 
 	// TYPES
-	import type { AccommodationDetail } from '@/features/accommodations/data/accommodationDummyData';
+	import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
 	import type { Id } from '@/convex/_generated/dataModel';
 
 	// LUCIDE ICONS
@@ -28,7 +28,7 @@
 	import BathIcon from '@lucide/svelte/icons/bath';
 	import ScalingIcon from '@lucide/svelte/icons/scaling';
 
-	let { accommodation }: { accommodation: AccommodationDetail } = $props();
+	let { accommodation }: { accommodation: typesAccommodationEnriched } = $props();
 
 	const facts = $derived([
 		{ icon: UsersIcon, label: formatGuests(accommodation.maxGuests) },

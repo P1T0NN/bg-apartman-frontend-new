@@ -1,4 +1,7 @@
 <script lang="ts">
+	// LIBRARIES
+	import { m } from '@/shared/lib/paraglide/messages';
+
 	// COMPONENTS
 	import { Button } from '@/shared/components/ui/button/index.js';
 
@@ -9,32 +12,37 @@
 	import type { PaymentMethod } from '@/features/bookings/data/paymentMethods';
 
 	let {
-		confirmLabel,
+		instantBooking,
 		paymentMethod,
 		datesMissing = false,
 		attempted = $bindable(false),
 		busy = false
 	}: {
-		confirmLabel: string;
+		instantBooking: boolean;
 		paymentMethod: PaymentMethod;
 		datesMissing?: boolean;
 		attempted?: boolean;
 		busy?: boolean;
 	} = $props();
+
+	const confirmLabel = $derived(
+		instantBooking
+			? m['BookAccommodationPage.BookConfirmActionsField.confirmReservation']()
+			: m['BookAccommodationPage.BookConfirmActionsField.requestToBook']()
+	);
 </script>
 
 <div class="space-y-3">
 	<p class="text-xs leading-relaxed text-muted-foreground">
-		By selecting <span class="font-medium text-foreground">{confirmLabel}</span>, you agree to the
-		host’s house rules and to pay the full amount by {paymentMethodLabel(
-			paymentMethod
-		).toLowerCase()}.
+		{m['BookAccommodationPage.BookConfirmActionsField.bySelecting']({ label: confirmLabel })} {m['BookAccommodationPage.BookConfirmActionsField.youAgreeToTheHostsHouseRules']({ paymentMethod: paymentMethodLabel(paymentMethod) })}
 	</p>
+
 	{#if attempted && datesMissing}
 		<p class="text-sm text-destructive" role="alert" aria-live="polite">
-			Please pick your dates at the top of the page before you continue.
+			{m['BookAccommodationPage.BookConfirmActionsField.pleasePickYourDates']()}
 		</p>
 	{/if}
+	
 	<Button
 		type="submit"
 		size="lg"

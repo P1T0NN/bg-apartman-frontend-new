@@ -25,12 +25,6 @@ export const mutationResult = v.object({
 
 export type MutationResult = Infer<typeof mutationResult>;
 
-/** @deprecated Use {@link mutationResult} / {@link MutationResult}. */
-export const createResult = mutationResult;
-
-/** @deprecated Use {@link MutationResult}. */
-export type CreateResult = MutationResult;
-
 /** Mutation envelope with optional typed `data` (meaningful on success paths). */
 export function mutationResultData<T extends GenericValidator>(data: T) {
 	return v.object({

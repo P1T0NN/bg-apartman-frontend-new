@@ -8,7 +8,7 @@
 	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 
 	type Props = {
 		class?: string;

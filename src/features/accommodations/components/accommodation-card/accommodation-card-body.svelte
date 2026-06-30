@@ -1,11 +1,11 @@
 <script lang="ts">
 	// UTILS
 	import { accommodationTypeLabel } from '@/features/accommodations/utils/accommodationPresentation';
-	import { formatCurrency, formatGuests, formatBedrooms, formatBathrooms } from '@/shared/utils/formatters';
-	import { cn } from '@/shared/utils/utils.js';
+	import { formatCurrency, formatGuests, formatBedrooms, formatBathrooms } from '@/utils/formatters';
+	import { cn } from '@/utils/utils.js';
 
 	// TYPES
-	import type { SearchListing } from '@/features/accommodations/types/searchListing';
+	import type { SearchListing } from '@/shared/features/accommodation/types/accommodationTypes';
 	import type { ClassValue } from 'clsx';
 	import type { Snippet } from 'svelte';
 

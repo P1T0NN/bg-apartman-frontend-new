@@ -12,7 +12,7 @@ import { convexRateLimiter } from '../convexRateLimiter.js';
 // TYPES
 import { ConvexError } from 'convex/values';
 import type { QueryCtx } from '../_generated/server';
-import type { ConvexErrorPayload } from '../types/convexTypes.js';
+import type { ConvexErrorPayload } from '@/shared/types/types.js';
 import type { ConvexRateLimitName } from '../rateLimits/registry.js';
 import type { Doc, DataModel, TableNames } from '../_generated/dataModel';
 import type {
@@ -44,8 +44,8 @@ export type FetchOptimizedStrategy = 'cursor' | 'offset';
  * callers don't branch on `strategy` to render a list. `totalCount` is `null` in cursor and
  * search modes — computing it would defeat the optimization.
  */
-export type FetchOptimizedResult<T extends TableNames, Item = Doc<T>> = {
-	page: Item[];
+export type FetchOptimizedResult<T extends TableNames, Row = Doc<T>> = {
+	page: Row[];
 	isDone: boolean;
 	continueCursor: string;
 	totalCount: number | null;
@@ -112,6 +112,27 @@ type AccessBuilder<Extra, R> = (
 ) => Promise<R | null | undefined> | R | null | undefined;
 
 /**
+ * Post-pagination row mapper — the join hook. Runs on the *already-paginated page*
+ * (≤ `numItems` rows), so it adds at most O(perPage) cross-table reads, bounded by page size
+ * and never by table size. Use it to enrich each row with data from other tables.
+ *
+ * Contract:
+ *
+ *  - **1:1, same order.** Return exactly one output row per input row. Dropping or adding rows
+ *    here produces thin pages and corrupts `isDone`/cursor accounting — filter with `where`
+ *    (index-bounded) instead, the same reason `.filter()` isn't supported.
+ *  - **Dedupe + batch.** Collect the unique foreign ids, `Promise.all` the `ctx.db.get`s once,
+ *    then map back — not one serial read per row (N+1).
+ *  - **Reactivity widens.** Each `ctx.db.get` joins the page's reactive read set, so the page
+ *    also re-runs when an enriched doc changes (correct: a joined name edit refreshes the row).
+ */
+type EnrichFn<T extends TableNames, Extra extends PropertyValidators, Row> = (
+	ctx: QueryCtx,
+	page: Doc<T>[],
+	args: BuiltinArgs & ObjectType<Extra>
+) => Promise<Row[]> | Row[];
+
+/**
  * Endpoint-level access gate. Runs before any db work, so unauthorized callers pay the
  * minimum possible cost.
  *
@@ -138,7 +159,7 @@ export type FetchOptimizedAuth = 'user' | 'admin';
 export type FetchOptimizedOptions<
 	T extends TableNames,
 	Extra extends PropertyValidators,
-	Item = Doc<T>
+	Row = Doc<T>
 > = {
 	/** Target table. The validator + return type are derived from this. */
 	table: T;
@@ -180,21 +201,11 @@ export type FetchOptimizedOptions<
 	 */
 	search?: AccessBuilder<ObjectType<Extra>, FetchOptimizedSearch<T>>;
 	/**
-	 * Resolve the full row set in application code instead of via index/search, then
-	 * paginate it in memory. Use when the rows can't be expressed as an index range — e.g.
-	 * a client-held id list resolved with per-id `ctx.db.get`. Mutually exclusive with
-	 * `where`/`search` (they're skipped when `collect` is supplied).
-	 *
-	 * Prefer `strategy: 'offset'` so the UI gets an exact `totalCount`. Cost is O(rows
-	 * resolved); keep the input bounded (the builder should cap its own list).
+	 * Enrich each row of the resolved page with data from other tables. See {@link EnrichFn}.
+	 * Runs after pagination/offset slicing, so its cost scales with page size, not table size.
+	 * When supplied, the query's `page` type becomes `Row[]` instead of `Doc<T>[]`.
 	 */
-	collect?: AccessBuilder<ObjectType<Extra>, Doc<T>[]>;
-	/**
-	 * Map each row of the returned page to a public DTO (e.g. strip internal fields, project
-	 * to a lean card shape). Applied uniformly across every strategy/access path. When set,
-	 * the query's `page` is `Item[]`; when omitted, `page` stays `Doc<T>[]`.
-	 */
-	projectPage?: (doc: Doc<T>, ctx: QueryCtx, args: BuiltinArgs & ObjectType<Extra>) => Item;
+	enrich?: EnrichFn<T, Extra, Row>;
 };
 
 // ─── Internal helpers ────────────────────────────────────────────────────────
@@ -282,6 +293,21 @@ function applyIndexBounds(
  *   table: 'auditLog',
  *   auth: 'admin'
  * });
+ *
+ * // 6) Enrich each row with data from another table (join). `enrich` runs on the resolved
+ * //    page only, so it adds O(perPage) reads — dedupe ids + Promise.all to avoid N+1.
+ * export const fetchFilesWithOwner = fetchOptimized({
+ *   table: 'uploadedFiles',
+ *   enrich: async (ctx, page) => {
+ *     const ownerIds = [...new Set(page.map((f) => f.ownerId))];
+ *     const owners = new Map(
+ *       await Promise.all(ownerIds.map(async (id) => [id, await ctx.db.get(id)] as const))
+ *     );
+ *     return page.map((f) => ({ ...f, ownerName: owners.get(f.ownerId)?.name ?? null }));
+ *   }
+ * });
+ * // The query's `page` is now `(Doc<'uploadedFiles'> & { ownerName: string | null })[]`;
+ * // the data-table renders it unchanged (it's generic over the row shape).
  * ```
  *
  * ## Why this is "optimized"
@@ -336,31 +362,31 @@ function applyIndexBounds(
 export function fetchOptimized<
 	T extends TableNames,
 	Extra extends PropertyValidators = Record<string, never>,
-	Item = Doc<T>
+	Row = Doc<T>
 >(
 	name: ConvexRateLimitName,
-	options: FetchOptimizedOptions<T, Extra, Item>
+	options: FetchOptimizedOptions<T, Extra, Row>
 ): ReturnType<typeof query>;
 export function fetchOptimized<
 	T extends TableNames,
 	Extra extends PropertyValidators = Record<string, never>,
-	Item = Doc<T>
+	Row = Doc<T>
 >(
-	options: FetchOptimizedOptions<T, Extra, Item>
+	options: FetchOptimizedOptions<T, Extra, Row>
 ): ReturnType<typeof query>;
 export function fetchOptimized<
 	T extends TableNames,
 	Extra extends PropertyValidators = Record<string, never>,
-	Item = Doc<T>
+	Row = Doc<T>
 >(
-	nameOrOptions: ConvexRateLimitName | FetchOptimizedOptions<T, Extra, Item>,
-	maybeOptions?: FetchOptimizedOptions<T, Extra, Item>
+	nameOrOptions: ConvexRateLimitName | FetchOptimizedOptions<T, Extra, Row>,
+	maybeOptions?: FetchOptimizedOptions<T, Extra, Row>
 ) {
 	const rateLimitName =
 		typeof nameOrOptions === 'string' ? nameOrOptions : null;
 	const options =
 		typeof nameOrOptions === 'string'
-			? (maybeOptions as FetchOptimizedOptions<T, Extra, Item>)
+			? (maybeOptions as FetchOptimizedOptions<T, Extra, Row>)
 			: nameOrOptions;
 
 	return buildFetchOptimizedQuery(options, rateLimitName);
@@ -369,9 +395,9 @@ export function fetchOptimized<
 function buildFetchOptimizedQuery<
 	T extends TableNames,
 	Extra extends PropertyValidators = Record<string, never>,
-	Item = Doc<T>
+	Row = Doc<T>
 >(
-	options: FetchOptimizedOptions<T, Extra, Item>,
+	options: FetchOptimizedOptions<T, Extra, Row>,
 	rateLimitName: ConvexRateLimitName | null
 ) {
 	const {
@@ -382,8 +408,7 @@ function buildFetchOptimizedQuery<
 		args: extraArgs,
 		where,
 		search,
-		collect,
-		projectPage
+		enrich
 	} = options;
 
 	if (search && strategy === 'offset') {
@@ -404,7 +429,7 @@ function buildFetchOptimizedQuery<
 
 	return query({
 		args: validators,
-		handler: async (ctx: QueryCtx, rawArgsRaw): Promise<FetchOptimizedResult<T, Item>> => {
+		handler: async (ctx: QueryCtx, rawArgsRaw): Promise<FetchOptimizedResult<T, Row>> => {
 			const rawArgs = rawArgsRaw as BuiltinArgs & ObjectType<Extra>;
 			const opts = rawArgs.paginationOpts ?? defaultPaginationOpts;
 
@@ -443,44 +468,7 @@ function buildFetchOptimizedQuery<
 				}
 			}
 
-			// Project a page of rows to the public DTO. Identity when no `projectPage` is set
-			// (Item defaults to Doc<T>), so non-projecting callers are unaffected.
-			const projectRows = async (rows: Doc<T>[]): Promise<Item[]> => {
-				if (!projectPage) return rows as unknown as Item[];
-				return rows.map((doc) => projectPage(doc, ctx, rawArgs));
-			};
-
-			// 1. In-memory collect path — paginate a caller-resolved row set (e.g. an id list
-			//    resolved with per-id `ctx.db.get`). Skips index/search access entirely.
-			if (collect) {
-				const all = (await collect(ctx, rawArgs)) ?? [];
-
-				if (strategy === 'cursor') {
-					const parsed = opts.cursor ? Number.parseInt(opts.cursor, 10) : 0;
-					const start = Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
-					const slice = all.slice(start, start + opts.numItems);
-					const nextStart = start + slice.length;
-					return {
-						page: await projectRows(slice),
-						isDone: nextStart >= all.length,
-						continueCursor: String(nextStart),
-						totalCount: null
-					};
-				}
-
-				const page1BasedCollect = normalizeOneBasedPage(rawArgs.page);
-				const totalCountCollect = all.length;
-				const startCollect = Math.max(0, (page1BasedCollect - 1) * opts.numItems);
-				const sliceCollect = all.slice(startCollect, startCollect + opts.numItems);
-				return {
-					page: await projectRows(sliceCollect),
-					isDone: startCollect + sliceCollect.length >= totalCountCollect,
-					continueCursor: '',
-					totalCount: totalCountCollect
-				};
-			}
-
-			// 2. Resolve the access spec at request time. Builders may read auth/ctx/args.
+			// 1. Resolve the access spec at request time. Builders may read auth/ctx/args.
 			//    Both can be supplied so a single endpoint can switch between search / index
 			//    access by inspecting `args` — but only one may be active per request, since
 			//    Convex picks exactly one access pattern. Builders express "not active" by
@@ -495,7 +483,7 @@ function buildFetchOptimizedQuery<
 
 			const resolvedOrder = typeof order === 'function' ? order(rawArgs) : order;
 
-			// 3. Build the base query. Three branches: search > where > full-table.
+			// 2. Build the base query. Three branches: search > where > full-table.
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			let q: OrderedQuery<NamedTableInfo<DataModel, T>> | any;
 
@@ -523,11 +511,15 @@ function buildFetchOptimizedQuery<
 				q = ctx.db.query(table).order(resolvedOrder);
 			}
 
-			// 4. Paginate per strategy. Cursor uses native paginate; offset still slices.
+			// 3. Paginate per strategy. Cursor uses native paginate; offset still slices.
 			if (strategy === 'cursor') {
 				const result = await q.paginate(opts);
+				// 4. Enrich the resolved page only (≤ numItems rows) — join cost stays O(perPage).
+				const page = enrich
+					? await enrich(ctx, result.page as Doc<T>[], rawArgs)
+					: (result.page as unknown as Row[]);
 				return {
-					page: await projectRows(result.page as Doc<T>[]),
+					page,
 					isDone: result.isDone,
 					continueCursor: result.continueCursor,
 					totalCount: null
@@ -540,9 +532,11 @@ function buildFetchOptimizedQuery<
 			const start = Math.max(0, (page1Based - 1) * opts.numItems);
 			const slice = all.slice(start, start + opts.numItems);
 			const isDone = start + slice.length >= totalCount;
+			// Enrich the sliced page only, same bounded cost as the cursor branch.
+			const page = enrich ? await enrich(ctx, slice, rawArgs) : (slice as unknown as Row[]);
 
 			return {
-				page: await projectRows(slice),
+				page,
 				isDone,
 				continueCursor: '',
 				totalCount

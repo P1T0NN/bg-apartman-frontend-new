@@ -3,16 +3,14 @@
 	import { localizeHref } from '@/shared/lib/paraglide/runtime.js';
 
 	// CONFIG
-	import { PROTECTED_PAGE_ENDPOINTS } from '@/shared/constants.js';
+	import { PROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
 
 	// COMPONENTS
 	import * as Card from '@/shared/components/ui/card/index.js';
-	import { Badge } from '@/shared/components/ui/badge/index.js';
+	import BookingsStatus from '@/features/bookings/components/bookings-status.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
-	import { BOOKING_STATUS_CONFIG } from '@/features/bookings/data/bookingsData';
-	import { formatDate } from '@/shared/utils/dateUtils';
+	import { formatDate } from '@/utils/formatters';
 
 	// TYPES
 	import type { GuestTripSummary } from '@/convex/pages/guest/dashboard/types/guestDashboardTypes';
@@ -21,8 +19,6 @@
 	import ArrowRightIcon from '@lucide/svelte/icons/arrow-right';
 
 	let { trip }: { trip: GuestTripSummary } = $props();
-
-	const status = $derived(BOOKING_STATUS_CONFIG[trip.status]);
 </script>
 
 <a
@@ -42,7 +38,9 @@
 				{trip.apartment.city} · {formatDate(trip.checkInDate)} – {formatDate(trip.checkOutDate)}
 			</p>
 		</div>
-		<Badge class={cn(status.badgeClass, 'ring-1 max-sm:hidden')}>{status.label}</Badge>
+		<div class="max-sm:hidden">
+			<BookingsStatus kind="booking" status={trip.status} />
+		</div>
 		<ArrowRightIcon class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
 	</Card.Root>
 </a>

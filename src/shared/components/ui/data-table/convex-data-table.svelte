@@ -10,8 +10,8 @@
 	import DataTable from './data-table.svelte';
 
 	// UTILS
-	import { safeMutation } from '@/shared/utils/convexHelpers';
-	import { translateFromBackend } from '@/shared/utils/translateFromBackend';
+	import { safeMutation } from '@/utils/convexHelpers';
+	import { translateFromBackend } from '@/utils/translateFromBackend';
 
 	// TYPES
 	import type { Snippet } from 'svelte';

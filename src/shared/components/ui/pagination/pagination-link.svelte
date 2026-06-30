@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Pagination as PaginationPrimitive } from "bits-ui";
-	import { cn } from "@/shared/utils/utils.js";
+	import { cn } from "@/utils/utils.js";
 	import { buttonVariants, type ButtonSize } from "@/shared/components/ui/button/index.js";
 	let {
 		ref = $bindable(null),

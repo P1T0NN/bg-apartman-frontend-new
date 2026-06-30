@@ -21,6 +21,16 @@ import DropletsIcon from '@lucide/svelte/icons/droplets';
 import CoffeeIcon from '@lucide/svelte/icons/coffee';
 import KeyRoundIcon from '@lucide/svelte/icons/key-round';
 import BellRingIcon from '@lucide/svelte/icons/bell-ring';
+import ShowerHeadIcon from '@lucide/svelte/icons/shower-head';
+import BathIcon from '@lucide/svelte/icons/bath';
+import TowelRackIcon from '@lucide/svelte/icons/towel-rack';
+import BubblesIcon from '@lucide/svelte/icons/bubbles';
+import ThermometerSunIcon from '@lucide/svelte/icons/thermometer-sun';
+import CircleParkingIcon from '@lucide/svelte/icons/circle-parking';
+import ParkingMeterIcon from '@lucide/svelte/icons/parking-meter';
+import ScrollIcon from '@lucide/svelte/icons/scroll';
+import SoapDispenserDropletIcon from '@lucide/svelte/icons/soap-dispenser-droplet';
+import FerrisWheelIcon from '@lucide/svelte/icons/ferris-wheel';
 
 /** Curated amenity options rendered as toggle chips by the amenities field. */
 export const AMENITIES = [
@@ -39,7 +49,17 @@ export const AMENITIES = [
 	{ id: 'dishwasher', label: m['Amenities.dishwasher']() },
 	{ id: 'coffee_maker', label: m['Amenities.coffeeMaker']() },
 	{ id: 'self_checkin', label: m['Amenities.selfCheckin']() },
-	{ id: 'smoke_alarm', label: m['Amenities.smokeAlarm']() }
+	{ id: 'smoke_alarm', label: m['Amenities.smokeAlarm']() },
+	{ id: 'shower', label: m['Amenities.shower']() },
+	{ id: 'bathtub', label: m['Amenities.bathtub']() },
+	{ id: 'towels', label: m['Amenities.towels']() },
+	{ id: 'hot_tub', label: m['Amenities.hotTub']() },
+	{ id: 'sauna', label: m['Amenities.sauna']() },
+	{ id: 'private_parking', label: m['Amenities.privateParking']() },
+	{ id: 'public_parking', label: m['Amenities.publicParking']() },
+	{ id: 'toilet_paper', label: m['Amenities.toiletPaper']() },
+	{ id: 'shampoo', label: m['Amenities.shampoo']() },
+	{ id: 'childrens_playground', label: m['Amenities.childrensPlayground']() }
 ] as const;
 
 /** Lucide icon per amenity id — used on listing pages and forms. */
@@ -59,5 +79,15 @@ export const AMENITY_ICONS: Record<string, Component> = {
 	dishwasher: DropletsIcon,
 	coffee_maker: CoffeeIcon,
 	self_checkin: KeyRoundIcon,
-	smoke_alarm: BellRingIcon
+	smoke_alarm: BellRingIcon,
+	shower: ShowerHeadIcon,
+	bathtub: BathIcon,
+	towels: TowelRackIcon,
+	hot_tub: BubblesIcon,
+	sauna: ThermometerSunIcon,
+	private_parking: CircleParkingIcon,
+	public_parking: ParkingMeterIcon,
+	toilet_paper: ScrollIcon,
+	shampoo: SoapDispenserDropletIcon,
+	childrens_playground: FerrisWheelIcon
 };

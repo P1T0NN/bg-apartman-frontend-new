@@ -18,7 +18,7 @@ export const apartmentStatus = v.union(
 	v.literal('archived')
 );
 
-export const paymentMethod = v.union(v.literal('cash')); // extend later: v.literal('card'), etc.
+export const paymentMethod = v.union(v.literal('cash'), v.literal('online'));
 
 export const coordinates = v.object({
 	lat: v.number(),

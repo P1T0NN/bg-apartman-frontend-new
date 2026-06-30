@@ -7,7 +7,7 @@ import { AUTH_ROUTE_LIMITS } from './authRoutes';
 
 // UTILS
 import { getEmailFromAuthBody } from './utils/getEmailFromAuthBody';
-import { resolveAuthClientIp } from '@/shared/utils/clientAddress.js';
+import { resolveAuthClientIp } from '@/shared/clientIp.js';
 
 // TYPES
 import type { GenericCtx } from '@convex-dev/better-auth';

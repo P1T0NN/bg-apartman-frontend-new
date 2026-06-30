@@ -16,9 +16,9 @@
 
 	// UTILS
 	import { emailVerificationFormSchema } from './email-verification-form-schema.js';
-	import { cn, type WithElementRef } from '@/shared/utils/utils.js';
+	import { cn, type WithElementRef } from '@/utils/utils.js';
 	import { zodIssuesToFieldErrors } from '@/shared/utils/validationUtils.js';
-	import { rateLimitMessage } from '@/shared/utils/rateLimitMessages';
+	import { rateLimitMessage } from '@/utils/rateLimitMessages';
 
 	// TYPES
 	import type { HTMLFormAttributes } from 'svelte/elements';

@@ -6,7 +6,7 @@
     import { Button } from '@/shared/components/ui/button/index.js';
 
     // TYPES
-    import type { typesAccommodationImage } from '@/features/accommodations/types/types';
+    import type { typesAccommodationImage } from '@/shared/features/accommodation/types/accommodationTypes';
 
     // LUCIDE ICONS
     import XIcon from '@lucide/svelte/icons/x';

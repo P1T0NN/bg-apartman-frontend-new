@@ -4,7 +4,7 @@
 	import { localizeHref } from '@/shared/lib/paraglide/runtime';
 
 	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
 
 	// COMPONENTS
 	import { Button } from '@/shared/components/ui/button/index.js';
@@ -12,9 +12,9 @@
 	import BookingPanelFooter from './booking-panel-footer.svelte';
 
 	// TYPES
-	import type { AccommodationDetail } from '@/features/accommodations/data/accommodationDummyData';
+	import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
 
-	let { accommodation }: { accommodation: AccommodationDetail } = $props();
+	let { accommodation }: { accommodation: typesAccommodationEnriched } = $props();
 
 	// Dates + guests are chosen on the book page now; this box is just the entry point.
 	const bookHref = $derived(

@@ -3,7 +3,7 @@
 	import { m } from '@/shared/lib/paraglide/messages';
 
 	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
 
 	// COMPONENTS
 	import { Button } from '@/shared/components/ui/button/index.js';

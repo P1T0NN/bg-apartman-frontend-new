@@ -3,7 +3,7 @@
 	import { Badge } from '@/shared/components/ui/badge';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 
 	let { class: className }: { class?: string } = $props();
 </script>

@@ -4,12 +4,13 @@ import { v } from 'convex/values';
 // UTILS
 import { authMutation } from '@/convex/auth/middleware/authMiddleware';
 import { authComponent } from '@/convex/auth/auth';
-import { num, optNum, optStr } from '@/convex/utils/convexValidationUtils';
+import { sendCreateAccommodationEmail } from '@/convex/email/sendCreateAccommodationEmail';
+import { num, optNum, optStr } from '@/shared/utils/validationUtils';
 import { r2PublicUrl } from '@/convex/storage/r2/r2';
 
 // SCHEMAS
 import { apartmentType, coordinates, paymentMethod } from '../schemas/accommodationsSchemas';
-import { createResult, type CreateResult } from '@/convex/schemas/schemas';
+import { mutationResult, type MutationResult } from '@/convex/schemas/schemas';
 
 /**
  * Create an apartment listing owned by the signed-in host.
@@ -77,10 +78,12 @@ export const createApartment = authMutation('createApartment')({
 		houseRules: v.optional(v.string()),
 
 		// Photos — R2 object keys from the form's upload pipeline.
-		photos: v.optional(v.array(v.string()))
+		photos: v.optional(v.array(v.string())),
+
+		locale: v.optional(v.string())
 	},
-	returns: createResult,
-	handler: async (ctx, args): Promise<CreateResult> => {
+	returns: mutationResult,
+	handler: async (ctx, args): Promise<MutationResult> => {
 		const title = args.title.trim();
 
 		// Denormalize the host's superhost flag onto the listing so search/list reads never
@@ -96,7 +99,7 @@ export const createApartment = authMutation('createApartment')({
 				.slice(0, 60) || 'apartment';
 		const slug = `${slugBase}-${Date.now().toString(36)}`;
 
-		await ctx.db.insert('apartments', {
+		const apartmentId = await ctx.db.insert('apartments', {
 			// `hostId` is the better-auth user id stored as a plain string.
 			hostId: ctx.userId,
 			// Denormalized host reputation (see schema + handler note above).
@@ -158,6 +161,19 @@ export const createApartment = authMutation('createApartment')({
 			isFeatured: false,
 			updatedAt: Date.now()
 		});
+
+		const hostEmail = host?.email?.trim();
+		if (hostEmail) {
+			await sendCreateAccommodationEmail(ctx, {
+				locale: args.locale ?? 'en',
+				apartmentId,
+				hostName: host?.name?.trim() || 'Host',
+				hostEmail,
+				apartmentTitle: title,
+				city: args.city.trim(),
+				live: false
+			});
+		}
 
 		return { success: true, message: { key: 'GenericMessages.ACCOMMODATION_CREATED' } };
 	}

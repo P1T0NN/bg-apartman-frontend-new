@@ -2,7 +2,7 @@
 import {
 	PROTECTED_PAGE_ENDPOINTS,
 	UNPROTECTED_PAGE_ENDPOINTS
-} from '@/shared/constants.js';
+} from '@/shared/routeEndpoints.js';
 
 export const footerLinkGroups = [
 	{

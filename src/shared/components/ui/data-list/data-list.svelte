@@ -3,7 +3,7 @@
 	import { PaginatedData } from '@/shared/components/ui/paginated-data/index.js';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 	import { defaultRowKey } from '../data-table/dataTableUtils.js';
 
 	// TYPES

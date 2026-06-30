@@ -1,0 +1,96 @@
+{
+	"footer": {
+		"allRightsReserved": "Sva prava zadržana."
+	},
+	"createBookingForGuest": {
+		"subjectConfirmed": "Vaša rezervacija je potvrđena · {code}",
+		"subjectPending": "Primili smo vaš zahtev · {code}",
+		"headingConfirmed": "Vaš boravak je rezervisan!",
+		"headingPending": "Zahtev primljen",
+		"introConfirmed": "Zdravo {name}, sve je spremno za {title}. Evo detalja vaše rezervacije.",
+		"introPending": "Zdravo {name}, poslali smo vaš zahtev za {title} domaćinu. Obavestićemo vas čim bude potvrđen.",
+		"confirmationCode": "Kod potvrde",
+		"rowStay": "Smeštaj",
+		"rowCheckIn": "Prijava",
+		"rowCheckOut": "Odjava",
+		"rowGuests": "Gosti",
+		"rowTotal": "Ukupno",
+		"guestsAdults": "{count} odraslih",
+		"guestsAdultsChildren": "{adults} odraslih · {children} dece",
+		"cta": "Pogledajte rezervaciju"
+	},
+	"createBookingForOwner": {
+		"subjectConfirmed": "Nova rezervacija · {code}",
+		"subjectPending": "Novi zahtev za rezervaciju · {code}",
+		"headingConfirmed": "Imate novu rezervaciju",
+		"headingPending": "Novi zahtev za rezervaciju",
+		"introConfirmed": "Zdravo {hostName}, {guestName} je upravo rezervisao/la {title}.",
+		"introPending": "Zdravo {hostName}, {guestName} je zatražio/la rezervaciju za {title}. Potvrdite ili odbijte u svojim rezervacijama.",
+		"rowGuest": "Gost",
+		"rowContact": "Kontakt",
+		"rowStay": "Smeštaj",
+		"rowCheckIn": "Prijava",
+		"rowCheckOut": "Odjava",
+		"rowGuests": "Gosti",
+		"rowTotal": "Ukupno",
+		"guestsAdults": "{count} odraslih",
+		"guestsAdultsChildren": "{adults} odraslih · {children} dece",
+		"cta": "Pogledajte rezervaciju"
+	},
+	"createAccommodation": {
+		"subjectLive": "Vaš oglas je objavljen · {title}",
+		"subjectPending": "Vaš oglas je poslat · {title}",
+		"headingLive": "Vaš oglas je objavljen",
+		"headingReview": "Oglas poslat na pregled",
+		"introLive": "Zdravo {name}, {title} je sada objavljen i gosti mogu da ga rezervišu. Možete ga izmeniti u bilo kom trenutku.",
+		"introReview": "Zdravo {name}, hvala što ste oglasili {title}. Pregledamo ga i obavestićemo vas čim bude objavljen.",
+		"rowListing": "Oglas",
+		"rowLocation": "Lokacija",
+		"rowStatus": "Status",
+		"statusPublished": "Objavljeno",
+		"statusInReview": "Na pregledu",
+		"cta": "Upravljajte oglasom"
+	},
+	"accommodationPublished": {
+		"subject": "Vaš oglas je sada objavljen · {title}",
+		"heading": "Vaš oglas je odobren",
+		"intro": "Zdravo {name}, {title} je pregledan i sada je objavljen. Gosti mogu odmah da ga rezervišu.",
+		"rowListing": "Oglas",
+		"rowLocation": "Lokacija",
+		"rowStatus": "Status",
+		"statusPublished": "Objavljeno",
+		"cta": "Pogledajte oglas"
+	},
+	"accommodationSuspended": {
+		"subject": "Vaš oglas je suspendovan · {title}",
+		"heading": "Vaš oglas je suspendovan",
+		"intro": "Zdravo {name}, {title} je suspendovan i više nije vidljiv gostima. Ako mislite da je ovo greška, odgovorite na ovaj imejl i pomoći ćemo vam.",
+		"rowListing": "Oglas",
+		"rowStatus": "Status",
+		"statusSuspended": "Suspendovan",
+		"cta": "Upravljajte oglasom"
+	},
+	"bookingConfirmed": {
+		"subject": "Vaša rezervacija je potvrđena · {code}",
+		"heading": "Vaša rezervacija je potvrđena!",
+		"intro": "Zdravo {name}, dobre vesti — domaćin je potvrdio vašu rezervaciju za {title}. Radujemo se vašem dolasku.",
+		"confirmationCode": "Kod potvrde",
+		"rowStay": "Smeštaj",
+		"rowCheckIn": "Prijava",
+		"rowCheckOut": "Odjava",
+		"rowGuests": "Gosti",
+		"rowTotal": "Ukupno",
+		"guestsAdults": "{count} odraslih",
+		"guestsAdultsChildren": "{adults} odraslih · {children} dece",
+		"cta": "Pogledajte rezervaciju"
+	},
+	"bookingCancelled": {
+		"subject": "Vaša rezervacija je otkazana · {code}",
+		"heading": "Rezervacija otkazana",
+		"intro": "Zdravo {name}, vaša rezervacija za {title} ({code}) je otkazana. Ako ovo niste očekivali, odgovorite na ovaj imejl i pomoći ćemo vam.",
+		"rowStay": "Smeštaj",
+		"rowCheckIn": "Prijava",
+		"rowCheckOut": "Odjava",
+		"cta": "Pogledajte druge smeštaje"
+	}
+}

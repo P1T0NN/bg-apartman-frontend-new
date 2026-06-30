@@ -3,10 +3,10 @@ import { m } from '@/shared/lib/paraglide/messages';
 
 // UTILS
 import { formatTime12 } from '@/shared/utils/dateUtils';
-import { formatUpToGuests } from '@/shared/utils/formatters';
+import { formatUpToGuests } from '@/utils/formatters';
 
 // TYPES
-import type { AccommodationDetail } from '@/features/accommodations/data/accommodationDummyData';
+import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
 import type { AccommodationPolicyRule } from './types';
 
 
@@ -21,7 +21,7 @@ import PartyPopperIcon from '@lucide/svelte/icons/party-popper';
 import UsersIcon from '@lucide/svelte/icons/users';
 import ZapIcon from '@lucide/svelte/icons/zap';
 
-export function createAccommodationPoliciesRules(accommodation: AccommodationDetail) {
+export function createAccommodationPoliciesRules(accommodation: typesAccommodationEnriched) {
 	const houseRules = $derived.by<AccommodationPolicyRule[]>(() => {
 		const rules: AccommodationPolicyRule[] = [
 			{

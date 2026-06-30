@@ -5,12 +5,12 @@
 	// UTILS
 	import { effectiveNightlyPrice } from '@/shared/features/pricing/utils/calculatePrice';
 	import { hasNightlyDiscount } from '@/features/accommodations/utils/accommodationPresentation';
-	import { formatCurrency } from '@/shared/utils/formatters';
+	import { formatCurrency } from '@/utils/formatters';
 
 	// TYPES
-	import type { AccommodationDetail } from '@/features/accommodations/data/accommodationDummyData';
+	import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
 
-	let { accommodation }: { accommodation: AccommodationDetail } = $props();
+	let { accommodation }: { accommodation: typesAccommodationEnriched } = $props();
 
 	// Listing page shows a starting nightly price; the real total is on the book page.
 	const nightly = $derived(effectiveNightlyPrice(accommodation));

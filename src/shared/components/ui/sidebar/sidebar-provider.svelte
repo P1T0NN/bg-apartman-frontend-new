@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as Tooltip from "@/shared/components/ui/tooltip/index.js";
-	import { cn, type WithElementRef } from "@/shared/utils/utils.js";
+	import { cn, type WithElementRef } from "@/utils/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
 	import {
 		SIDEBAR_COOKIE_MAX_AGE,

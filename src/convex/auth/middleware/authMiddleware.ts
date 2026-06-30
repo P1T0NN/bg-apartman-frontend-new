@@ -15,7 +15,7 @@ import { logAudit } from '@/convex/tables/auditLog/helpers/logAudit';
 // TYPES
 import type { ActionCtx, MutationCtx, QueryCtx } from '@/convex/_generated/server';
 import type { ConvexRateLimitName } from '@/convex/rateLimits/registry';
-import type { ConvexErrorPayload } from '@/convex/types/convexTypes';
+import type { ConvexErrorPayload } from '@/shared/types/types';
 import type { Id } from '@/convex/auth/component/_generated/dataModel';
 import type { AuditAction } from '@/convex/tables/auditLog/auditLogConfigs';
 import type { AuditOptions } from '@/convex/tables/auditLog/helpers/logAudit';

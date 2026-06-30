@@ -3,7 +3,7 @@ import { APIError } from 'better-auth/api';
 import type { GenericCtx } from '@convex-dev/better-auth';
 import { internal } from '../_generated/api';
 import type { DataModel } from '../_generated/dataModel';
-import type { TranslatableMessage } from '../types/convexTypes';
+import type { TranslatableMessage } from '@/shared/types/types';
 import type { ConvexRateLimitName } from './registry';
 
 type ConvexRateLimitRunnerCtx = GenericCtx<DataModel> & {

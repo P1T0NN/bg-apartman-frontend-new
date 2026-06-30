@@ -2,14 +2,14 @@
 import { toast } from 'svelte-sonner';
 
 // CONFIG
-import { PROTECTED_PAGE_ENDPOINTS } from '@/shared/constants';
+import { PROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
 
 // UTILS
 import { authClient } from '@/features/auth/lib/auth-client';
 import { loginFormSchema } from './login-form-schema.js';
 import { zodIssuesToFieldErrors } from '@/shared/utils/validationUtils.js';
-import { rateLimitMessage } from '@/shared/utils/rateLimitMessages';
-import { appGoto } from '@/shared/utils/app-navigation';
+import { rateLimitMessage } from '@/utils/rateLimitMessages';
+import { appGoto } from '@/utils/app-navigation';
 
 // TYPES
 import type { LoginFormStep, LoginField } from './loginFormTypes.js';

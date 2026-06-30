@@ -1,4 +1,10 @@
 <script lang="ts">
+	// LIBRARIES
+	import { m } from '@/shared/lib/paraglide/messages';
+
+	// CONFIG
+	import { DEFAULT_TIME_ZONE } from '@/shared/config';
+
 	// COMPONENTS
 	import {
 		AvailabilityCalendar,
@@ -10,14 +16,13 @@
 	import SingleStayDisplay from '@/features/accommodations/components/single-stay-display.svelte';
 
 	// UTILS
-	import { formatNights } from '@/shared/utils/formatters';
+	import { formatNights } from '@/utils/formatters';
 	import { minNightsFor } from '@/features/accommodations/utils/accommodationPresentation';
-	import { DEFAULT_TIME_ZONE } from '@/shared/constants';
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 
 	// TYPES
 	import type { DateRange } from 'bits-ui';
-	import type { AccommodationDetail } from '@/features/accommodations/data/accommodationDummyData';
+	import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
 
 	let {
 		accommodation,
@@ -27,7 +32,7 @@
 		onValueChange,
 		class: className
 	}: {
-		accommodation: AccommodationDetail;
+		accommodation: typesAccommodationEnriched;
 		dateRange?: DateRange;
 		numberOfMonths?: number;
 		/** Render the stay-policy footer (min stay / same-day / single-night) inside the card.
@@ -75,7 +80,7 @@
 
 	{#if showPolicy}
 		<div class="space-y-1 border-t px-3 py-2 text-center text-xs text-muted-foreground">
-			<p>Minimum stay {formatNights(minNights)}</p>
+			<p>{m['BookAccommodationPage.BookingCalendar.minimumStay']({ nights: formatNights(minNights) })}</p>
 			<SameDayDisplay enabled={accommodation.sameDayReservation} />
 			<SingleStayDisplay allowed={minNights <= 1} />
 		</div>

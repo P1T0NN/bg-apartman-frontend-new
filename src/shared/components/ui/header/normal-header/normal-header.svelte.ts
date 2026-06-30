@@ -1,5 +1,5 @@
 // CONFIG
-import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants.js';
+import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
 
 export const navItems = [
 	{ href: UNPROTECTED_PAGE_ENDPOINTS.ROOT, label: 'Home' },
@@ -10,12 +10,6 @@ export const navLinkClass =
 
 export const navLinkActiveClass =
 	'text-primary bg-primary/10 font-semibold hover:bg-primary/15 hover:text-primary';
-
-/** Compare against pathname from `deLocalizeUrl` (e.g. `/en/home` → `/home`). */
-export function isNavItemActive(pathname: string, href: string): boolean {
-	if (href === '/' || href === '') return pathname === '/' || pathname === '';
-	return pathname === href || pathname.startsWith(`${href}/`);
-}
 
 class NormalHeader {
 	menuOpen = $state(false);

@@ -3,7 +3,7 @@
 	import { Input } from '@/shared/components/ui/input/index.js';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 
 	// TYPES
 	import type { MutationFormFieldDef } from './types.js';

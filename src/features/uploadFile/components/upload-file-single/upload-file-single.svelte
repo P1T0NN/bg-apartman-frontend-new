@@ -4,7 +4,7 @@
 	import UploadFileSingleContent from './upload-file-single-content.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 	import { useFileUpload } from '../../utils/useFileUpload.svelte';
 
 	type Props = {

@@ -8,11 +8,11 @@
     import SearchMarkerSelectedCard from './search-marker-selected-card.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
-	import { formatCurrency } from '@/shared/utils/formatters';
+	import { cn } from '@/utils/utils.js';
+	import { formatCurrency } from '@/utils/formatters';
 
 	// TYPES
-	import type { SearchListing } from '@/features/accommodations/types/searchListing';
+	import type { SearchListing } from '@/shared/features/accommodation/types/accommodationTypes';
 	import type { Id } from '@/convex/_generated/dataModel';
 	import type { GoogleMapHandle } from '@/shared/components/ui/google-map/types';
 

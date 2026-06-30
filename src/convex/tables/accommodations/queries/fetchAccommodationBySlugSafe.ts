@@ -8,12 +8,12 @@ import { query } from '@/convex/_generated/server';
 import { authComponent } from '@/convex/auth/auth';
 
 // TYPES
-import type { AccommodationDetail } from '@/features/accommodations/data/accommodationDummyData';
+import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
 
 /**
  * Public listing detail for `/accommodation/[slug]`.
  *
- * "Safe": returns a curated {@link AccommodationDetail} projection (no owner/internal
+ * "Safe": returns a curated {@link typesAccommodationEnriched} projection (no owner/internal
  * fields), and only for **published** listings — a pending/suspended/archived row reads
  * as not-found so unlisted apartments can't be probed by slug.
  *
@@ -26,7 +26,7 @@ import type { AccommodationDetail } from '@/features/accommodations/data/accommo
  */
 export const fetchAccommodationBySlugSafe = query({
 	args: { slug: v.string() },
-	handler: async (ctx, { slug }): Promise<AccommodationDetail | null> => {
+	handler: async (ctx, { slug }): Promise<typesAccommodationEnriched | null> => {
 		const apartment = await ctx.db
 			.query('apartments')
 			.withIndex('by_slug', (q) => q.eq('slug', slug))

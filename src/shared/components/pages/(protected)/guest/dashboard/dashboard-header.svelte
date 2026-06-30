@@ -8,10 +8,10 @@
 	const firstName = $derived(user?.name?.split(' ')[0]);
 </script>
 
-<header>
-	<h1 class="text-2xl font-semibold tracking-tight">
-		Welcome back {firstName ? `, ${firstName}` : ''}
+<header class="flex flex-col gap-1 border-b pb-5">
+	<h1 class="text-2xl font-semibold tracking-tight md:text-3xl">
+		Welcome back{firstName ? `, ${firstName}` : ''}
 	</h1>
 
-	<p class="mt-1 text-sm text-muted-foreground">{subtitle}</p>
+	<p class="max-w-2xl text-sm leading-relaxed text-muted-foreground">{subtitle}</p>
 </header>

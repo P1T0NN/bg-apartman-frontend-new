@@ -1,6 +1,6 @@
 <script lang="ts">
 	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
 
 	// COMPONENTS
 	import { QualityImage } from '@/shared/components/ui/quality-image';
@@ -10,11 +10,11 @@
 	import AccommodationCardBody from './accommodation-card-body.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
-	import { appHref } from '@/shared/utils/app-navigation.js';
+	import { cn } from '@/utils/utils.js';
+	import { appHref } from '@/utils/app-navigation.js';
 
 	// TYPES
-	import type { SearchListing } from '@/features/accommodations/types/searchListing';
+	import type { SearchListing } from '@/shared/features/accommodation/types/accommodationTypes';
 	import type { ClassValue } from 'clsx';
 
 	let {

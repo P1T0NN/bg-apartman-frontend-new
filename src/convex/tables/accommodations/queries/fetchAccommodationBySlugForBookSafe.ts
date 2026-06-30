@@ -6,13 +6,12 @@ import { query } from '@/convex/_generated/server';
 
 // UTILS
 import { authComponent } from '@/convex/auth/auth';
+import { ACTIVE_BOOKING_STATUSES } from '@/shared/features/booking/data/bookingsData';
 
 // TYPES
 import type { Doc, Id } from '@/convex/_generated/dataModel';
-import type { AccommodationDetail } from '@/features/accommodations/data/accommodationDummyData';
+import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
 import type { QueryCtx } from '@/convex/_generated/server';
-
-const ACTIVE_BOOKING_STATUSES = new Set(['pending', 'confirmed', 'checked_in', 'checked_out']);
 
 async function fetchBookedRanges(ctx: QueryCtx, apartmentId: Id<'apartments'>) {
 	const bookings = await ctx.db
@@ -36,8 +35,8 @@ function projectAccommodationForBook(
 		createdAt?: number;
 		isSuperhost?: boolean | null;
 	} | null,
-	bookedRanges: AccommodationDetail['bookedRanges']
-): AccommodationDetail {
+	bookedRanges: typesAccommodationEnriched['bookedRanges']
+): typesAccommodationEnriched {
 	return {
 		_id: apartment._id,
 		slug: apartment.slug,
@@ -99,13 +98,13 @@ function projectAccommodationForBook(
 /**
  * Public listing payload for `/accommodation/[slug]/book`.
  *
- * Same curated {@link AccommodationDetail} projection as the detail page, but includes
+ * Same curated {@link typesAccommodationEnriched} projection as the detail page, but includes
  * `bookedRanges` so the checkout calendar can grey out reserved nights. Only published
  * listings are returned — pending/suspended/archived reads as not-found.
  */
 export const fetchAccommodationBySlugForBookSafe = query({
 	args: { slug: v.string() },
-	handler: async (ctx, { slug }): Promise<AccommodationDetail | null> => {
+	handler: async (ctx, { slug }): Promise<typesAccommodationEnriched | null> => {
 		const apartment = await ctx.db
 			.query('apartments')
 			.withIndex('by_slug', (q) => q.eq('slug', slug))

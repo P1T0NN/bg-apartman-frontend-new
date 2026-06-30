@@ -11,7 +11,7 @@
 	import { authClass } from '@/features/auth/classes/authClass.svelte';
 
 	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants.js';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
 
 	// COMPONENTS
 	import UserTabs from '@/shared/components/pages/(protected)/admin/users/[id]/user-tabs.svelte';

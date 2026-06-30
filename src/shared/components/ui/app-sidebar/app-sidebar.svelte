@@ -16,7 +16,7 @@
 	import Logo from '@/shared/components/ui/logo/logo.svelte';
 
 	// UTILS
-	import { isNavItemActive } from '@/shared/utils/isNavItemActive.js';
+	import { isNavItemActive } from '@/utils/isNavItemActive.js';
 
 	// TYPES
 	import type { ComponentProps } from 'svelte';

@@ -8,7 +8,7 @@
 	} from '@/shared/components/ui/button/index.js';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 
 	type Props = {
 		/** Confirmed-action handler. Invoked after the user clicks the dialog's confirm button. */

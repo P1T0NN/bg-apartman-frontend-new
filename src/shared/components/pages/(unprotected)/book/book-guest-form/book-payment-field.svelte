@@ -1,29 +1,33 @@
 <script lang="ts">
-	// UTILS
+	// LIBRARIES
+	import { m } from '@/shared/lib/paraglide/messages';
+
+	// COMPONENTS
+	import BookPaymentFieldItem from './book-payment-field-item.svelte';
+	
+	// DATA
 	import {
-		paymentMethodDescription,
-		paymentMethodLabel
+		PAYMENT_METHOD_OPTIONS,
+		type PaymentMethod
 	} from '@/features/bookings/data/paymentMethods';
 
-	// TYPES
-	import type { PaymentMethod } from '@/features/bookings/data/paymentMethods';
-
-	// LUCIDE ICONS
-	import BanknoteIcon from '@lucide/svelte/icons/banknote';
-	import CircleCheckIcon from '@lucide/svelte/icons/circle-check';
-
-	let { paymentMethod }: { paymentMethod: PaymentMethod } = $props();
+	let {
+		paymentMethod = $bindable()
+	}: {
+		paymentMethod: PaymentMethod;
+	} = $props();
 </script>
 
 <section class="space-y-4">
-	<div class="flex items-center gap-3 rounded-xl border border-primary bg-primary/5 p-4">
-		<BanknoteIcon class="size-5 shrink-0 text-primary" aria-hidden="true" />
-		<div class="min-w-0 flex-1">
-			<p class="text-sm font-medium">Pay with {paymentMethodLabel(paymentMethod)}</p>
-			<p class="text-xs text-muted-foreground">
-				{paymentMethodDescription(paymentMethod)}
-			</p>
-		</div>
-		<CircleCheckIcon class="size-5 shrink-0 text-primary" aria-hidden="true" />
+	<h2 class="text-lg font-semibold tracking-tight">{m['BookAccommodationPage.BookPaymentField.payment']()}</h2>
+
+	<div class="space-y-3">
+		{#each PAYMENT_METHOD_OPTIONS as option (option.value)}
+			<BookPaymentFieldItem
+				{option}
+				selected={paymentMethod === option.value}
+				onselect={() => (paymentMethod = option.value as PaymentMethod)}
+			/>
+		{/each}
 	</div>
 </section>

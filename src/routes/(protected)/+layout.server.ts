@@ -2,10 +2,10 @@
 import { redirect } from '@sveltejs/kit';
 
 // CONFIG
-import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants.js';
+import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
 
 // UTILS
-import { localizedPath } from '@/shared/utils/localizedPath';
+import { localizedPath } from '@/utils/localizedPath';
 
 // TYPES
 import type { LayoutServerLoad } from './$types';

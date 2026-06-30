@@ -10,7 +10,7 @@
 	import GermanyFlag from '@/shared/svgs/germany-flag.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils';
+	import { cn } from '@/utils/utils';
 
 	interface Props {
 		variant?: 'default' | 'header';

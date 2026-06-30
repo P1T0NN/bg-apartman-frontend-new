@@ -6,12 +6,12 @@
 	import AccommodationLocationMap from './accommodation-location-map.svelte';
 
 	// TYPES
-	import type { AccommodationDetail } from '@/features/accommodations/data/accommodationDummyData';
+	import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
 
 	// LUCIDE ICONS
 	import MapPinIcon from '@lucide/svelte/icons/map-pin';
 
-	let { accommodation }: { accommodation: AccommodationDetail } = $props();
+	let { accommodation }: { accommodation: typesAccommodationEnriched } = $props();
 
 	const area = $derived([accommodation.city, accommodation.country].filter(Boolean).join(', '));
 

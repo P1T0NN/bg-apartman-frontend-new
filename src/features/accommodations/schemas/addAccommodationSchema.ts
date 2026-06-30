@@ -67,7 +67,7 @@ export const accommodationFieldsShape = {
 	quietHoursEnd: z.string().optional(),
 
 	instantBooking: z.boolean(),
-	paymentMethod: z.enum(['cash'], { message: 'Choose how guests can pay.' }),
+	paymentMethod: z.enum(['cash', 'online'], { message: 'Choose how guests can pay.' }),
 	sameDayReservation: z.boolean(),
 	singleDayReservation: z.boolean(),
 	petsAllowed: z.boolean(),

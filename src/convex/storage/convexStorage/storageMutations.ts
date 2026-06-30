@@ -8,7 +8,7 @@ import { authMutation } from '../../auth/middleware/authMiddleware';
 import { AUDIT_ACTIONS } from '../../tables/auditLog/auditLogConfigs';
 
 // TYPES
-import type { ConvexErrorPayload } from '../../types/convexTypes.js';
+import type { ConvexErrorPayload } from '@/shared/types/types.js';
 
 /** Change this one line when copying this file into a new project. */
 const TABLE = 'uploadedFiles' as const;

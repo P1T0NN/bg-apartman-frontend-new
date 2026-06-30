@@ -6,7 +6,7 @@ import { getAuthUserId } from '@/convex/auth/helpers/getAuthUserId';
 import { fetchOptimized } from '@/convex/helpers/fetchOptimized';
 
 // TYPES
-import type { ConvexErrorPayload } from '@/convex/types/convexTypes';
+import type { ConvexErrorPayload } from '@/shared/types/types';
 
 /**
  * Owner-scoped accommodation list for the signed-in host.

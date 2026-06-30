@@ -1,6 +1,7 @@
 <script lang="ts">
 	// CONFIG
-	import { COMPANY_DATA, UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants';
+	import { COMPANY_DATA } from '@/shared/constants';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
 
 	// COMPONENTS
 	import LoginFormNoImage from '@/features/auth/components/login-form/login-form-no-image.svelte';

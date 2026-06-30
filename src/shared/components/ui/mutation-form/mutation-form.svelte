@@ -35,9 +35,9 @@
 	import UploadField from './upload-field.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 	import { zodIssuesToFieldErrors } from '@/shared/utils/validationUtils.js';
-	import { focusFirstError } from '@/shared/utils/focusFirstError.js';
+	import { focusFirstError } from '@/utils/focusFirstError.js';
 	import { useProgress } from '@/features/uploadFile/utils/useProgress.svelte';
 	import { Progress } from '@/shared/components/ui/progress/index.js';
 	import { hasUploadFields } from './utils.js';

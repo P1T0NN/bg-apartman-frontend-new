@@ -3,18 +3,15 @@
 	import { localizeHref } from '@/shared/lib/paraglide/runtime.js';
 
 	// CONFIG
-	import { PROTECTED_PAGE_ENDPOINTS, UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants.js';
+	import { PROTECTED_PAGE_ENDPOINTS, UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
 
 	// COMPONENTS
 	import * as Card from '@/shared/components/ui/card/index.js';
-	import { Badge } from '@/shared/components/ui/badge/index.js';
 	import { Button } from '@/shared/components/ui/button/index.js';
+	import BookingsStatus from '@/features/bookings/components/bookings-status.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
-	import { BOOKING_STATUS_CONFIG } from '@/features/bookings/data/bookingsData';
-	import { countdownLabel, formatDate } from '@/shared/utils/dateUtils';
-	import { formatAdultsAndChildren } from '@/shared/utils/formatters';
+	import { countdownLabel, formatAdultsAndChildren, formatDate } from '@/utils/formatters';
 
 	// TYPES
 	import type { GuestTripSummary } from '@/convex/pages/guest/dashboard/types/guestDashboardTypes';
@@ -25,8 +22,6 @@
 	import ArrowRightIcon from '@lucide/svelte/icons/arrow-right';
 
 	let { trip }: { trip: GuestTripSummary } = $props();
-
-	const status = $derived(BOOKING_STATUS_CONFIG[trip.status]);
 </script>
 
 <Card.Root class="overflow-hidden p-0">
@@ -42,7 +37,7 @@
 
 		<div class="flex flex-col gap-5 p-5 md:p-6">
 			<div class="flex flex-wrap items-center gap-2">
-				<Badge class={cn(status.badgeClass, 'ring-1')}>{status.label}</Badge>
+				<BookingsStatus kind="booking" status={trip.status} />
 				<span class="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
 					{countdownLabel(trip.checkInDate)}
 				</span>

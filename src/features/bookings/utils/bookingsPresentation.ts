@@ -2,31 +2,47 @@
 // and the (dummy) action state machine. Formatters, status styling, and filter taxonomy live
 // in shared utils / bookingsData.
 
-import type { BookingRecord, BookingStatus } from '@/features/bookings/data/bookingsDummyData';
-import type { BookingAction, BookingFilter } from '@/features/bookings/types/bookingsTypes';
+import type {
+	typesBookingSafe,
+	typesBookingStatus,
+	typesBookingAction,
+	typesGuestBookingAction,
+	typesBookingFilter
+} from '@/shared/features/booking/types/bookingTypes';
+import {
+	guestMayCancelConfirmed
+} from '@/shared/features/booking/utils/guestMayCancelConfirmedBooking';
+import { todayIsoUtc } from '@/shared/features/booking/utils/daysUntilCheckIn';
 
-// === STATUS FILTER ===========================================================
+const CLOSED_STATUSES = new Set<typesBookingStatus>(['cancelled', 'declined', 'auto_declined']);
 
-export function matchesFilter(b: BookingRecord, filter: BookingFilter): boolean {
-	return filter === 'all' || b.status === filter;
+export function matchesFilter(b: typesBookingSafe, filter: typesBookingFilter): boolean {
+	if (filter === 'all') return true;
+	if (filter === 'cancelled') return CLOSED_STATUSES.has(b.status);
+	return b.status === filter;
 }
 
 /** Count of bookings per filter, for the badges on the segmented control. */
-export function countByFilter(bookings: BookingRecord[]): Record<BookingFilter, number> {
-	const counts: Record<BookingFilter, number> = {
+export function countByFilter(bookings: typesBookingSafe[]): Record<typesBookingFilter, number> {
+	const counts: Record<typesBookingFilter, number> = {
 		all: bookings.length,
 		pending: 0,
 		confirmed: 0,
 		checked_in: 0,
 		checked_out: 0,
+		declined: 0,
+		auto_declined: 0,
 		cancelled: 0
 	};
-	for (const b of bookings) counts[b.status] += 1;
+	for (const b of bookings) {
+		if (CLOSED_STATUSES.has(b.status)) counts.cancelled += 1;
+		else counts[b.status] += 1;
+	}
 	return counts;
 }
 
 /** Free-text match across the fields a host is likely to search by. */
-export function matchesSearch(b: BookingRecord, query: string): boolean {
+export function matchesSearch(b: typesBookingSafe, query: string): boolean {
 	const q = query.trim().toLowerCase();
 	if (!q) return true;
 	return [
@@ -47,8 +63,8 @@ type ActionMeta = { label: string; toast: string; variant: 'default' | 'destruct
 
 /** Buttons offered in the detail sheet for a given status, in priority order. */
 export function availableActions(
-	status: BookingStatus
-): { action: BookingAction; meta: ActionMeta }[] {
+	status: typesBookingStatus
+): { action: typesBookingAction; meta: ActionMeta }[] {
 	switch (status) {
 		case 'pending':
 			return [
@@ -84,7 +100,7 @@ export function availableActions(
 	}
 }
 
-export function actionToast(action: BookingAction): string {
+export function actionToast(action: typesBookingAction): string {
 	switch (action) {
 		case 'confirm':
 			return 'Booking confirmed';
@@ -100,7 +116,7 @@ export function actionToast(action: BookingAction): string {
 }
 
 /** Apply an action, returning a new booking record with updated status fields. */
-export function applyBookingAction(b: BookingRecord, action: BookingAction): BookingRecord {
+export function applyBookingAction(b: typesBookingSafe, action: typesBookingAction): typesBookingSafe {
 	const now = Date.now();
 	switch (action) {
 		case 'confirm':
@@ -110,6 +126,7 @@ export function applyBookingAction(b: BookingRecord, action: BookingAction): Boo
 		case 'check_out':
 			return { ...b, status: 'checked_out', updatedAt: now };
 		case 'decline':
+			return { ...b, status: 'declined', updatedAt: now, cancelReason: 'Declined by host.' };
 		case 'cancel':
 			return {
 				...b,
@@ -117,8 +134,57 @@ export function applyBookingAction(b: BookingRecord, action: BookingAction): Boo
 				paymentStatus: b.paymentStatus === 'paid' ? 'refunded' : b.paymentStatus,
 				cancelledBy: 'host',
 				cancelledAt: now,
-				cancelReason: action === 'decline' ? 'Request declined by host.' : 'Cancelled by host.',
+				cancelReason: 'Cancelled by host.',
 				updatedAt: now
 			};
 	}
+}
+
+/** Guest-side actions for the reservation page / my bookings (dummy until wired). */
+export function availableGuestActions(
+	b: typesBookingSafe
+): { action: typesGuestBookingAction; meta: ActionMeta }[] {
+	const today = todayIsoUtc();
+	if (b.status === 'pending') {
+		return [
+			{
+				action: 'withdraw',
+				meta: { label: 'Withdraw request', toast: 'Request withdrawn', variant: 'outline' }
+			}
+		];
+	}
+	if (b.status === 'confirmed' && guestMayCancelConfirmed(b.checkInDate, today)) {
+		return [
+			{
+				action: 'cancel',
+				meta: { label: 'Cancel booking', toast: 'Booking cancelled', variant: 'destructive' }
+			}
+		];
+	}
+	return [];
+}
+
+export function applyGuestBookingAction(
+	b: typesBookingSafe,
+	action: typesGuestBookingAction
+): typesBookingSafe {
+	const now = Date.now();
+	if (action === 'withdraw') {
+		return {
+			...b,
+			status: 'cancelled',
+			cancelledBy: 'guest',
+			cancelledAt: now,
+			cancelReason: 'Withdrawn by guest.',
+			updatedAt: now
+		};
+	}
+	return {
+		...b,
+		status: 'cancelled',
+		cancelledBy: 'guest',
+		cancelledAt: now,
+		cancelReason: 'Cancelled by guest.',
+		updatedAt: now
+	};
 }

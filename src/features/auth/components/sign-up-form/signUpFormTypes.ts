@@ -1,6 +1,6 @@
 import type { HTMLFormAttributes } from 'svelte/elements';
 
-import type { WithElementRef } from '@/shared/utils/utils.js';
+import type { WithElementRef } from '@/utils/utils.js';
 
 /** Shown when email verification (OTP) is required after the first password sign-up. */
 export type SignUpFormVerification = { email: string };

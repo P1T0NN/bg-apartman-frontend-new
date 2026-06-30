@@ -1,5 +1,5 @@
 // TYPES
-import type { WithElementRef } from '@/shared/utils/utils.js';
+import type { WithElementRef } from '@/utils/utils.js';
 import type { HTMLInputAttributes } from 'svelte/elements';
 
 export type SearchInputItem = {

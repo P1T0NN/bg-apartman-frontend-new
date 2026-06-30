@@ -1,6 +1,6 @@
 <script lang="ts">
 	// CONFIG
-	import { ADMIN_PAGE_ENDPOINTS } from '@/shared/constants.js';
+	import { ADMIN_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
 
 	// COMPONENTS
 	import * as Sidebar from '@/shared/components/ui/sidebar/index.js';

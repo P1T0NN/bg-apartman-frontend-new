@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { HTMLAttributes } from "svelte/elements";
-	import type { WithElementRef } from "@/shared/utils/utils.js";
-	import { cn } from "@/shared/utils/utils.js";
+	import type { WithElementRef } from "@/utils/utils.js";
+	import { cn } from "@/utils/utils.js";
 	import MinusIcon from '@lucide/svelte/icons/minus';
 
 	let {

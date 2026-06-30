@@ -6,7 +6,7 @@
 	import UploadFileItemSingle from './upload-file-item-single.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 
 	// TYPES
 	import type { UploadFileRow } from '@/features/uploadFile/types/uploadFileTypes';

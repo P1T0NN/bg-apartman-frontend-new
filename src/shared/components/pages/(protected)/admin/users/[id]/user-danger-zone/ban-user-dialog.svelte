@@ -15,8 +15,8 @@
 	} from '@/shared/components/ui/select/index.js';
 
 	// UTILS
-	import { safeMutation } from '@/shared/utils/convexHelpers';
-	import { toastResult } from '@/shared/utils/toastResult';
+	import { safeMutation } from '@/utils/convexHelpers';
+	import { toastResult } from '@/utils/toastResult';
 
 	/**
 	 * Self-contained "Ban…" affordance: renders its own destructive trigger

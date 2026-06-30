@@ -7,7 +7,7 @@
 	import { Input } from '@/shared/components/ui/input/index.js';
 
 	// UTILS
-	import { cn, type WithElementRef } from '@/shared/utils/utils.js';
+	import { cn, type WithElementRef } from '@/utils/utils.js';
 
 	// TYPES
 	import type { HTMLInputAttributes } from 'svelte/elements';

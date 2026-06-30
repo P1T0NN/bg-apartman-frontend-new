@@ -7,7 +7,7 @@
 	import { m } from '@/shared/lib/paraglide/messages.js';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 	import {
 		createGoogleMap,
 		GoogleMapController,

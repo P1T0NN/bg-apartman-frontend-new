@@ -13,7 +13,7 @@
 		ADMIN_PAGE_ENDPOINTS,
 		PROTECTED_PAGE_ENDPOINTS,
 		UNPROTECTED_PAGE_ENDPOINTS
-	} from '@/shared/constants.js';
+	} from '@/shared/routeEndpoints.js';
 
 	// COMPONENTS
 	import * as Sidebar from '@/shared/components/ui/sidebar/index.js';
@@ -83,8 +83,8 @@
 					icon: CirclePlusIcon
 				},
 				{
-					name: m['ProtectedSidebar.bookings'](),
-					url: PROTECTED_PAGE_ENDPOINTS.BOOKINGS,
+					name: m['ProtectedSidebar.reservations'](),
+					url: PROTECTED_PAGE_ENDPOINTS.RESERVATIONS,
 					icon: CalendarCheckIcon
 				}
 			],
@@ -103,7 +103,7 @@
 		<AppSidebar variant="inset" {navItems} />
 
 		<Sidebar.Inset>
-			<SiteHeader />
+			<SiteHeader hidePaths={['/host']} />
 
 			<div class="flex min-h-0 flex-1 flex-col px-4">
 				{@render children()}

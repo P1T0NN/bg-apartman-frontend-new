@@ -6,6 +6,8 @@ export const bookingStatus = v.union(
 	v.literal('confirmed'),
 	v.literal('checked_in'),
 	v.literal('checked_out'),
+	v.literal('declined'),
+	v.literal('auto_declined'),
 	v.literal('cancelled')
 );
 
@@ -22,3 +24,5 @@ export const bookingAction = v.union(
 	v.literal('check_out'),
 	v.literal('cancel')
 );
+
+export const guestBookingAction = v.union(v.literal('withdraw'), v.literal('cancel'));

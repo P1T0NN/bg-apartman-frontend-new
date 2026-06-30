@@ -3,7 +3,7 @@ import { resolveMergedRegionPlaceId } from '@/shared/lib/google-maps/places';
 
 // TYPES
 import type { PlaceDetails, RegionBounds } from '@/shared/lib/google-maps/places';
-import type { typesAddAccommodationForm } from '@/features/accommodations/types/types';
+import type { typesAddAccommodationForm } from '@/shared/features/accommodation/types/accommodationTypes';
 
 /** Location fields the autocompletes fill directly on the `$state` form proxy. The required
  *  `placeId` gate is set separately through the form's `setValue`, so it clears its own error. */

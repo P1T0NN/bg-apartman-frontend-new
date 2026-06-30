@@ -5,7 +5,7 @@
 	import { localizeHref } from '@/shared/lib/paraglide/runtime';
 
 	// CONFIG
-	import { ADMIN_PAGE_ENDPOINTS } from '@/shared/constants.js';
+	import { ADMIN_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
 
 	// COMPONENTS
 	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';

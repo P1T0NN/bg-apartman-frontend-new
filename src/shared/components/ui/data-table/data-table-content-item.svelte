@@ -9,7 +9,7 @@
 	import CopyButton from '@/shared/components/ui/copy-button/copy-button.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 	import { breakpointTableClass, formatCellValue } from './dataTableUtils.js';
 
     // TYPES

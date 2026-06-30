@@ -17,7 +17,7 @@
 	import DashboardUpcoming from '@/shared/components/pages/(protected)/guest/dashboard/dashboard-upcoming/dashboard-upcoming.svelte';
 
 	// UTILS
-	import { countdownLabel } from '@/shared/utils/dateUtils';
+	import { countdownLabel } from '@/utils/formatters';
 
 	// TYPES
 	import type { GuestDashboardData } from '@/convex/pages/guest/dashboard/types/guestDashboardTypes';
@@ -46,7 +46,7 @@
 
 <SvelteHead title="Guest dashboard" description="Your trips at a glance." noIndex />
 
-<section class="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-6 md:px-6 md:py-8">
+<section class="flex w-full flex-col gap-6 p-4 md:p-6">
 	{#if isLoading}
 		<DashboardPageLoading />
 	{:else if dashboardQuery.error}

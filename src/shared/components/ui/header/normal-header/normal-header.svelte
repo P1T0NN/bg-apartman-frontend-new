@@ -7,15 +7,11 @@
 	import { useAuth } from '@mmailaender/convex-better-auth-svelte/svelte';
 
 	// CONFIG
-	import { COMPANY_DATA, UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants.js';
+	import { COMPANY_DATA } from '@/shared/constants.js';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
 
 	// CLASSES
-	import {
-		isNavItemActive,
-		navItems,
-		navLinkActiveClass,
-		navLinkClass
-	} from './normal-header.svelte.ts';
+	import { navItems, navLinkActiveClass, navLinkClass } from './normal-header.svelte.ts';
 
 	// COMPONENTS
 	import Link from '@/shared/components/ui/link/link.svelte';
@@ -26,7 +22,8 @@
 	import LoginButton from '@/features/auth/components/login-button/login-button.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
+	import { isNavItemActive } from '@/utils/isNavItemActive.js';
 
 	type Props = {
 		class?: string;

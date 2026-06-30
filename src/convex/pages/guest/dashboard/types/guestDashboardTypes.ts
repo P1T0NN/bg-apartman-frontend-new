@@ -2,17 +2,15 @@
 // dashboard actually renders, so the query stays cheap on bandwidth.
 
 // TYPES
-import type { BookingStatus } from '@/features/bookings/types/bookingsTypes';
+import type { Doc } from '@/convex/_generated/dataModel';
+import type { typesBookingApartmentSummary } from '@/shared/features/booking/types/bookingTypes';
 
-export type GuestTripSummary = {
+export type GuestTripSummary = Pick<
+	Doc<'bookings'>,
+	'bookingCode' | 'status' | 'checkInDate' | 'checkOutDate' | 'numberOfAdults' | 'numberOfChildren'
+> & {
 	id: string;
-	bookingCode: string;
-	status: BookingStatus;
-	checkInDate: string; // ISO "YYYY-MM-DD"
-	checkOutDate: string;
-	numberOfAdults: number;
-	numberOfChildren: number;
-	apartment: { title: string; city: string; imageUrl: string };
+	apartment: Pick<typesBookingApartmentSummary, 'title' | 'city' | 'imageUrl'>;
 };
 
 export type GuestDashboardData = {

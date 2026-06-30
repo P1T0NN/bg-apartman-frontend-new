@@ -13,8 +13,8 @@
 	import { Input } from '@/shared/components/ui/input/index.js';
 
 	// UTILS
-	import { safeMutation } from '@/shared/utils/convexHelpers';
-	import { toastResult } from '@/shared/utils/toastResult';
+	import { safeMutation } from '@/utils/convexHelpers';
+	import { toastResult } from '@/utils/toastResult';
 
 	/**
 	 * Self-contained "Delete…" affordance. Renders its own destructive trigger,

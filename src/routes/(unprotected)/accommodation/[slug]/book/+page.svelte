@@ -6,17 +6,15 @@
 	import { api } from '@/convex/_generated/api';
 	import { useQuery } from 'convex-svelte';
 	import { parseDate, type DateValue } from '@internationalized/date';
-
-	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants';
+	import { m } from '@/shared/lib/paraglide/messages';
 
 	// COMPONENTS
 	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
-	import { Link } from '@/shared/components/ui/link/index.js';
 	import { Separator } from '@/shared/components/ui/separator/index.js';
-	import BookTripDetails from '@/shared/components/pages/(unprotected)/book/book-trip-details.svelte';
+	import BookDetails from '@/shared/components/pages/(unprotected)/book/book-details/book-details.svelte';
 	import BookSummaryCard from '@/shared/components/pages/(unprotected)/book/book-summary-card/book-summary-card.svelte';
 	import BookGuestForm from '@/shared/components/pages/(unprotected)/book/book-guest-form/book-guest-form.svelte';
+	import BookHeader from '@/shared/components/pages/(unprotected)/book/book-guest-form/book-header.svelte';
 	import AccommodationPageLoading from '@/shared/components/pages/(unprotected)/accommodation/loading/accommodation-page-loading.svelte';
 	import AccommodationPageEmpty from '@/shared/components/pages/(unprotected)/accommodation/empty/accommodation-page-empty.svelte';
 	import AccommodationPageError from '@/shared/components/pages/(unprotected)/accommodation/error/accommodation-page-error.svelte';
@@ -25,11 +23,8 @@
 	import { nightsBetween } from '@/shared/utils/dateUtils';
 
 	// TYPES
-	import type { AccommodationDetail } from '@/features/accommodations/data/accommodationDummyData';
+	import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
 	import type { DateRange } from 'bits-ui';
-
-	// LUCIDE ICONS
-	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 
 	const slug = $derived(page.params.slug ?? '');
 
@@ -39,7 +34,7 @@
 		() => (slug ? { slug } : 'skip')
 	);
 	const accommodation = $derived(
-		accommodationQuery.data as AccommodationDetail | null | undefined
+		accommodationQuery.data as typesAccommodationEnriched | null | undefined
 	);
 
 	function toDate(value: string | null): DateValue | undefined {
@@ -64,15 +59,12 @@
 	const checkIn = $derived(dateRange.start?.toString() ?? null);
 	const checkOut = $derived(dateRange.end?.toString() ?? null);
 	const hasDates = $derived(nightsBetween(checkIn, checkOut) > 0);
-
-	const headTitle = $derived(
-		accommodation ? `Book ${accommodation.title}` : 'Book accommodation'
-	);
 </script>
 
-<SvelteHead 
-	title={headTitle} 
-	description="Confirm your booking details." noIndex 
+<SvelteHead
+	title={m['BookAccommodationPage.SEO.title']({ accommodationTitle: accommodation?.title ?? '' })}
+	description={m['BookAccommodationPage.SEO.description']()}
+	noIndex
 />
 
 {#if accommodationQuery.error}
@@ -83,34 +75,15 @@
 	<AccommodationPageLoading />
 {:else}
 	<div class="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-		<div class="mb-6 space-y-3">
-			<Link
-				href={UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION.replace(':slug', slug)}
-				class="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-			>
-				<ChevronLeftIcon class="size-4" aria-hidden="true" />
-				Back to listing
-			</Link>
-
-			<h1 class="text-2xl font-semibold tracking-tight md:text-3xl">
-				{accommodation.instantBooking ? 'Confirm your booking' : 'Request to book'}
-			</h1>
-		</div>
-
-		{#if !hasDates}
-			<div
-				class="mb-6 rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 text-sm text-foreground/90"
-			>
-				You haven’t picked your dates yet — add them under
-				<span class="font-medium">Your trip</span> to see the full price and confirm.
-			</div>
-		{/if}
+		<BookHeader {slug} instantBooking={accommodation.instantBooking} datesMissing={!hasDates} />
 
 		<div class="grid grid-cols-1 gap-x-12 gap-y-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
 			<!-- Left: trip recap + guest form (below the summary on mobile) -->
 			<div class="order-2 min-w-0 space-y-8 lg:order-1">
-				<BookTripDetails {accommodation} bind:dateRange bind:adults bind:children />
+				<BookDetails {accommodation} bind:dateRange bind:adults bind:children />
+
 				<Separator />
+
 				<BookGuestForm
 					{accommodation}
 					{checkIn}

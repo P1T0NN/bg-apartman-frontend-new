@@ -9,7 +9,7 @@ import { m } from '@/shared/lib/paraglide/messages';
 import { COMPANY_DATA } from '@/shared/constants';
 
 // UTILS
-import { safeCommand } from '@/shared/utils/remoteFunctionsUtils';
+import { safeCommand } from '@/utils/remoteFunctionsUtils';
 import { escapeHtml } from '@/shared/utils/escapeHtml.js';
 
 // SCHEMAS

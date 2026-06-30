@@ -4,7 +4,7 @@
 	import { localizeHref } from '@/shared/lib/paraglide/runtime';
 
 	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
 
 	// CLASSES
 	import { activeFilters } from '../search-state';

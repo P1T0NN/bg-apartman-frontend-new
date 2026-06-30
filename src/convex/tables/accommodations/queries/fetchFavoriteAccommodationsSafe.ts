@@ -1,46 +1,43 @@
 // LIBRARIES
 import { v } from 'convex/values';
+import { query } from '@/convex/_generated/server';
 
 // HELPERS
-import { fetchOptimized } from '@/convex/helpers/fetchOptimized';
-import { apartmentToSearchListing } from '../utils/apartmentToSearchListing';
+import {
+	optionalOneBasedPageArg,
+	paginatedQueryArgs,
+	toPaginatedListPayload
+} from '@/convex/helpers/paginationHelpers';
+import { resolveFavoriteListings } from '../helpers/resolveFavoriteListings';
 
 // TYPES
-import type { Doc } from '@/convex/_generated/dataModel';
-import type { SearchListing } from '@/features/accommodations/types/searchListing';
-
-/** Client-stored favorite id lists stay well under this; extras are ignored. */
-const MAX_IDS = 200;
+import type { PaginatedListPayload } from '@/shared/components/ui/data-table/types';
+import type { SearchListing } from '@/shared/features/accommodation/types/accommodationTypes';
 
 /**
  * Paginated saved listings for the guest favorites page.
  *
- * The client passes apartment ids from localStorage; `collect` resolves each row,
- * drops stale/unpublished entries, and `projectPage` maps to the sanitized
- * {@link SearchListing} card shape (no internal fields leak). Offset pagination gives
- * `ConvexDataList` an exact `totalCount`.
+ * App-specific (not built on `fetchOptimized`): favorites are a client-held id list, not an
+ * indexable table query. `resolveFavoriteListings` point-reads + sanitizes the ids, then
+ * `toPaginatedListPayload` slices the requested offset page and reports an exact `totalCount`
+ * for `ConvexDataList`'s offset mode. The page slice is the only thing mapped per request.
  */
-export const fetchFavoriteAccommodationsSafe = fetchOptimized({
-	table: 'apartments',
-	strategy: 'offset',
+export const fetchFavoriteAccommodationsSafe = query({
 	args: {
-		ids: v.array(v.id('apartments'))
+		ids: v.array(v.id('apartments')),
+		...paginatedQueryArgs,
+		page: optionalOneBasedPageArg
 	},
-	collect: async (ctx, args) => {
-		const docs: Doc<'apartments'>[] = [];
-		for (const id of args.ids.slice(0, MAX_IDS)) {
-			const apartment = await ctx.db.get('apartments', id);
-			if (
-				!apartment ||
-				apartment.status !== 'published' ||
-				apartment.images.length === 0 ||
-				apartment.coordinates === undefined
-			) {
-				continue;
-			}
-			docs.push(apartment);
-		}
-		return docs;
-	},
-	projectPage: (apartment): SearchListing => apartmentToSearchListing(apartment)
+	handler: async (ctx, args): Promise<PaginatedListPayload<SearchListing>> => {
+		const listings = await resolveFavoriteListings(ctx, args.ids);
+
+		return toPaginatedListPayload({
+			page: args.page,
+			paginationOpts: args.paginationOpts,
+			fetch: async ({ limit, offset }) => ({
+				items: listings.slice(offset, offset + limit),
+				total: listings.length
+			})
+		});
+	}
 });

@@ -1,4 +1,4 @@
-import type { WithElementRef } from "@/shared/utils/utils.js";
+import type { WithElementRef } from "@/utils/utils.js";
 import type {
 	EmblaCarouselSvelteType,
 	default as emblaCarouselSvelte,

@@ -1,71 +1,19 @@
 // Dummy bookings data for the host-facing Bookings page.
 //
-// Shapes mirror the `bookings` table in src/convex/schema.ts, with one addition:
-// each record carries a denormalized `apartment` summary so the UI can show the
-// listing title / photo / city without a second lookup. The real query is expected
-// to enrich bookings the same way before returning them to the client.
+// Typed as typesBookingSafe — the same enriched, schema-derived shape the real "Safe" booking
+// queries return — so these fixtures can't drift from the `bookings` table. Each record is a
+// `Doc<'bookings'>` (minus server-only columns) plus a denormalized `apartment` summary, so the
+// UI can show the listing title / photo / city without a second lookup; the real query enriches
+// the same way via resolveApartmentSummary().
 
-/** Mirrors the `status` union on the bookings table. */
-export type BookingStatus =
-	| 'pending'
-	| 'confirmed'
-	| 'checked_in'
-	| 'checked_out'
-	| 'cancelled';
+// TYPES
+import type { typesBookingSafe } from '@/shared/features/booking/types/bookingTypes';
 
-/** Mirrors the `paymentStatus` union on the bookings table. */
-export type PaymentStatus = 'pending' | 'paid' | 'refunded';
-
-/** Mirrors the `paymentMethod` union on the bookings table. */
-export type PaymentMethod = 'cash';
-
-/** Denormalized listing summary attached to each booking for display. */
-export type BookingApartmentSummary = {
+// Fixtures use readable plain-string ids; the branded `Id<...>` fields are restored by the cast
+// on `bookingsDummyData` below. Every other field is type-checked against typesBookingSafe.
+type BookingFixture = Omit<typesBookingSafe, '_id' | 'apartmentId'> & {
 	_id: string;
-	title: string;
-	city: string;
-	type: string;
-	imageUrl: string;
-};
-
-/** A single booking row, mirroring the schema plus the enriched `apartment`. */
-export type BookingRecord = {
-	_id: string;
-	_creationTime: number;
-
-	bookingCode: string;
-
-	apartmentId: string;
-	apartment: BookingApartmentSummary;
-	hostId: string;
-	guestId?: string;
-
-	guestFirstName: string;
-	guestLastName: string;
-	guestEmail: string;
-	guestPhone: string;
-	specialRequests?: string;
-
-	checkInDate: string; // ISO date "2026-06-25"
-	checkOutDate: string; // ISO date "2026-06-28"
-	numberOfAdults: number;
-	numberOfChildren: number;
-	numberOfNights: number;
-
-	subtotal: number;
-	cleaningFee: number;
-	total: number;
-	currency: 'EUR';
-
-	paymentMethod: PaymentMethod;
-	paymentStatus: PaymentStatus;
-	status: BookingStatus;
-
-	updatedAt: number;
-	cancelledAt?: number;
-	cancelledBy?: 'guest' | 'host';
-	cancelReason?: string;
-	archivedAt?: number;
+	apartmentId?: string;
 };
 
 /** Epoch-ms helper so the data below stays readable as ISO strings. */
@@ -119,7 +67,7 @@ const APARTMENTS = {
 } as const;
 
 // Reference date for this fixture set: 2026-06-19.
-export const bookingsDummyData: BookingRecord[] = [
+const fixtures: BookingFixture[] = [
 	// === PENDING — awaiting the host's response ===============================
 	{
 		_id: 'bk_01',
@@ -605,3 +553,6 @@ export const bookingsDummyData: BookingRecord[] = [
 		cancelReason: 'Found alternative accommodation.'
 	}
 ];
+
+// Re-brand the plain-string ids back to `Id<...>` so consumers get the real typesBookingSafe shape.
+export const bookingsDummyData = fixtures as typesBookingSafe[];

@@ -11,7 +11,7 @@
 
 	// UTILS
 	import { capitalizeFirst } from '@/shared/utils/stringUtils';
-	import { formatTs } from '@/shared/utils/dateUtils';
+	import { formatTs } from '@/utils/formatters';
 
 	/**
 	 * Row shape returned by `listUserAccounts` (BA component `account` table, shaped

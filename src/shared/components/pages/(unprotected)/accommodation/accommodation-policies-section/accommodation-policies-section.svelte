@@ -9,9 +9,9 @@
 	import AccommodationPoliciesItem from './accommodation-policies-item.svelte';
 
 	// TYPES
-	import type { AccommodationDetail } from '@/features/accommodations/data/accommodationDummyData';
+	import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
 
-	let { accommodation }: { accommodation: AccommodationDetail } = $props();
+	let { accommodation }: { accommodation: typesAccommodationEnriched } = $props();
 
 	const { houseRules, bookingRules } = $derived(createAccommodationPoliciesRules(accommodation));
 </script>

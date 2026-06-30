@@ -1,13 +1,13 @@
 // TYPES
 import type { Doc } from '@/convex/_generated/dataModel';
 import type { QueryCtx } from '@/convex/_generated/server';
-import type { BookingApartmentSummary } from '@/features/bookings/types/bookingsTypes';
+import type { typesBookingApartmentSummary } from '@/shared/features/booking/types/bookingTypes';
 
 /** Join a booking to the lean apartment summary the bookings UI renders. */
 export async function resolveApartmentSummary(
 	ctx: QueryCtx,
 	booking: Doc<'bookings'>
-): Promise<BookingApartmentSummary> {
+): Promise<typesBookingApartmentSummary> {
 	const apartment = booking.apartmentId
 		? await ctx.db.get(booking.apartmentId)
 		: await ctx.db

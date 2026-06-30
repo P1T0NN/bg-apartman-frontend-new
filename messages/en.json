@@ -29,7 +29,7 @@
 		"dashboard": "Dashboard",
 		"myAccommodations": "My Accommodations",
 		"addAccommodation": "Add Accommodation",
-		"bookings": "Bookings",
+		"reservations": "Reservations",
 		"goToAdminPage": "Go to Admin Page",
 		"backToHome": "Back to Home"
 	},
@@ -231,11 +231,59 @@
 		"sortDefault": "Default order"
 	},
 
+	"NumberStepper": {
+		"decrease": "Decrease {label}",
+		"increase": "Increase {label}"
+	},
+
 	"AlertDialogButton": {
 		"title": "Action cannot be reversed",
 		"description": "Are you sure you want to do this? This action cannot be undone.",
 		"cancel": "Cancel",
 		"proceed": "Proceed"
+	},
+
+	"BookingsStatus": {
+		"pending": "Pending",
+		"confirmed": "Confirmed",
+		"checkedIn": "Checked in",
+		"checkedOut": "Checked out",
+		"declined": "Declined",
+		"autoDeclined": "Expired",
+		"cancelled": "Cancelled",
+		"learnMore": "Click to learn more",
+		"learnMoreAria": "Learn what each booking status means"
+	},
+
+	"BookingStatusExplanation": {
+		"seoTitle": "Booking statuses, explained",
+		"seoDescription": "A quick guide to what each booking status means — pending, confirmed, checked in, checked out and cancelled.",
+		"title": "Booking statuses, explained",
+		"subtitle": "Every booking moves through a few simple stages. Here's what each status means, so you always know where things stand.",
+		"pendingDescription": "The booking request has been sent and is waiting for the host to confirm. Nothing is charged until it's accepted.",
+		"confirmedDescription": "The host has accepted the booking. The dates are reserved and a confirmation email has been sent.",
+		"checkedInDescription": "The guest has arrived and the stay is currently in progress.",
+		"checkedOutDescription": "The stay is finished and the guest has checked out.",
+		"cancelledDescription": "The booking was called off — by the guest or host — and the dates have been released.",
+		"declinedDescription": "The host declined this request. The dates were never reserved and you can book another stay.",
+		"autoDeclinedDescription": "The host did not respond within 48 hours, so the request expired automatically. You can send a new request or choose another listing.",
+		"cancelledNote": "Guests can cancel a confirmed stay for free when check-in is at least 7 days away. Inside that window, contact the host directly.",
+		"exceptionHeading": "If something changes"
+	},
+
+	"BookingFilters": {
+		"all": "All",
+		"requests": "Requests",
+		"upcoming": "Upcoming",
+		"hostingNow": "Hosting now",
+		"checkedOut": "Checked out",
+		"cancelled": "Cancelled"
+	},
+
+	"BookingPaymentStatus": {
+		"paid": "Paid",
+		"unpaid": "Unpaid",
+		"refunded": "Refunded"
 	},
 
 	"SearchInput": {
@@ -277,7 +325,17 @@
 		"dishwasher": "Dishwasher",
 		"coffeeMaker": "Coffee maker",
 		"selfCheckin": "Self check-in",
-		"smokeAlarm": "Smoke alarm"
+		"smokeAlarm": "Smoke alarm",
+		"shower": "Shower",
+		"bathtub": "Bathtub",
+		"towels": "Towels",
+		"hotTub": "Hot tub",
+		"sauna": "Sauna",
+		"privateParking": "Private parking",
+		"publicParking": "Public parking",
+		"toiletPaper": "Toilet paper",
+		"shampoo": "Shampoo",
+		"childrensPlayground": "Children's playground"
 	},
 
 	"LocationMap": {
@@ -392,6 +450,20 @@
 			"title": "No saved stays yet",
 			"description": "Tap the heart on any place you like and it'll show up here, ready for your next trip.",
 			"browseStays": "Browse stays"
+		}
+	},
+
+	"AvailabilityCalendar": {
+		"invalidSelectionMessage": "That range includes booked dates. Pick dates that are free.",
+		"minimumStay": "Minimum stay is {nights}",
+		"maximumStay": "Maximum stay is {nights}",
+		"calendarLabel": "Availability calendar",
+		"AvailabilityCalendarLegend": {
+			"selected": "Selected",
+			"today": "Today",
+			"todayUnavailable": "Today unavailable",
+			"blocked": "Blocked",
+			"booked": "Booked"
 		}
 	},
 
@@ -561,6 +633,111 @@
 		"BookingPanelPrice": {
 			"from": "from",
 			"night": "night"
+		}
+	},
+
+	"BookAccommodationPage": {
+		"SEO": {
+			"title": "Book {accommodationTitle}",
+			"description": "Confirm your booking details."
+		},
+		"BookHeader": {
+			"backToListing": "Back to listing",
+			"confirmYourBooking": "Confirm your booking",
+			"requestToBook": "Request to book",
+			"youHavenTickedDates": "You haven’t picked your dates yet — add them under",
+			"yourTrip": "Your trip",
+			"toSeeTheFullPriceAndConfirm": "to see the full price and confirm."
+		},
+		"BookDetails": {
+			"yourDates": "Your dates",
+			"guests": "Guests"
+		},
+		"BookGuestDetails": {
+			"dates": "Dates",
+			"guests": "Guests"
+		},
+		"BookSummaryListing": {
+			"typeInCity": "{type} in {city}"
+		},
+		"BookPrice": {
+			"priceDetails": "Price details",
+			"cleaningFee": "Cleaning fee",
+			"total": "Total",
+			"currency": "EUR",
+			"addDatesToSeePrice": "Add your dates to see the full price — from",
+			"perNight": "/ night."
+		},
+		"BookingCalendar": {
+			"minimumStay": "Minimum stay {nights}"
+		},
+		"BookDetailsStayRules": {
+			"sameDayCheckInAvailable": "Same-day check-in is available",
+			"sameDayCheckInNotAvailable": "Same-day check-in isn't available — pick a start date at least a day ahead",
+			"minimumStay": "Minimum stay of {nights}"
+		},
+		"GuestStepper": {
+			"adults": "Adults",
+			"age13": "Age 13+",
+			"decreaseAdults": "Decrease adults",
+			"increaseAdults": "Increase adults",
+			"children": "Children",
+			"ages212": "Ages 2–12",
+			"decreaseChildren": "Decrease children",
+			"increaseChildren": "Increase children"
+		},
+		"BookPaymentField": {
+			"payment": "Payment"
+		},
+		"BookConfirmActionsField": {
+			"confirmReservation": "Confirm reservation",
+			"requestToBook": "Request to book",
+			"bySelecting": "By selecting {label}",
+			"youAgreeToTheHostsHouseRules": "you agree to the host’s house rules and to pay the full amount by {paymentMethod}.",
+			"pleasePickYourDates": "Please pick your dates at the top of the page before you continue."
+		}
+	},
+
+	"ReservationPage": {
+		"SEO": {
+			"title": "Your reservation for {accommodationTitle} | {companyName}",
+			"description": "Your booking details and confirmation code for {accommodationTitle}."
+		},
+		"ReservationPageError": {
+			"title": "Something went wrong",
+			"description": "We couldn’t load this reservation. Please try again in a moment.",
+			"browseStays": "Browse stays"
+		},
+		"ReservationPageEmpty": {
+			"title": "Reservation not found",
+			"description": "This reservation link is invalid or may have been removed. Check the link from your confirmation, or browse other stays.",
+			"browseStays": "Browse stays"
+		},
+		"ReservationPageLoading": {
+			"ariaLabel": "Loading your reservation"
+		},
+		"ReservationConfirmation": {
+			"pendingTitle": "Request sent!",
+			"pendingDescription": "{hostName} will review your request and confirm shortly. We'll let you know either way.",
+			"cancelledTitle": "Reservation cancelled",
+			"cancelledDescription": "This booking for {accommodationTitle} was cancelled. If that's unexpected, reach out to {hostName}.",
+			"declinedTitle": "Request declined",
+			"declinedDescription": "{hostName} couldn't accept this request. The dates were not reserved — feel free to book another stay.",
+			"expiredTitle": "Request expired",
+			"expiredDescription": "The host didn't respond within 48 hours, so this request closed automatically. You can send a new request anytime.",
+			"bookedTitle": "Your stay is booked!",
+			"bookedDescription": "You're all set for {accommodationTitle}. We've emailed your confirmation details.",
+			"status": "Status",
+			"confirmationCode": "Confirmation code",
+			"copyConfirmationCode": "Copy confirmation code",
+			"stay": "Stay",
+			"checkIn": "Check-in",
+			"checkOut": "Check-out",
+			"guests": "Guests",
+			"totalWithPayment": "Total ({paymentMethod})",
+			"emailCopySent": "A copy was sent to {email}",
+			"backToListing": "Back to listing",
+			"browseMoreStays": "Browse more stays"
 		}
 	},
 
@@ -757,6 +934,8 @@
 		"LISTING_NOT_AVAILABLE_TO_SAVE": "This listing is not available to save.",
 
 		"BOOKING_CREATED": "Booking confirmed.",
+		"BOOKING_UPDATED": "Booking updated.",
+		"BOOKING_CANCEL_TOO_LATE": "Free cancellation is only available 7+ days before check-in. Contact the host if your plans changed.",
 		"INVALID_BOOKING_DATES": "Check-out must be after check-in.",
 
 		"UPLOAD_NOT_FOUND": "Upload not found. Please try again.",

@@ -5,7 +5,7 @@
 	import AccommodationGalleryLightbox from './accommodation-gallery-lightbox.svelte';
 
 	// TYPES
-	import type { typesAccommodationImage } from '@/features/accommodations/types/types';
+	import type { typesAccommodationImage } from '@/shared/features/accommodation/types/accommodationTypes';
 
 	let { images, title }: { images: typesAccommodationImage[]; title: string } = $props();
 

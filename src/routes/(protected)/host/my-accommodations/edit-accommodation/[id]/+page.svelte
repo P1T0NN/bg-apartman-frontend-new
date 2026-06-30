@@ -9,11 +9,10 @@
 
 	// COMPONENTS
 	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
-	import Section from '@/shared/components/ui/section/section.svelte';
-	import EditAccommodationTabs from '@/shared/components/pages/(protected)/edit-accommodation/edit-accommodation-tabs.svelte';
-	import EditAccommodationPageLoading from '@/shared/components/pages/(protected)/edit-accommodation/loading/edit-accommodation-page-loading.svelte';
-	import EditAccommodationPageEmpty from '@/shared/components/pages/(protected)/edit-accommodation/empty/edit-accommodation-page-empty.svelte';
-	import EditAccommodationPageError from '@/shared/components/pages/(protected)/edit-accommodation/error/edit-accommodation-page-error.svelte';
+	import EditAccommodationTabs from '@/shared/components/pages/(protected)/host/edit-accommodation/edit-accommodation-tabs.svelte';
+	import EditAccommodationPageLoading from '@/shared/components/pages/(protected)/host/edit-accommodation/loading/edit-accommodation-page-loading.svelte';
+	import EditAccommodationPageEmpty from '@/shared/components/pages/(protected)/host/edit-accommodation/empty/edit-accommodation-page-empty.svelte';
+	import EditAccommodationPageError from '@/shared/components/pages/(protected)/host/edit-accommodation/error/edit-accommodation-page-error.svelte';
 
 	// TYPES
 	import type { Doc, Id } from '@/convex/_generated/dataModel';
@@ -39,7 +38,7 @@
 
 <SvelteHead title="Edit accommodation" description="Edit your accommodation listing." noIndex />
 
-<Section yPadding="lg" containerClass="mx-auto max-w-3xl">
+<section class="flex w-full flex-col gap-6 p-4 md:p-6">
 	{#if accommodationQuery.error}
 		<EditAccommodationPageError />
 	{:else if accommodation === null}
@@ -49,4 +48,4 @@
 	{:else}
 		<EditAccommodationTabs {accommodation} />
 	{/if}
-</Section>
+</section>

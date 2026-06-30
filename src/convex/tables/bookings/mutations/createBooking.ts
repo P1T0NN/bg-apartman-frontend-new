@@ -1,11 +1,17 @@
 // LIBRARIES
 import { v } from 'convex/values';
-
-// SERVER
 import { mutation } from '@/convex/_generated/server';
+
+// UTILS
+import { authComponent } from '@/convex/auth/auth';
+import { sendCreateBookingEmail } from '@/convex/email/sendCreateBookingEmail';
+import { calculatePrice } from '@/shared/features/pricing/utils/calculatePrice';
+import { makeBookingCode } from '@/shared/features/booking/utils/makeBookingCode';
+import { nightsBetween } from '@/shared/utils/dateUtils';
 
 // SCHEMAS
 import { paymentMethod } from '@/convex/tables/accommodations/schemas/accommodationsSchemas';
+import { pendingExpiresAtFrom } from '@/shared/features/booking/utils/pendingExpiresAtFrom';
 import { mutationResultData } from '@/convex/schemas/schemas';
 
 const bookingData = v.object({
@@ -13,28 +19,11 @@ const bookingData = v.object({
 	bookingCode: v.string()
 });
 
-// Guest-readable alphabet — no 0/O/1/I so a code can be read off a screen or over the phone.
-const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-
-function makeBookingCode(): string {
-	let code = 'BK';
-	for (let i = 0; i < 8; i++) code += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
-	return code;
-}
-
-/** Whole nights between two ISO dates (check-out exclusive). */
-function nightsBetween(checkIn: string, checkOut: string): number {
-	const start = new Date(checkIn).getTime();
-	const end = new Date(checkOut).getTime();
-	if (Number.isNaN(start) || Number.isNaN(end)) return 0;
-	return Math.max(0, Math.round((end - start) / 86_400_000));
-}
-
 /**
  * Create a guest booking and return its id + human-readable code.
  *
  * Public (no auth): guests book without an account. The returned `bookingId` is the
- * unguessable access key for `/reservation/[id]`; `bookingCode` is the short code shown
+ * unguessable access key for `/reservations/[id]`; `bookingCode` is the short code shown
  * to the guest and used for support lookups. Status is `confirmed` for instant-book
  * listings, otherwise `pending` (host review). Payment is `pending` — cash is settled
  * on arrival.
@@ -55,11 +44,9 @@ export const createBooking = mutation({
 		numberOfAdults: v.number(),
 		numberOfChildren: v.number(),
 
-		subtotal: v.number(),
-		cleaningFee: v.number(),
-
 		paymentMethod,
-		instantBooking: v.boolean()
+		instantBooking: v.boolean(),
+		locale: v.optional(v.string())
 	},
 	returns: mutationResultData(bookingData),
 	handler: async (ctx, args) => {
@@ -83,7 +70,19 @@ export const createBooking = mutation({
 			};
 		}
 
+		// Price is derived from the listing server-side — never trusted from the client. The
+		// apartment doc carries the `pricePerNight` / `discountAmount` / `cleaningFee` shape
+		// `calculatePrice` expects.
+		const quote = calculatePrice(apartment, numberOfNights);
+
 		const bookingCode = makeBookingCode();
+		const now = Date.now();
+		const isInstant = args.instantBooking;
+
+		const hostUser = (await authComponent.getAnyUserById(ctx, args.hostId)) as {
+			name?: string;
+			email?: string;
+		} | null;
 
 		const bookingId = await ctx.db.insert('bookings', {
 			bookingCode,
@@ -103,16 +102,39 @@ export const createBooking = mutation({
 			numberOfChildren: args.numberOfChildren,
 			numberOfNights,
 
-			subtotal: args.subtotal,
-			cleaningFee: args.cleaningFee,
-			total: args.subtotal + args.cleaningFee,
+			subtotal: quote.accommodationTotal,
+			cleaningFee: quote.cleaningFee,
+			total: quote.total,
 			currency: 'EUR',
 
 			paymentMethod: args.paymentMethod,
 			paymentStatus: 'pending',
-			status: args.instantBooking ? 'confirmed' : 'pending',
+			status: isInstant ? 'confirmed' : 'pending',
+			pendingExpiresAt: isInstant ? undefined : pendingExpiresAtFrom(now),
 
-			updatedAt: Date.now()
+			updatedAt: now
+		});
+
+		const hostEmail = hostUser?.email?.trim();
+
+		await sendCreateBookingEmail(ctx, {
+			locale: args.locale ?? 'en',
+			bookingId,
+			bookingCode,
+			apartmentTitle: apartment.title,
+			checkInDate: args.checkInDate,
+			checkOutDate: args.checkOutDate,
+			numberOfAdults: args.numberOfAdults,
+			numberOfChildren: args.numberOfChildren,
+			total: quote.total,
+			currency: 'EUR',
+			instantBooking: args.instantBooking,
+			guestFirstName: args.guestFirstName.trim(),
+			guestLastName: args.guestLastName.trim(),
+			guestEmail: args.guestEmail.trim(),
+			guestPhone: args.guestPhone.trim(),
+			hostName: hostUser?.name?.trim() || 'Host',
+			hostEmail: hostEmail ?? ''
 		});
 
 		return {

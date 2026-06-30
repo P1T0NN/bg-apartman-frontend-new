@@ -7,7 +7,7 @@
 
 	// TYPES
 	import type { CarouselAPI } from '@/shared/components/ui/carousel/context.js';
-	import type { typesAccommodationImage } from '@/features/accommodations/types/types';
+	import type { typesAccommodationImage } from '@/shared/features/accommodation/types/accommodationTypes';
 
 	let {
 		images,

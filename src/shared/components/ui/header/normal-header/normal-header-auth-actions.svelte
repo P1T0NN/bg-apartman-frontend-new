@@ -11,7 +11,7 @@
 	import { m } from '@/shared/lib/paraglide/messages';
 
 	// CONFIG
-	import { PROTECTED_PAGE_ENDPOINTS } from '@/shared/constants.js';
+	import { PROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
 
 	// COMPONENTS
 	import * as Avatar from '@/shared/components/ui/avatar/index.js';
@@ -21,7 +21,7 @@
 	import LogoutButton from '@/features/auth/components/logout-button/logout-button.svelte';
 
 	// UTILS
-	import { cn } from '@/shared/utils/utils.js';
+	import { cn } from '@/utils/utils.js';
 	import { initials } from '@/shared/utils/stringUtils';
 
 	// LUCIDE ICONS

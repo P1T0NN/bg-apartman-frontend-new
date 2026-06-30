@@ -9,33 +9,31 @@
 		phone: string;
 		specialRequests?: string;
 		paymentMethod: PaymentMethod;
+		checkIn: string;
+		checkOut: string;
 	};
 </script>
 
 <script lang="ts">
 	// LIBRARIES
-	import { useConvexClient } from 'convex-svelte';
+	import { getLocale } from '@/shared/lib/paraglide/runtime';
 	import { api } from '@/convex/_generated/api';
 
 	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/constants';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
 
 	// COMPONENTS
-	import MutationForm from '@/shared/components/ui/mutation-form/mutation-form.svelte';
+	import ConvexMutationForm from '@/shared/components/ui/mutation-form/convex-mutation-form.svelte';
 	import BookPaymentField from './book-payment-field.svelte';
 	import BookConfirmActionsField from './book-confirm-actions-field.svelte';
 
 	// UTILS
-	import { bookGuestSchema } from '@/features/bookings/schemas/bookGuestSchema';
+	import { createBookingSchema } from '@/features/bookings/schemas/bookingsSchemas';
 	import { bookGuestForm } from '@/features/bookings/forms/bookGuestForm';
-	import { nightsBetween } from '@/shared/utils/dateUtils';
-	import { calculatePrice } from '@/shared/features/pricing/utils/calculatePrice';
-	import { safeMutation } from '@/shared/utils/convexHelpers';
-	import { appGoto } from '@/shared/utils/app-navigation';
+	import { appGoto } from '@/utils/app-navigation';
 
 	// TYPES
-	import type { AccommodationDetail } from '@/features/accommodations/data/accommodationDummyData';
-	import type { MutationFormSubmitHandler } from '@/shared/components/ui/mutation-form/types';
+	import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
 	import type { ZodType } from 'zod';
 
 	let {
@@ -46,7 +44,7 @@
 		children,
 		datesMissing = false
 	}: {
-		accommodation: AccommodationDetail;
+		accommodation: typesAccommodationEnriched;
 		checkIn: string | null;
 		checkOut: string | null;
 		adults: number;
@@ -56,8 +54,6 @@
 		datesMissing?: boolean;
 	} = $props();
 
-	const convex = useConvexClient();
-
 	// Seeded once from the listing payment settings; the guest may change it locally.
 	// svelte-ignore state_referenced_locally
 	let values = $state<GuestDetails>({
@@ -66,60 +62,52 @@
 		email: '',
 		phone: '',
 		specialRequests: '',
-		paymentMethod: accommodation.paymentMethod
+		paymentMethod: accommodation.paymentMethod,
+		checkIn: checkIn ?? '',
+		checkOut: checkOut ?? ''
 	});
 	let attempted = $state(false);
 
-	const confirmLabel = $derived(
-		accommodation.instantBooking ? 'Confirm reservation' : 'Request to book'
-	);
+	// Dates are picked in the sibling "Your trip" calendar and arrive as props; mirror them
+	// into the form values so `createBookingSchema` validates them on submit. One-way only —
+	// they're never rendered as fields, so the form never writes back.
+	$effect(() => {
+		values.checkIn = checkIn ?? '';
+		values.checkOut = checkOut ?? '';
+	});
 
-	const submitGuestDetails: MutationFormSubmitHandler<GuestDetails> = async (
-		_args,
-		submittedValues
-	) => {
-		attempted = true;
+	// Form fields are UI-named (firstName, …) and the guest counts live outside the form, so map
+	// the validated values onto the mutation's `guest*` args and inject the listing context.
+	const toBookingArgs = (v: GuestDetails) => ({
+		apartmentSlug: accommodation.slug,
+		hostId: accommodation.host.id,
+		guestFirstName: v.firstName.trim(),
+		guestLastName: v.lastName.trim(),
+		guestEmail: v.email.trim(),
+		guestPhone: v.phone.trim(),
+		specialRequests: v.specialRequests?.trim() || undefined,
+		checkInDate: v.checkIn,
+		checkOutDate: v.checkOut,
+		numberOfAdults: adults,
+		numberOfChildren: children,
+		paymentMethod: v.paymentMethod,
+		instantBooking: accommodation.instantBooking,
+		locale: getLocale()
+	});
 
-		if (datesMissing || !checkIn || !checkOut) return false;
-
-		const quote = calculatePrice(accommodation, nightsBetween(checkIn, checkOut));
-
-		const result = await safeMutation(
-			convex,
-			api.tables.bookings.mutations.createBooking.createBooking,
-			{
-				apartmentSlug: accommodation.slug,
-				hostId: accommodation.host.id,
-				guestFirstName: submittedValues.firstName.trim(),
-				guestLastName: submittedValues.lastName.trim(),
-				guestEmail: submittedValues.email.trim(),
-				guestPhone: submittedValues.phone.trim(),
-				specialRequests: submittedValues.specialRequests?.trim() || undefined,
-				checkInDate: checkIn,
-				checkOutDate: checkOut,
-				numberOfAdults: adults,
-				numberOfChildren: children,
-				subtotal: quote.accommodationTotal,
-				cleaningFee: quote.cleaningFee,
-				paymentMethod: submittedValues.paymentMethod,
-				instantBooking: accommodation.instantBooking
-			}
-		);
-
-		if (!result?.success || !result.data) return false;
-
-		await appGoto(UNPROTECTED_PAGE_ENDPOINTS.RESERVATION.replace(':id', result.data.bookingId));
-		return true;
+	const goToReservation = (data: unknown) => {
+		const { bookingId } = data as { bookingId: string };
+		return appGoto(UNPROTECTED_PAGE_ENDPOINTS.RESERVATION.replace(':id', bookingId));
 	};
 </script>
 
 {#snippet paymentFields()}
-	<BookPaymentField paymentMethod={values.paymentMethod} />
+	<BookPaymentField bind:paymentMethod={values.paymentMethod} />
 {/snippet}
 
 {#snippet confirmActions({ busy }: { busy: boolean })}
 	<BookConfirmActionsField
-		{confirmLabel}
+		instantBooking={accommodation.instantBooking}
 		paymentMethod={values.paymentMethod}
 		{datesMissing}
 		bind:attempted
@@ -127,11 +115,13 @@
 	/>
 {/snippet}
 
-<MutationForm
+<ConvexMutationForm
 	bind:values
 	sections={bookGuestForm}
-	schema={bookGuestSchema as ZodType<GuestDetails>}
-	onSubmit={submitGuestDetails}
+	schema={createBookingSchema as ZodType<GuestDetails>}
+	runFunction={api.tables.bookings.mutations.createBooking.createBooking}
+	mapArgs={toBookingArgs}
+	onSuccess={goToReservation}
 	resetOnSuccess={false}
 	extraFields={paymentFields}
 	actions={confirmActions}

@@ -5,13 +5,12 @@
 
 	// COMPONENTS
 	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
-	import Section from '@/shared/components/ui/section/section.svelte';
 	import ConvexMutationForm from '@/shared/components/ui/mutation-form/convex-mutation-form.svelte';
 	import PlacesAutocomplete from '@/shared/components/ui/places-autocomplete/places-autocomplete.svelte';
 	import LocationMap from '@/shared/components/ui/location-map/location-map.svelte';
-	import AmenitiesField from '@/shared/components/pages/(protected)/add-accommodation/amenities-field.svelte';
-	import PaymentMethodField from '@/shared/components/pages/(protected)/add-accommodation/payment-method-field.svelte';
-	import AddAccommodationHeader from '@/shared/components/pages/(protected)/add-accommodation/add-accommodation-header.svelte';
+	import AmenitiesField from '@/shared/components/pages/(protected)/host/add-accommodation/amenities-field.svelte';
+	import PaymentMethodField from '@/shared/components/pages/(protected)/host/add-accommodation/payment-method-field.svelte';
+	import AddAccommodationHeader from '@/shared/components/pages/(protected)/host/add-accommodation/add-accommodation-header.svelte';
 
 	// SCHEMAS
 	import { addAccommodationSchema } from '@/features/accommodations/schemas/addAccommodationSchema';
@@ -20,13 +19,14 @@
 	import { addAccommodationForm } from '@/features/accommodations/forms/addAccommodationForm';
 
 	// UTILS
+	import { getLocale } from '@/shared/lib/paraglide/runtime';
 	import {
 		applyRegionToValues,
 		applyStreetToValues
 	} from '@/features/accommodations/utils/applyPlaceToLocationValues';
 
 	// TYPES
-	import type { typesAddAccommodationForm } from '@/features/accommodations/types/types';
+	import type { typesAddAccommodationForm } from '@/shared/features/accommodation/types/accommodationTypes';
 	import type { RegionBounds } from '@/shared/lib/google-maps/places';
 	import type { ZodType } from 'zod';
 
@@ -158,7 +158,7 @@
 	<PaymentMethodField {value} {setValue} />
 {/snippet}
 
-<Section yPadding="lg" containerClass="mx-auto max-w-3xl">
+<section class="flex w-full flex-col gap-6 p-4 md:p-6">
 	<AddAccommodationHeader />
 
 	<ConvexMutationForm
@@ -167,6 +167,7 @@
 		sections={addAccommodationForm}
 		schema={addAccommodationSchema as unknown as ZodType<typesAddAccommodationForm>}
 		runFunction={api.tables.accommodations.mutations.createAccommodation.createApartment}
+		mapArgs={(formValues) => ({ ...formValues, locale: getLocale() })}
 		submitLabel={m['AddAccommodationPage.ConvexMutationForm.submitLabel']()}
 		customFields={{
 			placeId: regionField,
@@ -176,4 +177,4 @@
 			paymentMethod: paymentMethodField
 		}}
 	/>
-</Section>
+</section>

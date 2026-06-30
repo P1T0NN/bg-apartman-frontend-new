@@ -10,7 +10,7 @@ import { getAuthUserId } from '../auth/helpers/getAuthUserId';
 import { convexRateLimitRegistry } from './registry';
 
 // TYPES
-import type { ConvexErrorPayload } from '../types/convexTypes';
+import type { ConvexErrorPayload } from '@/shared/types/types';
 import type { ConvexRateLimitName } from './registry';
 
 const SEARCH_LIMIT_SECRET_ENV = 'SEARCH_INPUT_RATE_LIMIT_SECRET';

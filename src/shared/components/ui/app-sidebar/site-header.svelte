@@ -36,7 +36,11 @@
 		hidePaths?: string[];
 	} = $props();
 
-	function labelFromSegment(segment: string) {
+	function labelFromSegment(segment: string, pathname: string) {
+		// Host `/bookings` is legacy; the page is named Reservations.
+		if (segment === 'bookings' && pathname.startsWith('/host')) {
+			return 'Reservations';
+		}
 		return segment.replace(/[-_]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 	}
 
@@ -58,7 +62,7 @@
 		for (const segment of segments) {
 			href += `/${segment}`;
 			if (hidden.has(href)) continue;
-			items.push({ label: labelFromSegment(segment), href });
+			items.push({ label: labelFromSegment(segment, pathname), href });
 		}
 
 		if (lastCrumbLabel && items.length > 0) {
