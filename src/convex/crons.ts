@@ -8,6 +8,7 @@ import { internal } from './_generated/api';
 import { analytics } from './analytics/analytics';
 import { registerStorageCrons } from './storage/registerStorageCrons';
 import { registerAuditLogCrons } from './tables/auditLog/registerAuditLogCrons';
+import { registerBookingCrons } from './tables/bookings/registerBookingCrons';
 
 /**
  * Scheduled jobs. Convex requires this file at the convex root, default-exporting
@@ -17,6 +18,7 @@ const crons = cronJobs();
 
 registerStorageCrons(crons, internal);
 registerAuditLogCrons(crons, internal);
+registerBookingCrons(crons, internal);
 
 // Analytics maintenance (high-volume rollup batching + raw event/rollup retention).
 // Handlers are exported from `./analytics/analytics.ts`, so they live under

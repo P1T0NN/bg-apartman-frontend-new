@@ -1,30 +1,6 @@
-// TYPES
-import type { FieldErrors } from '../types/types';
-import type { ZodIssue } from 'zod';
-
-/**
- * Maps Zod `issues` to field keys (top path segment): first issue message wins per field.
- * Pass `includeOnlyKeys` to drop unrelated fields (e.g. scheduling vs contact when using a merged schema).
- */
-export function zodIssuesToFieldErrors<T extends string>(
-	issues: readonly ZodIssue[],
-	includeOnlyKeys?: readonly T[]
-): FieldErrors<T> {
-	const out: FieldErrors<T> = {};
-	for (const issue of issues) {
-		const key = issue.path[0];
-		if (
-			typeof key !== 'string' ||
-			(includeOnlyKeys !== undefined && !(includeOnlyKeys as readonly string[]).includes(key))
-		) {
-			continue;
-		}
-		if (!(key in out)) {
-			(out as Record<string, string>)[key] = issue.message;
-		}
-	}
-	return out;
-}
+// NOTE: `zodIssuesToFieldErrors` moved to `./zodFieldErrors` — it resolves Paraglide keys and
+// so pulls in the client i18n catalog. This module stays catalog-free because Convex mutations
+// import `num`/`optNum`/`optStr` from here, and we never want the Paraglide runtime in that bundle.
 
 /**
  * Coerce a form value into a number. `convex-mutation-form` submits the *raw*

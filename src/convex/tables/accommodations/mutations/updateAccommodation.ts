@@ -2,8 +2,9 @@
 import { v, type Infer } from 'convex/values';
 
 // UTILS
-import { authMutation, adminMutation } from '@/convex/auth/middleware/authMiddleware';
+import { authMutation, zAdminMutation } from '@/convex/auth/middleware/authMiddleware';
 import { authComponent } from '@/convex/auth/auth';
+import { AUDIT_ACTIONS } from '@/convex/tables/auditLog/auditLogConfigs';
 import { sendAccommodationPublishedEmail } from '@/convex/email/sendAccommodationPublishedEmail';
 import { sendAccommodationSuspendedEmail } from '@/convex/email/sendAccommodationSuspendedEmail';
 import { num, optNum, optStr } from '@/shared/utils/validationUtils';
@@ -17,8 +18,9 @@ import {
 	apartmentType,
 	coordinates,
 	apartmentImage,
-	paymentMethod
+	apartmentPaymentMethod
 } from '../schemas/accommodationsSchemas';
+import { moderateAccommodationSchema } from '@/shared/features/accommodation/schemas/moderateAccommodationSchema';
 import { mutationResult, type MutationResult } from '@/convex/schemas/schemas';
 
 type ApartmentImage = Infer<typeof apartmentImage>;
@@ -29,9 +31,9 @@ const forbiddenResult = (): MutationResult => ({
 });
 
 /**
- * Edit an existing apartment listing owned by the signed-in host.
+ * Edit an existing apartment accommodation owned by the signed-in host.
  *
- * Same numbers-as-strings arg shape as {@link createApartment}, plus the listing
+ * Same numbers-as-strings arg shape as {@link createApartment}, plus the accommodation
  * `id` and the photo-reconciliation inputs:
  *  - `keepImageKeys` — existing image keys to keep, in display order.
  *  - `photos` — R2 object keys for newly uploaded images (from the form's upload
@@ -74,7 +76,7 @@ export const updateApartment = authMutation('updateApartment')({
 		monthlyDiscount: v.optional(v.string()),
 
 		// Booking rules
-		paymentMethod,
+		paymentMethod: apartmentPaymentMethod,
 		minReservationDays: v.string(),
 		maxReservationDays: v.optional(v.string()),
 		checkInTime: v.string(),
@@ -179,7 +181,7 @@ export const updateApartment = authMutation('updateApartment')({
 });
 
 /**
- * Host-controlled listing visibility. Hosts may only archive (hide) their listing
+ * Host-controlled accommodation visibility. Hosts may only archive (hide) their accommodation
  * or send it back for review — `published` / `suspended` stay moderation-gated, so
  * the arg validator only accepts those two transitions.
  */
@@ -200,28 +202,47 @@ export const setApartmentStatus = authMutation('setApartmentStatus')({
 });
 
 /**
- * Admin moderation: publish or suspend a listing. Hosts cannot set these statuses
- * themselves — see {@link setApartmentStatus}.
+ * Admin moderation: publish, suspend or archive a accommodation. Hosts cannot set these
+ * statuses themselves — see {@link setApartmentStatus}.
+ *
+ * - `published` → host gets the "your accommodation is live" email.
+ * - `suspended` → requires a `reason`; host gets the suspension email carrying it.
+ * - `archived` → no email.
+ *
+ * Every call stamps `moderatedAt` / `moderatedBy` / `moderationReason` on the row and
+ * writes an `apartment.moderate` audit entry.
  */
-export const moderateApartmentStatus = adminMutation('moderateApartmentStatus')({
-	args: {
-		id: v.id('apartments'),
-		status: v.union(v.literal('published'), v.literal('suspended')),
-		locale: v.optional(v.string())
-	},
-	returns: mutationResult,
+export const moderateApartmentStatus = zAdminMutation('moderateApartmentStatus')({
+	// The whole shared schema IS the args — no parallel v.* block (zAuthMutation pattern).
+	args: moderateAccommodationSchema,
 	handler: async (ctx, args): Promise<MutationResult> => {
 		const apartment = await ctx.db.get(args.id);
 		if (!apartment) {
 			return { success: false, message: { key: 'GenericMessages.FORBIDDEN' } };
 		}
+		if (args.status === 'suspended' && !args.reason) {
+			return { success: false, message: { key: 'GenericMessages.MODERATION_REASON_REQUIRED' } };
+		}
 
-		await ctx.db.patch(args.id, { status: args.status, updatedAt: Date.now() });
+		await ctx.db.patch(args.id, {
+			status: args.status,
+			moderatedAt: Date.now(),
+			moderatedBy: ctx.userId,
+			moderationReason: args.reason,
+			updatedAt: Date.now()
+		});
+
+		ctx.audit(AUDIT_ACTIONS.APARTMENT_MODERATE, {
+			resource: { table: 'apartments', id: args.id },
+			before: { status: apartment.status },
+			after: { status: args.status },
+			metadata: { reason: args.reason ?? null }
+		});
 
 		const host = await authComponent.getAnyUserById(ctx, apartment.hostId);
 
 		const hostEmail = host?.email?.trim();
-		if (!hostEmail) {
+		if (!hostEmail || args.status === 'archived') {
 			return { success: true, message: { key: 'GenericMessages.ACCOMMODATION_STATUS_UPDATED' } };
 		}
 
@@ -238,7 +259,7 @@ export const moderateApartmentStatus = adminMutation('moderateApartmentStatus')(
 		if (args.status === 'published') {
 			await sendAccommodationPublishedEmail(ctx, { ...emailInput, city: apartment.city });
 		} else {
-			await sendAccommodationSuspendedEmail(ctx, emailInput);
+			await sendAccommodationSuspendedEmail(ctx, { ...emailInput, reason: args.reason });
 		}
 
 		return { success: true, message: { key: 'GenericMessages.ACCOMMODATION_STATUS_UPDATED' } };

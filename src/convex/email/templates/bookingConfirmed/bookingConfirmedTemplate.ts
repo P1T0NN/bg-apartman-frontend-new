@@ -1,5 +1,6 @@
 // SHARED
-import { emailBody } from '../shared';
+import { emailBody, stayDateFormatter } from '../shared';
+import { formatMoney } from '@/shared/utils/formatMoney';
 import { emailHeaderTemplate } from '../header/emailHeaderTemplate';
 import { emailFooterTemplate } from '../footer/emailFooterTemplate';
 import { t, pickLocale } from '@/convex/i18n';
@@ -29,11 +30,14 @@ export function bookingConfirmedTemplate(data: BookingConfirmedData): {
 	const locale = pickLocale(data.locale);
 	const ns = 'bookingConfirmed';
 
-	const dateFmt = new Intl.DateTimeFormat(locale, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-	const total = new Intl.NumberFormat(locale, { style: 'currency', currency: data.currency, maximumFractionDigits: 0 }).format(data.total);
+	const dateFmt = stayDateFormatter(locale);
+	const total = formatMoney(data.total, locale, data.currency);
 	const guests =
 		data.numberOfChildren > 0
-			? t(locale, `${ns}.guestsAdultsChildren`, { adults: data.numberOfAdults, children: data.numberOfChildren })
+			? t(locale, `${ns}.guestsAdultsChildren`, {
+					adults: data.numberOfAdults,
+					children: data.numberOfChildren
+				})
 			: t(locale, `${ns}.guestsAdults`, { count: data.numberOfAdults });
 
 	const subject = t(locale, `${ns}.subject`, { code: data.bookingCode });
@@ -47,7 +51,10 @@ export function bookingConfirmedTemplate(data: BookingConfirmedData): {
 			rows: [
 				{ label: t(locale, `${ns}.rowStay`), value: data.apartmentTitle },
 				{ label: t(locale, `${ns}.rowCheckIn`), value: dateFmt.format(new Date(data.checkInDate)) },
-				{ label: t(locale, `${ns}.rowCheckOut`), value: dateFmt.format(new Date(data.checkOutDate)) },
+				{
+					label: t(locale, `${ns}.rowCheckOut`),
+					value: dateFmt.format(new Date(data.checkOutDate))
+				},
 				{ label: t(locale, `${ns}.rowGuests`), value: guests },
 				{ label: t(locale, `${ns}.rowTotal`), value: total }
 			],

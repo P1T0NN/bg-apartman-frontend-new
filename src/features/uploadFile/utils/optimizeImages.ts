@@ -50,10 +50,7 @@ function mergeOptions(overrides?: OptimizeImagesOptions): ImageCompressionOption
 	return { ...DEFAULT_IMAGE_COMPRESSION_OPTIONS, ...overrides };
 }
 
-async function runCompression(
-	file: File,
-	compressionOpts: ImageCompressionOptions
-): Promise<File> {
+async function runCompression(file: File, compressionOpts: ImageCompressionOptions): Promise<File> {
 	if (typeof document === 'undefined') return file;
 	if (!isCompressibleImage(file)) return file;
 
@@ -64,10 +61,7 @@ async function runCompression(
 	}
 }
 
-export async function optimizeImage(
-	file: File,
-	options?: OptimizeImagesOptions
-): Promise<File> {
+export async function optimizeImage(file: File, options?: OptimizeImagesOptions): Promise<File> {
 	return runCompression(file, mergeOptions(options));
 }
 

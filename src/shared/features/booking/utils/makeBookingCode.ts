@@ -3,6 +3,7 @@ const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 export function makeBookingCode(): string {
 	let code = 'BK';
-	for (let i = 0; i < 8; i++) code += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
+	for (let i = 0; i < 8; i++)
+		code += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
 	return code;
 }

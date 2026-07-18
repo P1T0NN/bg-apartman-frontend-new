@@ -24,6 +24,10 @@ export const AUDIT_ACTIONS = {
 	// Generic admin
 	ADMIN_ACTION: 'admin.action',
 
+	// Moderation
+	APARTMENT_MODERATE: 'apartment.moderate',
+	BOOKING_ADMIN_CANCEL: 'booking.admin_cancel',
+
 	// Files
 	FILE_UPLOAD: 'file.upload',
 	FILE_DELETE: 'file.delete'
@@ -43,7 +47,9 @@ export const AUDIT_RETENTION_DAYS: Partial<Record<AuditAction, number>> = {
 	'user.ban': 365 * 5,
 	'user.unban': 365 * 5,
 	'user.session.revoke': 365 * 5,
-	'user.sessions.revoke_all': 365 * 5
+	'user.sessions.revoke_all': 365 * 5,
+	'apartment.moderate': 365 * 5,
+	'booking.admin_cancel': 365 * 5
 };
 
 /**
@@ -52,6 +58,4 @@ export const AUDIT_RETENTION_DAYS: Partial<Record<AuditAction, number>> = {
  * `${table}.delete`) are accepted as raw strings via the `(string & {})` trick
  * — TS keeps the literal union for autocomplete while still accepting any string.
  */
-export type AuditAction =
-	| (typeof AUDIT_ACTIONS)[keyof typeof AUDIT_ACTIONS]
-	| (string & {});
+export type AuditAction = (typeof AUDIT_ACTIONS)[keyof typeof AUDIT_ACTIONS] | (string & {});

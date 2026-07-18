@@ -17,11 +17,10 @@ export const paymentStatus = v.union(
 	v.literal('refunded')
 );
 
+// check_in / check_out are cron-driven, not host actions — see the booking-lifecycle cron.
 export const bookingAction = v.union(
 	v.literal('confirm'),
 	v.literal('decline'),
-	v.literal('check_in'),
-	v.literal('check_out'),
 	v.literal('cancel')
 );
 

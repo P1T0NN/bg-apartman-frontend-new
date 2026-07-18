@@ -76,29 +76,31 @@
 {#if !hasCoords}
 	<div
 		class={cn(
-			'bg-muted/40 flex aspect-16/7 w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed text-center',
+			'flex aspect-16/7 w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed bg-muted/40 text-center',
 			className
 		)}
 	>
-		<MapPinIcon class="text-muted-foreground size-7" />
+		<MapPinIcon class="size-7 text-muted-foreground" />
 		<p class="text-sm font-medium">{m['LocationMap.mapLocation']()}</p>
-		<p class="text-muted-foreground max-w-xs text-xs">
+		<p class="max-w-xs text-xs text-muted-foreground">
 			{m['LocationMap.description']()}
 		</p>
 	</div>
 {:else}
-	<div class={cn('bg-muted relative aspect-16/7 w-full overflow-hidden rounded-lg border', className)}>
+	<div
+		class={cn('relative aspect-16/7 w-full overflow-hidden rounded-lg border bg-muted', className)}
+	>
 		<div bind:this={container} class="h-full w-full"></div>
 
 		{#if loading}
-			<div class="bg-muted/60 absolute inset-0 flex items-center justify-center">
-				<LoaderCircleIcon class="text-muted-foreground size-6 animate-spin" />
+			<div class="absolute inset-0 flex items-center justify-center bg-muted/60">
+				<LoaderCircleIcon class="size-6 animate-spin text-muted-foreground" />
 			</div>
 		{/if}
 
 		{#if errorMsg}
 			<div
-				class="bg-muted/90 text-destructive absolute inset-0 flex items-center justify-center px-4 text-center text-sm"
+				class="absolute inset-0 flex items-center justify-center bg-muted/90 px-4 text-center text-sm text-destructive"
 			>
 				{errorMsg}
 			</div>

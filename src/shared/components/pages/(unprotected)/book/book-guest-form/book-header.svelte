@@ -29,7 +29,7 @@
 			class="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
 		>
 			<ChevronLeftIcon class="size-4" aria-hidden="true" />
-			{m['BookAccommodationPage.BookHeader.backToListing']()}
+			{m['BookAccommodationPage.BookHeader.backToAccommodation']()}
 		</Link>
 
 		<h1 class="text-2xl font-semibold tracking-tight md:text-3xl">
@@ -46,7 +46,8 @@
 			class="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 text-sm text-foreground/90"
 		>
 			{m['BookAccommodationPage.BookHeader.youHavenTickedDates']()}
-			<span class="font-medium">{m['BookAccommodationPage.BookHeader.yourTrip']()}</span> {m['BookAccommodationPage.BookHeader.toSeeTheFullPriceAndConfirm']()}
+			<span class="font-medium">{m['BookAccommodationPage.BookHeader.yourTrip']()}</span>
+			{m['BookAccommodationPage.BookHeader.toSeeTheFullPriceAndConfirm']()}
 		</div>
 	{/if}
 </div>

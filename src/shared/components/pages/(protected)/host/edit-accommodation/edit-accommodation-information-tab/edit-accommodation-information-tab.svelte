@@ -41,7 +41,7 @@
 	let values = $state<typesEditAccommodationForm>(accommodationDocToFormValues(accommodation));
 
 	// Viewport of the picked country/city — scopes the street search to that region. Empty until
-	// the host re-picks a region (the stored listing carries city/country but no viewport), so the
+	// the host re-picks a region (the stored accommodation carries city/country but no viewport), so the
 	// street search falls back to a country-wide bias until then.
 	let regionViewport = $state<RegionBounds | undefined>();
 	const regionSelected = $derived(Boolean(values.city || values.country));

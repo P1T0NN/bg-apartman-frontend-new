@@ -28,7 +28,7 @@
 	const current = $derived(value == null ? '' : String(value));
 
 	// Open straight into the manual input when the stored value isn't one of the presets
-	// (e.g. editing a listing with 8 guests, or a studio with 0 bedrooms).
+	// (e.g. editing a accommodation with 8 guests, or a studio with 0 bedrooms).
 	// svelte-ignore state_referenced_locally
 	let custom = $state(current !== '' && !OPTIONS.includes(current));
 </script>
@@ -49,7 +49,7 @@
 				class={cn(
 					'flex-1 rounded-md px-2 py-1.5 text-sm font-medium transition',
 					active
-						? 'bg-background text-foreground shadow-sm'
+						? 'bg-primary text-primary-foreground shadow-sm'
 						: 'text-muted-foreground hover:text-foreground'
 				)}
 			>
@@ -63,7 +63,7 @@
 			class={cn(
 				'flex-1 rounded-md px-2 py-1.5 text-sm font-medium transition',
 				custom
-					? 'bg-background text-foreground shadow-sm'
+					? 'bg-primary text-primary-foreground shadow-sm'
 					: 'text-muted-foreground hover:text-foreground'
 			)}
 		>

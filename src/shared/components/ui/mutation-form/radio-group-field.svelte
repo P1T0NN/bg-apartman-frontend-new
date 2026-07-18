@@ -33,7 +33,7 @@
 	{orientation}
 	aria-invalid={invalid ? 'true' : undefined}
 	data-slot="radio-group"
-	class={cn('grid gap-3', orientation === 'horizontal' && 'grid-flow-col auto-cols-max')}
+	class={cn('grid gap-3', orientation === 'horizontal' && 'auto-cols-max grid-flow-col')}
 >
 	{#each field.options ?? [] as opt (opt.value)}
 		{@const itemId = `${inputId}-${opt.value}`}
@@ -44,14 +44,14 @@
 				disabled={opt.disabled}
 				aria-invalid={invalid ? 'true' : undefined}
 				class={cn(
-					'border-input text-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:bg-input/30',
-					'aspect-square size-4 shrink-0 rounded-full border shadow-xs outline-none transition-[color,box-shadow] focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50'
+					'border-input text-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40',
+					'aspect-square size-4 shrink-0 rounded-full border shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50'
 				)}
 			>
 				{#snippet children({ checked })}
 					<div class="flex items-center justify-center">
 						{#if checked}
-							<CircleIcon class="fill-primary size-2" />
+							<CircleIcon class="size-2 fill-primary" />
 						{/if}
 					</div>
 				{/snippet}

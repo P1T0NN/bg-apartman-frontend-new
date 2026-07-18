@@ -46,8 +46,7 @@
 		event?.preventDefault();
 		event?.stopPropagation();
 
-		const shareUrl =
-			url ?? (typeof window !== 'undefined' ? window.location.href : '');
+		const shareUrl = url ?? (typeof window !== 'undefined' ? window.location.href : '');
 		if (!shareUrl) return;
 
 		try {
@@ -83,7 +82,7 @@
 {:else}
 	<Button variant="ghost" size="sm" onclick={share} class={className} {...buttonProps}>
 		<ShareIcon class="size-4" aria-hidden="true" />
-		
+
 		{#if showLabel}
 			<span class="hidden sm:inline">{label}</span>
 		{/if}

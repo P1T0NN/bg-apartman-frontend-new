@@ -4,10 +4,7 @@
 
 	// CONFIG
 	import { ACCOMMODATION_TYPES } from '@/shared/data/accommodationsData';
-	import {
-		PROTECTED_PAGE_ENDPOINTS,
-		UNPROTECTED_PAGE_ENDPOINTS
-	} from '@/shared/routeEndpoints';
+	import { PROTECTED_PAGE_ENDPOINTS, UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
 
 	// COMPONENTS
 	import DataTable from '@/shared/components/ui/data-table/convex-data-table.svelte';
@@ -39,7 +36,7 @@
 	const columns: ColumnDef<typesAccommodation>[] = [
 		{
 			id: 'title',
-			header: 'Listing',
+			header: 'Accommodation',
 			accessor: (row) => row.title,
 			cellClass: 'min-w-64'
 		},
@@ -127,7 +124,7 @@
 	{columns}
 	getRowId={(row) => row._id}
 	customCells={{
-		title: listingCell,
+		title: accommodationCell,
 		status: statusCell,
 		payment: paymentCell,
 		price: priceCell,
@@ -141,7 +138,7 @@
 	borderless
 />
 
-{#snippet listingCell({ row }: DataTableCellSnippetProps<typesAccommodation>)}
+{#snippet accommodationCell({ row }: DataTableCellSnippetProps<typesAccommodation>)}
 	<div class="flex min-w-0 items-center gap-3">
 		<div class="relative size-12 shrink-0 overflow-hidden rounded-md bg-muted ring-1 ring-border">
 			{#if row.images[0]?.url}
@@ -213,7 +210,7 @@
 			onclick={() => appGoto(UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION.replace(':slug', row.slug))}
 			variant="ghost"
 			size="icon-sm"
-			aria-label="View listing"
+			aria-label="View accommodation"
 			title="View"
 		>
 			<EyeIcon class="size-4" aria-hidden="true" />
@@ -222,7 +219,7 @@
 			onclick={() => appGoto(PROTECTED_PAGE_ENDPOINTS.EDIT_ACCOMMODATION.replace(':id', row._id))}
 			variant="ghost"
 			size="icon-sm"
-			aria-label="Edit listing"
+			aria-label="Edit accommodation"
 			title="Edit"
 		>
 			<SquarePenIcon class="size-4" aria-hidden="true" />

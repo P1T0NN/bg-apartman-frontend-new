@@ -73,6 +73,8 @@
 		timeRange = $bindable<TimeRangeValue>('90d'),
 		customRange = $bindable<DateRange | undefined>(),
 		timeRangeOptions,
+		snapToMonths = false,
+		minDays,
 		dateAccessor,
 		referenceDate,
 		minDate,
@@ -113,6 +115,10 @@
 		timeRange?: TimeRangeValue;
 		customRange?: DateRange;
 		timeRangeOptions?: TimeRangeOption[];
+		/** For monthly-bucketed data: custom ranges widen to whole months so no bucket is dropped. */
+		snapToMonths?: boolean;
+		/** Minimum days a custom range must span (enforced by the calendar). */
+		minDays?: number;
 		dateAccessor?: DateAccessor;
 		referenceDate?: Date;
 		minDate?: Date;
@@ -163,7 +169,7 @@
 	const resolvedMinDate = $derived(minDate ?? dateExtent.firstDate ?? resolvedReferenceDate);
 	const resolvedMaxDate = $derived(maxDate ?? dateExtent.lastDate ?? resolvedReferenceDate);
 	const rangeLabel = $derived(
-		formatTimeRangeLabel(timeRange, customRange, timeRangeOptions, locale, timeZone)
+		formatTimeRangeLabel(timeRange, customRange, timeRangeOptions, locale, timeZone, snapToMonths)
 	);
 	const rangeDescription = $derived(timeRange === 'custom' ? rangeLabel : rangeLabel.toLowerCase());
 	const resolvedDescription = $derived(description ?? `${descriptionPrefix} ${rangeDescription}`);
@@ -175,11 +181,24 @@
 			customRange,
 			referenceDate: resolvedReferenceDate,
 			options: timeRangeOptions,
-			timeZone
+			timeZone,
+			snapToMonths
 		})
 	);
 
-	const seriesKeys = $derived(Object.keys(config).filter((key) => key in (data[0] ?? {}) && key !== x));
+	// With few points (e.g. monthly buckets), let every bucket have its own axis tick —
+	// d3's auto ticks over a short domain otherwise collapse to a single label.
+	const xTicks = $derived.by(() => {
+		if (filteredData.length === 0 || filteredData.length > 13) return undefined;
+		const dates = filteredData
+			.map((item) => getDatumDate(item, resolvedDateAccessor))
+			.filter((date): date is Date => date !== undefined);
+		return dates.length === filteredData.length ? dates : undefined;
+	});
+
+	const seriesKeys = $derived(
+		Object.keys(config).filter((key) => key in (data[0] ?? {}) && key !== x)
+	);
 	const series = $derived(
 		seriesOverride ??
 			seriesKeys.map((key) => {
@@ -245,6 +264,8 @@
 			maxValue={toCalendarDate(resolvedMaxDate)}
 			{locale}
 			{timeZone}
+			{snapToMonths}
+			{minDays}
 		/>
 	</Card.Header>
 	<Card.Content class={cardContentClass}>
@@ -260,7 +281,7 @@
 				props={{
 					...areaChartProps,
 					xAxis: {
-						ticks: timeRange === '7d' ? 7 : undefined,
+						ticks: timeRange === '7d' ? 7 : xTicks,
 						format: resolvedXAxisFormat,
 						...areaChartProps?.xAxis
 					},

@@ -54,17 +54,17 @@
 	{:else}
 		<DashboardHeader {subtitle} />
 
-		{#if nextTrip}
-			<DashboardNextTrip trip={nextTrip} />
-		{:else}
-			<DashboardNextTripEmpty />
-		{/if}
-
 		<DashboardShortcuts
 			upcomingCount={data?.counts.upcoming ?? 0}
 			checkedOutCount={data?.counts.checkedOut ?? 0}
 			{savedCount}
 		/>
+
+		{#if nextTrip}
+			<DashboardNextTrip trip={nextTrip} />
+		{:else}
+			<DashboardNextTripEmpty />
+		{/if}
 
 		<DashboardUpcoming trips={moreUpcoming} />
 	{/if}

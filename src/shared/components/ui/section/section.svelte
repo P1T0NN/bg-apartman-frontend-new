@@ -56,19 +56,14 @@
 	{id}
 	aria-labelledby={ariaLabelledby}
 	class={cn(
-		'w-full min-w-0 max-w-full overflow-x-clip',
+		'w-full max-w-full min-w-0 overflow-x-clip',
 		surfaceClass[surface],
 		yPaddingClass[yPadding],
 		className
 	)}
 >
 	{#if contain}
-		<div
-			class={cn(
-				'mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-8',
-				containerClass
-			)}
-		>
+		<div class={cn('mx-auto w-full max-w-7xl min-w-0 px-4 sm:px-6 lg:px-8', containerClass)}>
 			{@render children()}
 		</div>
 	{:else}

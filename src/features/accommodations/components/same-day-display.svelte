@@ -9,7 +9,7 @@
 		enabled,
 		class: className
 	}: {
-		/** Whether same-day check-in is allowed for this listing. */
+		/** Whether same-day check-in is allowed for this accommodation. */
 		enabled: boolean;
 		class?: string;
 	} = $props();

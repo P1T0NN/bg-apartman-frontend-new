@@ -324,7 +324,8 @@
 									<Text
 										{...childParams.getTrackTextProps('middle', { startOffset: '1%' })}
 										class="pointer-events-none capitalize select-none"
-										value={snippetParams.context.series.visibleSeries[snippetParams.seriesIndex].label}
+										value={snippetParams.context.series.visibleSeries[snippetParams.seriesIndex]
+											.label}
 										fill="white"
 									/>
 								{/snippet}

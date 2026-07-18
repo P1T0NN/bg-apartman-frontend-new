@@ -12,7 +12,7 @@
 	import { cn } from '@/utils/utils.js';
 	import { breakpointTableClass, formatCellValue } from './dataTableUtils.js';
 
-    // TYPES
+	// TYPES
 	import type { ColumnDef, DataTableCustomCells } from './types.js';
 
 	let {
@@ -34,7 +34,7 @@
 
 <TableRow
 	class={cn(
-		'hover:bg-muted/30 border-b transition-colors',
+		'border-b transition-colors hover:bg-muted/30',
 		isSelected && 'bg-muted/50 hover:bg-muted/60'
 	)}
 	aria-selected={selectable ? isSelected : undefined}
@@ -66,7 +66,7 @@
 						<Link
 							href={col.linkHref(row)}
 							class={cn(
-								'text-primary block font-medium underline-offset-2 hover:underline',
+								'block font-medium text-primary underline-offset-2 hover:underline',
 								!col.wrap && 'truncate'
 							)}
 							title={formatCellValue(value)}

@@ -1,8 +1,5 @@
 // CONFIG
-import {
-	PROTECTED_PAGE_ENDPOINTS,
-	UNPROTECTED_PAGE_ENDPOINTS
-} from '@/shared/routeEndpoints.js';
+import { PROTECTED_PAGE_ENDPOINTS, UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
 
 export const footerLinkGroups = [
 	{
@@ -11,6 +8,14 @@ export const footerLinkGroups = [
 		links: [
 			{ href: UNPROTECTED_PAGE_ENDPOINTS.ROOT, label: 'Overview' },
 			{ href: PROTECTED_PAGE_ENDPOINTS.DASHBOARD, label: 'Dashboard' }
+		]
+	},
+	{
+		id: 'support',
+		heading: 'Support',
+		links: [
+			{ href: UNPROTECTED_PAGE_ENDPOINTS.CONTACT, label: 'Contact' },
+			{ href: UNPROTECTED_PAGE_ENDPOINTS.REPORT, label: 'Report an issue' }
 		]
 	},
 	{

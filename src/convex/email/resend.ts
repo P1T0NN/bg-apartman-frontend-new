@@ -32,7 +32,8 @@ export async function sendEmail(
 }
 
 export const homeUrl = (): string => process.env.SITE_URL!;
-export const reservationUrl = (bookingId: string): string => `${process.env.SITE_URL!}/reservations/${bookingId}`;
+export const reservationUrl = (bookingId: string): string =>
+	`${process.env.SITE_URL!}/reservations/${bookingId}`;
 export const hostReservationsUrl = (): string => `${process.env.SITE_URL!}/host/reservations`;
 export const editAccommodationUrl = (apartmentId: string): string =>
 	`${process.env.SITE_URL!}/host/my-accommodations/edit-accommodation/${apartmentId}`;

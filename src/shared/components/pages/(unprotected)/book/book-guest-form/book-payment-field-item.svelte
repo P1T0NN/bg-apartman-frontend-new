@@ -2,11 +2,10 @@
 	// UTILS
 	import { cn } from '@/utils/utils.js';
 
-	// DATA
-	import type { PaymentMethod, PaymentMethodOption } from '@/features/bookings/data/paymentMethods';
-
 	// TYPES
+	import type { typesPaymentMethodOption } from '@/features/bookings/types/bookingsSvelteOnlyTypes';
 	import type { Component } from 'svelte';
+	import type { Doc } from '@/convex/_generated/dataModel';
 
 	// LUCIDE ICONS
 	import BanknoteIcon from '@lucide/svelte/icons/banknote';
@@ -18,10 +17,12 @@
 		selected = false,
 		onselect
 	}: {
-		option: PaymentMethodOption;
+		option: typesPaymentMethodOption;
 		selected?: boolean;
 		onselect: () => void;
 	} = $props();
+
+	type PaymentMethod = Doc<'bookings'>['paymentMethod'];
 
 	const methodIcons: Record<PaymentMethod, Component> = {
 		cash: BanknoteIcon,
@@ -39,21 +40,21 @@
 	class={cn(
 		'flex w-full items-center gap-3 rounded-xl border p-4 text-left transition-colors',
 		'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',
-		selected
-			? 'border-primary bg-primary/5'
-			: 'border-border hover:border-input hover:bg-muted/40'
+		selected ? 'border-primary bg-primary/5' : 'border-border hover:border-input hover:bg-muted/40'
 	)}
 >
 	<Icon
 		class={cn('size-5 shrink-0', selected ? 'text-primary' : 'text-muted-foreground')}
 		aria-hidden="true"
 	/>
+	
 	<div class="min-w-0 flex-1">
 		<p class="text-sm font-medium">{option.label}</p>
 		<p class="text-xs text-muted-foreground">
 			{option.description}
 		</p>
 	</div>
+
 	{#if selected}
 		<CircleCheckIcon class="size-5 shrink-0 text-primary" aria-hidden="true" />
 	{/if}

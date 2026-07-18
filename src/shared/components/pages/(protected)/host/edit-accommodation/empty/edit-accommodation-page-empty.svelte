@@ -21,10 +21,10 @@
 	</div>
 
 	<div class="flex flex-col gap-1.5">
-		<h2 class="text-lg font-semibold">Listing not found</h2>
+		<h2 class="text-lg font-semibold">Accommodation not found</h2>
 		<p class="mx-auto max-w-sm text-sm text-muted-foreground">
-			This listing may have been removed, or it isn't one of yours. Head back to your accommodations
-			to keep editing.
+			This accommodation may have been removed, or it isn't one of yours. Head back to your
+			accommodations to keep editing.
 		</p>
 	</div>
 

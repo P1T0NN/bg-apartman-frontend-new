@@ -18,7 +18,7 @@
 	<div class="grid size-12 place-items-center rounded-full bg-muted">
 		<CompassIcon class="size-6 text-muted-foreground" aria-hidden="true" />
 	</div>
-    
+
 	<div class="space-y-1">
 		<h2 class="text-lg font-semibold">No trips yet</h2>
 		<p class="text-sm text-muted-foreground">When you book a stay, it'll show up here.</p>

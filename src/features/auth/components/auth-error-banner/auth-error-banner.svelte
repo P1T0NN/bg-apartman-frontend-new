@@ -4,7 +4,8 @@
 	import { goto } from '$app/navigation';
 
 	// COMPONENTS
-	import * as AlertDialog from '@/shared/components/ui/alert-dialog/index.js';
+	import { AlertDialog } from '@/shared/components/ui/alert-dialog/index.js';
+	import { Button } from '@/shared/components/ui/button/index.js';
 
 	// LUCIDE ICONS
 	import ShieldAlertIcon from '@lucide/svelte/icons/shield-alert';
@@ -39,31 +40,28 @@
 	}
 </script>
 
-<AlertDialog.Root
+<AlertDialog
 	{open}
 	onOpenChange={(o) => {
 		if (!o) dismiss();
 	}}
+	hideTrigger
 >
-	<AlertDialog.Content>
-		<AlertDialog.Header>
-			<div class="flex items-center gap-3">
-				<div
-					class="bg-destructive/10 text-destructive flex size-10 shrink-0 items-center justify-center rounded-full"
-				>
-					<ShieldAlertIcon class="size-5" />
-				</div>
-				<AlertDialog.Title>{title}</AlertDialog.Title>
+	<div class="alert-dialog__header">
+		<div class="flex items-center gap-3">
+			<div
+				class="flex size-10 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive"
+			>
+				<ShieldAlertIcon class="size-5" />
 			</div>
-			{#if description}
-				<AlertDialog.Description class="pt-2">
-					{description}
-				</AlertDialog.Description>
-			{/if}
-		</AlertDialog.Header>
+			<h2>{title}</h2>
+		</div>
+		{#if description}
+			<p class="pt-2">{description}</p>
+		{/if}
+	</div>
 
-		<AlertDialog.Footer>
-			<AlertDialog.Action onclick={dismiss}>Got it</AlertDialog.Action>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
+	<div class="alert-dialog__footer">
+		<Button onclick={dismiss}>Got it</Button>
+	</div>
+</AlertDialog>

@@ -79,9 +79,7 @@
 		const args = {
 			...(queryArgs ?? {}),
 			[searchArgName]: searchTerm,
-			...(includePaginationOpts
-				? { paginationOpts: { numItems: maxResults, cursor: null } }
-				: {})
+			...(includePaginationOpts ? { paginationOpts: { numItems: maxResults, cursor: null } } : {})
 		};
 
 		loading = true;

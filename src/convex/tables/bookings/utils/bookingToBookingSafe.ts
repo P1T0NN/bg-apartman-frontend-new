@@ -16,7 +16,7 @@ export async function bookingToBookingSafe(
 	booking: Doc<'bookings'>
 ): Promise<typesBookingSafe> {
 	const { apartmentSlug, archivedAt, ...rest } = booking;
-    
+
 	const apartment = await resolveApartmentSummary(ctx, booking);
 
 	return { ...rest, apartment };

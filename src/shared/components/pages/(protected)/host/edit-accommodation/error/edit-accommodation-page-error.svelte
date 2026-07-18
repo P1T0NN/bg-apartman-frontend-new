@@ -25,9 +25,10 @@
 	</div>
 
 	<div class="flex flex-col gap-1.5">
-		<h2 class="text-lg font-semibold">Couldn't load this listing</h2>
+		<h2 class="text-lg font-semibold">Couldn't load this accommodation</h2>
 		<p class="mx-auto max-w-sm text-sm text-muted-foreground">
-			{message ?? 'Something went wrong while loading this listing. Please try again in a moment.'}
+			{message ??
+				'Something went wrong while loading this accommodation. Please try again in a moment.'}
 		</p>
 	</div>
 

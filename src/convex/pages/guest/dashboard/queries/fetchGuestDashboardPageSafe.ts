@@ -35,7 +35,9 @@ export const fetchGuestDashboardPageSafe = query({
 
 		const checkedOut = await ctx.db
 			.query('bookings')
-			.withIndex('by_guest_status_checkin', (q) => q.eq('guestId', userId).eq('status', 'checked_out'))
+			.withIndex('by_guest_status_checkin', (q) =>
+				q.eq('guestId', userId).eq('status', 'checked_out')
+			)
 			.take(GUEST_DASHBOARD.CHECKED_OUT_COUNT_CAP + 1); // bounded read — the tile shows "99+" past the cap
 
 		// Only pay for apartment joins on the handful of trips we actually show.

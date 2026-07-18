@@ -24,7 +24,9 @@
 
 <section class="space-y-4">
 	<div class="space-y-1">
-		<h2 class="text-lg font-semibold tracking-tight">{m['AccommodationPage.AccommodationLocationSection.title']()}</h2>
+		<h2 class="text-lg font-semibold tracking-tight">
+			{m['AccommodationPage.AccommodationLocationSection.title']()}
+		</h2>
 
 		<p class="flex items-center gap-1.5 text-sm text-muted-foreground">
 			<MapPinIcon class="size-4 shrink-0" aria-hidden="true" />
@@ -33,9 +35,6 @@
 	</div>
 
 	{#if mapSrc}
-		<AccommodationLocationMap 
-			title={accommodation.title} 
-			mapSrc={mapSrc} 
-		/>
+		<AccommodationLocationMap title={accommodation.title} {mapSrc} />
 	{/if}
 </section>

@@ -9,10 +9,9 @@
 	// LIBRARIES
 	import { createSvelteAuthClient } from '@mmailaender/convex-better-auth-svelte/svelte';
 	import { authClient } from '@/features/auth/lib/auth-client';
-	import { useQuery } from '@mmailaender/convex-svelte';
+	import { useQuery } from 'convex-svelte';
 	import { api } from '@/convex/_generated/api';
 	import { useAuth } from '@mmailaender/convex-better-auth-svelte/svelte';
-	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 	import { NuqsAdapter } from 'nuqs-svelte/adapters/svelte-kit';
 
 	// CLASSES
@@ -26,14 +25,15 @@
 
 	let { children, data } = $props();
 
-	const isLoginPage = $derived(page.route.id === '/(unprotected)/login');
+	const isAuthShellPage = $derived(
+		page.route.id === '/(unprotected)/login' || page.route.id === '/(unprotected)/signup'
+	);
 	const isProtectedPage = $derived(page.route.id?.startsWith('/(protected)') ?? false);
 
 	createSvelteAuthClient({
 		authClient,
 		getServerState: () => data.authState
 	});
-	injectSpeedInsights();
 
 	// NOTE: Has to be after the `createSvelteAuthClient` call because it uses the `authClient` instance.
 	const auth = useAuth();
@@ -48,10 +48,15 @@
 	);
 
 	// Push the live query into the shared store so any component can read
-	// `authClass.currentUser` without re-subscribing.
+	// `authClass.currentUser` without re-subscribing. On sign-out, hand consumers a
+	// definitive "signed out, not loading" so nothing waits forever (FixAuth.md §3).
 	$effect(() => {
-		const data = currentUserResponse.data as CurrentUser | null | undefined;
-		authClass.syncFromCurrentUserQuery(data, currentUserResponse.isLoading);
+		if (!auth.isAuthenticated) {
+			authClass.syncFromCurrentUserQuery(null, false);
+			return;
+		}
+		const user = currentUserResponse.data as CurrentUser | null | undefined;
+		authClass.syncFromCurrentUserQuery(user, currentUserResponse.isLoading);
 	});
 </script>
 
@@ -67,7 +72,7 @@
 </svelte:head>
 
 <div class="flex min-h-dvh flex-col">
-	{#if !isLoginPage && !isProtectedPage}
+	{#if !isAuthShellPage && !isProtectedPage}
 		<NormalHeader changeBgOnScroll={true} />
 	{/if}
 	<div class="min-h-0 flex-1">
@@ -75,7 +80,7 @@
 			{@render children()}
 		</NuqsAdapter>
 	</div>
-	{#if !isLoginPage && !isProtectedPage}
+	{#if !isAuthShellPage && !isProtectedPage}
 		<Footer />
 	{/if}
 </div>

@@ -45,7 +45,9 @@
 		const nowSaved = favoritesClass.toggle(apartmentId);
 
 		toast.success(
-			nowSaved ? m['ToggleFavoriteButton.savedMessage']() : m['ToggleFavoriteButton.removedMessage']()
+			nowSaved
+				? m['ToggleFavoriteButton.savedMessage']()
+				: m['ToggleFavoriteButton.removedMessage']()
 		);
 	}
 </script>
@@ -53,7 +55,9 @@
 {#if variant === 'overlay'}
 	<button
 		type="button"
-		aria-label={saved ? m['ToggleFavoriteButton.removeFromSaved']() : m['ToggleFavoriteButton.save']()}
+		aria-label={saved
+			? m['ToggleFavoriteButton.removeFromSaved']()
+			: m['ToggleFavoriteButton.save']()}
 		aria-pressed={saved}
 		onclick={handleToggleFavorite}
 		class={cn(
@@ -64,9 +68,17 @@
 		<HeartIcon class={cn('size-4', saved && 'fill-red-500 text-red-500')} aria-hidden="true" />
 	</button>
 {:else}
-	<Button variant="ghost" size="sm" onclick={handleToggleFavorite} aria-pressed={saved} class={className}>
+	<Button
+		variant="ghost"
+		size="sm"
+		onclick={handleToggleFavorite}
+		aria-pressed={saved}
+		class={className}
+	>
 		<HeartIcon class={cn('size-4', saved && 'fill-red-500 text-red-500')} aria-hidden="true" />
 
-		<span class="hidden sm:inline">{saved ? m['ToggleFavoriteButton.saved']() : m['ToggleFavoriteButton.save']()}</span>
+		<span class="hidden sm:inline"
+			>{saved ? m['ToggleFavoriteButton.saved']() : m['ToggleFavoriteButton.save']()}</span
+		>
 	</Button>
 {/if}

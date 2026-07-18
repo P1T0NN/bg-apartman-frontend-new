@@ -80,7 +80,6 @@ function projectAccommodationForBook(
 
 		amenities: apartment.amenities,
 		images: apartment.images,
-		coverImageIndex: apartment.coverImageIndex,
 		houseRules: apartment.houseRules,
 
 		host: {
@@ -96,11 +95,11 @@ function projectAccommodationForBook(
 }
 
 /**
- * Public listing payload for `/accommodation/[slug]/book`.
+ * Public accommodation payload for `/accommodation/[slug]/book`.
  *
  * Same curated {@link typesAccommodationEnriched} projection as the detail page, but includes
  * `bookedRanges` so the checkout calendar can grey out reserved nights. Only published
- * listings are returned — pending/suspended/archived reads as not-found.
+ * accommodations are returned — pending/suspended/archived reads as not-found.
  */
 export const fetchAccommodationBySlugForBookSafe = query({
 	args: { slug: v.string() },

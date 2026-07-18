@@ -86,7 +86,7 @@
 		}
 	}
 
-	async function deleteListing() {
+	async function deleteAccommodation() {
 		if (typedConfirm !== accommodation.title) return;
 		deletePending = true;
 		try {
@@ -111,7 +111,8 @@
 	<Card>
 		<CardHeader>
 			<CardTitle>Visibility</CardTitle>
-			<CardDescription>Control whether this listing is publicly discoverable.</CardDescription>
+			<CardDescription>Control whether this accommodation is publicly discoverable.</CardDescription
+			>
 		</CardHeader>
 		<CardContent class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 			<div class="flex items-center gap-3">
@@ -154,22 +155,22 @@
 		<CardHeader>
 			<CardTitle class="text-destructive">Danger zone</CardTitle>
 			<CardDescription>
-				Deleting a listing is permanent — its photos and details are removed for good.
+				Deleting a accommodation is permanent — its photos and details are removed for good.
 			</CardDescription>
 		</CardHeader>
 		<CardContent class="flex justify-end">
 			<ActionButton
-				function={deleteListing}
+				function={deleteAccommodation}
 				variant="destructive"
 				isDestructive
 				isPending={deletePending}
 				actionDisabled={typedConfirm !== accommodation.title}
-				title="Delete this listing?"
-				description={`Type the listing title "${accommodation.title}" to confirm. This can't be undone.`}
+				title="Delete this accommodation?"
+				description={`Type the accommodation title "${accommodation.title}" to confirm. This can't be undone.`}
 				body={confirmBody}
 			>
 				<Trash2Icon class="size-4" />
-				Delete listing
+				Delete accommodation
 			</ActionButton>
 		</CardContent>
 	</Card>

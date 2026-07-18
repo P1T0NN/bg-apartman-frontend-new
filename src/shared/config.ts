@@ -9,8 +9,8 @@ export const PAGINATION_DATA = {
 };
 
 export const COOKIE_NAMES = {
-    SESSION_TOKEN: 'session_token',
-    DEVICE_FINGERPRINT: 'device_fingerprint',
+	SESSION_TOKEN: 'session_token',
+	DEVICE_FINGERPRINT: 'device_fingerprint'
 } as const;
 
 export const LOCAL_STORAGE_KEYS = {
@@ -53,11 +53,22 @@ export const FEATURES = {
 } as const;
 
 /**
- * Fallback IANA zone for a listing's availability calendar — used only when a listing
+ * Cross-cutting business settings shared by the frontend and Convex.
+ */
+export const PROJECT_SETTINGS = {
+	/**
+	 * Booking statuses that count as money (revenue/GMV/occupancy aggregations) —
+	 * real stays only, never pending/declined/cancelled.
+	 */
+	BOOKING_EARNING_STATUSES: ['confirmed', 'checked_in', 'checked_out']
+} as const;
+
+/**
+ * Fallback IANA zone for a accommodation's availability calendar — used only when a accommodation
  * has no stored `timeZone` (rows created before timezone resolution existed, or a
- * failed lookup). Each listing now resolves its own zone from the address pin
+ * failed lookup). Each accommodation now resolves its own zone from the address pin
  * (coordinates → IANA via `tz-lookup`; see `PlaceDetails.timeZone`), so the calendar
- * runs in the apartment's local day, not the viewer's. Belgrade because the listings
+ * runs in the apartment's local day, not the viewer's. Belgrade because the accommodations
  * to date are Serbian.
  */
 export const DEFAULT_TIME_ZONE = 'Europe/Belgrade';

@@ -62,7 +62,7 @@ function injectMapsScript(w: Window, apiKey: string): Promise<void> {
 		// Surfaced when Google rejects the key — otherwise this fails silently.
 		w.gm_authFailure = () =>
 			console.error(
-				'[google-maps] Google rejected the API key. Check that: the key is correct, this origin is in the key\'s HTTP-referrer allowlist, the required APIs are enabled, and billing is active.'
+				"[google-maps] Google rejected the API key. Check that: the key is correct, this origin is in the key's HTTP-referrer allowlist, the required APIs are enabled, and billing is active."
 			);
 
 		const params = new URLSearchParams({

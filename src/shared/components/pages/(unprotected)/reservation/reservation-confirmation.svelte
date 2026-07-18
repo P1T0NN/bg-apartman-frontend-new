@@ -15,7 +15,7 @@
 	import { formatCurrency, formatDate, formatGuestsShort } from '@/utils/formatters';
 
 	// DATA
-	import { paymentMethodLabel } from '@/features/bookings/data/paymentMethods';
+	import { paymentMethodLabel } from '@/features/bookings/utils/paymentMethodLabel';
 
 	// TYPES
 	import type { typesReservationBooking } from '@/shared/features/booking/types/bookingTypes';
@@ -28,11 +28,11 @@
 
 	let { booking }: { booking: typesReservationBooking } = $props();
 
-	const listingHref = $derived(
+	const accommodationHref = $derived(
 		UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION.replace(':slug', booking.apartmentSlug)
 	);
 
-	// Drive the page off the booking's real status, not the listing's instant-book flag — so a
+	// Drive the page off the booking's real status, not the accommodation's instant-book flag — so a
 	// later host approval/decline (or a completed/cancelled stay) shows the right state on revisit.
 	// `checked_in`/`checked_out` fold into the "booked" view; only pending and cancelled differ.
 	const statusView = $derived.by(() => {
@@ -100,7 +100,7 @@
 		<!-- The code is the one thing the guest needs later (check-in, support), so it's the hero
 		     of the card: large, mono, letter-spaced, and one tap to copy. -->
 		<div class="rounded-xl border border-dashed bg-muted/30 px-4 py-4 text-center">
-			<p class="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+			<p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
 				{m['ReservationPage.ReservationConfirmation.confirmationCode']()}
 			</p>
 
@@ -118,7 +118,9 @@
 
 		<dl class="space-y-2 text-sm">
 			<div class="flex items-center justify-between gap-3">
-				<dt class="text-muted-foreground">{m['ReservationPage.ReservationConfirmation.status']()}</dt>
+				<dt class="text-muted-foreground">
+					{m['ReservationPage.ReservationConfirmation.status']()}
+				</dt>
 				<dd class="text-right">
 					<BookingsStatus kind="booking" status={booking.status} />
 				</dd>
@@ -130,17 +132,23 @@
 			</div>
 
 			<div class="flex items-center justify-between gap-3">
-				<dt class="text-muted-foreground">{m['ReservationPage.ReservationConfirmation.checkIn']()}</dt>
+				<dt class="text-muted-foreground">
+					{m['ReservationPage.ReservationConfirmation.checkIn']()}
+				</dt>
 				<dd class="text-right font-medium">{formatDate(booking.checkInDate)}</dd>
 			</div>
 
 			<div class="flex items-center justify-between gap-3">
-				<dt class="text-muted-foreground">{m['ReservationPage.ReservationConfirmation.checkOut']()}</dt>
+				<dt class="text-muted-foreground">
+					{m['ReservationPage.ReservationConfirmation.checkOut']()}
+				</dt>
 				<dd class="text-right font-medium">{formatDate(booking.checkOutDate)}</dd>
 			</div>
 
 			<div class="flex items-center justify-between gap-3">
-				<dt class="text-muted-foreground">{m['ReservationPage.ReservationConfirmation.guests']()}</dt>
+				<dt class="text-muted-foreground">
+					{m['ReservationPage.ReservationConfirmation.guests']()}
+				</dt>
 				<dd class="text-right font-medium">
 					{formatGuestsShort(booking.numberOfAdults, booking.numberOfChildren)}
 				</dd>
@@ -165,8 +173,8 @@
 	{/if}
 
 	<div class="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-		<Button href={appHref(listingHref)} variant="outline">
-			{m['ReservationPage.ReservationConfirmation.backToListing']()}
+		<Button href={appHref(accommodationHref)} variant="outline">
+			{m['ReservationPage.ReservationConfirmation.backToAccommodation']()}
 		</Button>
 
 		<Button href={appHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT)}>

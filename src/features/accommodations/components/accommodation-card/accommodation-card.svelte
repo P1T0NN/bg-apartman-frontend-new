@@ -14,68 +14,89 @@
 	import { appHref } from '@/utils/app-navigation.js';
 
 	// TYPES
-	import type { SearchListing } from '@/shared/features/accommodation/types/accommodationTypes';
+	import type { SearchAccommodation } from '@/shared/features/accommodation/types/accommodationTypes';
 	import type { ClassValue } from 'clsx';
 
+	// LUCIDE ICONS
+	import StarIcon from '@lucide/svelte/icons/star';
+
 	let {
-		listing,
+		accommodation,
 		selected = false,
+		featured = false,
+		boxed = false,
 		onhover,
 		id,
 		class: className
 	}: {
-		listing: SearchListing;
+		accommodation: SearchAccommodation;
 		/** Draw the focus ring (its marker is hovered/clicked on the map). */
 		selected?: boolean;
+		/** Show the "Featured" star badge (top-left, takes priority over superhost/new). */
+		featured?: boolean;
+		/** Wrap the card in a bordered surface (border + bg-card + shadow) instead of the
+		    default bare image-first layout. Use where a card sits on the page background. */
+		boxed?: boolean;
 		/** Bubble hover up so the matching map marker can highlight. */
 		onhover?: (id: string | null) => void;
 		id?: string;
 		class?: ClassValue;
 	} = $props();
 
-	const listingHref = $derived(
-		appHref(UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION.replace(':slug', listing.slug))
+	const accommodationHref = $derived(
+		appHref(UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION.replace(':slug', accommodation.slug))
 	);
 
 	const discountPercent = $derived(
-		listing.originalPrice && listing.originalPrice > listing.pricePerNight
-			? Math.round((1 - listing.pricePerNight / listing.originalPrice) * 100)
+		accommodation.originalPrice && accommodation.originalPrice > accommodation.pricePerNight
+			? Math.round((1 - accommodation.pricePerNight / accommodation.originalPrice) * 100)
 			: 0
 	);
 </script>
 
 <article
-	id={id ?? `listing-${listing.id}`}
-	onpointerenter={() => onhover?.(listing.id)}
+	id={id ?? `accommodation-${accommodation.id}`}
+	onpointerenter={() => onhover?.(accommodation.id)}
 	onpointerleave={() => onhover?.(null)}
 	class={cn(
 		'group relative rounded-2xl ring-offset-2 ring-offset-background transition',
-
+		boxed && 'overflow-hidden border border-border/60 bg-card shadow-sm hover:shadow-md',
 		selected && 'ring-2 ring-primary',
-
 		className
 	)}
 >
 	<a
-		href={listingHref}
+		href={accommodationHref}
 		data-sveltekit-preload-data="tap"
 		class="block rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-ring"
 	>
-		<div class="relative aspect-4/3 overflow-hidden rounded-2xl bg-muted">
+		<div
+			class={cn(
+				'relative aspect-4/3 overflow-hidden bg-muted',
+				boxed ? 'rounded-t-2xl' : 'rounded-2xl'
+			)}
+		>
 			<QualityImage
-				src={listing.image.url}
-				alt={listing.image.alt ?? listing.title}
+				src={accommodation.image.url}
+				alt={accommodation.image.alt ?? accommodation.title}
 				class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
 			/>
 
 			<!-- Scrim keeps the white badges + heart legible over bright photos. -->
 			<div
-				class="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/25 to-transparent"
+				class="pointer-events-none absolute inset-x-0 top-0 h-20 bg-linear-to-b from-black/25 to-transparent"
 			></div>
 
-			{#if listing.isSuperhost}
+			{#if featured}
+				<span
+					class="absolute top-3 left-3 flex items-center gap-1 rounded-full bg-amber-500 px-2 py-0.5 text-xs font-semibold text-white shadow-sm"
+				>
+					<StarIcon class="size-3 fill-current" aria-hidden="true" />
+					Featured
+				</span>
+			{:else if accommodation.isSuperhost}
 				<SuperhostBadge variant="overlay" />
-			{:else if listing.rating === undefined}
+			{:else if accommodation.rating === undefined}
 				<NewAccommodationBadge />
 			{/if}
 
@@ -88,8 +109,8 @@
 			{/if}
 		</div>
 
-		<AccommodationCardBody {listing} class="pt-2.5" />
+		<AccommodationCardBody {accommodation} class={boxed ? 'px-3.5 pt-3 pb-3.5' : 'pt-2.5'} />
 	</a>
 
-	<ToggleFavoriteButton apartmentId={listing.id} variant="overlay" />
+	<ToggleFavoriteButton apartmentId={accommodation.id} variant="overlay" />
 </article>

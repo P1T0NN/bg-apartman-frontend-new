@@ -22,9 +22,9 @@
 		</div>
 
 		<div class="flex flex-col gap-1.5">
-			<h1 class="text-lg font-semibold">Couldn't load this listing</h1>
+			<h1 class="text-lg font-semibold">Couldn't load this accommodation</h1>
 			<p class="mx-auto max-w-sm text-sm text-muted-foreground">
-				Something went wrong while loading this listing. Please try again in a moment.
+				Something went wrong while loading this accommodation. Please try again in a moment.
 			</p>
 		</div>
 

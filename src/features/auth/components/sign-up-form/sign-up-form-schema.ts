@@ -1,23 +1,22 @@
 // LIBRARIES
 import { z } from 'zod';
-import { m } from '@/shared/lib/paraglide/messages';
 import { isDeniedPassword } from '@/features/auth/utils/denyPasswordList.js';
 
 export const signUpFormSchema = z.object({
-	name: z.string().trim().min(1, m['ValidationMessages.SignUpForm.nameRequired']()),
+	name: z.string().trim().min(1, 'ValidationMessages.signUpFormSchema.nameRequired'),
 	email: z
 		.string()
 		.trim()
-		.min(1, m['ValidationMessages.SignUpForm.emailRequired']())
-		.email(m['ValidationMessages.SignUpForm.invalidEmail']()),
+		.min(1, 'ValidationMessages.signUpFormSchema.emailRequired')
+		.email('ValidationMessages.signUpFormSchema.invalidEmail'),
 	password: z
 		.string()
-		.min(1, m['ValidationMessages.SignUpForm.passwordRequired']())
-		.min(8, m['ValidationMessages.SignUpForm.passwordMinLength']())
+		.min(1, 'ValidationMessages.signUpFormSchema.passwordRequired')
+		.min(8, 'ValidationMessages.signUpFormSchema.passwordMinLength')
 		.refine(
 			(input) => !isDeniedPassword(input),
-			m['ValidationMessages.SignUpForm.passwordTooCommon']()
+			'ValidationMessages.signUpFormSchema.passwordTooCommon'
 		),
-	confirmPassword: z.string().min(1, m['ValidationMessages.SignUpForm.confirmPasswordRequired']()),
+	confirmPassword: z.string().min(1, 'ValidationMessages.signUpFormSchema.confirmPasswordRequired'),
 	flow: z.literal('signUp')
 });

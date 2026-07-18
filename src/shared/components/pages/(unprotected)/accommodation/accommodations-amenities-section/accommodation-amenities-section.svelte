@@ -20,7 +20,9 @@
 </script>
 
 <section class="space-y-4">
-	<h2 class="text-lg font-semibold tracking-tight">{m['AccommodationPage.AccommodationsAmenitiesSection.title']()}</h2>
+	<h2 class="text-lg font-semibold tracking-tight">
+		{m['AccommodationPage.AccommodationsAmenitiesSection.title']()}
+	</h2>
 
 	<ul class="grid grid-cols-1 gap-x-6 gap-y-3.5 sm:grid-cols-2">
 		{#each visible as id (id)}

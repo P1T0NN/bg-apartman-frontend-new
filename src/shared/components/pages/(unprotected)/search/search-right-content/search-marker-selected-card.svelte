@@ -11,7 +11,7 @@
 	import { appHref } from '@/utils/app-navigation.js';
 
 	// TYPES
-	import type { SearchListing } from '@/shared/features/accommodation/types/accommodationTypes';
+	import type { SearchAccommodation } from '@/shared/features/accommodation/types/accommodationTypes';
 	import type { Id } from '@/convex/_generated/dataModel';
 	import type { GoogleMapHandle } from '@/shared/components/ui/google-map/types';
 
@@ -23,7 +23,7 @@
 		selectedId = $bindable(),
 		mapHandle
 	}: {
-		selected: SearchListing;
+		selected: SearchAccommodation;
 		selectedId: Id<'apartments'> | null;
 		mapHandle?: GoogleMapHandle;
 	} = $props();
@@ -34,9 +34,7 @@
 	}
 </script>
 
-<div
-	class="pointer-events-none absolute inset-x-0 bottom-24 flex justify-center px-4 lg:bottom-6"
->
+<div class="pointer-events-none absolute inset-x-0 bottom-24 flex justify-center px-4 lg:bottom-6">
 	<div
 		class="pointer-events-auto relative w-full max-w-md rounded-2xl border bg-background p-3 shadow-xl"
 	>
@@ -50,9 +48,7 @@
 		</button>
 
 		<div class="flex gap-3">
-			<div
-				class="relative aspect-4/3 w-28 shrink-0 overflow-hidden rounded-xl bg-muted sm:w-32"
-			>
+			<div class="relative aspect-4/3 w-28 shrink-0 overflow-hidden rounded-xl bg-muted sm:w-32">
 				<QualityImage
 					src={selected.image.url}
 					alt={selected.image.alt ?? selected.title}
@@ -61,9 +57,14 @@
 			</div>
 
 			<div class="flex min-w-0 flex-1 flex-col">
-				<AccommodationCardBody listing={selected}>
+				<AccommodationCardBody accommodation={selected}>
 					{#snippet actions()}
-						<Button href={appHref(UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION.replace(':slug', selected.slug))} size="sm">View</Button>
+						<Button
+							href={appHref(
+								UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION.replace(':slug', selected.slug)
+							)}
+							size="sm">View</Button
+						>
 					{/snippet}
 				</AccommodationCardBody>
 			</div>

@@ -12,7 +12,7 @@ import type { ConvexErrorPayload } from '@/shared/types/types';
  * Owner-scoped accommodation list for the signed-in host.
  *
  * Uses the `apartments.by_host` index so the query only scans the caller's rows,
- * then paginates with Convex cursor pagination. Newest listings are returned first
+ * then paginates with Convex cursor pagination. Newest accommodations are returned first
  * by default via the helper's `order: 'desc'`.
  */
 export const fetchMyAccommodations = fetchOptimized({

@@ -14,9 +14,7 @@ import type { ConvexErrorPayload } from '@/shared/types/types';
 import type { ConvexRateLimitName } from './registry';
 
 const SEARCH_LIMIT_SECRET_ENV = 'SEARCH_INPUT_RATE_LIMIT_SECRET';
-const AUTHENTICATED_KEY_MODES = ['user', 'fallback', 'userAndFallback'] as const;
-
-type AuthenticatedKeyMode = (typeof AUTHENTICATED_KEY_MODES)[number];
+type AuthenticatedKeyMode = 'user' | 'fallback' | 'userAndFallback';
 
 /**
  * Trusted server-side bridge for public search rate limits.

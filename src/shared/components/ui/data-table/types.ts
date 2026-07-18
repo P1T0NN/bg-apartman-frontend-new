@@ -20,6 +20,12 @@ export type PaginatedListPayload<T = unknown> = {
 	isDone: boolean;
 	continueCursor: string;
 	totalCount: number | null;
+	/**
+	 * Optional query-specific side payload (filter counts, aggregates) computed in the same
+	 * query so consumers don't need a second subscription. Surfaced by `ConvexDataTable`
+	 * via `bind:extra`; the consumer narrows the type.
+	 */
+	extra?: unknown;
 };
 
 /** Minimum breakpoint at which the column becomes visible in the table layout. */

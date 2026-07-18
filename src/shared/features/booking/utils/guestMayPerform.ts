@@ -16,8 +16,6 @@ export function guestMayPerform(
 		case 'withdraw':
 			return booking.status === 'pending';
 		case 'cancel':
-			return (
-				booking.status === 'confirmed' && guestMayCancelConfirmed(booking.checkInDate, today)
-			);
+			return booking.status === 'confirmed' && guestMayCancelConfirmed(booking.checkInDate, today);
 	}
 }

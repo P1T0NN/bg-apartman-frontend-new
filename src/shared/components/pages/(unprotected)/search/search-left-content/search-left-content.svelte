@@ -14,18 +14,18 @@
 	// TYPES
 	import type { Id } from '@/convex/_generated/dataModel';
 	import type { GoogleMapHandle } from '@/shared/components/ui/google-map/types';
-	import type { SearchListing } from '@/shared/features/accommodation/types/accommodationTypes';
+	import type { SearchAccommodation } from '@/shared/features/accommodation/types/accommodationTypes';
 	import type { SearchState } from '../types';
 
 	let {
-		searchListings,
+		searchAccommodations,
 		search,
 		mobileView,
 		selectedId,
 		mapHandle,
 		location
 	}: {
-		searchListings: SearchListing[];
+		searchAccommodations: SearchAccommodation[];
 		search: SearchState;
 		mobileView: 'list' | 'map';
 		selectedId: Id<'apartments'> | null;
@@ -41,17 +41,18 @@
 
 	// New filtered set (identity change) → restart pagination at page 1.
 	$effect(() => {
-		if (searchListings) visibleCount = PAGE_SIZE;
+		if (searchAccommodations) visibleCount = PAGE_SIZE;
 	});
 
-	const visible = $derived(searchListings.slice(0, visibleCount));
-	const hasMore = $derived(visibleCount < searchListings.length);
+	const visible = $derived(searchAccommodations.slice(0, visibleCount));
+	const hasMore = $derived(visibleCount < searchAccommodations.length);
 
-	function handleListingHover(id: string | null) {
+	function handleAccommodationHover(id: string | null) {
 		mapHandle?.setFocus(id);
 	}
 
-	const loadMore = () => (visibleCount = Math.min(visibleCount + PAGE_SIZE, searchListings.length));
+	const loadMore = () =>
+		(visibleCount = Math.min(visibleCount + PAGE_SIZE, searchAccommodations.length));
 </script>
 
 <!-- LEFT: results list -->
@@ -61,17 +62,17 @@
 		mobileView === 'map' && 'hidden lg:block'
 	)}
 >
-	<SearchLeftContentHeader count={searchListings.length} {location} {search} />
+	<SearchLeftContentHeader count={searchAccommodations.length} {location} {search} />
 
-	{#if searchListings.length === 0}
+	{#if searchAccommodations.length === 0}
 		<SearchFiltersEmpty {search} {location} />
 	{:else}
 		<div class="grid grid-cols-1 gap-x-5 gap-y-7 sm:grid-cols-2 xl:grid-cols-3">
-			{#each visible as listing (listing.id)}
-				<AccommodationCard 
-					{listing} 
-					selected={listing.id === selectedId} 
-					onhover={handleListingHover} 
+			{#each visible as accommodation (accommodation.id)}
+				<AccommodationCard
+					{accommodation}
+					selected={accommodation.id === selectedId}
+					onhover={handleAccommodationHover}
 				/>
 			{/each}
 		</div>

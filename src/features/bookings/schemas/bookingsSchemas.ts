@@ -12,25 +12,30 @@ import { nightsBetween } from '@/shared/utils/dateUtils';
  */
 export const createBookingSchema = z
 	.object({
-		firstName: z.string().trim().min(1, 'Enter your first name'),
-		lastName: z.string().trim().min(1, 'Enter your last name'),
+		firstName: z.string().trim().min(1, 'ValidationMessages.createBookingSchema.firstNameRequired'),
+		lastName: z.string().trim().min(1, 'ValidationMessages.createBookingSchema.lastNameRequired'),
 		email: z
 			.string()
 			.trim()
-			.min(1, 'Enter your email')
-			.regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Enter a valid email'),
+			.min(1, 'ValidationMessages.createBookingSchema.emailRequired')
+			.regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'ValidationMessages.createBookingSchema.invalidEmail'),
 		phone: z
 			.string()
-			.refine((value) => value.replace(/\D/g, '').length >= 6, 'Enter a valid phone number'),
+			.refine(
+				(value) => value.replace(/\D/g, '').length >= 6,
+				'ValidationMessages.createBookingSchema.invalidPhone'
+			),
 		specialRequests: z.string().trim().optional(),
-		paymentMethod: z.enum(['cash', 'online'], { message: 'Choose a payment method.' }),
+		paymentMethod: z.enum(['cash', 'online'], {
+			message: 'ValidationMessages.createBookingSchema.paymentMethodRequired'
+		}),
 		// Required strings (not nullable): `z.infer` then narrows these to `string` for the
 		// mutation — the same narrowing the old `resolveBookingDates` return type gave us.
-		checkIn: z.string().min(1, 'Select your dates'),
-		checkOut: z.string().min(1, 'Select your dates')
+		checkIn: z.string().min(1, 'ValidationMessages.createBookingSchema.datesRequired'),
+		checkOut: z.string().min(1, 'ValidationMessages.createBookingSchema.datesRequired')
 	})
 	// Cross-field rule: needs both dates, so it lives on the object via `.refine`, not a field.
 	.refine((data) => nightsBetween(data.checkIn, data.checkOut) >= 1, {
-		message: 'Your stay must be at least one night',
+		message: 'ValidationMessages.createBookingSchema.minOneNight',
 		path: ['checkOut']
 	});

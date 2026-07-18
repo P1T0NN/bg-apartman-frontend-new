@@ -1,10 +1,7 @@
 // LIBRARIES
 import { ConvexError } from 'convex/values';
-import {
-	customAction,
-	customCtx,
-	customMutation
-} from 'convex-helpers/server/customFunctions';
+import { customAction, customCtx, customMutation } from 'convex-helpers/server/customFunctions';
+import { zCustomMutation } from 'convex-helpers/server/zod4';
 
 // UTILS
 import { action, mutation } from '@/convex/_generated/server';
@@ -40,9 +37,7 @@ import type { AuditOptions } from '@/convex/tables/auditLog/helpers/logAudit';
  * gating) and called directly from flows where the admin check is conditional or branches
  * with other modes (e.g. `createDeleteMutation`, `resolveUploadAuth`).
  */
-export const requireAdmin = async (
-	ctx: MutationCtx | QueryCtx | ActionCtx
-): Promise<string> => {
+export const requireAdmin = async (ctx: MutationCtx | QueryCtx | ActionCtx): Promise<string> => {
 	const user = await authComponent.getAuthUser(ctx);
 
 	if (!user) {
@@ -69,7 +64,8 @@ export const requireAdmin = async (
  * `_creationTime` window: it stamps `ipAddress` / `userAgent` server-side at
  * sign-in, which is more trustworthy than anything we could re-derive per call.
  */
-const buildAudit = (ctx: MutationCtx | ActionCtx, userId: string) =>
+const buildAudit =
+	(ctx: MutationCtx | ActionCtx, userId: string) =>
 	(action: AuditAction, auditOpts: Omit<AuditOptions, 'userId'> & { userId?: string } = {}) =>
 		logAudit(ctx, action, { userId, ...auditOpts });
 
@@ -98,6 +94,39 @@ const buildAudit = (ctx: MutationCtx | ActionCtx, userId: string) =>
  */
 export const authMutation = (name: ConvexRateLimitName) =>
 	customMutation(
+		mutation,
+		customCtx(async (ctx) => {
+			const userId = await convexGetRateLimitedUserId(ctx, name);
+			return { userId, audit: buildAudit(ctx, userId) };
+		})
+	);
+
+/**
+ * Zod-args variant of {@link authMutation}.
+ *
+ * Same auth + rate-limit contract, but `args` are **Zod** validators instead of `v.*`.
+ * convex-helpers converts them to Convex validators for the signature and runs the full
+ * Zod parse (with `.trim()`, `.refine()`, etc.) before your handler — so a shared form
+ * schema is reused verbatim as the boundary validator, no second `v.*` block, no
+ * `safeParse` in the handler. `args` in the handler are already parsed & transformed.
+ *
+ * Use this for endpoints that carry real form fields (a decline reason, a booking-request
+ * form). Keep {@link authMutation} for `bookingId`-only endpoints — zod buys nothing there.
+ *
+ * Note: on invalid args this **throws** `ConvexError({ ZodError })` rather than returning a
+ * soft `MutationResult`. Validate with the same schema client-side first; the server throw
+ * is defense-in-depth for callers that bypass the form.
+ *
+ * @example
+ * ```ts
+ * export const declineBooking = zAuthMutation('declineBooking')({
+ *   args: { bookingId: zid('bookings'), declineReason: declineReasonSchema },
+ *   handler: async (ctx, args) => { ... } // args.declineReason already trimmed & validated
+ * });
+ * ```
+ */
+export const zAuthMutation = (name: ConvexRateLimitName) =>
+	zCustomMutation(
 		mutation,
 		customCtx(async (ctx) => {
 			const userId = await convexGetRateLimitedUserId(ctx, name);
@@ -161,6 +190,20 @@ export const authAction = (name: ConvexRateLimitName) =>
  */
 export const adminMutation = (name: ConvexRateLimitName) =>
 	customMutation(
+		mutation,
+		customCtx(async (ctx) => {
+			const userId = await convexGetRateLimitedUserId(ctx, name);
+			await requireAdmin(ctx);
+			return { userId, audit: buildAudit(ctx, userId) };
+		})
+	);
+
+/**
+ * Zod-args variant of {@link adminMutation} — same admin gate + rate limit, but `args`
+ * are a shared Zod schema (see {@link zAuthMutation} for the contract and caveats).
+ */
+export const zAdminMutation = (name: ConvexRateLimitName) =>
+	zCustomMutation(
 		mutation,
 		customCtx(async (ctx) => {
 			const userId = await convexGetRateLimitedUserId(ctx, name);

@@ -31,7 +31,7 @@
 
 {#if variant === 'table'}
 	{#each rowIndices as r (r)}
-		<TableRow class="hover:bg-muted/30 border-b">
+		<TableRow class="border-b hover:bg-muted/30">
 			{#if selectable}
 				<TableCell class="w-10 px-4 py-3 align-middle">
 					<Skeleton class="h-4 w-4 rounded-[4px]" />
@@ -60,11 +60,9 @@
 			{/if}
 			<dl class="flex flex-col gap-3">
 				{#each columns as col (col.id)}
-					<div
-						class="grid grid-cols-1 gap-1 sm:grid-cols-[minmax(0,7rem)_minmax(0,1fr)] sm:gap-3"
-					>
+					<div class="grid grid-cols-1 gap-1 sm:grid-cols-[minmax(0,7rem)_minmax(0,1fr)] sm:gap-3">
 						<dt
-							class="text-muted-foreground text-xs font-semibold tracking-wide uppercase sm:text-sm"
+							class="text-xs font-semibold tracking-wide text-muted-foreground uppercase sm:text-sm"
 						>
 							{col.header}
 						</dt>

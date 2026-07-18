@@ -21,11 +21,8 @@ type ParaglideCatalog = Record<string, ParaglideMessageFn>;
  * const result = await safeMutation(client, api.foo.bar, args);
  * if (result) toast[result.success ? 'success' : 'error'](translateFromBackend(result.message));
  */
-export function translateFromBackend(
-	message: TranslatableMessage | string
-): string {
-	const descriptor: TranslatableMessage =
-		typeof message === 'string' ? { key: message } : message;
+export function translateFromBackend(message: TranslatableMessage | string): string {
+	const descriptor: TranslatableMessage = typeof message === 'string' ? { key: message } : message;
 	const fn = (m as unknown as ParaglideCatalog)[descriptor.key];
 	return fn ? fn(descriptor.params) : descriptor.key;
 }
@@ -38,14 +35,10 @@ export function translateFromBackend(
  * Used by `safeMutation` / `safeAction` to auto-translate backend errors; exported for any
  * call site that wants to branch on it manually (e.g. show a dialog instead of a toast).
  */
-export function hasTranslatableMessage(
-	data: unknown
-): data is { message: TranslatableMessage } {
+export function hasTranslatableMessage(data: unknown): data is { message: TranslatableMessage } {
 	if (typeof data !== 'object' || data === null || !('message' in data)) return false;
 	const msg = (data as { message: unknown }).message;
 	return (
-		typeof msg === 'object' &&
-		msg !== null &&
-		typeof (msg as { key?: unknown }).key === 'string'
+		typeof msg === 'object' && msg !== null && typeof (msg as { key?: unknown }).key === 'string'
 	);
 }

@@ -44,7 +44,9 @@
 			</div>
 
 			<div class="space-y-1">
-				<p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">Your next trip</p>
+				<p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+					Your next trip
+				</p>
 				<h2 class="text-xl font-semibold tracking-tight">{trip.apartment.title}</h2>
 				<p class="flex items-center gap-1.5 text-sm text-muted-foreground">
 					<MapPinIcon class="size-4 shrink-0" aria-hidden="true" />

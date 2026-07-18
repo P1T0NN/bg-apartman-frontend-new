@@ -24,10 +24,7 @@ import { ConvexError } from 'convex/values';
 import { isRateLimitError } from '@convex-dev/rate-limiter';
 import { rateLimitMessage } from '@/utils/rateLimitMessages';
 import { m } from '@/shared/lib/paraglide/messages';
-import {
-	hasTranslatableMessage,
-	translateFromBackend
-} from '@/utils/translateFromBackend';
+import { hasTranslatableMessage, translateFromBackend } from '@/utils/translateFromBackend';
 
 // TYPES
 import type { FunctionReference, FunctionArgs, FunctionReturnType } from 'convex/server';
@@ -122,10 +119,7 @@ export async function uploadFileToConvexStorage(
  * @returns the R2 object `key` on success (the row's stable identifier in `uploadedFilesR2`),
  *          or `null` when an error was already toasted.
  */
-export async function uploadFileToR2(
-	client: ConvexClient,
-	file: File
-): Promise<string | null> {
+export async function uploadFileToR2(client: ConvexClient, file: File): Promise<string | null> {
 	const minted = await safeMutation(client, api.storage.r2.r2.generateR2UploadUrl, {});
 	if (!minted || !minted.success || !minted.data) return null;
 

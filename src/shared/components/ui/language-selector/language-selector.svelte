@@ -3,14 +3,18 @@
 	import { setLocale, getLocale } from '@/shared/lib/paraglide/runtime';
 
 	// COMPONENTS
-	import { Select, SelectTrigger, SelectContent, SelectItem } from '@/shared/components/ui/select';
+	import { Button } from '@/shared/components/ui/button/index.js';
+	import { NativePopover } from '@/shared/components/ui/native-popover/index.js';
 
 	// SVGS
-	import UnitedKingdomFlag from '@/shared/svgs/united-kingdom-flag.svelte';
-	import GermanyFlag from '@/shared/svgs/germany-flag.svelte';
+	import UnitedKingdomFlag from '@/svgs/united-kingdom-flag.svelte';
+	import GermanyFlag from '@/svgs/germany-flag.svelte';
 
 	// UTILS
 	import { cn } from '@/utils/utils';
+
+	// LUCIDE ICONS
+	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
 
 	interface Props {
 		variant?: 'default' | 'header';
@@ -31,51 +35,66 @@
 	}
 </script>
 
-<Select type="single" bind:value={selectedLanguage} onValueChange={handleLanguageChange}>
-	<SelectTrigger
-		class={cn(
-			'flex items-center space-x-2 w-auto',
-			variant === 'header' &&
-				'border-hero-overlay-foreground/20 bg-hero-overlay-foreground/10 hover:bg-hero-overlay-foreground/20'
-		)}
-	>
-		{#if selectedLanguage === 'en'}
-			<UnitedKingdomFlag />
-		{:else}
-			<GermanyFlag />
-		{/if}
-
-		<span
+<NativePopover align="start" contentClass="w-48">
+	{#snippet trigger({ props, anchorStyle })}
+		<Button
+			{...props}
+			style={anchorStyle}
+			variant="outline"
 			class={cn(
-				'font-dm-sans text-sm font-medium',
-				variant === 'header' ? 'text-hero-overlay-foreground' : 'text-foreground'
+				'flex w-auto items-center gap-2',
+				variant === 'header' &&
+					'border-hero-overlay-foreground/20 bg-hero-overlay-foreground/10 hover:bg-hero-overlay-foreground/20'
 			)}
 		>
-			{selectedLanguage === 'en' ? 'EN' : 'DE'}
-		</span>
-	</SelectTrigger>
+			{#if selectedLanguage === 'en'}
+				<UnitedKingdomFlag />
+			{:else}
+				<GermanyFlag />
+			{/if}
 
-	<SelectContent>
-		{#each languages as language}
-			<SelectItem value={language.locale}>
-				<div class="flex items-center space-x-3">
-					{#if language.locale === 'en'}
-						<UnitedKingdomFlag />
-					{:else}
-						<GermanyFlag />
-					{/if}
+			<span
+				class={cn(
+					'font-dm-sans text-sm font-medium',
+					variant === 'header' ? 'text-hero-overlay-foreground' : 'text-foreground'
+				)}
+			>
+				{selectedLanguage === 'en' ? 'EN' : 'DE'}
+			</span>
 
-					<div class="flex flex-col">
-						<span class="font-dm-sans text-sm font-medium">
-							{language.name}
-						</span>
+			<ChevronDownIcon class="size-4 opacity-50" />
+		</Button>
+	{/snippet}
 
-						<span class="font-dm-sans text-xs text-muted-foreground">
-							{language.locale === 'en' ? 'EN' : 'DE'}
-						</span>
-					</div>
+	{#snippet content({ close })}
+		{#each languages as language (language.locale)}
+			<button
+				type="button"
+				class={cn(
+					'flex w-full items-center gap-3 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-accent hover:text-accent-foreground',
+					selectedLanguage === language.locale && 'bg-accent/50'
+				)}
+				onclick={() => {
+					handleLanguageChange(language.locale);
+					close();
+				}}
+			>
+				{#if language.locale === 'en'}
+					<UnitedKingdomFlag />
+				{:else}
+					<GermanyFlag />
+				{/if}
+
+				<div class="flex flex-col">
+					<span class="font-dm-sans text-sm font-medium">
+						{language.name}
+					</span>
+
+					<span class="font-dm-sans text-xs text-muted-foreground">
+						{language.locale === 'en' ? 'EN' : 'DE'}
+					</span>
 				</div>
-			</SelectItem>
+			</button>
 		{/each}
-	</SelectContent>
-</Select>
+	{/snippet}
+</NativePopover>

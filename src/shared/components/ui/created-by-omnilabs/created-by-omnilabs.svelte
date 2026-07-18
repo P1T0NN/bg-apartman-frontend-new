@@ -1,6 +1,6 @@
 <script lang="ts">
-    // LIBRARIES
-    import { m } from '@/shared/lib/paraglide/messages';
+	// LIBRARIES
+	import { m } from '@/shared/lib/paraglide/messages';
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
@@ -29,13 +29,13 @@
 		'shadow-sm backdrop-blur-sm',
 		'transition-[transform,box-shadow,border-color,background-color] duration-300',
 		'hover:-translate-y-0.5 hover:border-primary-foreground/25 hover:bg-primary-foreground/7 hover:shadow-md',
-		'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground/40 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground',
+		'focus-visible:ring-2 focus-visible:ring-primary-foreground/40 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground focus-visible:outline-none',
 		className
 	)}
 	aria-label="Created by OmniLabs — opens in a new tab"
 >
 	<span
-		class="text-[0.625rem] font-semibold uppercase tracking-[0.28em] text-primary-foreground/50 transition-colors group-hover:text-primary-foreground/70"
+		class="text-[0.625rem] font-semibold tracking-[0.28em] text-primary-foreground/50 uppercase transition-colors group-hover:text-primary-foreground/70"
 	>
 		{m['CreatedByOmnilabs.label']()}
 	</span>

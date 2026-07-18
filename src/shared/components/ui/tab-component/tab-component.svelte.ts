@@ -2,11 +2,7 @@
 import { parseAsStringLiteral, useQueryState } from 'nuqs-svelte';
 
 // TYPES
-import type {
-	TabComponentContext,
-	TabComponentItem,
-	TabComponentQueryOptions
-} from './types.js';
+import type { TabComponentContext, TabComponentItem, TabComponentQueryOptions } from './types.js';
 
 type TabComponentStateConfig<Value extends string> = {
 	// A readonly array (not the strict tuple) so non-tabs callers — e.g. a pill

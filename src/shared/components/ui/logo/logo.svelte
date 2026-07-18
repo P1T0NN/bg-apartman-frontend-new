@@ -42,8 +42,11 @@
 </script>
 
 <Link
-	href={href}
-	class={cn('inline-flex min-w-0 shrink-0 items-center outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 rounded-sm', className)}
+	{href}
+	class={cn(
+		'inline-flex min-w-0 shrink-0 items-center rounded-sm outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
+		className
+	)}
 	{...restProps}
 >
 	<img

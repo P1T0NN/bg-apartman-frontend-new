@@ -1,7 +1,7 @@
 <script lang="ts">
 	// COMPONENTS
 	import { Separator } from '@/shared/components/ui/separator/index.js';
-	import BookSummaryListing from './book-summary-listing.svelte';
+	import BookSummaryAccommodation from './book-summary-accommodation.svelte';
 	import BookGuestDetails from './book-guest-details.svelte';
 	import BookPrice from './book-price.svelte';
 
@@ -24,7 +24,7 @@
 </script>
 
 <div class="space-y-5 rounded-2xl border p-5 sm:p-6">
-	<BookSummaryListing {accommodation} />
+	<BookSummaryAccommodation {accommodation} />
 
 	<Separator />
 

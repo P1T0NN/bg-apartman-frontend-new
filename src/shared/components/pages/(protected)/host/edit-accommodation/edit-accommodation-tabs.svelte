@@ -39,15 +39,24 @@
 <div class="flex flex-col gap-6">
 	<header class="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-end sm:justify-between">
 		<div class="min-w-0 space-y-1">
-			<h1 class="truncate text-2xl font-semibold tracking-tight md:text-3xl">{accommodation.title}</h1>
+			<h1 class="truncate text-2xl font-semibold tracking-tight md:text-3xl">
+				{accommodation.title}
+			</h1>
 			<p class="max-w-2xl text-sm leading-relaxed text-muted-foreground">
-				Edit your listing's details, availability and settings.
+				Edit your accommodation's details, availability and settings.
 			</p>
 		</div>
 
-		<Button onclick={() => appGoto(UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION.replace(':slug', accommodation.slug))} variant="outline" target="_blank" rel="noopener" class="w-full shrink-0 sm:w-auto">
+		<Button
+			onclick={() =>
+				appGoto(UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION.replace(':slug', accommodation.slug))}
+			variant="outline"
+			target="_blank"
+			rel="noopener"
+			class="w-full shrink-0 sm:w-auto"
+		>
 			<ExternalLinkIcon class="size-4" aria-hidden="true" />
-			View listing
+			View accommodation
 		</Button>
 	</header>
 
@@ -60,7 +69,10 @@
 					<EditAccommodationInformation {accommodation} />
 				{/key}
 			{:else if value === 'calendar'}
-				<EditAccommodationCalendar apartmentId={accommodation._id} timeZone={accommodation.timeZone} />
+				<EditAccommodationCalendar
+					apartmentId={accommodation._id}
+					timeZone={accommodation.timeZone}
+				/>
 			{:else if value === 'settings'}
 				<EditAccommodationSettings {accommodation} />
 			{/if}

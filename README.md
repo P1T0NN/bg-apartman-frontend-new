@@ -20,39 +20,45 @@ Production-leaning starter combining:
 ## Setup
 
 1. **Install deps**
-    ```bash
-    bun install
-    ```
+
+   ```bash
+   bun install
+   ```
 
 2. **Copy env vars**
-    ```bash
-    cp .env.example .env.local
-    ```
-    Fill in `BETTER_AUTH_SECRET`, `GOOGLE_CLIENT_ID/SECRET`, `RESEND_API_KEY`. `CONVEX_DEPLOYMENT` and `PUBLIC_CONVEX_URL` are populated by the next step.
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Fill in `BETTER_AUTH_SECRET`, `GOOGLE_CLIENT_ID/SECRET`, `RESEND_API_KEY`. `CONVEX_DEPLOYMENT` and `PUBLIC_CONVEX_URL` are populated by the next step.
 
 3. **Boot Convex** (creates a dev deployment, populates `.env.local`, watches functions)
-    ```bash
-    bunx convex dev
-    ```
-    Leave this running. On first start it prompts to create/link a deployment.
+
+   ```bash
+   bunx convex dev
+   ```
+
+   Leave this running. On first start it prompts to create/link a deployment.
 
 4. **Push Better Auth env vars to Convex** — Convex functions don't read your `.env.local`; they have their own env:
-    ```bash
-    bunx convex env set BETTER_AUTH_SECRET <value>
-    bunx convex env set GOOGLE_CLIENT_ID <value>
-    bunx convex env set GOOGLE_CLIENT_SECRET <value>
-    bunx convex env set RESEND_API_KEY <value>
-    bunx convex env set SITE_URL http://localhost:5173
-    ```
+
+   ```bash
+   bunx convex env set BETTER_AUTH_SECRET <value>
+   bunx convex env set GOOGLE_CLIENT_ID <value>
+   bunx convex env set GOOGLE_CLIENT_SECRET <value>
+   bunx convex env set RESEND_API_KEY <value>
+   bunx convex env set SITE_URL http://localhost:5173
+   ```
 
 5. **Configure Google OAuth**
-    Authorized redirect URI: `${SITE_URL}/api/auth/callback/google` (e.g. `http://localhost:5173/api/auth/callback/google`).
+   Authorized redirect URI: `${SITE_URL}/api/auth/callback/google` (e.g. `http://localhost:5173/api/auth/callback/google`).
 
 6. **Run the dev server** (in a second terminal)
-    ```bash
-    bun run dev
-    ```
-    App at http://localhost:5173.
+   ```bash
+   bun run dev
+   ```
+   App at http://localhost:5173.
 
 ## Customizing
 

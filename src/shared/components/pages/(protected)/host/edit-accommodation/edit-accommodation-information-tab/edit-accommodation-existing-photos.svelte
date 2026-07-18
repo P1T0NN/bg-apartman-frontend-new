@@ -1,13 +1,15 @@
 <script lang="ts">
+	// COMPONENTS
+	import UploadFileItemMultiple from '@/features/uploadFile/components/upload-file-multiple/upload-file-item-multiple.svelte';
+
 	// UTILS
 	import { cn } from '@/utils/utils.js';
 
-	// LUCIDE ICONS
-	import XIcon from '@lucide/svelte/icons/x';
-	import ImageOffIcon from '@lucide/svelte/icons/image-off';
-
 	// TYPES
 	import type { Doc } from '@/convex/_generated/dataModel';
+
+	// LUCIDE ICONS
+	import ImageOffIcon from '@lucide/svelte/icons/image-off';
 
 	type ApartmentImage = Doc<'apartments'>['images'][number];
 
@@ -17,7 +19,7 @@
 		setValue,
 		invalid = false
 	}: {
-		/** All images currently stored on the listing. */
+		/** All images currently stored on the accommodation. */
 		images: ApartmentImage[];
 		/** Keys the host is keeping (the form value). */
 		keepKeys: string[];
@@ -26,14 +28,13 @@
 		invalid?: boolean;
 	} = $props();
 
-	// Current photos in display order, minus any the host already removed this session.
+	// Current photos in `keepKeys` order (that order is what the update mutation
+	// persists, so visible[0] is the cover), minus any removed this session.
 	const visible = $derived(
-		[...images].sort((a, b) => a.order - b.order).filter((image) => keepKeys.includes(image.key))
+		keepKeys
+			.map((key) => images.find((image) => image.key === key))
+			.filter((image): image is ApartmentImage => image !== undefined)
 	);
-
-	function remove(key: string) {
-		setValue(keepKeys.filter((k) => k !== key));
-	}
 </script>
 
 {#if visible.length === 0}
@@ -48,25 +49,16 @@
 	</div>
 {:else}
 	<div class={cn('rounded-xl', invalid && 'p-2 ring-2 ring-destructive/60')}>
-		<div class="grid grid-cols-3 gap-3 sm:grid-cols-4">
-			{#each visible as image (image.key)}
-				<div class="relative aspect-square overflow-hidden rounded-lg ring-1 ring-border">
-					<img
-						src={image.url}
-						alt={image.alt ?? ''}
-						class="size-full object-cover"
-						loading="lazy"
-					/>
-					<button
-						type="button"
-						onclick={() => remove(image.key)}
-						aria-label="Remove photo"
-						title="Remove photo"
-						class="absolute top-1 right-1 flex size-6 items-center justify-center rounded-full bg-background/80 text-foreground ring-1 ring-border backdrop-blur transition hover:bg-destructive/10 hover:text-destructive"
-					>
-						<XIcon class="size-3.5" />
-					</button>
-				</div>
+		<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+			{#each visible as image, i (image.key)}
+				<UploadFileItemMultiple
+					previewUrl={image.url}
+					name={image.alt ?? 'photo'}
+					hasCoverImage
+					isCover={i === 0}
+					onSetCover={() => setValue([image.key, ...keepKeys.filter((k) => k !== image.key)])}
+					onRemove={() => setValue(keepKeys.filter((k) => k !== image.key))}
+				/>
 			{/each}
 		</div>
 	</div>

@@ -74,7 +74,17 @@ const proxy: RequestHandler = async (event) => {
 	for (const name of [...newRequest.headers.keys()]) newRequest.headers.delete(name);
 	for (const [name, value] of forwarded.entries()) newRequest.headers.set(name, value);
 
-	return fetch(newRequest, { method: request.method, redirect: 'manual' });
+	try {
+		return await fetch(newRequest, { method: request.method, redirect: 'manual' });
+	} catch (error) {
+		// The browser abandoned this request mid-flight (navigation, tab close) — the
+		// inherited abort signal cancels the upstream fetch. Nobody is listening for the
+		// response, so answer quietly instead of letting SvelteKit log a 500.
+		if (error instanceof Error && error.name === 'AbortError') {
+			return new Response(null, { status: 499 });
+		}
+		throw error;
+	}
 };
 
 export const GET = proxy;

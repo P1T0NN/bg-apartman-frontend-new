@@ -1,6 +1,6 @@
 <script lang="ts">
 	// COMPONENTS
-	import * as Popover from '@/shared/components/ui/popover/index.js';
+	import { NativePopover } from '@/shared/components/ui/native-popover/index.js';
 	import { Button } from '@/shared/components/ui/button/index.js';
 	import SearchFiltersClearButton from './search-filters-clear-button.svelte';
 
@@ -14,8 +14,6 @@
 
 	let { search }: { search: SearchState } = $props();
 
-	let open = $state(false);
-
 	// Count of filters that aren't 'any' — shown as a badge on the trigger.
 	const activeCount = $derived(FILTER_DEFS.filter((d) => search[d.key].current !== 'any').length);
 
@@ -25,24 +23,22 @@
 	}
 </script>
 
-<Popover.Root bind:open>
-	<Popover.Trigger>
-		{#snippet child({ props })}
-			<Button {...props} variant="outline" size="sm" class="shrink-0 gap-1.5">
-				<SlidersHorizontalIcon class="size-4" aria-hidden="true" />
-				Filters
-				{#if activeCount > 0}
-					<span
-						class="ml-0.5 grid size-5 place-items-center rounded-full bg-primary text-xs font-semibold text-primary-foreground"
-					>
-						{activeCount}
-					</span>
-				{/if}
-			</Button>
-		{/snippet}
-	</Popover.Trigger>
+<NativePopover align="end" contentClass="w-72 space-y-4 p-4">
+	{#snippet trigger({ props, anchorStyle })}
+		<Button {...props} style={anchorStyle} variant="outline" size="sm" class="shrink-0 gap-1.5">
+			<SlidersHorizontalIcon class="size-4" aria-hidden="true" />
+			Filters
+			{#if activeCount > 0}
+				<span
+					class="ml-0.5 grid size-5 place-items-center rounded-full bg-primary text-xs font-semibold text-primary-foreground"
+				>
+					{activeCount}
+				</span>
+			{/if}
+		</Button>
+	{/snippet}
 
-	<Popover.Content align="end" class="w-72 space-y-4">
+	{#snippet content({ close })}
 		{#each FILTER_DEFS as def (def.key)}
 			<div class="space-y-1.5">
 				<p class="text-sm font-medium">{def.label}</p>
@@ -70,7 +66,7 @@
 				Clear
 			</SearchFiltersClearButton>
 
-			<Button size="sm" onclick={() => (open = false)}>Done</Button>
+			<Button size="sm" onclick={close}>Done</Button>
 		</div>
-	</Popover.Content>
-</Popover.Root>
+	{/snippet}
+</NativePopover>

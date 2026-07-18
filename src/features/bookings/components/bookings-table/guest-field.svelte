@@ -29,6 +29,7 @@
 	</span>
 	<span class="min-w-0">
 		<span class="block truncate text-sm font-medium group-hover/guest:underline">{name}</span>
-		<span class="block truncate font-mono text-xs text-muted-foreground">{booking.bookingCode}</span>
+		<span class="block truncate font-mono text-xs text-muted-foreground">{booking.bookingCode}</span
+		>
 	</span>
 </button>

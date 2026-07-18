@@ -2,11 +2,7 @@
 	// LIBRARIES
 	import { m } from '@/shared/lib/paraglide/messages';
 
-	// COMPONENTS
-	import * as Carousel from '@/shared/components/ui/carousel/index.js';
-
 	// TYPES
-	import type { CarouselAPI } from '@/shared/components/ui/carousel/context.js';
 	import type { typesAccommodationImage } from '@/shared/features/accommodation/types/accommodationTypes';
 
 	let {
@@ -19,48 +15,50 @@
 		lightboxOpen: boolean;
 	} = $props();
 
-	let api = $state<CarouselAPI>();
+	// ponytail: CSS scroll-snap instead of embla — no loop, but swipe/snap/index all native.
+	let track = $state<HTMLElement | null>(null);
 	let selectedIndex = $state(0);
 
 	const hasThumbnails = $derived(images.length > 1);
 
-	$effect(() => {
-		if (!api) return;
-		selectedIndex = api.selectedScrollSnap();
-		const onSelect = () => (selectedIndex = api!.selectedScrollSnap());
-		api.on('select', onSelect);
-		return () => {
-			api?.off('select', onSelect);
-		};
-	});
+	function onScroll() {
+		if (!track) return;
+		selectedIndex = Math.round(track.scrollLeft / track.clientWidth);
+	}
+
+	function scrollTo(i: number) {
+		track?.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' });
+	}
 </script>
 
 <div class="space-y-2 md:hidden">
 	<div class="relative">
-		<Carousel.Root setApi={(emblaApi) => (api = emblaApi)} opts={{ loop: true }} class="w-full">
-			<Carousel.Content class="ml-0">
-				{#each images as image, i (image.key)}
-					<Carousel.Item class="pl-0">
-						<button
-							type="button"
-							onclick={() => (lightboxOpen = true)}
-							class="block w-full"
-							aria-label={m['AccommodationPage.AccommodationGalleryDesktop.openPhoto']({
-								index: i + 1
-							})}
-						>
-							<img
-								src={image.url}
-								alt={image.alt ?? title}
-								class="aspect-4/3 w-full rounded-xl object-cover"
-								fetchpriority={i === 0 ? 'high' : 'auto'}
-								loading={i === 0 ? 'eager' : 'lazy'}
-							/>
-						</button>
-					</Carousel.Item>
-				{/each}
-			</Carousel.Content>
-		</Carousel.Root>
+		<div
+			bind:this={track}
+			onscroll={onScroll}
+			class="flex w-full snap-x snap-mandatory overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+		>
+			{#each images as image, i (image.key)}
+				<div class="w-full shrink-0 snap-start">
+					<button
+						type="button"
+						onclick={() => (lightboxOpen = true)}
+						class="block w-full"
+						aria-label={m['AccommodationPage.AccommodationGalleryDesktop.openPhoto']({
+							index: i + 1
+						})}
+					>
+						<img
+							src={image.url}
+							alt={image.alt ?? title}
+							class="aspect-4/3 w-full rounded-xl object-cover"
+							fetchpriority={i === 0 ? 'high' : 'auto'}
+							loading={i === 0 ? 'eager' : 'lazy'}
+						/>
+					</button>
+				</div>
+			{/each}
+		</div>
 
 		<span
 			class="pointer-events-none absolute right-3 bottom-3 rounded-full bg-background/90 px-2.5 py-1 text-xs font-medium shadow-sm ring-1 ring-border"
@@ -76,7 +74,7 @@
 			{#each images as image, i (image.key)}
 				<button
 					type="button"
-					onclick={() => api?.scrollTo(i)}
+					onclick={() => scrollTo(i)}
 					class={[
 						'aspect-4/3 w-16 shrink-0 overflow-hidden rounded-md bg-muted ring-2 transition',
 						i === selectedIndex ? 'ring-foreground' : 'ring-transparent'

@@ -1,6 +1,9 @@
 // LIBRARIES
 import { api } from '@/convex/_generated/api';
-import { createConvexHttpClient, getAuthState } from '@mmailaender/convex-better-auth-svelte/sveltekit';
+import {
+	createConvexHttpClient,
+	getAuthState
+} from '@mmailaender/convex-better-auth-svelte/sveltekit';
 
 // TYPES
 import type { LayoutServerLoad } from './$types';

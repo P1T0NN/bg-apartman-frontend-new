@@ -21,7 +21,7 @@
 
 	// TYPES
 	import type { Id } from '@/convex/_generated/dataModel';
-	import type { SearchListing } from '@/shared/features/accommodation/types/accommodationTypes';
+	import type { SearchAccommodation } from '@/shared/features/accommodation/types/accommodationTypes';
 
 	// This page reads the favorites set directly (no heart mounts first), so hydrate here too.
 	// Idempotent + client-only — a no-op if a card already triggered it.
@@ -53,15 +53,16 @@
 
 	{#if hasSavedIds}
 		<ConvexDataList
-			query={api.tables.accommodations.queries.fetchFavoriteAccommodationsSafe.fetchFavoriteAccommodationsSafe}
+			query={api.tables.accommodations.queries.fetchFavoriteAccommodationsSafe
+				.fetchFavoriteAccommodationsSafe}
 			queryArgs={{ ids: favoriteIds }}
 			optimizationStrategy="offset"
 			pageSize={PAGINATION_DATA.DEFAULT_PAGE_SIZE}
 			listClass="grid grid-cols-1 gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3"
-			getItemKey={(listing) => (listing as SearchListing).id}
+			getItemKey={(item) => (item as SearchAccommodation).id}
 		>
 			{#snippet item({ item })}
-				<AccommodationCard listing={item as SearchListing} />
+				<AccommodationCard accommodation={item as SearchAccommodation} />
 			{/snippet}
 
 			{#snippet loading()}

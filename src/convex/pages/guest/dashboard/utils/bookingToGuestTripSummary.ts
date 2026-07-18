@@ -12,7 +12,7 @@ export async function bookingToGuestTripSummary(
 	booking: Doc<'bookings'>
 ): Promise<GuestTripSummary> {
 	const apartment = await resolveApartmentSummary(ctx, booking);
-	
+
 	return {
 		id: booking._id,
 		bookingCode: booking.bookingCode,

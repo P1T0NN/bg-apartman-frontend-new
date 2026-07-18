@@ -1,9 +1,9 @@
 // LIBRARIES
-import { getAuthConfigProvider } from "@convex-dev/better-auth/auth-config";
+import { getAuthConfigProvider } from '@convex-dev/better-auth/auth-config';
 
 // TYPES
-import type { AuthConfig } from "convex/server";
+import type { AuthConfig } from 'convex/server';
 
 export default {
-  providers: [getAuthConfigProvider()],
+	providers: [getAuthConfigProvider()]
 } satisfies AuthConfig;

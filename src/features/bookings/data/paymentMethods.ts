@@ -1,12 +1,8 @@
-import type { MutationFormSelectOption } from '@/shared/components/ui/mutation-form/types';
+// TYPES
+import type { typesPaymentMethodOption } from '@/features/bookings/types/bookingsSvelteOnlyTypes';
 
-export type PaymentMethod = 'cash' | 'online';
-
-export type PaymentMethodOption = MutationFormSelectOption & {
-	description: string;
-};
-
-export const PAYMENT_METHOD_OPTIONS: PaymentMethodOption[] = [
+/** Guest-facing checkout choices — a booking is always paid one way or the other. */
+export const PAYMENT_METHOD_OPTIONS: typesPaymentMethodOption[] = [
 	{
 		value: 'cash',
 		label: 'Cash at check-in',
@@ -19,6 +15,21 @@ export const PAYMENT_METHOD_OPTIONS: PaymentMethodOption[] = [
 	}
 ];
 
-export function paymentMethodLabel(method: PaymentMethod): string {
-	return PAYMENT_METHOD_OPTIONS.find((option) => option.value === method)?.label ?? method;
-}
+/** Host-facing options for what an accommodation accepts — includes letting guests choose. */
+export const ACCOMMODATION_PAYMENT_METHOD_OPTIONS: typesPaymentMethodOption[] = [
+	{
+		value: 'cash',
+		label: 'Cash at check-in',
+		description: 'Guests settle the full amount with you on arrival.'
+	},
+	{
+		value: 'online',
+		label: 'Pay online',
+		description: 'Guests pay online when the booking is confirmed.'
+	},
+	{
+		value: 'both',
+		label: 'Both — let guests choose',
+		description: 'Guests pick between cash at check-in and paying online at checkout.'
+	}
+];

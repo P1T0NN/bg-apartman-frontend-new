@@ -3,7 +3,7 @@
 // Typed as typesBookingSafe — the same enriched, schema-derived shape the real "Safe" booking
 // queries return — so these fixtures can't drift from the `bookings` table. Each record is a
 // `Doc<'bookings'>` (minus server-only columns) plus a denormalized `apartment` summary, so the
-// UI can show the listing title / photo / city without a second lookup; the real query enriches
+// UI can show the accommodation title / photo / city without a second lookup; the real query enriches
 // the same way via resolveApartmentSummary().
 
 // TYPES
@@ -21,7 +21,7 @@ const at = (iso: string): number => new Date(iso).getTime();
 
 const HOST_ID = 'host_demo_1';
 
-// --- Listings the bookings belong to -----------------------------------------
+// --- Accommodations the bookings belong to -----------------------------------------
 
 const APARTMENTS = {
 	skadarlija: {

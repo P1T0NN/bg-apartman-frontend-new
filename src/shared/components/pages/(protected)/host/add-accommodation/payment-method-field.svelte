@@ -3,7 +3,7 @@
 	import { cn } from '@/utils/utils.js';
 
 	// DATA
-	import { PAYMENT_METHOD_OPTIONS } from '@/features/bookings/data/paymentMethods';
+	import { ACCOMMODATION_PAYMENT_METHOD_OPTIONS } from '@/features/bookings/data/paymentMethods';
 
 	// LUCIDE ICONS
 	import BanknoteIcon from '@lucide/svelte/icons/banknote';
@@ -21,7 +21,7 @@
 </script>
 
 <div class="grid gap-3">
-	{#each PAYMENT_METHOD_OPTIONS as option (option.value)}
+	{#each ACCOMMODATION_PAYMENT_METHOD_OPTIONS as option (option.value)}
 		{@const active = current === option.value}
 		<button
 			type="button"

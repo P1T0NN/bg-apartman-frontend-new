@@ -7,3 +7,8 @@ bun.lockb
 
 # Miscellaneous
 /static/
+
+# Convex codegen output — `convex dev` rewrites these unformatted on every sync,
+# so format-checking them just fights the watcher.
+/src/convex/_generated/
+/src/convex/auth/component/_generated/

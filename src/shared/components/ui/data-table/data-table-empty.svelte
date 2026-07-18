@@ -31,21 +31,18 @@
 
 <Card
 	data-slot="data-table-empty"
-	class={cn(
-		'items-center justify-center gap-3 px-6 py-12 text-center',
-		className
-	)}
+	class={cn('items-center justify-center gap-3 px-6 py-12 text-center', className)}
 	role="status"
 >
 	<span
-		class="bg-muted/50 text-muted-foreground ring-border inline-flex size-12 items-center justify-center rounded-full ring-1"
+		class="inline-flex size-12 items-center justify-center rounded-full bg-muted/50 text-muted-foreground ring-1 ring-border"
 		aria-hidden="true"
 	>
 		<InboxIcon class="size-6 opacity-80" />
 	</span>
 	<div class="max-w-sm space-y-1">
-		<p class="text-foreground text-sm font-medium">{title}</p>
-		<p class="text-muted-foreground text-sm leading-relaxed">{description}</p>
+		<p class="text-sm font-medium text-foreground">{title}</p>
+		<p class="text-sm leading-relaxed text-muted-foreground">{description}</p>
 	</div>
 	{#if children}
 		<div class="pt-1">{@render children()}</div>

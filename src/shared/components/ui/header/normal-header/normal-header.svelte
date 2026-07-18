@@ -3,7 +3,8 @@
 	import { page } from '$app/state';
 
 	// LIBRARIES
-	import { deLocalizeUrl } from '@/shared/lib/paraglide/runtime';
+	import { deLocalizeUrl, localizeHref } from '@/shared/lib/paraglide/runtime';
+	import { m } from '@/shared/lib/paraglide/messages';
 	import { useAuth } from '@mmailaender/convex-better-auth-svelte/svelte';
 
 	// CONFIG
@@ -11,19 +12,25 @@
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
 
 	// CLASSES
-	import { navItems, navLinkActiveClass, navLinkClass } from './normal-header.svelte.ts';
+	import {
+		isHeaderItemActive,
+		navItems,
+		navLinkActiveClass,
+		navLinkClass,
+		sectionSpy,
+		spiedSectionIds
+	} from './normal-header.svelte.ts';
 
 	// COMPONENTS
 	import Link from '@/shared/components/ui/link/link.svelte';
+	import Button from '@/shared/components/ui/button/button.svelte';
 	import Logo from '@/shared/components/ui/logo/logo.svelte';
 	import LanguageSelector from '@/shared/components/ui/language-selector/language-selector.svelte';
 	import NormalHeaderAuthActions from './normal-header-auth-actions.svelte';
 	import NormalHeaderMobile from './normal-header-mobile.svelte';
-	import LoginButton from '@/features/auth/components/login-button/login-button.svelte';
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
-	import { isNavItemActive } from '@/utils/isNavItemActive.js';
 
 	type Props = {
 		class?: string;
@@ -53,6 +60,13 @@
 
 	const pathnameLogical = $derived(new URL(deLocalizeUrl(page.url.href)).pathname);
 
+	// Landing-page scroll-spy: observe the spied sections while on the root page.
+	// Re-runs on navigation (pathname change); the returned cleanup disconnects the observer.
+	$effect(() => {
+		if (pathnameLogical !== UNPROTECTED_PAGE_ENDPOINTS.ROOT) return;
+		return sectionSpy.observe(spiedSectionIds);
+	});
+
 	let scrolledPastTop = $state(false);
 
 	$effect(() => {
@@ -78,39 +92,34 @@
 		'z-50 w-full max-w-full overflow-x-clip transition-[background-color,backdrop-filter,border-color,box-shadow] duration-300 ease-out',
 		isSticky ? 'sticky top-0' : 'relative',
 		useSolidBar
-			? 'border-b border-border bg-background/95 shadow-none backdrop-blur supports-backdrop-filter:bg-background/80'
+			? 'border-b border-transparent bg-hero-overlay shadow-none'
 			: 'border-b border-transparent bg-transparent shadow-none backdrop-blur-none',
 		className
 	)}
 >
-	<div
-		class="mx-auto flex h-14 w-full max-w-7xl items-center gap-2 px-4 sm:gap-3 sm:px-6 lg:px-8"
-	>
+	<div class="mx-auto flex h-14 w-full max-w-7xl items-center gap-2 px-4 sm:gap-3 sm:px-6 lg:px-8">
 		<div class="flex min-w-0 shrink items-center gap-2 lg:shrink-0">
 			{#if hasLogo}
 				<Logo />
 			{:else}
 				<Link
 					href={UNPROTECTED_PAGE_ENDPOINTS.ROOT}
-					class="text-foreground truncate text-sm font-semibold tracking-tight sm:text-base"
+					class="truncate text-sm font-semibold tracking-tight text-hero-overlay-foreground sm:text-base"
 				>
 					{COMPANY_DATA.NAME}
 				</Link>
 			{/if}
 		</div>
 
-		<nav
-			class="hidden min-w-0 flex-1 justify-center lg:flex"
-			aria-label="Main"
-		>
+		<nav class="hidden min-w-0 flex-1 justify-center lg:flex" aria-label="Main">
 			<ul class="flex max-w-full min-w-0 flex-wrap items-center justify-center gap-1">
 				{#each navItems as item (item.href)}
-					{@const active = isNavItemActive(pathnameLogical, item.href)}
+					{@const active = isHeaderItemActive(pathnameLogical, item)}
 					<li class="shrink-0">
 						<Link
 							href={item.href}
 							class={cn(navLinkClass, active && navLinkActiveClass)}
-							aria-current={active ? 'page' : undefined}
+							aria-current={active ? (item.sectionId ? 'location' : 'page') : undefined}
 						>
 							{item.label}
 						</Link>
@@ -119,18 +128,20 @@
 			</ul>
 		</nav>
 
-		<div
-			class="ml-auto flex shrink-0 items-center justify-end gap-1.5 sm:gap-2 lg:ml-0"
-		>
+		<div class="ml-auto flex shrink-0 items-center justify-end gap-1.5 sm:gap-2 lg:ml-0">
 			{#if isAuthenticated}
 				<NormalHeaderAuthActions />
 			{:else}
-				<div class="hidden sm:block">
-					<LoginButton />
-				</div>
+				<Button
+					size="sm"
+					class="hidden rounded-full bg-primary text-primary-foreground hover:opacity-90 sm:inline-flex"
+					href={localizeHref(UNPROTECTED_PAGE_ENDPOINTS.LOGIN)}
+				>
+					{m['LoginButton.login']()}
+				</Button>
 			{/if}
 
-			<LanguageSelector variant="default" />
+			<LanguageSelector variant="header" />
 
 			<NormalHeaderMobile {hasLogo} />
 		</div>

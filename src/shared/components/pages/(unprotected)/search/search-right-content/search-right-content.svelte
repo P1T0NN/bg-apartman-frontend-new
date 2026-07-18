@@ -5,14 +5,14 @@
 	// COMPONENTS
 	import GoogleMap from '@/shared/components/ui/google-map/google-map.svelte';
 	import CustomMarker from '@/shared/components/ui/google-map/custom-marker.svelte';
-    import SearchMarkerSelectedCard from './search-marker-selected-card.svelte';
+	import SearchMarkerSelectedCard from './search-marker-selected-card.svelte';
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
 	import { formatCurrency } from '@/utils/formatters';
 
 	// TYPES
-	import type { SearchListing } from '@/shared/features/accommodation/types/accommodationTypes';
+	import type { SearchAccommodation } from '@/shared/features/accommodation/types/accommodationTypes';
 	import type { Id } from '@/convex/_generated/dataModel';
 	import type { GoogleMapHandle } from '@/shared/components/ui/google-map/types';
 
@@ -20,12 +20,12 @@
 	// GoogleMap binds its instance into mapHandle), so they're $bindable — that's what
 	// lets the parent share both with the left list for card highlight + hover focus.
 	let {
-		searchListings,
+		searchAccommodations,
 		mobileView,
 		selectedId = $bindable(),
 		mapHandle = $bindable()
 	}: {
-		searchListings: SearchListing[];
+		searchAccommodations: SearchAccommodation[];
 		mobileView: 'list' | 'map';
 		selectedId: Id<'apartments'> | null;
 		mapHandle?: GoogleMapHandle;
@@ -34,14 +34,14 @@
 	const isDesktop = new MediaQuery('(min-width: 1024px)');
 
 	const showMap = $derived(isDesktop.current || mobileView === 'map');
-	const selected = $derived(searchListings.find((l) => l.id === selectedId) ?? null);
+	const selected = $derived(searchAccommodations.find((a) => a.id === selectedId) ?? null);
 
-	function selectFromMap(listing: SearchListing) {
-		selectedId = listing.id;
-		mapHandle?.setSelected(listing.id);
+	function selectFromMap(accommodation: SearchAccommodation) {
+		selectedId = accommodation.id;
+		mapHandle?.setSelected(accommodation.id);
 		// Bring the matching card into view in the desktop list for context.
 		document
-			.getElementById(`listing-${listing.id}`)
+			.getElementById(`accommodation-${accommodation.id}`)
 			?.scrollIntoView({ block: 'center', behavior: 'smooth' });
 	}
 </script>
@@ -56,7 +56,7 @@
 	{#if showMap}
 		<GoogleMap
 			bind:this={mapHandle}
-			markers={searchListings}
+			markers={searchAccommodations}
 			center={{ lat: 44.8155, lng: 20.4612 }}
 			zoom={13}
 			cluster
@@ -64,10 +64,10 @@
 			onMarkerClick={selectFromMap}
 			class="h-full w-full rounded-none"
 		>
-			{#snippet markerContent(listing, ctx)}
+			{#snippet markerContent(accommodation, ctx)}
 				<CustomMarker
-					label={formatCurrency(listing.pricePerNight)}
-					variant={ctx.selectedId === listing.id || ctx.highlightedId === listing.id
+					label={formatCurrency(accommodation.pricePerNight)}
+					variant={ctx.selectedId === accommodation.id || ctx.highlightedId === accommodation.id
 						? 'selected'
 						: 'default'}
 					compact={ctx.zoom < 12}
@@ -79,11 +79,7 @@
                 map pannable; only the card itself catches clicks. -->
 			{#snippet overlay()}
 				{#if selected}
-					<SearchMarkerSelectedCard 
-						{selected}
-						{mapHandle}
-						bind:selectedId
-					/>
+					<SearchMarkerSelectedCard {selected} {mapHandle} bind:selectedId />
 				{/if}
 			{/snippet}
 		</GoogleMap>

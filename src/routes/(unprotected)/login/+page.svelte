@@ -38,10 +38,8 @@
 	</div>
 
 	<div class="relative hidden bg-muted lg:block">
-		<img
-			src="/placeholder.svg"
-			alt="placeholder"
-			class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-		/>
+		<img src="/login/login-image.webp" alt="" class="absolute inset-0 h-full w-full object-cover" />
+		<!-- Dark overlay -->
+		<div class="absolute inset-0 bg-black/60"></div>
 	</div>
 </div>

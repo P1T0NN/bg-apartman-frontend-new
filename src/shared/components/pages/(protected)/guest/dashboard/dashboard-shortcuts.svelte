@@ -60,7 +60,10 @@
 
 <div class="grid gap-4 sm:grid-cols-3">
 	{#each tiles as tile (tile.label)}
-		<a href={tile.href} class="rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring">
+		<a
+			href={tile.href}
+			class="rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring"
+		>
 			<Card.Root class="flex-row items-center justify-between p-4 transition hover:bg-muted/40">
 				<div>
 					<p class="text-2xl font-semibold tracking-tight">{tile.value}</p>

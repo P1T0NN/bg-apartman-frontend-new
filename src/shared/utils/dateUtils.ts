@@ -10,6 +10,12 @@ export function formatTime12(time: string): string {
 	return `${hour12}:${String(m).padStart(2, '0')} ${period}`;
 }
 
+/** UTC start-of-month timestamp `offset` months before the month containing `now`. */
+export function monthStartUtc(now: number, offset: number): number {
+	const d = new Date(now);
+	return Date.UTC(d.getUTCFullYear(), d.getUTCMonth() - offset, 1);
+}
+
 /** Whole nights between two ISO dates (check-out exclusive). 0 when either is missing. */
 export function nightsBetween(startISO?: string | null, endISO?: string | null): number {
 	if (!startISO || !endISO) return 0;

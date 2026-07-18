@@ -29,9 +29,9 @@
 		pageName?: string;
 		/**
 		 * Cumulative paths to omit from the rendered breadcrumb trail (e.g.
-		 * `['/admin']` to hide the `Admin` crumb under the admin shell). Match is
-		 * against the cumulative `href` of each segment, so `'/admin'` hides only
-		 * that one crumb without affecting `/admin/users`.
+		 * `['/host']` to hide the `Host` crumb under the host shell). Match is
+		 * against the cumulative `href` of each segment, so `'/host'` hides only
+		 * that one crumb without affecting `/host/reservations`.
 		 */
 		hidePaths?: string[];
 	} = $props();
@@ -49,9 +49,7 @@
 	 * carries the cumulative `href` so intermediate items can link back. The
 	 * last entry is rendered as the current page (no link).
 	 */
-	const lastCrumbLabel = $derived(
-		siteHeaderBreadcrumb.lastLabel ?? page.data.pageTitle
-	);
+	const lastCrumbLabel = $derived(siteHeaderBreadcrumb.lastLabel ?? page.data.pageTitle);
 
 	const trail = $derived.by(() => {
 		const pathname = new URL(deLocalizeUrl(page.url.href)).pathname;

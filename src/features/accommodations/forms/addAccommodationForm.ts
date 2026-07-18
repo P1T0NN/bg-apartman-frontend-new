@@ -1,5 +1,5 @@
 // DATA
-import { PAYMENT_METHOD_OPTIONS } from '@/features/bookings/data/paymentMethods';
+import { ACCOMMODATION_PAYMENT_METHOD_OPTIONS } from '@/features/bookings/data/paymentMethods';
 import { ACCOMMODATION_TYPES } from '@/shared/data/accommodationsData';
 
 // TYPES
@@ -37,7 +37,7 @@ export const addAccommodationForm: MutationFormSection[] = [
 		fields: [
 			{
 				id: 'title',
-				label: 'Listing title',
+				label: 'Accommodation title',
 				kind: 'input',
 				placeholder: 'Sunny one-bedroom near the river',
 				autofocus: true,
@@ -287,7 +287,7 @@ export const addAccommodationForm: MutationFormSection[] = [
 				id: 'paymentMethod',
 				label: 'Guest payment method',
 				kind: 'radio',
-				options: PAYMENT_METHOD_OPTIONS,
+				options: ACCOMMODATION_PAYMENT_METHOD_OPTIONS,
 				description: 'Choose how guests pay for their stay.',
 				colSpan: 2
 			},
@@ -367,7 +367,7 @@ export const addAccommodationForm: MutationFormSection[] = [
 	{
 		id: 'photos',
 		title: 'Photos',
-		description: 'Listings with great photos get more bookings. Add a few to finish.',
+		description: 'Accommodations with great photos get more bookings. Add a few to finish.',
 		icon: ImagesIcon,
 		fields: [
 			{
@@ -375,6 +375,7 @@ export const addAccommodationForm: MutationFormSection[] = [
 				label: 'Upload photos',
 				kind: 'upload-multiple',
 				accept: 'image/*',
+				hasCoverImage: true,
 				colSpan: 2
 			}
 		]

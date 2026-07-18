@@ -12,11 +12,7 @@
 	import MutationForm from './mutation-form.svelte';
 
 	// UTILS
-	import {
-		safeMutation,
-		uploadFileToConvexStorage,
-		uploadFileToR2
-	} from '@/utils/convexHelpers';
+	import { safeMutation, uploadFileToConvexStorage, uploadFileToR2 } from '@/utils/convexHelpers';
 	import { translateFromBackend } from '@/utils/translateFromBackend';
 	import { processUploadFields } from './utils.js';
 

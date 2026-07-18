@@ -3,7 +3,11 @@
 	import { invalidateAll } from '$app/navigation';
 
 	// COMPONENTS
-	import { Button, type ButtonSize, type ButtonVariant } from '@/shared/components/ui/button/index.js';
+	import {
+		Button,
+		type ButtonSize,
+		type ButtonVariant
+	} from '@/shared/components/ui/button/index.js';
 
 	// LUCIDE ICONS
 	import RefreshCwIcon from '@lucide/svelte/icons/refresh-cw';

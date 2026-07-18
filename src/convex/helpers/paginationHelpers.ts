@@ -38,9 +38,7 @@ export const paginatedQueryArgs = {
 } as const;
 
 /** Use before `.paginate(...)` when `paginationOpts` is optional in args. */
-export function resolvePaginationOpts(
-	opts: PaginationOptions | undefined
-): PaginationOptions {
+export function resolvePaginationOpts(opts: PaginationOptions | undefined): PaginationOptions {
 	return opts ?? defaultPaginationOpts;
 }
 

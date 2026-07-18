@@ -6,10 +6,10 @@
 	import { Button } from '@/shared/components/ui/button/index.js';
 
 	// UTILS
-	import { paymentMethodLabel } from '@/features/bookings/data/paymentMethods';
+	import { paymentMethodLabel } from '@/features/bookings/utils/paymentMethodLabel';
 
 	// TYPES
-	import type { PaymentMethod } from '@/features/bookings/data/paymentMethods';
+	import type { Doc } from '@/convex/_generated/dataModel';
 
 	let {
 		instantBooking,
@@ -19,7 +19,7 @@
 		busy = false
 	}: {
 		instantBooking: boolean;
-		paymentMethod: PaymentMethod;
+		paymentMethod: Doc<'bookings'>['paymentMethod'];
 		datesMissing?: boolean;
 		attempted?: boolean;
 		busy?: boolean;
@@ -34,7 +34,10 @@
 
 <div class="space-y-3">
 	<p class="text-xs leading-relaxed text-muted-foreground">
-		{m['BookAccommodationPage.BookConfirmActionsField.bySelecting']({ label: confirmLabel })} {m['BookAccommodationPage.BookConfirmActionsField.youAgreeToTheHostsHouseRules']({ paymentMethod: paymentMethodLabel(paymentMethod) })}
+		{m['BookAccommodationPage.BookConfirmActionsField.bySelecting']({ label: confirmLabel })}
+		{m['BookAccommodationPage.BookConfirmActionsField.youAgreeToTheHostsHouseRules']({
+			paymentMethod: paymentMethodLabel(paymentMethod)
+		})}
 	</p>
 
 	{#if attempted && datesMissing}
@@ -42,7 +45,7 @@
 			{m['BookAccommodationPage.BookConfirmActionsField.pleasePickYourDates']()}
 		</p>
 	{/if}
-	
+
 	<Button
 		type="submit"
 		size="lg"

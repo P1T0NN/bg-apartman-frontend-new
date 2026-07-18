@@ -1,7 +1,7 @@
 <script lang="ts">
 	// LIBRARIES
 	import { m } from '@/shared/lib/paraglide/messages';
-	
+
 	// COMPONENTS
 	import ToggleFavoriteButton from '@/features/favorites/components/toggle-favorite-button.svelte';
 	import ShareButton from '@/shared/components/ui/share-button/share-button.svelte';
@@ -46,7 +46,9 @@
 			<h1 class="text-2xl font-semibold tracking-tight md:text-3xl">{accommodation.title}</h1>
 			<p class="flex items-center gap-1.5 text-sm text-muted-foreground">
 				<MapPinIcon class="size-4 shrink-0" aria-hidden="true" />
-				{accommodationTypeLabel(accommodation.type)} {m['AccommodationPage.AccommodationOverview.in']()} {accommodation.city}{#if accommodation.country}, {accommodation.country}{/if}
+				{accommodationTypeLabel(accommodation.type)}
+				{m['AccommodationPage.AccommodationOverview.in']()}
+				{accommodation.city}{#if accommodation.country}, {accommodation.country}{/if}
 			</p>
 		</div>
 

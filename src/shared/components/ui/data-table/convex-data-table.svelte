@@ -57,7 +57,9 @@
 		searchArgName = 'search',
 		searchDebounceMs = 300,
 		filters,
-		borderless = false
+		borderless = false,
+		errorContent,
+		extra = $bindable(undefined)
 	}: {
 		class?: string;
 		caption?: string;
@@ -103,6 +105,10 @@
 		filters?: Snippet;
 		/** Remove the table's card border & shadow for a cleaner, embedded look. */
 		borderless?: boolean;
+		/** Rendered instead of the table when the query errors before any data arrived. */
+		errorContent?: Snippet;
+		/** Bindable: the payload's optional `extra` side data (filter counts, aggregates). */
+		extra?: unknown;
 	} = $props();
 
 	const convex = useConvexClient();
@@ -163,6 +169,12 @@
 
 	const rows = $derived((listPayload?.page ?? []) as T[]);
 
+	// Surface the payload's side data to the parent (kept across page changes thanks to
+	// keepPreviousData, so bound consumers don't flicker while a new page loads).
+	$effect(() => {
+		if (listPayload !== undefined) extra = listPayload.extra;
+	});
+
 	let lastTotalCount = $state(0);
 	$effect(() => {
 		if (optimizationStrategy !== 'offset') return;
@@ -222,29 +234,33 @@
 	}
 </script>
 
-<DataTable
-	class={className}
-	{caption}
-	data={rows}
-	{columns}
-	{getRowId}
-	{customCells}
-	{controlsPlace}
-	{selectable}
-	bind:selectedIds
-	bind:sortColumn
-	bind:sortDirection
-	{searchable}
-	bind:search
-	{searchPlaceholder}
-	{searchDebounceMs}
-	{filters}
-	bind:page
-	{totalPages}
-	{canGoNext}
-	isLoading={tablePending}
-	queryLoading={queryLoadingForPagination}
-	hasResult={listPayload !== undefined}
-	onDeleteSelected={deleteMutation ? deleteSelected : undefined}
-	{borderless}
-/>
+{#if errorContent && listQuery.error !== undefined && listPayload === undefined}
+	{@render errorContent()}
+{:else}
+	<DataTable
+		class={className}
+		{caption}
+		data={rows}
+		{columns}
+		{getRowId}
+		{customCells}
+		{controlsPlace}
+		{selectable}
+		bind:selectedIds
+		bind:sortColumn
+		bind:sortDirection
+		{searchable}
+		bind:search
+		{searchPlaceholder}
+		{searchDebounceMs}
+		{filters}
+		bind:page
+		{totalPages}
+		{canGoNext}
+		isLoading={tablePending}
+		queryLoading={queryLoadingForPagination}
+		hasResult={listPayload !== undefined}
+		onDeleteSelected={deleteMutation ? deleteSelected : undefined}
+		{borderless}
+	/>
+{/if}

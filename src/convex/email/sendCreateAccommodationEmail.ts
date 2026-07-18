@@ -15,7 +15,7 @@ type SendCreateAccommodationEmailInput = {
 	live: boolean;
 };
 
-/** On a new listing: tell the host it's live (or in review). */
+/** On a new accommodation: tell the host it's live (or in review). */
 export async function sendCreateAccommodationEmail(
 	ctx: EmailCtx,
 	input: SendCreateAccommodationEmailInput

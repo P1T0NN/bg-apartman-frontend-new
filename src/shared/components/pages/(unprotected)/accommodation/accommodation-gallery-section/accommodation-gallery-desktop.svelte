@@ -4,14 +4,14 @@
 
 	// COMPONENTS
 	import { Button } from '@/shared/components/ui/button/index.js';
-	import * as Carousel from '@/shared/components/ui/carousel/index.js';
 
 	// TYPES
-	import type { CarouselAPI } from '@/shared/components/ui/carousel/context.js';
 	import type { typesAccommodationImage } from '@/shared/features/accommodation/types/accommodationTypes';
 
 	// LUCIDE ICONS
 	import Grid3x3Icon from '@lucide/svelte/icons/grid-3x3';
+	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
+	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
 
 	let {
 		images,
@@ -23,31 +23,37 @@
 		lightboxOpen: boolean;
 	} = $props();
 
-	let api = $state<CarouselAPI>();
+	// ponytail: CSS scroll-snap instead of embla — arrows wrap around manually, rest is native.
+	let track = $state<HTMLElement | null>(null);
 	let selectedIndex = $state(0);
 
 	const hasThumbnails = $derived(images.length > 1);
 
-	$effect(() => {
-		if (!api) return;
-		selectedIndex = api.selectedScrollSnap();
-		const onSelect = () => (selectedIndex = api!.selectedScrollSnap());
-		api.on('select', onSelect);
-		return () => {
-			api?.off('select', onSelect);
-		};
-	});
+	function onScroll() {
+		if (!track) return;
+		selectedIndex = Math.round(track.scrollLeft / track.clientWidth);
+	}
+
+	function scrollTo(i: number) {
+		// Wrap around so the arrows behave like the old looping carousel.
+		const next = (i + images.length) % images.length;
+		track?.scrollTo({ left: next * track.clientWidth, behavior: 'smooth' });
+	}
 </script>
 
 <div class="hidden w-full max-w-2xl space-y-3 md:block">
-	<Carousel.Root setApi={(emblaApi) => (api = emblaApi)} opts={{ loop: true }} class="w-full">
-		<Carousel.Content class="ml-0">
+	<div class="relative w-full">
+		<div
+			bind:this={track}
+			onscroll={onScroll}
+			class="flex w-full snap-x snap-mandatory overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+		>
 			{#each images as image, i (image.key)}
-				<Carousel.Item class="pl-0">
+				<div class="w-full shrink-0 snap-start">
 					<button
 						type="button"
 						onclick={() => (lightboxOpen = true)}
-						class="group block aspect-video w-full overflow-hidden rounded-2xl bg-muted"
+						class="group relative block aspect-video w-full overflow-hidden rounded-2xl bg-muted"
 						aria-label={m['AccommodationPage.AccommodationGalleryDesktop.openPhoto']({
 							index: i + 1
 						})}
@@ -62,13 +68,29 @@
 						<span class="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/10"
 						></span>
 					</button>
-				</Carousel.Item>
+				</div>
 			{/each}
-		</Carousel.Content>
+		</div>
 
 		{#if hasThumbnails}
-			<Carousel.Previous class="start-3 bg-background/90 shadow-sm" />
-			<Carousel.Next class="end-3 bg-background/90 shadow-sm" />
+			<Button
+				variant="outline"
+				size="icon"
+				class="absolute start-3 top-1/2 -translate-y-1/2 rounded-full bg-background/90 shadow-sm"
+				onclick={() => scrollTo(selectedIndex - 1)}
+				aria-label="Previous slide"
+			>
+				<ChevronLeftIcon class="size-4" />
+			</Button>
+			<Button
+				variant="outline"
+				size="icon"
+				class="absolute end-3 top-1/2 -translate-y-1/2 rounded-full bg-background/90 shadow-sm"
+				onclick={() => scrollTo(selectedIndex + 1)}
+				aria-label="Next slide"
+			>
+				<ChevronRightIcon class="size-4" />
+			</Button>
 		{/if}
 
 		<Button
@@ -80,7 +102,7 @@
 			<Grid3x3Icon class="size-4" aria-hidden="true" />
 			{m['AccommodationPage.AccommodationGalleryDesktop.showAllPhotos']()}
 		</Button>
-	</Carousel.Root>
+	</div>
 
 	{#if hasThumbnails}
 		<div
@@ -89,7 +111,7 @@
 			{#each images as image, i (image.key)}
 				<button
 					type="button"
-					onclick={() => api?.scrollTo(i)}
+					onclick={() => scrollTo(i)}
 					class={[
 						'aspect-4/3 w-28 shrink-0 overflow-hidden rounded-lg bg-muted ring-2 transition',
 						i === selectedIndex ? 'ring-foreground' : 'ring-transparent hover:ring-border'

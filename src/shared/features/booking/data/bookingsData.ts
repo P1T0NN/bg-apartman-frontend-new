@@ -6,8 +6,4 @@ export const TERMINAL_BOOKING_STATUSES = new Set([
 ] as const);
 
 /** Statuses that still block the apartment calendar. */
-export const ACTIVE_BOOKING_STATUSES = new Set<string>([
-	'pending',
-	'confirmed',
-	'checked_in'
-]);
+export const ACTIVE_BOOKING_STATUSES = new Set<string>(['pending', 'confirmed', 'checked_in']);

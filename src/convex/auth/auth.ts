@@ -1,20 +1,42 @@
 // LIBRARIES
-import { createClient, type GenericCtx } from '@convex-dev/better-auth';
+import { createClient, type AuthFunctions, type GenericCtx } from '@convex-dev/better-auth';
 import { convex } from '@convex-dev/better-auth/plugins';
-import { components } from '../_generated/api';
+import { components, internal } from '../_generated/api';
 import type { DataModel } from '../_generated/dataModel';
 import { betterAuth, type BetterAuthOptions } from 'better-auth/minimal';
 import { admin, emailOTP } from 'better-auth/plugins';
 import authConfig from './auth.config';
+import { analytics, ANALYTICS_EVENT } from '@/convex/analytics';
 import { sendVerificationOTP } from './emails/sendVerificationOTP';
 import authSchema from './component/schema';
 import { convexCreateAuthRateLimitHook } from './convexCreateAuthRateLimitHook';
 
+// Explicit annotation on a standalone const — breaks the circular type inference
+// between `authComponent`, the exported trigger mutations, and the generated api
+// (see the better-auth triggers docs).
+const authFunctions: AuthFunctions = internal.auth.auth;
+
 export const authComponent = createClient<DataModel, typeof authSchema>(components.betterAuth, {
 	local: {
 		schema: authSchema
-	}
+	},
+	// Runs in app context (via the internal mutations exported below) whenever BA
+	// creates a user row — covers email/password AND Google OAuth sign-ups.
+	triggers: {
+		user: {
+			onCreate: async (ctx, user) => {
+				await analytics.track(ctx, ANALYTICS_EVENT.USER_SIGNED_UP, {
+					actorId: user._id,
+					properties: { role: user.role }
+				});
+			}
+		}
+	},
+	authFunctions
 });
+
+/** Trigger executors — BA's adapter calls these to run the callbacks above in app context. */
+export const { onCreate, onUpdate, onDelete } = authComponent.triggersApi();
 
 export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
 	return {

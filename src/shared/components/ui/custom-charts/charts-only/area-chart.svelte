@@ -1,5 +1,5 @@
 <script lang="ts">
-    // LIBRARIES
+	// LIBRARIES
 	import { Area, AreaChart } from 'layerchart';
 	import { scaleUtc } from 'd3-scale';
 	import { curveLinear, curveMonotoneX, curveNatural, curveStep } from 'd3-shape';
@@ -10,11 +10,11 @@
 
 	// UTILS
 	import { defaultXAxisFormat, defaultLabelFormatter } from '../utils/chartUtils';
-	
+
 	// TYPES
 	import type { Snippet, Component, ComponentProps } from 'svelte';
 	import type { ChartConfig } from '@/shared/components/ui/chart/chart-utils.js';
-	
+
 	// LUCIDE ICONS
 	import TrendingUpIcon from '@lucide/svelte/icons/trending-up';
 

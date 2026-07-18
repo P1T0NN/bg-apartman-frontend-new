@@ -4,16 +4,28 @@
 	import { Skeleton } from '@/shared/components/ui/skeleton/index.js';
 </script>
 
-<!-- Mirrors the guest dashboard: header, next-trip hero, shortcut tiles, more-upcoming list. -->
+<!-- Mirrors the guest dashboard: header, shortcut tiles, next-trip hero, more-upcoming list. -->
 <div class="flex flex-col gap-8">
 	<header class="space-y-2">
 		<Skeleton class="h-8 w-56" />
 		<Skeleton class="h-4 w-72 max-w-full" />
 	</header>
 
+	<div class="grid gap-4 sm:grid-cols-3">
+		{#each [0, 1, 2] as tile (tile)}
+			<Card.Root class="flex-row items-center justify-between p-4">
+				<div class="space-y-2">
+					<Skeleton class="h-8 w-10" />
+					<Skeleton class="h-4 w-24" />
+				</div>
+				<Skeleton class="size-5 rounded-md" />
+			</Card.Root>
+		{/each}
+	</div>
+
 	<Card.Root class="overflow-hidden p-0">
 		<div class="grid md:grid-cols-[minmax(0,1fr)_1.3fr]">
-			<Skeleton class="aspect-4/3 rounded-none md:aspect-auto md:min-h-64 md:h-full" />
+			<Skeleton class="aspect-4/3 rounded-none md:aspect-auto md:h-full md:min-h-64" />
 
 			<div class="flex flex-col gap-5 p-5 md:p-6">
 				<div class="flex flex-wrap gap-2">
@@ -43,18 +55,6 @@
 			</div>
 		</div>
 	</Card.Root>
-
-	<div class="grid gap-4 sm:grid-cols-3">
-		{#each [0, 1, 2] as tile (tile)}
-			<Card.Root class="flex-row items-center justify-between p-4">
-				<div class="space-y-2">
-					<Skeleton class="h-8 w-10" />
-					<Skeleton class="h-4 w-24" />
-				</div>
-				<Skeleton class="size-5 rounded-md" />
-			</Card.Root>
-		{/each}
-	</div>
 
 	<div class="space-y-3">
 		<Skeleton class="h-4 w-28" />

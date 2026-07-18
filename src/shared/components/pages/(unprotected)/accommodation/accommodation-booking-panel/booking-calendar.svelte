@@ -80,7 +80,11 @@
 
 	{#if showPolicy}
 		<div class="space-y-1 border-t px-3 py-2 text-center text-xs text-muted-foreground">
-			<p>{m['BookAccommodationPage.BookingCalendar.minimumStay']({ nights: formatNights(minNights) })}</p>
+			<p>
+				{m['BookAccommodationPage.BookingCalendar.minimumStay']({
+					nights: formatNights(minNights)
+				})}
+			</p>
 			<SameDayDisplay enabled={accommodation.sameDayReservation} />
 			<SingleStayDisplay allowed={minNights <= 1} />
 		</div>

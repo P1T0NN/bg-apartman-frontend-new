@@ -19,7 +19,10 @@
 </script>
 
 <div
-	class={cn('flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground', className)}
+	class={cn(
+		'flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground',
+		className
+	)}
 >
 	<span class="flex items-center gap-2">
 		<span class="size-5 rounded-md bg-primary" aria-hidden="true"></span>

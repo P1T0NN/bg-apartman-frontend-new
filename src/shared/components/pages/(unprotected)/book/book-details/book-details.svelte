@@ -26,7 +26,9 @@
 
 <section class="space-y-8">
 	<div class="space-y-4">
-		<h2 class="text-lg font-semibold tracking-tight">{m['BookAccommodationPage.BookDetails.yourDates']()}</h2>
+		<h2 class="text-lg font-semibold tracking-tight">
+			{m['BookAccommodationPage.BookDetails.yourDates']()}
+		</h2>
 
 		<BookingCalendar
 			{accommodation}
@@ -40,7 +42,9 @@
 	</div>
 
 	<div class="space-y-3">
-		<h2 class="text-lg font-semibold tracking-tight">{m['BookAccommodationPage.BookDetails.guests']()}</h2>
+		<h2 class="text-lg font-semibold tracking-tight">
+			{m['BookAccommodationPage.BookDetails.guests']()}
+		</h2>
 		<div class="rounded-xl border p-4">
 			<GuestStepper maxGuests={accommodation.maxGuests} bind:adults bind:children />
 		</div>

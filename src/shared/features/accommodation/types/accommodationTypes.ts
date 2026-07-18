@@ -1,6 +1,5 @@
 // TYPES
 import type { Doc, Id } from '@/convex/_generated/dataModel';
-import type { PaymentMethod } from '@/features/bookings/data/paymentMethods';
 
 // ─── Raw `apartments` doc aliases ─────────────────────────────────────────────
 
@@ -11,7 +10,7 @@ export type typesAccommodationStatus = Doc<'apartments'>['status'];
 // ─── Search results ───────────────────────────────────────────────────────────
 
 /**
- * Lean listing shape for the search results list + map markers (`id`/`lat`/`lng`/`title`
+ * Lean accommodation shape for the search results list + map markers (`id`/`lat`/`lng`/`title`
  * also satisfy GoogleMapMarkerData). Produced by the `fetchSearchAccommodations` query
  * from an `apartments` row.
  *
@@ -19,7 +18,7 @@ export type typesAccommodationStatus = Doc<'apartments'>['status'];
  * renders "New" when they're absent. `isSuperhost` stays `false` until a host-reputation
  * concept exists.
  */
-export type SearchListing = Pick<
+export type SearchAccommodation = Pick<
 	Doc<'apartments'>,
 	'slug' | 'title' | 'type' | 'city' | 'bedrooms' | 'bathrooms' | 'maxGuests'
 > & {
@@ -74,8 +73,9 @@ export type typesAccommodationSafe = Omit<
 	| 'updatedAt'
 	| 'paymentMethod'
 > & {
-	/** Required here even though the column is optional — the queries default a missing value to `cash`. */
-	paymentMethod: PaymentMethod;
+	/** Required here even though the column is optional — the queries default a missing value to `cash`.
+	 *  `both` means the guest chooses cash or online at checkout. */
+	paymentMethod: NonNullable<Doc<'apartments'>['paymentMethod']>;
 };
 
 /** The safe projection plus the joins the detail/book queries resolve: a host profile and the
@@ -85,7 +85,34 @@ export type typesAccommodationEnriched = typesAccommodationSafe & {
 	bookedRanges: typesBookedRange[];
 };
 
-// ─── Add / edit listing forms ─────────────────────────────────────────────────
+/**
+ * The internal fields the public projection hides — returned to admins viewing an
+ * **unpublished** accommodation so the public page can show everything. Absent once
+ * the accommodation is published (admins then see the page exactly like guests).
+ */
+export type typesAccommodationAdminMeta = Pick<
+	Doc<'apartments'>,
+	| 'status'
+	| 'hostId'
+	| 'addressNumber'
+	| 'placeId'
+	| 'isFeatured'
+	| 'moderatedAt'
+	| 'moderatedBy'
+	| 'moderationReason'
+	| 'paidAt'
+	| 'paymentAmount'
+	| 'apartmentSubscriptionExpiryDate'
+	| 'updatedAt'
+> & { createdAt: number };
+
+/** What `fetchAccommodationBySlugSafe` actually returns: the public shape, plus
+ *  `adminMeta` when (and only when) an admin is viewing an unpublished accommodation. */
+export type typesAccommodationForViewer = typesAccommodationEnriched & {
+	adminMeta?: typesAccommodationAdminMeta;
+};
+
+// ─── Add / edit accommodation forms ───────────────────────────────────────────
 
 /**
  * Form value shape. Text / numeric / time fields are all `string` because that's
@@ -98,7 +125,7 @@ export type typesAddAccommodationForm = {
 	type: string;
 	description: string;
 
-	/** City + country place ids of the picked place, space-joined — the listing's search key and
+	/** City + country place ids of the picked place, space-joined — the accommodation's search key and
 	 *  the "address selected" gate (empty until a place is chosen). */
 	placeId: string;
 	/** Street name from the picked place (the route) — where the map pin sits. */
@@ -131,7 +158,7 @@ export type typesAddAccommodationForm = {
 	quietHoursEnd: string;
 
 	instantBooking: boolean;
-	paymentMethod: PaymentMethod;
+	paymentMethod: NonNullable<Doc<'apartments'>['paymentMethod']>;
 	sameDayReservation: boolean;
 	singleDayReservation: boolean;
 	petsAllowed: boolean;
@@ -146,7 +173,7 @@ export type typesAddAccommodationForm = {
 };
 
 /**
- * Edit form values: the add-form shape plus the listing `id` and the photo
+ * Edit form values: the add-form shape plus the accommodation `id` and the photo
  * reconciliation field `keepImageKeys` (existing image keys still kept, in display
  * order). Here `photos` holds only the *newly* added files. `id` / `keepImageKeys`
  * aren't part of the Zod schema (it ignores unknown keys) but are forwarded
@@ -155,4 +182,12 @@ export type typesAddAccommodationForm = {
 export type typesEditAccommodationForm = typesAddAccommodationForm & {
 	id: string;
 	keepImageKeys: string[];
+};
+
+/**
+ * Admin add-form values: the add-form shape plus the mandatory `hostId` — the
+ * better-auth user id of the owner the admin assigns the accommodation to.
+ */
+export type typesAdminAddAccommodationForm = typesAddAccommodationForm & {
+	hostId: string;
 };

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Separator } from "@/shared/components/ui/separator/index.js";
-	import { cn } from "@/utils/utils.js";
-	import type { ComponentProps } from "svelte";
+	import { Separator } from '@/shared/components/ui/separator/index.js';
+	import { cn } from '@/utils/utils.js';
+	import type { ComponentProps } from 'svelte';
 
 	let {
 		ref = $bindable(null),
@@ -14,6 +14,6 @@
 	bind:ref
 	data-slot="sidebar-separator"
 	data-sidebar="separator"
-	class={cn("bg-sidebar-border mx-2 w-auto", className)}
+	class={cn('mx-2 w-auto bg-sidebar-border', className)}
 	{...restProps}
 />

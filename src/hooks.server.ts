@@ -5,7 +5,7 @@ import { sequence } from '@sveltejs/kit/hooks';
 import { paraglideMiddleware } from '@/shared/lib/paraglide/server';
 import { getToken } from '@mmailaender/convex-better-auth-svelte/sveltekit';
 import { getTextDirection } from '@/shared/lib/paraglide/runtime';
-import { withServerConvexToken } from '@mmailaender/convex-svelte/sveltekit/server';
+import { withServerConvexToken } from 'convex-svelte/sveltekit/server';
 
 // UTILS
 import { getSecurityHeaders, getHstsHeader } from '@/utils/securityHeaders.js';
@@ -47,7 +47,7 @@ const paraglideHandle: Handle = ({ event, resolve }) =>
 				html.replace('%lang%', locale).replace('%dir%', getTextDirection(locale))
 		});
 	});
-	
+
 // Convex auth handle - exposes token on locals and to server-side Convex calls
 const convexAuthHandle: Handle = ({ event, resolve }) => {
 	const token = getToken(event.cookies);

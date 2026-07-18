@@ -1,3 +1,240 @@
 {
-    
+	"ValidationMessages": {
+		"loginFormSchema": {
+			"emailRequired": "Unesite vašu imejl adresu.",
+			"invalidEmail": "Nevažeća imejl adresa.",
+			"passwordRequired": "Unesite vašu lozinku.",
+			"passwordMinLength": "Najmanje 8 karaktera."
+		},
+		"signUpFormSchema": {
+			"nameRequired": "Unesite vaše puno ime.",
+			"emailRequired": "Unesite vašu imejl adresu.",
+			"invalidEmail": "Nevažeća imejl adresa.",
+			"passwordRequired": "Unesite vašu lozinku.",
+			"passwordMinLength": "Najmanje 8 karaktera.",
+			"passwordTooCommon": "Ta lozinka je previše uobičajena. Izaberite jaču.",
+			"confirmPasswordRequired": "Potvrdite vašu lozinku.",
+			"passwordsMustMatch": "Lozinke se moraju podudarati."
+		},
+		"passwordResetRequestFormSchema": {
+			"emailRequired": "Unesite vašu imejl adresu.",
+			"invalidEmail": "Nevažeća imejl adresa."
+		},
+		"passwordResetVerifyFormSchema": {
+			"codeRequired": "Unesite kod.",
+			"codeFormat": "Koristite osmocifreni kod iz vašeg imejla.",
+			"newPasswordRequired": "Unesite novu lozinku.",
+			"newPasswordMinLength": "Najmanje 8 karaktera.",
+			"passwordTooCommon": "Ta lozinka je previše uobičajena. Izaberite jaču.",
+			"confirmPasswordRequired": "Potvrdite vašu novu lozinku.",
+			"passwordsMustMatch": "Lozinke se moraju podudarati.",
+			"invalidEmail": "Nevažeća imejl adresa."
+		},
+		"emailVerificationFormSchema": {
+			"codeRequired": "Unesite kod.",
+			"codeFormat": "Koristite osmocifreni kod iz vašeg imejla.",
+			"invalidEmail": "Nevažeća imejl adresa."
+		},
+		"accommodationFieldsShape": {
+			"titleMin": "Dajte naziv vašem smeštaju (najmanje 3 karaktera).",
+			"typeRequired": "Izaberite tip nekretnine.",
+			"descriptionMin": "Dodajte kratak opis (najmanje 20 karaktera).",
+			"placeIdRequired": "Izaberite vaš grad sa liste (samo kucanje ga neće postaviti).",
+			"cityMin": "Unesite grad.",
+			"bedroomsNonNegative": "Ne može biti negativno.",
+			"bedroomsRequired": "Najmanje jedna spavaća soba.",
+			"bathroomsMin": "Najmanje jedno kupatilo.",
+			"maxGuestsMin": "Najmanje jedan gost.",
+			"squareMetersMin": "Unesite veličinu u m².",
+			"pricePerNightMin": "Postavite cenu po noći.",
+			"minReservationDaysMin": "Najmanje 1 noć.",
+			"checkInTimeRequired": "Postavite vreme prijave.",
+			"checkOutTimeRequired": "Postavite vreme odjave.",
+			"paymentMethodRequired": "Izaberite kako gosti mogu da plate.",
+			"amenitiesMin": "Izaberite najmanje 5 sadržaja."
+		},
+		"addAccommodationSchema": {
+			"photosMin": "Otpremite najmanje 3 fotografije."
+		},
+		"editAccommodationSchema": {
+			"photosMinTotal": "Zadržite ili dodajte najmanje 3 fotografije ukupno."
+		},
+		"createBookingSchema": {
+			"firstNameRequired": "Unesite vaše ime.",
+			"lastNameRequired": "Unesite vaše prezime.",
+			"emailRequired": "Unesite vašu imejl adresu.",
+			"invalidEmail": "Unesite važeću imejl adresu.",
+			"invalidPhone": "Unesite važeći broj telefona.",
+			"paymentMethodRequired": "Izaberite način plaćanja.",
+			"datesRequired": "Izaberite vaše datume.",
+			"minOneNight": "Vaš boravak mora trajati najmanje jednu noć."
+		},
+		"newsletterSchema": {
+			"emailRequired": "Unesite vašu imejl adresu.",
+			"invalidEmail": "Unesite važeću imejl adresu."
+		},
+		"createReportSchema": {
+			"messageRequired": "Napišite nekoliko reči o tome šta se desilo.",
+			"messageMax": "Neka bude kraće od 5000 karaktera.",
+			"emailInvalid": "Unesite važeću imejl adresu ili ostavite prazno."
+		},
+		"declineBookingSchema": {
+			"reasonMin": "Napišite najmanje 4 karaktera.",
+			"reasonMax": "Neka razlog bude kraći od 500 karaktera."
+		},
+		"sendContactFormEmailSchema": {
+			"nameMin": "Ime mora imati najmanje 3 karaktera.",
+			"invalidEmail": "Unesite važeću imejl adresu.",
+			"messageMin": "Poruka mora imati najmanje 10 karaktera."
+		},
+		"moderationReasonSchema": {
+			"reasonMin": "Razlog mora imati najmanje 4 karaktera.",
+			"reasonMax": "Razlog je predugačak (najviše 500 karaktera)."
+		},
+		"cancelBookingAdminSchema": {
+			"reasonMin": "Razlog mora imati najmanje 4 karaktera.",
+			"reasonMax": "Razlog je predugačak (najviše 500 karaktera)."
+		},
+		"adminAddAccommodationSchema": {
+			"ownerRequired": "Izaberite vlasnika ovog smeštaja."
+		}
+	},
+
+	"DeclineBookingDialog": {
+		"title": "Odbiti ovaj zahtev za rezervaciju?",
+		"description": "Ovo odbija zahtev gosta {guest} i šalje mu imejl sa vašim razlogom. Ne može se poništiti, pa ukratko i ljubazno objasnite vašu odluku.",
+		"reasonLabel": "Razlog za odbijanje",
+		"reasonPlaceholder": "npr. Ovi datumi više nisu dostupni za rezervaciju.",
+		"confirm": "Odbij zahtev",
+		"cancel": "Zadrži zahtev"
+	},
+
+	"CancelBookingDialog": {
+		"title": "Otkazati ovu potvrđenu rezervaciju?",
+		"description": "Ovo otkazuje potvrđenu rezervaciju gosta {guest} i obaveštava ga imejlom. Ako je već platio, novac će mu biti vraćen. Ne može se poništiti.",
+		"confirm": "Otkaži rezervaciju",
+		"cancel": "Zadrži rezervaciju"
+	},
+
+	"HostDashboardPage": {
+		"SEO": {
+			"title": "Kontrolna tabla",
+			"description": "Vaši smeštaji na jednom mestu."
+		},
+		"HostDashboardHeader": {
+			"title": "Kontrolna tabla",
+			"subtitle": "Vaši smeštaji na jednom mestu."
+		},
+		"HostDashboardPageError": {
+			"title": "Nismo uspeli da učitamo kontrolnu tablu",
+			"description": "Došlo je do greške pri učitavanju kontrolne table. Pokušajte ponovo.",
+			"retry": "Pokušaj ponovo"
+		},
+		"HostDashboardPageEmpty": {
+			"title": "Postavite svoj prvi smeštaj",
+			"description": "Napravite smeštaj i počnite da ugošćavate goste — potrebno je samo nekoliko minuta.",
+			"cta": "Dodaj prvi smeštaj"
+		},
+		"PendingReservations": {
+			"heading": "Rezervacije na čekanju",
+			"subheading": "Zahtevi koji čekaju vaš odgovor — automatski ističu.",
+			"view": "Prikaži",
+			"expiresIn": "Ističe za {time}",
+			"expired": "Isteklo"
+		},
+		"Today": {
+			"checkIns": "Dolasci danas",
+			"checkOuts": "Odlasci danas",
+			"hosting": "Trenutno ugošćavate",
+			"more": "+{count} više",
+			"allQuiet": "Nema dolazaka ni odlazaka danas.",
+			"none": "Ništa danas"
+		},
+		"Tiles": {
+			"occupancy": "Popunjenost ovog meseca",
+			"revenue": "Prihod ovog meseca",
+			"upcoming": "Predstojeći dolasci",
+			"accommodations": "Aktivni smeštaji",
+			"vsLastMonth": "{delta} u odnosu na prošli mesec",
+			"nextCheckIn": "Sledeći: {date}",
+			"noUpcoming": "Nema u narednih 7 dana",
+			"pendingReview": "{count} na proveri",
+			"allLive": "Svi objavljeni",
+			"noAccommodationsYet": "Još nema objavljenih smeštaja"
+		},
+		"Chart": {
+			"title": "Prihod i rezervacije",
+			"metricRevenue": "Prihod",
+			"metricBookings": "Rezervacije",
+			"range12m": "Poslednjih 12 meseci",
+			"range6m": "Poslednjih 6 meseci",
+			"range3m": "Poslednja 3 meseca"
+		},
+		"ChartEmpty": {
+			"heading": "Još nema prihoda za prikaz",
+			"body": "Kretanje prihoda i rezervacija u poslednjih 12 meseci pojaviće se ovde čim gosti počnu da rezervišu."
+		},
+		"PerAccommodation": {
+			"heading": "Po smeštaju",
+			"colAccommodation": "Smeštaj",
+			"colStatus": "Status",
+			"colOccupancy": "Popunjenost",
+			"colRevenue": "Prihod",
+			"colNextCheckIn": "Sledeći dolazak",
+			"empty": "—"
+		},
+		"PerAccommodationEmpty": {
+			"heading": "Još nema šta da se uporedi",
+			"body": "Dodajte drugi smeštaj da vidite popunjenost i prihod jedan pored drugog.",
+			"cta": "Dodaj smeštaj"
+		},
+		"HostDashboardNoBookingsEmpty": {
+			"title": "Spremni ste za prvu rezervaciju",
+			"description": "Vaši smeštaji su objavljeni. Podelite ih da biste počeli da primate zahteve."
+		}
+	},
+
+	"HostReservationsPage": {
+		"SEO": {
+			"title": "Rezervacije",
+			"description": "Pregledajte zahteve, pratite predstojeće boravke i upravljajte gostima."
+		},
+		"HostReservationsPageError": {
+			"title": "Nismo uspeli da učitamo rezervacije",
+			"description": "Došlo je do greške pri učitavanju rezervacija. Pokušajte ponovo.",
+			"retry": "Pokušaj ponovo"
+		}
+	},
+
+	"AdminUserPage": {
+		"UserTabs": {
+			"accommodations": "Smeštaji",
+			"bookings": "Rezervacije"
+		},
+		"UserAccommodations": {
+			"caption": "Smeštaji ovog korisnika",
+			"columnAccommodation": "Smeštaj",
+			"columnCity": "Grad",
+			"columnPrice": "Cena",
+			"columnStatus": "Status"
+		},
+		"UserBookings": {
+			"caption": "Rezervacije ovog korisnika",
+			"columnCode": "Kod",
+			"columnAccommodation": "Smeštaj",
+			"columnDates": "Datumi",
+			"columnTotal": "Ukupno",
+			"columnStatus": "Status"
+		}
+	},
+
+	"GenericMessages": {
+		"MODERATION_REASON_REQUIRED": "Razlog je obavezan za suspendovanje smeštaja.",
+		"ACCOMMODATION_HAS_ACTIVE_BOOKINGS": "Ovaj smeštaj ima aktivne rezervacije i ne može se obrisati. Prvo ih otkažite ili odbijte.",
+		"NEWSLETTER_SUBSCRIBED": "Hvala na prijavi! Proverite vaše sanduče za najbolje smeštaje i ponude.",
+		"REPORT_SUBMITTED": "Hvala na prijavi — primili smo je.",
+		"DATES_UNAVAILABLE": "Ti datumi su upravo rezervisani. Molimo izaberite druge datume.",
+		"PAYMENT_METHOD_NOT_ACCEPTED": "Ovaj smeštaj ne prihvata taj način plaćanja.",
+		"REPORT_MESSAGE_REQUIRED": "Napišite nekoliko reči o tome šta se desilo."
+	}
 }

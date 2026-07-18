@@ -61,8 +61,7 @@ export async function convexCreateRateLimit(
 	} catch (error) {
 		if (isRateLimitError(error)) {
 			const retryAfterMs = error.data.retryAfter;
-			const ms =
-				typeof retryAfterMs === 'number' && retryAfterMs > 0 ? retryAfterMs : undefined;
+			const ms = typeof retryAfterMs === 'number' && retryAfterMs > 0 ? retryAfterMs : undefined;
 
 			throw new APIError('TOO_MANY_REQUESTS', {
 				message: convexRateLimitWireMessage(ms)

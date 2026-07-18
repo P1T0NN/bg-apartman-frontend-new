@@ -1,6 +1,6 @@
 // TYPES
 import type { Doc } from '@/convex/_generated/dataModel';
-import type { typesEditAccommodationForm } from '../types/types';
+import type { typesEditAccommodationForm } from '@/shared/features/accommodation/types/accommodationTypes';
 
 /** Optional stored number → input string (`''` when unset). */
 const optNumStr = (value: number | undefined): string => (value === undefined ? '' : String(value));

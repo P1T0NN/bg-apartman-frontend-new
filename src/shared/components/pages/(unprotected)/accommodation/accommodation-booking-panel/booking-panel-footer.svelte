@@ -3,21 +3,21 @@
 	import { m } from '@/shared/lib/paraglide/messages';
 
 	// UTILS
-	import { paymentMethodLabel } from '@/features/bookings/data/paymentMethods';
+	import { paymentMethodLabel } from '@/features/bookings/utils/paymentMethodLabel';
 
 	// LUCIDE ICONS
 	import ZapIcon from '@lucide/svelte/icons/zap';
 	import BanknoteIcon from '@lucide/svelte/icons/banknote';
 
 	// TYPES
-	import type { PaymentMethod } from '@/features/bookings/data/paymentMethods';
+	import type { Doc } from '@/convex/_generated/dataModel';
 
 	let {
 		instantBooking,
 		paymentMethod
 	}: {
 		instantBooking: boolean;
-		paymentMethod: PaymentMethod;
+		paymentMethod: NonNullable<Doc<'apartments'>['paymentMethod']>;
 	} = $props();
 </script>
 

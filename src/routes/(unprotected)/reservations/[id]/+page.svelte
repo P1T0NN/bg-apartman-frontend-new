@@ -26,15 +26,21 @@
 	// runtime. `'skip'` while missing keeps the query type-safe and avoids a bad request.
 	const id = $derived(page.params.id);
 
-	const bookingQuery = useQuery(api.tables.bookings.queries.fetchBookingById.fetchBookingById, () =>
-		id ? { id: id as Id<'bookings'> } : 'skip'
+	const bookingQuery = useQuery(
+		api.tables.bookings.queries.fetchBookingById.fetchBookingById,
+		() => (id ? { id: id as Id<'bookings'> } : 'skip')
 	);
 	const booking = $derived(bookingQuery.data as typesReservationBooking | null | undefined);
 </script>
 
 <SvelteHead
-	title={m['ReservationPage.SEO.title']({ accommodationTitle: booking?.apartmentTitle ?? '', companyName: COMPANY_DATA.NAME })}
-	description={m['ReservationPage.SEO.description']({ accommodationTitle: booking?.apartmentTitle ?? '' })}
+	title={m['ReservationPage.SEO.title']({
+		accommodationTitle: booking?.apartmentTitle ?? '',
+		companyName: COMPANY_DATA.NAME
+	})}
+	description={m['ReservationPage.SEO.description']({
+		accommodationTitle: booking?.apartmentTitle ?? ''
+	})}
 	noIndex
 />
 

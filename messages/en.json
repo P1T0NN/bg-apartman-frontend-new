@@ -4,8 +4,31 @@
 	"Header": {
 		"login": "Login",
 		"guestDashboard": "Guest Dashboard",
-		"becomeAHost": "Become a Host",
-		"accountMenu": "Account menu"
+		"becomeAHost": "Become a host",
+		"switchToHosting": "Switch to hosting",
+		"accountMenu": "Account menu",
+		"reportAnIssue": "Report an issue"
+	},
+
+	"ReportPage": {
+		"SEO": {
+			"title": "Report an issue",
+			"description": "Tell us about a bug or anything else you ran into."
+		},
+		"ReportHeader": {
+			"title": "Tell us what happened",
+			"intro": "Found a bug or something that didn't feel right? A few words is all we need — we read every report."
+		},
+		"categoryLabel": "What's this about?",
+		"categoryBug": "Something is broken",
+		"categoryIdea": "I have an idea",
+		"categoryOther": "Something else",
+		"fieldMessage": "Details",
+		"fieldMessagePlaceholder": "Describe what you were doing and what went wrong. The more detail, the faster we can fix it.",
+		"fieldEmail": "Email (optional)",
+		"fieldEmailPlaceholder": "you@example.com",
+		"fieldEmailDescription": "Leave your email if you'd like us to follow up.",
+		"submit": "Send report"
 	},
 
 	"LoginButton": {
@@ -26,12 +49,13 @@
 	},
 
 	"ProtectedSidebar": {
+		"overview": "Overview",
+		"accommodations": "Accommodations",
 		"dashboard": "Dashboard",
 		"myAccommodations": "My Accommodations",
 		"addAccommodation": "Add Accommodation",
 		"reservations": "Reservations",
-		"goToAdminPage": "Go to Admin Page",
-		"backToHome": "Back to Home"
+		"switchToTraveling": "Switch to traveling"
 	},
 
 	"GoogleMap": {
@@ -176,7 +200,9 @@
 			"instruction": "control on the top-right of each preview card",
 			"placeholder": "Uploaded files. Drop more files here to add.",
 			"unknown": "Unknown",
-			"remove": "Remove {name}"
+			"remove": "Remove {name}",
+			"cover": "Cover",
+			"setCover": "Set {name} as cover image"
 		},
 		"UploadFileSingle": {
 			"dropzoneDescription": "Choose or drop a file, preview it, then save. Use",
@@ -266,7 +292,7 @@
 		"checkedOutDescription": "The stay is finished and the guest has checked out.",
 		"cancelledDescription": "The booking was called off — by the guest or host — and the dates have been released.",
 		"declinedDescription": "The host declined this request. The dates were never reserved and you can book another stay.",
-		"autoDeclinedDescription": "The host did not respond within 48 hours, so the request expired automatically. You can send a new request or choose another listing.",
+		"autoDeclinedDescription": "The host did not respond within 48 hours, so the request expired automatically. You can send a new request or choose another accommodation.",
 		"cancelledNote": "Guests can cancel a confirmed stay for free when check-in is at least 7 days away. Inside that window, contact the host directly.",
 		"exceptionHeading": "If something changes"
 	},
@@ -360,8 +386,13 @@
 	"CountLabels": {
 		"guests": [
 			{
-				"declarations": ["input count", "local countPlural = count: plural"],
-				"selectors": ["countPlural"],
+				"declarations": [
+					"input count",
+					"local countPlural = count: plural"
+				],
+				"selectors": [
+					"countPlural"
+				],
 				"match": {
 					"countPlural=one": "{count} guest",
 					"countPlural=other": "{count} guests"
@@ -370,8 +401,13 @@
 		],
 		"bedrooms": [
 			{
-				"declarations": ["input count", "local countPlural = count: plural"],
-				"selectors": ["countPlural"],
+				"declarations": [
+					"input count",
+					"local countPlural = count: plural"
+				],
+				"selectors": [
+					"countPlural"
+				],
 				"match": {
 					"countPlural=one": "{count} bedroom",
 					"countPlural=other": "{count} bedrooms"
@@ -380,8 +416,13 @@
 		],
 		"bathrooms": [
 			{
-				"declarations": ["input count", "local countPlural = count: plural"],
-				"selectors": ["countPlural"],
+				"declarations": [
+					"input count",
+					"local countPlural = count: plural"
+				],
+				"selectors": [
+					"countPlural"
+				],
 				"match": {
 					"countPlural=one": "{count} bathroom",
 					"countPlural=other": "{count} bathrooms"
@@ -390,8 +431,13 @@
 		],
 		"children": [
 			{
-				"declarations": ["input count", "local countPlural = count: plural"],
-				"selectors": ["countPlural"],
+				"declarations": [
+					"input count",
+					"local countPlural = count: plural"
+				],
+				"selectors": [
+					"countPlural"
+				],
 				"match": {
 					"countPlural=one": "{count} child",
 					"countPlural=other": "{count} children"
@@ -400,8 +446,13 @@
 		],
 		"adults": [
 			{
-				"declarations": ["input count", "local countPlural = count: plural"],
-				"selectors": ["countPlural"],
+				"declarations": [
+					"input count",
+					"local countPlural = count: plural"
+				],
+				"selectors": [
+					"countPlural"
+				],
 				"match": {
 					"countPlural=one": "{count} adult",
 					"countPlural=other": "{count} adults"
@@ -410,8 +461,13 @@
 		],
 		"nights": [
 			{
-				"declarations": ["input count", "local countPlural = count: plural"],
-				"selectors": ["countPlural"],
+				"declarations": [
+					"input count",
+					"local countPlural = count: plural"
+				],
+				"selectors": [
+					"countPlural"
+				],
 				"match": {
 					"countPlural=one": "{count} night",
 					"countPlural=other": "{count} nights"
@@ -420,8 +476,13 @@
 		],
 		"days": [
 			{
-				"declarations": ["input count", "local countPlural = count: plural"],
-				"selectors": ["countPlural"],
+				"declarations": [
+					"input count",
+					"local countPlural = count: plural"
+				],
+				"selectors": [
+					"countPlural"
+				],
 				"match": {
 					"countPlural=one": "{count} day",
 					"countPlural=other": "{count} days"
@@ -430,8 +491,13 @@
 		],
 		"places": [
 			{
-				"declarations": ["input count", "local countPlural = count: plural"],
-				"selectors": ["countPlural"],
+				"declarations": [
+					"input count",
+					"local countPlural = count: plural"
+				],
+				"selectors": [
+					"countPlural"
+				],
 				"match": {
 					"countPlural=one": "{count} place",
 					"countPlural=other": "{count} places"
@@ -527,16 +593,111 @@
 	"MyAccommodationsPage": {
 		"MyAccommodationsHeader": {
 			"title": "My accommodations",
-			"description": "Review listing status, pricing and capacity from one focused workspace.",
+			"description": "Review accommodation status, pricing and capacity from one focused workspace.",
 			"addAccommodation": "Add accommodation"
+		}
+	},
+
+	"HostDashboardPage": {
+		"SEO": {
+			"title": "Dashboard",
+			"description": "Your accommodations at a glance."
+		},
+		"HostDashboardHeader": {
+			"title": "Dashboard",
+			"subtitle": "Your accommodations at a glance."
+		},
+		"HostDashboardPageError": {
+			"title": "Couldn't load dashboard",
+			"description": "Something went wrong while loading your dashboard. Please try again.",
+			"retry": "Try again"
+		},
+		"HostDashboardPageEmpty": {
+			"title": "List your first place",
+			"description": "Create an accommodation and start welcoming guests — it only takes a few minutes.",
+			"cta": "Add your first accommodation"
+		},
+		"PendingReservations": {
+			"heading": "Pending reservations",
+			"subheading": "Requests waiting for your response — they expire automatically.",
+			"view": "View",
+			"expiresIn": "Expires in {time}",
+			"expired": "Expired"
+		},
+		"Today": {
+			"checkIns": "Check-ins today",
+			"checkOuts": "Check-outs today",
+			"hosting": "Currently hosting",
+			"more": "+{count} more",
+			"allQuiet": "No arrivals or departures today.",
+			"none": "Nothing today"
+		},
+		"Tiles": {
+			"occupancy": "Occupancy this month",
+			"revenue": "Revenue this month",
+			"upcoming": "Upcoming check-ins",
+			"accommodations": "Active accommodations",
+			"vsLastMonth": "{delta} vs last month",
+			"nextCheckIn": "Next: {date}",
+			"noUpcoming": "None in the next 7 days",
+			"pendingReview": "{count} pending review",
+			"allLive": "All published",
+			"noAccommodationsYet": "No published accommodations yet"
+		},
+		"Chart": {
+			"title": "Revenue & bookings",
+			"metricRevenue": "Revenue",
+			"metricBookings": "Bookings",
+			"range12m": "Last 12 months",
+			"range6m": "Last 6 months",
+			"range3m": "Last 3 months"
+		},
+		"ChartEmpty": {
+			"heading": "No revenue to chart yet",
+			"body": "Your revenue and booking trends over the last 12 months will appear here once guests start booking."
+		},
+		"PerAccommodation": {
+			"heading": "By accommodation",
+			"colAccommodation": "Accommodation",
+			"colStatus": "Status",
+			"colOccupancy": "Occupancy",
+			"colRevenue": "Revenue",
+			"colNextCheckIn": "Next check-in",
+			"empty": "—"
+		},
+		"PerAccommodationEmpty": {
+			"heading": "Nothing to compare yet",
+			"body": "List a second accommodation to see occupancy and revenue side by side.",
+			"cta": "Add accommodation"
+		},
+		"HostDashboardNoBookingsEmpty": {
+			"title": "You're ready for your first booking",
+			"description": "Your accommodations are live. Share them to start receiving requests."
+		}
+	},
+
+	"HostReservationsPage": {
+		"SEO": {
+			"title": "Reservations",
+			"description": "Review booking requests, track upcoming stays and manage your guests."
+		},
+		"HostReservationsPageError": {
+			"title": "Couldn't load reservations",
+			"description": "Something went wrong while loading your reservations. Please try again.",
+			"retry": "Try again"
 		}
 	},
 
 	"AccommodationCapacity": {
 		"upToGuests": [
 			{
-				"declarations": ["input count", "local countPlural = count: plural"],
-				"selectors": ["countPlural"],
+				"declarations": [
+					"input count",
+					"local countPlural = count: plural"
+				],
+				"selectors": [
+					"countPlural"
+				],
 				"match": {
 					"countPlural=one": "Up to {count} guest",
 					"countPlural=other": "Up to {count} guests"
@@ -545,8 +706,13 @@
 		],
 		"maxGuestsAllowed": [
 			{
-				"declarations": ["input count", "local countPlural = count: plural"],
-				"selectors": ["countPlural"],
+				"declarations": [
+					"input count",
+					"local countPlural = count: plural"
+				],
+				"selectors": [
+					"countPlural"
+				],
 				"match": {
 					"countPlural=one": "This place allows up to {count} guest.",
 					"countPlural=other": "This place allows up to {count} guests."
@@ -555,8 +721,13 @@
 		],
 		"nightsSelected": [
 			{
-				"declarations": ["input count", "local countPlural = count: plural"],
-				"selectors": ["countPlural"],
+				"declarations": [
+					"input count",
+					"local countPlural = count: plural"
+				],
+				"selectors": [
+					"countPlural"
+				],
 				"match": {
 					"countPlural=one": "{count} night selected",
 					"countPlural=other": "{count} nights selected"
@@ -565,8 +736,13 @@
 		],
 		"daysSelected": [
 			{
-				"declarations": ["input count", "local countPlural = count: plural"],
-				"selectors": ["countPlural"],
+				"declarations": [
+					"input count",
+					"local countPlural = count: plural"
+				],
+				"selectors": [
+					"countPlural"
+				],
 				"match": {
 					"countPlural=one": "{count} day selected",
 					"countPlural=other": "{count} days selected"
@@ -642,7 +818,7 @@
 			"description": "Confirm your booking details."
 		},
 		"BookHeader": {
-			"backToListing": "Back to listing",
+			"backToAccommodation": "Back to accommodation",
 			"confirmYourBooking": "Confirm your booking",
 			"requestToBook": "Request to book",
 			"youHavenTickedDates": "You haven’t picked your dates yet — add them under",
@@ -657,7 +833,7 @@
 			"dates": "Dates",
 			"guests": "Guests"
 		},
-		"BookSummaryListing": {
+		"BookSummaryAccommodation": {
 			"typeInCity": "{type} in {city}"
 		},
 		"BookPrice": {
@@ -736,7 +912,7 @@
 			"guests": "Guests",
 			"totalWithPayment": "Total ({paymentMethod})",
 			"emailCopySent": "A copy was sent to {email}",
-			"backToListing": "Back to listing",
+			"backToAccommodation": "Back to accommodation",
 			"browseMoreStays": "Browse more stays"
 		}
 	},
@@ -744,11 +920,11 @@
 	"AddAccommodationPage": {
 		"SEO": {
 			"title": "List your accommodation",
-			"description": "Fill in the details below. Everything can be edited later — your listing goes live after a quick review."
+			"description": "Fill in the details below. Everything can be edited later — your accommodation goes live after a quick review."
 		},
 		"AddAccommodationHeader": {
 			"title": "List your accommodation",
-			"description": "Fill in the details below. Everything can be edited later — your listing goes live after a quick review."
+			"description": "Fill in the details below. Everything can be edited later — your accommodation goes live after a quick review."
 		},
 		"ConvexMutationForm": {
 			"submitLabel": "Submit for review"
@@ -765,7 +941,9 @@
 			"sessions": "Sessions",
 			"accounts": "Accounts",
 			"activity": "Activity",
-			"danger": "Danger zone"
+			"danger": "Danger zone",
+			"accommodations": "Accommodations",
+			"bookings": "Bookings"
 		},
 		"UserOverview": {
 			"verified": "Verified",
@@ -866,31 +1044,32 @@
 			"title": "Failed to load user",
 			"description": "Something went wrong while fetching this user. Please try again.",
 			"retry": "Retry"
+		},
+		"UserAccommodations": {
+			"caption": "Accommodations owned by this user",
+			"columnAccommodation": "Accommodation",
+			"columnCity": "City",
+			"columnPrice": "Price",
+			"columnStatus": "Status"
+		},
+		"UserBookings": {
+			"caption": "Bookings made by this user",
+			"columnCode": "Code",
+			"columnAccommodation": "Accommodation",
+			"columnDates": "Dates",
+			"columnTotal": "Total",
+			"columnStatus": "Status"
 		}
 	},
 
 	"ValidationMessages": {
-		"LoginForm": {
+		"loginFormSchema": {
 			"emailRequired": "Enter your email.",
 			"invalidEmail": "Invalid email.",
 			"passwordRequired": "Enter your password.",
 			"passwordMinLength": "At least 8 characters."
 		},
-		"PasswordResetRequestForm": {
-			"emailRequired": "Enter your email.",
-			"invalidEmail": "Invalid email."
-		},
-		"PasswordResetVerifyForm": {
-			"codeRequired": "Enter the code.",
-			"codeFormat": "Use the 8-digit code from your email.",
-			"newPasswordRequired": "Enter a new password.",
-			"newPasswordMinLength": "At least 8 characters.",
-			"passwordTooCommon": "That password is too common. Please choose a stronger one.",
-			"confirmPasswordRequired": "Confirm your new password.",
-			"passwordsMustMatch": "Passwords must match.",
-			"invalidEmail": "Invalid email."
-		},
-		"SignUpForm": {
+		"signUpFormSchema": {
 			"nameRequired": "Enter your full name.",
 			"emailRequired": "Enter your email.",
 			"invalidEmail": "Invalid email.",
@@ -900,10 +1079,87 @@
 			"confirmPasswordRequired": "Confirm your password.",
 			"passwordsMustMatch": "Passwords must match."
 		},
-		"EmailVerificationForm": {
+		"passwordResetRequestFormSchema": {
+			"emailRequired": "Enter your email.",
+			"invalidEmail": "Invalid email."
+		},
+		"passwordResetVerifyFormSchema": {
+			"codeRequired": "Enter the code.",
+			"codeFormat": "Use the 8-digit code from your email.",
+			"newPasswordRequired": "Enter a new password.",
+			"newPasswordMinLength": "At least 8 characters.",
+			"passwordTooCommon": "That password is too common. Please choose a stronger one.",
+			"confirmPasswordRequired": "Confirm your new password.",
+			"passwordsMustMatch": "Passwords must match.",
+			"invalidEmail": "Invalid email."
+		},
+		"emailVerificationFormSchema": {
 			"codeRequired": "Enter the code.",
 			"codeFormat": "Use the 8-digit code from your email.",
 			"invalidEmail": "Invalid email."
+		},
+		"accommodationFieldsShape": {
+			"titleMin": "Give your place a title (min 3 characters).",
+			"typeRequired": "Choose a property type.",
+			"descriptionMin": "Add a short description (at least 20 characters).",
+			"placeIdRequired": "Select your city from the list (typing alone won’t set it).",
+			"cityMin": "Enter the city.",
+			"bedroomsNonNegative": "Cannot be negative.",
+			"bedroomsRequired": "At least one bedroom.",
+			"bathroomsMin": "At least one bathroom.",
+			"maxGuestsMin": "At least one guest.",
+			"squareMetersMin": "Enter the size in m².",
+			"pricePerNightMin": "Set a nightly price.",
+			"minReservationDaysMin": "Minimum 1 night.",
+			"checkInTimeRequired": "Set a check-in time.",
+			"checkOutTimeRequired": "Set a check-out time.",
+			"paymentMethodRequired": "Choose how guests can pay.",
+			"amenitiesMin": "Select at least 5 amenities."
+		},
+		"addAccommodationSchema": {
+			"photosMin": "Please upload at least 3 photos."
+		},
+		"editAccommodationSchema": {
+			"photosMinTotal": "Keep or add at least 3 photos in total."
+		},
+		"createBookingSchema": {
+			"firstNameRequired": "Enter your first name.",
+			"lastNameRequired": "Enter your last name.",
+			"emailRequired": "Enter your email.",
+			"invalidEmail": "Enter a valid email.",
+			"invalidPhone": "Enter a valid phone number.",
+			"paymentMethodRequired": "Choose a payment method.",
+			"datesRequired": "Select your dates.",
+			"minOneNight": "Your stay must be at least one night."
+		},
+		"newsletterSchema": {
+			"emailRequired": "Enter your email.",
+			"invalidEmail": "Enter a valid email."
+		},
+		"createReportSchema": {
+			"messageRequired": "Please add a few words about what happened.",
+			"messageMax": "Keep it under 5000 characters.",
+			"emailInvalid": "Enter a valid email, or leave it blank."
+		},
+		"declineBookingSchema": {
+			"reasonMin": "Please write at least 4 characters.",
+			"reasonMax": "Keep the reason under 500 characters."
+		},
+		"sendContactFormEmailSchema": {
+			"nameMin": "Name must be at least 3 characters.",
+			"invalidEmail": "Please enter a valid email address.",
+			"messageMin": "Message must be at least 10 characters."
+		},
+		"moderationReasonSchema": {
+			"reasonMin": "Reason must be at least 4 characters.",
+			"reasonMax": "Reason is too long (max 500 characters)."
+		},
+		"cancelBookingAdminSchema": {
+			"reasonMin": "Reason must be at least 4 characters.",
+			"reasonMax": "Reason is too long (max 500 characters)."
+		},
+		"adminAddAccommodationSchema": {
+			"ownerRequired": "Pick the owner of this accommodation."
 		}
 	},
 
@@ -911,38 +1167,36 @@
 		"PASSWORD_TOO_SHORT": "Password must be at least {min} characters.",
 		"PASSWORD_TOO_LONG": "Password is too long.",
 		"PASSWORD_TOO_COMMON": "That password is too common. Please choose a stronger one.",
-
 		"NO_ITEMS_PROVIDED": "No items provided.",
 		"NO_MATCHING_ITEMS": "No matching items found.",
 		"DATA_TABLE_DELETED_ALL": "Deleted {count} item(s).",
 		"DATA_TABLE_DELETED_WITH_MISSING": "Deleted {count} item(s); {missing} were already gone.",
-
 		"STORAGE_DELETE_FAILED": "Couldn't delete the file from storage. Nothing was removed.",
 		"STORAGE_URL_UNAVAILABLE": "Couldn't resolve the file URL.",
 		"UPLOAD_SAVE_FAILED": "Could not save the uploaded file. Please try again.",
 		"UPLOAD_URL_READY": "Upload URL generated.",
-
 		"EMAIL_SENT_SUCCESSFULLY": "Email sent successfully.",
 		"TEST_ROW_CREATED": "Test row created.",
 		"ACCOMMODATION_CREATED": "Accommodation submitted for review.",
-		"ACCOMMODATION_UPDATED": "Listing updated.",
-		"ACCOMMODATION_STATUS_UPDATED": "Listing visibility updated.",
-
+		"ACCOMMODATION_UPDATED": "Accommodation updated.",
+		"ACCOMMODATION_STATUS_UPDATED": "Accommodation visibility updated.",
 		"FAVORITE_SAVED": "Saved to your list.",
 		"FAVORITE_REMOVED": "Removed from your list.",
 		"FAVORITES_MERGED": "Saved stays synced to your account.",
-		"LISTING_NOT_AVAILABLE_TO_SAVE": "This listing is not available to save.",
-
+		"ACCOMMODATION_NOT_AVAILABLE_TO_SAVE": "This accommodation is not available to save.",
 		"BOOKING_CREATED": "Booking confirmed.",
+		"NEWSLETTER_SUBSCRIBED": "Thanks for subscribing! Check your inbox for the best stays and deals.",
+		"REPORT_SUBMITTED": "Thanks for the report — we've received it.",
+		"REPORT_MESSAGE_REQUIRED": "Please add a few words about what happened.",
 		"BOOKING_UPDATED": "Booking updated.",
 		"BOOKING_CANCEL_TOO_LATE": "Free cancellation is only available 7+ days before check-in. Contact the host if your plans changed.",
 		"INVALID_BOOKING_DATES": "Check-out must be after check-in.",
-
+		"DATES_UNAVAILABLE": "Those dates were just booked by someone else. Please pick different dates.",
+		"PAYMENT_METHOD_NOT_ACCEPTED": "This accommodation doesn't accept that payment method.",
 		"UPLOAD_NOT_FOUND": "Upload not found. Please try again.",
 		"UPLOAD_TOO_LARGE": "File is too large.",
 		"UPLOAD_TYPE_NOT_ALLOWED": "That file type is not allowed.",
 		"UPLOAD_SAVED": "File saved.",
-
 		"YOU_NEED_TO_CORRECT_FORM_ERRORS": "You need to correct form errors",
 		"BATCH_TOO_LARGE": "Too many items in a single request (max {limit}).",
 		"FORBIDDEN": "You're not allowed to perform this action.",
@@ -959,7 +1213,24 @@
 		"TOO_MANY_REQUESTS": "Too many requests. Please try again later.",
 		"TOO_MANY_REQUESTS_SECONDS": "Too many requests. Try again in {seconds}s.",
 		"TOO_MANY_REQUESTS_MINUTES": "Too many requests. Try again in {minutes} min.",
-		
-		"UNEXPECTED_ERROR": "An unexpected error occurred. Please try again."
+		"UNEXPECTED_ERROR": "An unexpected error occurred. Please try again.",
+		"MODERATION_REASON_REQUIRED": "A reason is required to suspend a accommodation.",
+		"ACCOMMODATION_HAS_ACTIVE_BOOKINGS": "This accommodation has active bookings and can't be deleted. Cancel or decline them first."
+	},
+
+	"DeclineBookingDialog": {
+		"title": "Decline this reservation request?",
+		"description": "This declines {guest}'s request and emails them your reason. It can't be undone, so please explain your decision briefly and courteously.",
+		"reasonLabel": "Reason for declining",
+		"reasonPlaceholder": "e.g. These dates are no longer available for booking.",
+		"confirm": "Decline request",
+		"cancel": "Keep request"
+	},
+
+	"CancelBookingDialog": {
+		"title": "Cancel this confirmed booking?",
+		"description": "This cancels {guest}'s confirmed booking and notifies them by email. If they've already paid, the payment will be refunded. This can't be undone.",
+		"confirm": "Cancel booking",
+		"cancel": "Keep booking"
 	}
 }

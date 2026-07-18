@@ -36,7 +36,7 @@
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
-	import { zodIssuesToFieldErrors } from '@/shared/utils/validationUtils.js';
+	import { zodIssuesToFieldErrors } from '@/shared/utils/zodFieldErrors';
 	import { focusFirstError } from '@/utils/focusFirstError.js';
 	import { useProgress } from '@/features/uploadFile/utils/useProgress.svelte';
 	import { Progress } from '@/shared/components/ui/progress/index.js';
@@ -380,7 +380,6 @@
 					{inputId}
 					value={getValue(field.id)}
 					setValue={(v) => setValue(field.id, v)}
-					invalid={!!err}
 				/>
 			{:else if field.kind === 'select'}
 				<SelectField
@@ -452,7 +451,7 @@
 				</span>
 			</div>
 			<div class="flex items-center gap-1.5" role="group" aria-label="Progress">
-				{#each wizardSteps as _, i (i)}
+				{#each wizardSteps, i (i)}
 					<button
 						type="button"
 						aria-label={`Go to step ${i + 1}`}

@@ -7,7 +7,7 @@ import type { FilterKey, SearchState } from './types';
 // `?location=Belgrade` stays clean until a real filter is chosen.
 const keymap = {
 	location: parseAsString.withDefault(''),
-	// Google place id of the picked region (a city or a country). Search keeps listings whose
+	// Google place id of the picked region (a city or a country). Search keeps accommodations whose
 	// merged city+country `placeId` contains it. Set only when a place is selected.
 	placeId: parseAsString.withDefault(''),
 	checkIn: parseAsString,
@@ -39,7 +39,7 @@ export function parseCount(filter: string | null | undefined): number | undefine
 
 /**
  * Everything a search needs, decoded from the URL — the shape the Convex query accepts. It keeps
- * listings whose merged `placeId` contains the picked region's `placeId`, plus the count minimums,
+ * accommodations whose merged `placeId` contains the picked region's `placeId`, plus the count minimums,
  * and (later) drops apartments with a booking overlapping [checkIn, checkOut). `location` is the
  * display label only.
  */

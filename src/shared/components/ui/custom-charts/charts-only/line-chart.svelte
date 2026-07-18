@@ -1,5 +1,5 @@
 <script lang="ts">
-    // LIBRARIES
+	// LIBRARIES
 	import { LineChart, Points } from 'layerchart';
 	import { scaleUtc, scaleBand } from 'd3-scale';
 	import { curveLinear, curveMonotoneX, curveNatural, curveStep } from 'd3-shape';

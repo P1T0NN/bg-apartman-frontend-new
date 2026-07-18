@@ -19,6 +19,16 @@ export const EMAIL_THEME = {
 	font: "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
 } as const;
 
+/** "Thu, Jun 25, 2026" — the stay-date formatter every booking email shares. */
+export function stayDateFormatter(locale: string): Intl.DateTimeFormat {
+	return new Intl.DateTimeFormat(locale, {
+		weekday: 'short',
+		month: 'short',
+		day: 'numeric',
+		year: 'numeric'
+	});
+}
+
 /** Primary call-to-action button. `href` is always an app-built URL (never user input). */
 export function emailButton(label: string, href: string): string {
 	return `<a href="${href}" style="display:inline-block;background:${EMAIL_THEME.brand};color:${EMAIL_THEME.brandText};text-decoration:none;font-weight:600;font-size:15px;padding:12px 24px;border-radius:10px;">${escapeHtml(label)}</a>`;

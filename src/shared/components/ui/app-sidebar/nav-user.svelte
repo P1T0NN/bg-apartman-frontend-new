@@ -25,7 +25,9 @@
 	const user = $derived(authClass.currentUser);
 	const userLoading = $derived(authClass.userLoading);
 	/** Avoid “Account” flash before auth + Convex have settled. */
-	const showUserLoading = $derived(auth.isLoading || userLoading || (auth.isAuthenticated && user === undefined));
+	const showUserLoading = $derived(
+		auth.isLoading || userLoading || (auth.isAuthenticated && user === undefined)
+	);
 </script>
 
 <Sidebar.Menu>
@@ -53,7 +55,7 @@
 
 							<div class="grid flex-1 text-start text-sm leading-tight">
 								<span class="truncate font-medium">{user?.name ?? 'Account'}</span>
-								<span class="text-muted-foreground truncate text-xs">{user?.email ?? ''}</span>
+								<span class="truncate text-xs text-muted-foreground">{user?.email ?? ''}</span>
 							</div>
 						{/if}
 
@@ -77,7 +79,7 @@
 
 						<div class="grid flex-1 text-start text-sm leading-tight">
 							<span class="truncate font-medium">{user?.name ?? 'Account'}</span>
-							<span class="text-muted-foreground truncate text-xs">{user?.email ?? ''}</span>
+							<span class="truncate text-xs text-muted-foreground">{user?.email ?? ''}</span>
 						</div>
 					</div>
 				</DropdownMenu.Label>

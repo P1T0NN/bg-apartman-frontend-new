@@ -32,12 +32,10 @@ export const listUsers = query({
 		role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
 		banned: v.optional(v.boolean()),
 		emailVerified: v.optional(v.boolean()),
-		sortColumn: v.optional(
-			v.union(v.literal('name'), v.literal('email'), v.literal('createdAt'))
-		),
+		sortColumn: v.optional(v.union(v.literal('name'), v.literal('email'), v.literal('createdAt'))),
 		sortDirection: v.optional(v.union(v.literal('asc'), v.literal('desc')))
 	},
-	handler: async (ctx, args): Promise<PaginatedListPayload<Doc<"user">>> => {
+	handler: async (ctx, args): Promise<PaginatedListPayload<Doc<'user'>>> => {
 		await requireAdmin(ctx);
 
 		const result = (await ctx.runQuery(components.betterAuth.userQueries.listUsersPaginated, {
@@ -50,7 +48,7 @@ export const listUsers = query({
 			...(args.sortColumn !== undefined && { sortColumn: args.sortColumn }),
 			...(args.sortDirection !== undefined && { sortDirection: args.sortDirection })
 		})) as {
-			page: Doc<"user">[];
+			page: Doc<'user'>[];
 			isDone: boolean;
 			continueCursor: string;
 		};

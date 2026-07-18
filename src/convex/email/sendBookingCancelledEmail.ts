@@ -12,6 +12,8 @@ type SendBookingCancelledEmailInput = {
 	apartmentTitle: string;
 	checkInDate: string;
 	checkOutDate: string;
+	/** Cancellation reason to surface in the email. */
+	cancelReason?: string;
 };
 
 /** When a booking is cancelled: tell the guest. */
@@ -26,6 +28,7 @@ export async function sendBookingCancelledEmail(
 		bookingCode: input.bookingCode,
 		checkInDate: input.checkInDate,
 		checkOutDate: input.checkOutDate,
+		cancelReason: input.cancelReason,
 		browseUrl: homeUrl()
 	});
 

@@ -14,9 +14,7 @@
 <div
 	class="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed px-6 py-16 text-center"
 >
-	<div
-		class="flex size-14 items-center justify-center rounded-full bg-muted text-muted-foreground"
-	>
+	<div class="flex size-14 items-center justify-center rounded-full bg-muted text-muted-foreground">
 		<SearchXIcon class="size-7" aria-hidden="true" />
 	</div>
 

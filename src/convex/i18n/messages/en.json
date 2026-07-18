@@ -38,37 +38,38 @@
 		"cta": "View booking"
 	},
 	"createAccommodation": {
-		"subjectLive": "Your listing is live · {title}",
-		"subjectPending": "Your listing was submitted · {title}",
-		"headingLive": "Your listing is live",
-		"headingReview": "Listing submitted for review",
+		"subjectLive": "Your accommodation is live · {title}",
+		"subjectPending": "Your accommodation was submitted · {title}",
+		"headingLive": "Your accommodation is live",
+		"headingReview": "Accommodation submitted for review",
 		"introLive": "Hi {name}, {title} is now published and guests can book it. You can edit it anytime.",
-		"introReview": "Hi {name}, thanks for listing {title}. We're reviewing it and will let you know as soon as it's live.",
-		"rowListing": "Listing",
+		"introReview": "Hi {name}, thanks for accommodation {title}. We're reviewing it and will let you know as soon as it's live.",
+		"rowAccommodation": "Accommodation",
 		"rowLocation": "Location",
 		"rowStatus": "Status",
 		"statusPublished": "Published",
 		"statusInReview": "In review",
-		"cta": "Manage your listing"
+		"cta": "Manage your accommodation"
 	},
 	"accommodationPublished": {
-		"subject": "Your listing is now live · {title}",
-		"heading": "Your listing is approved",
+		"subject": "Your accommodation is now live · {title}",
+		"heading": "Your accommodation is approved",
 		"intro": "Hi {name}, {title} has been reviewed and is now live. Guests can book it right away.",
-		"rowListing": "Listing",
+		"rowAccommodation": "Accommodation",
 		"rowLocation": "Location",
 		"rowStatus": "Status",
 		"statusPublished": "Published",
-		"cta": "View your listing"
+		"cta": "View your accommodation"
 	},
 	"accommodationSuspended": {
-		"subject": "Your listing has been suspended · {title}",
-		"heading": "Your listing was suspended",
+		"subject": "Your accommodation has been suspended · {title}",
+		"heading": "Your accommodation was suspended",
 		"intro": "Hi {name}, {title} has been suspended and is no longer visible to guests. If you think this is a mistake, reply to this email and we'll help.",
-		"rowListing": "Listing",
+		"rowAccommodation": "Accommodation",
 		"rowStatus": "Status",
 		"statusSuspended": "Suspended",
-		"cta": "Manage your listing"
+		"cta": "Manage your accommodation",
+		"rowReason": "Reason"
 	},
 	"bookingConfirmed": {
 		"subject": "Your booking is confirmed · {code}",
@@ -88,6 +89,26 @@
 		"subject": "Your booking was cancelled · {code}",
 		"heading": "Booking cancelled",
 		"intro": "Hi {name}, your booking for {title} ({code}) has been cancelled. If this wasn't expected, reply to this email and we'll help.",
+		"rowStay": "Stay",
+		"rowCheckIn": "Check-in",
+		"rowCheckOut": "Check-out",
+		"cta": "Browse other stays",
+		"rowReason": "Reason"
+	},
+	"bookingDeclined": {
+		"subject": "Your booking request was declined — {code}",
+		"heading": "Booking request declined",
+		"intro": "Hi {name}, unfortunately your request for {title} ({code}) was declined by the host. The reason they gave is below — we hope you find a great stay elsewhere.",
+		"rowStay": "Stay",
+		"rowCheckIn": "Check-in",
+		"rowCheckOut": "Check-out",
+		"rowReason": "Reason",
+		"cta": "Browse other stays"
+	},
+	"bookingAutoDeclined": {
+		"subject": "Your booking request expired — {code}",
+		"heading": "Booking request expired",
+		"intro": "Hi {name}, your request for {title} ({code}) expired because it wasn't confirmed in time. No charge was made — we hope you find a great stay elsewhere.",
 		"rowStay": "Stay",
 		"rowCheckIn": "Check-in",
 		"rowCheckOut": "Check-out",

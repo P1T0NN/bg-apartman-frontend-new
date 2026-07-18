@@ -5,7 +5,7 @@
 	// COMPONENTS
 	import * as Card from '@/shared/components/ui/card/index.js';
 	import * as Chart from '@/shared/components/ui/chart/index.js';
-	
+
 	// TYPES
 	import type { Snippet, Component, ComponentProps } from 'svelte';
 	import type { ChartConfig } from '@/shared/components/ui/chart/chart-utils.js';
@@ -236,7 +236,11 @@
 					{:else}
 						{@const arcProps =
 							resolvedActiveFirstSlice && snippetParams.index === 0
-								? ({ ...snippetParams.props, outerRadius: 60, innerRadius: 105 } satisfies LayerArcProps)
+								? ({
+										...snippetParams.props,
+										outerRadius: 60,
+										innerRadius: 105
+									} satisfies LayerArcProps)
 								: snippetParams.props}
 						<Arc {...arcProps} />
 					{/if}

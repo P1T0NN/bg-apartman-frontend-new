@@ -33,12 +33,12 @@
 <img
 	{src}
 	{alt}
-	srcset={srcset}
-	sizes={sizes}
-	width={width}
-	height={height}
+	{srcset}
+	{sizes}
+	{width}
+	{height}
 	{loading}
-	fetchpriority={fetchpriority}
+	{fetchpriority}
 	{decoding}
 	class={cn(className)}
 	{...rest}

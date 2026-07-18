@@ -15,5 +15,5 @@
 
 <div class="px-3 py-6 text-center">
 	<p class="text-sm font-medium">{title}</p>
-	<p class="text-muted-foreground mt-1 text-xs">{description}</p>
+	<p class="mt-1 text-xs text-muted-foreground">{description}</p>
 </div>

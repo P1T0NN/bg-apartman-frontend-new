@@ -1,6 +1,6 @@
 <script lang="ts">
 	// LIBRARIES
-	import { m } from "@/shared/lib/paraglide/messages";
+	import { m } from '@/shared/lib/paraglide/messages';
 
 	// COMPONENTS
 	import UploadFileItemSingle from './upload-file-item-single.svelte';
@@ -64,7 +64,7 @@
 			file={row.file}
 			bind:files
 			bind:selectedFile
-			pickerInputId={pickerInputId}
+			{pickerInputId}
 			previewUrl={row.previewUrl}
 		/>
 	{/each}

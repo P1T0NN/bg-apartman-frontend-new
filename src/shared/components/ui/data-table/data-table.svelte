@@ -7,12 +7,7 @@
 	import DataTableSelectedItemsStatus from './data-table-selected-items-status.svelte';
 	import { PaginatedData } from '@/shared/components/ui/paginated-data/index.js';
 	import { Input } from '@/shared/components/ui/input/index.js';
-	import {
-		Select,
-		SelectContent,
-		SelectItem,
-		SelectTrigger
-	} from '@/shared/components/ui/select/index.js';
+	import { NativeSelect } from '@/shared/components/ui/select/index.js';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import ArrowUpDownIcon from '@lucide/svelte/icons/arrow-up-down';
 
@@ -151,13 +146,6 @@
 		page = 1;
 	}
 
-	const activeSortLabel = $derived.by(() => {
-		if (!sortColumn || !sortDirection) return null;
-		const col = sortableColumns.find((c) => c.id === sortColumn);
-		if (!col) return null;
-		return { header: col.header, direction: sortDirection };
-	});
-
 	const selectedSet = $derived(new Set(selectedIds));
 
 	const currentPageIds = $derived(
@@ -223,7 +211,9 @@
 		<div class="flex flex-col gap-2 md:flex-row md:items-center">
 			{#if searchable}
 				<div class="relative w-full md:max-w-sm">
-					<SearchIcon class="text-muted-foreground absolute left-3 top-1/2 size-4 -translate-y-1/2" />
+					<SearchIcon
+						class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+					/>
 					<Input
 						type="search"
 						bind:value={searchDraft}
@@ -241,46 +231,32 @@
 			{/if}
 
 			{#if sortableColumns.length > 0}
-				<div class="md:hidden">
-					<Select
-						type="single"
+				<div class="relative md:hidden">
+					<ArrowUpDownIcon
+						class="pointer-events-none absolute top-1/2 left-2.5 z-10 size-4 -translate-y-1/2 opacity-70"
+						aria-hidden="true"
+					/>
+					<NativeSelect
 						value={mobileSortValue}
-						onValueChange={onMobileSortChange}
+						onChange={onMobileSortChange}
 						disabled={isSearching}
-					>
-						<SelectTrigger class="w-full" aria-label={m['DataTable.sortBy']()}>
-							<ArrowUpDownIcon class="size-4 opacity-70" aria-hidden="true" />
-							<span class="truncate">
-								{#if activeSortLabel}
-									{m['DataTable.sortBy']()}: {activeSortLabel.header}
-									{activeSortLabel.direction === 'asc' ? '↑' : '↓'}
-								{:else}
-									{m['DataTable.sortBy']()}
-								{/if}
-							</span>
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="">{m['DataTable.sortDefault']()}</SelectItem>
-							{#each sortableColumns as col (col.id)}
-								<SelectItem value={`${col.id}:desc`}>{col.header} ↓</SelectItem>
-								<SelectItem value={`${col.id}:asc`}>{col.header} ↑</SelectItem>
-							{/each}
-						</SelectContent>
-					</Select>
+						class="w-full pl-8"
+						ariaLabel={m['DataTable.sortBy']()}
+						options={[
+							{ value: '', label: `${m['DataTable.sortBy']()}: ${m['DataTable.sortDefault']()}` },
+							...sortableColumns.flatMap((col) => [
+								{ value: `${col.id}:desc`, label: `${col.header} ↓` },
+								{ value: `${col.id}:asc`, label: `${col.header} ↑` }
+							])
+						]}
+					/>
 				</div>
 			{/if}
 		</div>
 	{/if}
 
 	{#if controlsPlace === 'top'}
-		<PaginatedData
-			bind:page
-			{totalPages}
-			{canGoNext}
-			{isLoading}
-			{queryLoading}
-			{hasResult}
-		/>
+		<PaginatedData bind:page {totalPages} {canGoNext} {isLoading} {queryLoading} {hasResult} />
 	{/if}
 
 	{#if selectable && selectedIds.length > 0}
@@ -301,7 +277,7 @@
 		{data}
 		{columns}
 		{getRowId}
-		isLoading={isLoading}
+		{isLoading}
 		customCells={customCells ?? {}}
 		{selectable}
 		{selectedSet}
@@ -316,13 +292,6 @@
 	/>
 
 	{#if controlsPlace === 'bottom'}
-		<PaginatedData
-			bind:page
-			{totalPages}
-			{canGoNext}
-			{isLoading}
-			{queryLoading}
-			{hasResult}
-		/>
+		<PaginatedData bind:page {totalPages} {canGoNext} {isLoading} {queryLoading} {hasResult} />
 	{/if}
 </div>

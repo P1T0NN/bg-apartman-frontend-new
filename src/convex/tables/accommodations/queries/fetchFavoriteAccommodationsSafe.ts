@@ -8,17 +8,17 @@ import {
 	paginatedQueryArgs,
 	toPaginatedListPayload
 } from '@/convex/helpers/paginationHelpers';
-import { resolveFavoriteListings } from '../helpers/resolveFavoriteListings';
+import { resolveFavoriteAccommodations } from '../helpers/resolveFavoriteAccommodations';
 
 // TYPES
 import type { PaginatedListPayload } from '@/shared/components/ui/data-table/types';
-import type { SearchListing } from '@/shared/features/accommodation/types/accommodationTypes';
+import type { SearchAccommodation } from '@/shared/features/accommodation/types/accommodationTypes';
 
 /**
- * Paginated saved listings for the guest favorites page.
+ * Paginated saved accommodations for the guest favorites page.
  *
  * App-specific (not built on `fetchOptimized`): favorites are a client-held id list, not an
- * indexable table query. `resolveFavoriteListings` point-reads + sanitizes the ids, then
+ * indexable table query. `resolveFavoriteAccommodations` point-reads + sanitizes the ids, then
  * `toPaginatedListPayload` slices the requested offset page and reports an exact `totalCount`
  * for `ConvexDataList`'s offset mode. The page slice is the only thing mapped per request.
  */
@@ -28,15 +28,15 @@ export const fetchFavoriteAccommodationsSafe = query({
 		...paginatedQueryArgs,
 		page: optionalOneBasedPageArg
 	},
-	handler: async (ctx, args): Promise<PaginatedListPayload<SearchListing>> => {
-		const listings = await resolveFavoriteListings(ctx, args.ids);
+	handler: async (ctx, args): Promise<PaginatedListPayload<SearchAccommodation>> => {
+		const accommodations = await resolveFavoriteAccommodations(ctx, args.ids);
 
 		return toPaginatedListPayload({
 			page: args.page,
 			paginationOpts: args.paginationOpts,
 			fetch: async ({ limit, offset }) => ({
-				items: listings.slice(offset, offset + limit),
-				total: listings.length
+				items: accommodations.slice(offset, offset + limit),
+				total: accommodations.length
 			})
 		});
 	}

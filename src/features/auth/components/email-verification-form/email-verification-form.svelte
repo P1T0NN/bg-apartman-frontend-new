@@ -17,7 +17,7 @@
 	// UTILS
 	import { emailVerificationFormSchema } from './email-verification-form-schema.js';
 	import { cn, type WithElementRef } from '@/utils/utils.js';
-	import { zodIssuesToFieldErrors } from '@/shared/utils/validationUtils.js';
+	import { zodIssuesToFieldErrors } from '@/shared/utils/zodFieldErrors';
 	import { rateLimitMessage } from '@/utils/rateLimitMessages';
 
 	// TYPES

@@ -15,12 +15,7 @@ import type { QueryCtx } from '../_generated/server';
 import type { ConvexErrorPayload } from '@/shared/types/types.js';
 import type { ConvexRateLimitName } from '../rateLimits/registry.js';
 import type { Doc, DataModel, TableNames } from '../_generated/dataModel';
-import type {
-	IndexNames,
-	NamedTableInfo,
-	OrderedQuery,
-	SearchIndexNames
-} from 'convex/server';
+import type { IndexNames, NamedTableInfo, OrderedQuery, SearchIndexNames } from 'convex/server';
 import type { ObjectType, PropertyValidators } from 'convex/values';
 
 // ─── Strategy + result shapes ────────────────────────────────────────────────
@@ -178,10 +173,7 @@ export type FetchOptimizedOptions<
 	 * enables the data-table's sortable column headers to round-trip to the server (the
 	 * table forwards `sortDirection` inside `args`).
 	 */
-	order?:
-		| 'asc'
-		| 'desc'
-		| ((args: BuiltinArgs & ObjectType<Extra>) => 'asc' | 'desc');
+	order?: 'asc' | 'desc' | ((args: BuiltinArgs & ObjectType<Extra>) => 'asc' | 'desc');
 	/**
 	 * Extra validators added to the query's args. Use this to accept caller input that the
 	 * `where`/`search` builders depend on (e.g. `{ city: v.string() }`).
@@ -371,9 +363,7 @@ export function fetchOptimized<
 	T extends TableNames,
 	Extra extends PropertyValidators = Record<string, never>,
 	Row = Doc<T>
->(
-	options: FetchOptimizedOptions<T, Extra, Row>
-): ReturnType<typeof query>;
+>(options: FetchOptimizedOptions<T, Extra, Row>): ReturnType<typeof query>;
 export function fetchOptimized<
 	T extends TableNames,
 	Extra extends PropertyValidators = Record<string, never>,
@@ -382,8 +372,7 @@ export function fetchOptimized<
 	nameOrOptions: ConvexRateLimitName | FetchOptimizedOptions<T, Extra, Row>,
 	maybeOptions?: FetchOptimizedOptions<T, Extra, Row>
 ) {
-	const rateLimitName =
-		typeof nameOrOptions === 'string' ? nameOrOptions : null;
+	const rateLimitName = typeof nameOrOptions === 'string' ? nameOrOptions : null;
 	const options =
 		typeof nameOrOptions === 'string'
 			? (maybeOptions as FetchOptimizedOptions<T, Extra, Row>)
@@ -396,10 +385,7 @@ function buildFetchOptimizedQuery<
 	T extends TableNames,
 	Extra extends PropertyValidators = Record<string, never>,
 	Row = Doc<T>
->(
-	options: FetchOptimizedOptions<T, Extra, Row>,
-	rateLimitName: ConvexRateLimitName | null
-) {
+>(options: FetchOptimizedOptions<T, Extra, Row>, rateLimitName: ConvexRateLimitName | null) {
 	const {
 		table,
 		strategy = 'cursor',
@@ -490,10 +476,7 @@ function buildFetchOptimizedQuery<
 			if (searchSpec) {
 				q = ctx.db.query(table).withSearchIndex(searchSpec.index, (sb) => {
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					let chain: any = sb.search(
-						searchSpec.searchField as never,
-						searchSpec.query
-					);
+					let chain: any = sb.search(searchSpec.searchField as never, searchSpec.query);
 					for (const [field, value] of Object.entries(searchSpec.eq ?? {})) {
 						if (value === undefined) continue;
 						chain = chain.eq(field, value);
@@ -503,9 +486,7 @@ function buildFetchOptimizedQuery<
 			} else if (whereSpec) {
 				q = ctx.db
 					.query(table)
-					.withIndex(whereSpec.index, (idx) =>
-						applyIndexBounds(idx, whereSpec.eq, whereSpec.range)
-					)
+					.withIndex(whereSpec.index, (idx) => applyIndexBounds(idx, whereSpec.eq, whereSpec.range))
 					.order(resolvedOrder);
 			} else {
 				q = ctx.db.query(table).order(resolvedOrder);

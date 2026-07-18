@@ -34,7 +34,7 @@
 	const location = $derived(search.location.current?.trim());
 
 	// The query args, decoded from the URL. `location` is the display label only; the query
-	// keeps listings whose merged `placeId` contains the picked region's `placeId`.
+	// keeps accommodations whose merged `placeId` contains the picked region's `placeId`.
 	const params = $derived<AccommodationSearchParams>({
 		placeId: search.placeId.current || undefined,
 		location,
@@ -67,7 +67,7 @@
 
 <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,42%)] xl:grid-cols-[minmax(0,1fr)_38rem]">
 	<SearchLeftContent
-		searchListings={filtered}
+		searchAccommodations={filtered}
 		{search}
 		{mobileView}
 		{selectedId}
@@ -75,7 +75,7 @@
 		{mapHandle}
 	/>
 
-	<SearchRightContent searchListings={filtered} {mobileView} bind:selectedId bind:mapHandle />
+	<SearchRightContent searchAccommodations={filtered} {mobileView} bind:selectedId bind:mapHandle />
 </div>
 
 <!-- MOBILE: single toggle between list and map. -->

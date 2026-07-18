@@ -45,7 +45,12 @@
 </script>
 
 {#if menuItem}
-	<DropdownMenu.Item {variant} disabled={disabled || loggingOut} onclick={logout} class={cn(className)}>
+	<DropdownMenu.Item
+		{variant}
+		disabled={disabled || loggingOut}
+		onclick={logout}
+		class={cn(className)}
+	>
 		{#if loggingOut}
 			<Spinner />
 		{:else}

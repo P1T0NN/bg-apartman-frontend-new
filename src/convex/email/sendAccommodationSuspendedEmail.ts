@@ -10,6 +10,8 @@ type SendAccommodationSuspendedEmailInput = {
 	hostName: string;
 	hostEmail: string;
 	apartmentTitle: string;
+	/** Moderation reason shown to the host. */
+	reason?: string;
 };
 
 /** When an accommodation is suspended: tell the host it's no longer visible. */
@@ -21,6 +23,7 @@ export async function sendAccommodationSuspendedEmail(
 		locale: input.locale,
 		hostName: input.hostName,
 		apartmentTitle: input.apartmentTitle,
+		reason: input.reason,
 		manageUrl: editAccommodationUrl(input.apartmentId)
 	});
 

@@ -40,8 +40,7 @@
 		bookingsDummyData
 			.filter(
 				(booking) =>
-					booking.apartmentId === String(apartmentId) &&
-					ACTIVE_BOOKING_STATUSES.has(booking.status)
+					booking.apartmentId === String(apartmentId) && ACTIVE_BOOKING_STATUSES.has(booking.status)
 			)
 			.map((booking) => ({
 				start: booking.checkInDate,

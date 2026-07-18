@@ -77,8 +77,5 @@
 		<Separator />
 	{/if}
 
-	<AccommodationSummaryDescription
-		bind:expanded
-		description={accommodation.description}
-	/>
+	<AccommodationSummaryDescription bind:expanded description={accommodation.description} />
 </section>

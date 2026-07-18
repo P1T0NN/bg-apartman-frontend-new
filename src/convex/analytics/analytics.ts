@@ -1,9 +1,16 @@
 // LIBRARIES
 import { ConvexError } from 'convex/values';
-import { defineAnalytics, event, property } from '@piton-/analytics-convex';
+import {
+	createAnalyticsResourceScope,
+	createAnalyticsResourceScopeInput,
+	defineAnalytics,
+	event,
+	property
+} from '@piton-/analytics-convex';
 
 // CONFIG
 import { components } from '@/convex/_generated/api';
+import { internalMutation } from '@/convex/_generated/server';
 import { authComponent } from '@/convex/auth/auth';
 import { requireAdmin } from '@/convex/auth/middleware/authMiddleware';
 
@@ -19,6 +26,9 @@ import type { ConvexErrorPayload } from '@/shared/types/types';
  * below — keep the two lists in sync.
  */
 export const ANALYTICS_EVENT = {
+	BOOKING_CREATED: 'booking.created',
+	BOOKING_CONFIRMED: 'booking.confirmed',
+	BOOKING_CANCELLED: 'booking.cancelled',
 	INVOICE_PAID: 'invoice.paid',
 	INVOICE_FAILED: 'invoice.failed',
 	REFUND_CREATED: 'refund.created',
@@ -31,6 +41,18 @@ export const ANALYTICS_EVENT = {
 } as const;
 
 /**
+ * Per-host analytics partition. Booking lifecycle events are tracked with this resource
+ * scope so the host dashboard reads its revenue/bookings series straight from the
+ * pre-aggregated rollups instead of scanning the bookings table. The `'host'` resource
+ * type literal lives ONLY here so the tracking scope and the query scope can never drift.
+ */
+export const hostAnalyticsScope = (hostId: string) => createAnalyticsResourceScope('host', hostId);
+
+/** Query-side twin of {@link hostAnalyticsScope} — same resource type, same ID derivation. */
+export const hostAnalyticsScopeInput = (hostId: string) =>
+	createAnalyticsResourceScopeInput('host', hostId);
+
+/**
  * Metrics that require the Better Auth `admin` role to read. Everything else
  * only requires a signed-in user. Enforced in the `authorize` callback below
  * because the library runs `authorize` for the `analytics.client.*` wrappers
@@ -40,7 +62,9 @@ const ADMIN_ONLY_METRICS = new Set<string>([
 	'revenue',
 	'refunds',
 	'failedPayments',
-	'featureUsage'
+	'featureUsage',
+	'gmv',
+	'gmvCancelled'
 ]);
 
 function _throwNotAuthenticated(): never {
@@ -61,6 +85,31 @@ function _throwNotAuthenticated(): never {
  */
 export const analytics = defineAnalytics(components.analytics, {
 	events: {
+		bookingCreated: event('booking.created', {
+			label: 'Booking created',
+			properties: {
+				paymentMethod: property.string(),
+				instant: property.boolean()
+			}
+		}),
+		// Tracked whenever a booking becomes confirmed: instant bookings at creation,
+		// pending requests when the host confirms. `totalEuros` feeds the GMV metric.
+		bookingConfirmed: event('booking.confirmed', {
+			label: 'Booking confirmed',
+			properties: {
+				totalEuros: property.number({ required: true }),
+				paymentMethod: property.string()
+			}
+		}),
+		// Tracked ONLY when a booking leaves an earning status (confirmed/checked_in) —
+		// withdrawn/declined pending requests never carried GMV, so they don't emit this.
+		bookingCancelled: event('booking.cancelled', {
+			label: 'Booking cancelled (after confirmation)',
+			properties: {
+				totalEuros: property.number({ required: true }),
+				cancelledBy: property.string()
+			}
+		}),
 		invoicePaid: event('invoice.paid', {
 			label: 'Invoice paid',
 			properties: {
@@ -136,6 +185,23 @@ export const analytics = defineAnalytics(components.analytics, {
 		})
 	},
 	metrics: ({ count, sum }) => ({
+		bookings: count('Bookings').from('booking.created').by('paymentMethod'),
+		// Count twins of the GMV sums — power the host dashboard's bookings series
+		// (net = confirmed − cancelled per bucket) and the booking-conversion funnel.
+		bookingsConfirmed: count('Bookings confirmed').from('booking.confirmed').by('paymentMethod'),
+		bookingsCancelled: count('Bookings cancelled').from('booking.cancelled').by('cancelledBy'),
+		gmv: sum('GMV', 'currency')
+			.description('Confirmed booking totals (whole euros)')
+			.from('booking.confirmed')
+			.value('totalEuros')
+			.by('paymentMethod')
+			.adminOnly(),
+		gmvCancelled: sum('Cancelled GMV', 'currency')
+			.description('Totals of bookings cancelled after confirmation — subtract from GMV')
+			.from('booking.cancelled')
+			.value('totalEuros')
+			.by('cancelledBy')
+			.adminOnly(),
 		revenue: sum('Revenue', 'currency')
 			.description('Gross paid invoice amount')
 			.from('invoice.paid')
@@ -163,10 +229,7 @@ export const analytics = defineAnalytics(components.analytics, {
 			.from('storage.usage_recorded', 'file.uploaded')
 			.value('bytes')
 			.by('provider', 'mimeType'),
-		featureUsage: count('Feature usage')
-			.from('feature.used')
-			.by('feature', 'surface')
-			.adminOnly()
+		featureUsage: count('Feature usage').from('feature.used').by('feature', 'surface').adminOnly()
 	}),
 	settings: {
 		trafficMode: 'mediumVolume',
@@ -192,8 +255,7 @@ export const analytics = defineAnalytics(components.analytics, {
 		const authCtx = ctx as unknown as QueryCtx;
 
 		if (operation.type === 'read') {
-			const requested =
-				operation.metrics ?? (operation.metric ? [operation.metric] : []);
+			const requested = operation.metrics ?? (operation.metric ? [operation.metric] : []);
 
 			if (requested.some((metric) => ADMIN_ONLY_METRICS.has(metric))) {
 				await requireAdmin(authCtx);
@@ -221,3 +283,14 @@ export const {
 	purgeStaleAnalyticsEvents,
 	purgeStaleAnalyticsRollups
 } = analytics.crons;
+
+/**
+ * Eagerly registers the current events/metrics config with the analytics
+ * component. Run via `bun run analytics:configure` (part of `predev`) so
+ * dashboards can read newly added metrics before the first tracked event
+ * registers the config hash lazily.
+ */
+export const writeConfiguration = internalMutation({
+	args: {},
+	handler: async (ctx) => await analytics.writeConfiguration(ctx)
+});

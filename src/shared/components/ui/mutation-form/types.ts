@@ -3,13 +3,13 @@ import type { FullAutoFill, HTMLInputTypeAttribute } from 'svelte/elements';
 
 export type MutationFormFieldKind =
 	| 'input'
-	| 'time'
-	| 'counter'
 	| 'textarea'
 	| 'select'
 	| 'checkbox'
 	| 'radio'
 	| 'toggle'
+	| 'counter'
+	| 'time'
 	| 'upload-single'
 	| 'upload-multiple';
 
@@ -33,8 +33,6 @@ export type MutationFormFieldDef = {
 	disabled?: boolean;
 	required?: boolean;
 	fieldClass?: string;
-	/** Leading icon (e.g. a Lucide component). Used by `kind: 'toggle'`. */
-	icon?: Component;
 
 	/** kind: 'input' */
 	type?: HTMLInputTypeAttribute;
@@ -50,32 +48,42 @@ export type MutationFormFieldDef = {
 	/** kind: 'radio' */
 	radioOrientation?: 'vertical' | 'horizontal';
 
+	/** kind: 'toggle' — icon shown in the tile. */
+	icon?: Component<{ class?: string }>;
+
 	/** kind: 'upload-single' | 'upload-multiple' */
 	accept?: string;
 
+	/**
+	 * kind: 'upload-multiple'. Shows a star control on each preview; the starred
+	 * image is moved to index 0 of the files array, so after upload the first
+	 * storage id in the submitted array is the cover image.
+	 */
+	hasCoverImage?: boolean;
+
 	/** Grid columns the field occupies inside a section. Defaults to 2 (full width). */
 	colSpan?: 1 | 2;
+};
+
+/** Header shown above a wizard step (title, description, optional icon). */
+export type MutationFormStepMeta = {
+	title?: string;
+	description?: string;
+	icon?: Component<{ class?: string }>;
 };
 
 export type MutationFormSection = {
 	id?: string;
 	title?: string;
 	description?: string;
-	/** Optional leading icon (e.g. a Lucide component). Shown by the wizard layout. */
-	icon?: Component;
+	/** Wizard mode: icon for the step header. */
+	icon?: Component<{ class?: string }>;
 	fields: MutationFormFieldDef[];
 	/** Section grid column count. Defaults to 2. */
 	columns?: 1 | 2;
 	/** Render the section without a Card wrapper. */
 	plain?: boolean;
 	class?: string;
-};
-
-/** Header metadata for the wizard's trailing `extraFields` step. */
-export type MutationFormStepMeta = {
-	title?: string;
-	description?: string;
-	icon?: Component;
 };
 
 export type MutationFormFieldSnippetProps<T extends Record<string, unknown>> = {

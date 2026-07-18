@@ -30,7 +30,7 @@
 	onclick={() => setValue(!on)}
 	class={cn(
 		'flex h-full w-full items-start gap-3 rounded-xl border p-3.5 text-left transition-colors',
-		'focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+		'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',
 		'disabled:cursor-not-allowed disabled:opacity-50',
 		on ? 'border-primary bg-primary/5' : 'border-border hover:border-input hover:bg-muted/40'
 	)}
@@ -47,9 +47,9 @@
 	{/if}
 
 	<span class="min-w-0 flex-1">
-		<span class="text-foreground block text-sm font-medium">{field.label}</span>
+		<span class="block text-sm font-medium text-foreground">{field.label}</span>
 		{#if field.description}
-			<span class="text-muted-foreground mt-0.5 block text-xs leading-snug">
+			<span class="mt-0.5 block text-xs leading-snug text-muted-foreground">
 				{field.description}
 			</span>
 		{/if}
@@ -65,7 +65,7 @@
 	>
 		<span
 			class={cn(
-				'bg-background absolute size-4 rounded-full shadow-sm transition-transform duration-200',
+				'absolute size-4 rounded-full bg-background shadow-sm transition-transform duration-200',
 				on ? 'translate-x-[18px]' : 'translate-x-0.5'
 			)}
 		></span>

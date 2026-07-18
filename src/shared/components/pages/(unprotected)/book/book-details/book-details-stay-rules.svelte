@@ -30,7 +30,9 @@
 		<ul class="mt-1 space-y-1.5">
 			<li class="flex items-center gap-2">
 				<CalendarRangeIcon class="size-3.5 shrink-0 opacity-70" aria-hidden="true" />
-				{m['BookAccommodationPage.BookDetailsStayRules.minimumStay']({ nights: formatNights(minNights) })}
+				{m['BookAccommodationPage.BookDetailsStayRules.minimumStay']({
+					nights: formatNights(minNights)
+				})}
 			</li>
 			<li class="flex items-center gap-2">
 				<ClockIcon class="size-3.5 shrink-0 opacity-70" aria-hidden="true" />

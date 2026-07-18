@@ -7,8 +7,18 @@ export type typesBookingStatus = Doc<'bookings'>['status'];
 /** Derived from `bookings.paymentStatus` in convex/schema.ts — do not duplicate manually. */
 export type typesPaymentStatus = Doc<'bookings'>['paymentStatus'];
 export type typesBookingFilter = 'all' | typesBookingStatus;
-export type typesBookingAction = 'confirm' | 'decline' | 'check_in' | 'check_out' | 'cancel';
+// check_in / check_out are cron-driven (see the booking-lifecycle cron), not host actions.
+export type typesBookingAction = 'confirm' | 'decline' | 'cancel';
 export type typesGuestBookingAction = 'withdraw' | 'cancel';
+
+export type typesPendingExpiryTone = 'red' | 'amber' | 'neutral';
+
+export type typesPendingExpiryChip = {
+	isExpired: boolean;
+	tone: typesPendingExpiryTone;
+	/** Compact remaining label, e.g. "2h" or "45m". Omitted when expired. */
+	timeRemaining?: string;
+};
 
 /** Partial booking row update produced by a host/guest/system transition. */
 export type typesBookingTransitionPatch = {
@@ -23,7 +33,7 @@ export type typesBookingTransitionPatch = {
 export type typesBookingFilterOption = { value: typesBookingFilter; label: string };
 export type typesStatusTone = {
 	label: string;
-	/** Pill classes (ring style, matches the listings table badges). */
+	/** Pill classes (ring style, matches the accommodations table badges). */
 	badgeClass: string;
 	/** Solid dot used in stat cards / legends. */
 	dotClass: string;
@@ -32,9 +42,9 @@ export type typesBookingStatusConfig = Record<typesBookingStatus, typesStatusTon
 export type typesPaymentStatusConfig = Record<typesPaymentStatus, typesStatusTone>;
 
 /**
- * Denormalized listing summary joined onto a booking for list/detail UI. `title`/`city`
+ * Denormalized accommodation summary joined onto a booking for list/detail UI. `title`/`city`
  * are projected straight from the `apartments` row so they follow the schema; the rest can't
- * be a plain Pick — `_id`/`type` carry a fallback when the listing row is gone, and `imageUrl`
+ * be a plain Pick — `_id`/`type` carry a fallback when the accommodation row is gone, and `imageUrl`
  * is derived (apartments has no such column). See `resolveApartmentSummary`.
  */
 export type typesBookingApartmentSummary = Pick<Doc<'apartments'>, 'title' | 'city'> & {
@@ -54,7 +64,7 @@ export type typesBookingSafe = Omit<Doc<'bookings'>, 'apartmentSlug' | 'archived
 	apartment: typesBookingApartmentSummary;
 };
 
-/** `/reservations/[id]` — booking row plus listing/host labels for the confirmation UI. */
+/** `/reservations/[id]` — booking row plus accommodation/host labels for the confirmation UI. */
 export type typesReservationBooking = Pick<
 	Doc<'bookings'>,
 	| 'bookingCode'

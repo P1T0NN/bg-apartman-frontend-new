@@ -52,15 +52,11 @@
 	<dl class="flex flex-col gap-3">
 		{#each columns as col (col.id)}
 			{@const value = col.accessor(row)}
-			<div
-				class="grid grid-cols-1 gap-1 sm:grid-cols-[minmax(0,7rem)_minmax(0,1fr)] sm:gap-3"
-			>
-				<dt
-					class="text-muted-foreground text-xs font-semibold tracking-wide uppercase sm:text-sm"
-				>
+			<div class="grid grid-cols-1 gap-1 sm:grid-cols-[minmax(0,7rem)_minmax(0,1fr)] sm:gap-3">
+				<dt class="text-xs font-semibold tracking-wide text-muted-foreground uppercase sm:text-sm">
 					{col.header}
 				</dt>
-				<dd class="text-foreground min-w-0 text-sm font-medium">
+				<dd class="min-w-0 text-sm font-medium text-foreground">
 					<div class={cn('min-w-0', col.hasCopy && 'flex items-start gap-1.5')}>
 						<div class="min-w-0 flex-1">
 							{#if customCells?.[col.id]}
@@ -68,7 +64,7 @@
 							{:else if col.linkHref}
 								<Link
 									href={col.linkHref(row)}
-									class="text-primary font-medium underline-offset-2 hover:underline wrap-break-word"
+									class="font-medium wrap-break-word text-primary underline-offset-2 hover:underline"
 									title={formatCellValue(value)}
 								>
 									{formatCellValue(value)}

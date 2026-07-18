@@ -38,37 +38,38 @@
 		"cta": "Pogledajte rezervaciju"
 	},
 	"createAccommodation": {
-		"subjectLive": "Vaš oglas je objavljen · {title}",
-		"subjectPending": "Vaš oglas je poslat · {title}",
-		"headingLive": "Vaš oglas je objavljen",
-		"headingReview": "Oglas poslat na pregled",
+		"subjectLive": "Vaš smeštaj je objavljen · {title}",
+		"subjectPending": "Vaš smeštaj je poslat · {title}",
+		"headingLive": "Vaš smeštaj je objavljen",
+		"headingReview": "Smeštaj poslat na pregled",
 		"introLive": "Zdravo {name}, {title} je sada objavljen i gosti mogu da ga rezervišu. Možete ga izmeniti u bilo kom trenutku.",
-		"introReview": "Zdravo {name}, hvala što ste oglasili {title}. Pregledamo ga i obavestićemo vas čim bude objavljen.",
-		"rowListing": "Oglas",
+		"introReview": "Zdravo {name}, hvala što ste smeštajili {title}. Pregledamo ga i obavestićemo vas čim bude objavljen.",
+		"rowAccommodation": "Smeštaj",
 		"rowLocation": "Lokacija",
 		"rowStatus": "Status",
 		"statusPublished": "Objavljeno",
 		"statusInReview": "Na pregledu",
-		"cta": "Upravljajte oglasom"
+		"cta": "Upravljajte smeštajom"
 	},
 	"accommodationPublished": {
-		"subject": "Vaš oglas je sada objavljen · {title}",
-		"heading": "Vaš oglas je odobren",
+		"subject": "Vaš smeštaj je sada objavljen · {title}",
+		"heading": "Vaš smeštaj je odobren",
 		"intro": "Zdravo {name}, {title} je pregledan i sada je objavljen. Gosti mogu odmah da ga rezervišu.",
-		"rowListing": "Oglas",
+		"rowAccommodation": "Smeštaj",
 		"rowLocation": "Lokacija",
 		"rowStatus": "Status",
 		"statusPublished": "Objavljeno",
-		"cta": "Pogledajte oglas"
+		"cta": "Pogledajte smeštaj"
 	},
 	"accommodationSuspended": {
-		"subject": "Vaš oglas je suspendovan · {title}",
-		"heading": "Vaš oglas je suspendovan",
+		"subject": "Vaš smeštaj je suspendovan · {title}",
+		"heading": "Vaš smeštaj je suspendovan",
 		"intro": "Zdravo {name}, {title} je suspendovan i više nije vidljiv gostima. Ako mislite da je ovo greška, odgovorite na ovaj imejl i pomoći ćemo vam.",
-		"rowListing": "Oglas",
+		"rowAccommodation": "Smeštaj",
 		"rowStatus": "Status",
 		"statusSuspended": "Suspendovan",
-		"cta": "Upravljajte oglasom"
+		"cta": "Upravljajte smeštajom",
+		"rowReason": "Razlog"
 	},
 	"bookingConfirmed": {
 		"subject": "Vaša rezervacija je potvrđena · {code}",
@@ -88,6 +89,26 @@
 		"subject": "Vaša rezervacija je otkazana · {code}",
 		"heading": "Rezervacija otkazana",
 		"intro": "Zdravo {name}, vaša rezervacija za {title} ({code}) je otkazana. Ako ovo niste očekivali, odgovorite na ovaj imejl i pomoći ćemo vam.",
+		"rowStay": "Smeštaj",
+		"rowCheckIn": "Prijava",
+		"rowCheckOut": "Odjava",
+		"cta": "Pogledajte druge smeštaje",
+		"rowReason": "Razlog"
+	},
+	"bookingDeclined": {
+		"subject": "Vaš zahtev za rezervaciju je odbijen — {code}",
+		"heading": "Zahtev za rezervaciju odbijen",
+		"intro": "Zdravo {name}, nažalost vaš zahtev za {title} ({code}) je odbijen od strane domaćina. Razlog koji je naveo je ispod — nadamo se da ćete pronaći odličan smeštaj na drugom mestu.",
+		"rowStay": "Smeštaj",
+		"rowCheckIn": "Prijava",
+		"rowCheckOut": "Odjava",
+		"rowReason": "Razlog",
+		"cta": "Pogledajte druge smeštaje"
+	},
+	"bookingAutoDeclined": {
+		"subject": "Vaš zahtev za rezervaciju je istekao — {code}",
+		"heading": "Zahtev za rezervaciju je istekao",
+		"intro": "Zdravo {name}, vaš zahtev za {title} ({code}) je istekao jer nije potvrđen na vreme. Ništa nije naplaćeno — nadamo se da ćete pronaći odličan smeštaj na drugom mestu.",
 		"rowStay": "Smeštaj",
 		"rowCheckIn": "Prijava",
 		"rowCheckOut": "Odjava",

@@ -6,4 +6,9 @@
  * read via the `analytics.fetch*` server helpers. The registered read queries
  * the browser calls live in `./queries/analyticsQueries.ts`.
  */
-export { analytics, ANALYTICS_EVENT } from './analytics';
+export {
+	analytics,
+	ANALYTICS_EVENT,
+	hostAnalyticsScope,
+	hostAnalyticsScopeInput
+} from './analytics';

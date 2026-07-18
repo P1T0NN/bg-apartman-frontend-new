@@ -115,6 +115,7 @@ export const convexRateLimitRegistry = {
 
 	// Accommodations
 	createApartment: limitPresets.interactiveWrite,
+	createApartmentAdmin: limitPresets.interactiveWrite,
 	updateApartment: limitPresets.interactiveWrite,
 	setApartmentStatus: limitPresets.interactiveWrite,
 	moderateApartmentStatus: limitPresets.interactiveWrite,
@@ -132,8 +133,12 @@ export const convexRateLimitRegistry = {
 	deleteUploadedFileR2: limitPresets.bulkDelete,
 
 	// Bookings
-	performBookingAction: limitPresets.interactiveWrite,
-	performGuestBookingAction: limitPresets.interactiveWrite,
+	confirmBooking: limitPresets.interactiveWrite,
+	declineBooking: limitPresets.interactiveWrite,
+	cancelBookingOwner: limitPresets.interactiveWrite,
+	cancelBookingAdmin: limitPresets.interactiveWrite,
+	cancelBookingGuest: limitPresets.interactiveWrite,
+	withdrawBookingGuest: limitPresets.interactiveWrite,
 
 	// Search / expensive reads
 	fetchTestRows: limitPresets.searchQuery,

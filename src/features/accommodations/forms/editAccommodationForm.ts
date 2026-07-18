@@ -16,7 +16,7 @@ export const editAccommodationForm: MutationFormSection[] = addAccommodationForm
 			? {
 					...section,
 					description:
-						'Remove any photo you no longer want, and upload more to round out the listing.',
+						'Remove any photo you no longer want, and upload more to round out the accommodation.',
 					fields: [
 						{ id: 'keepImageKeys', label: 'Current photos', kind: 'input', colSpan: 2 },
 						{

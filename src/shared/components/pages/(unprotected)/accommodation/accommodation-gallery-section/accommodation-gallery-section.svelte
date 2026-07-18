@@ -28,22 +28,10 @@
 	}}
 />
 
-<AccommodationGalleryMobile 
-    images={images}
-    title={title}
-    bind:lightboxOpen
-/>
+<AccommodationGalleryMobile {images} {title} bind:lightboxOpen />
 
-<AccommodationGalleryDesktop 
-    images={images}
-    title={title}
-    bind:lightboxOpen
-/>
+<AccommodationGalleryDesktop {images} {title} bind:lightboxOpen />
 
 {#if lightboxOpen}
-	<AccommodationGalleryLightbox
-        images={images}
-        title={title}
-        bind:lightboxOpen
-    />
+	<AccommodationGalleryLightbox {images} {title} bind:lightboxOpen />
 {/if}

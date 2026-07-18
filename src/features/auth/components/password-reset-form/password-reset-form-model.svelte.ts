@@ -11,7 +11,7 @@ import {
 	passwordResetRequestFormSchema,
 	passwordResetVerifyFormSchema
 } from './password-reset-form-schema.js';
-import { zodIssuesToFieldErrors } from '@/shared/utils/validationUtils.js';
+import { zodIssuesToFieldErrors } from '@/shared/utils/zodFieldErrors';
 import { rateLimitMessage } from '@/utils/rateLimitMessages';
 import { appGoto } from '@/utils/app-navigation';
 
@@ -88,7 +88,7 @@ export function createPasswordResetForm() {
 
 		if (submittedNewPassword !== confirmPassword) {
 			fieldErrors = {
-				confirmPassword: m['ValidationMessages.PasswordResetVerifyForm.passwordsMustMatch']()
+				confirmPassword: m['ValidationMessages.passwordResetVerifyFormSchema.passwordsMustMatch']()
 			};
 			errorMessage = null;
 			return;

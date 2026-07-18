@@ -1,11 +1,8 @@
-import { paraglideVitePlugin } from '@inlang/paraglide-js'
+import { paraglideVitePlugin } from '@inlang/paraglide-js';
 import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
-import {
-	BOTID_CHALLENGE_PATH,
-	BOTID_PROXY_PREFIX
-} from './src/shared/config/botidProxy.ts';
+import { BOTID_CHALLENGE_PATH, BOTID_PROXY_PREFIX } from './src/shared/config/botidProxy.ts';
 
 export default defineConfig({
 	// BotID client loads same-origin challenge/proxy scripts. Vite dev has no
@@ -26,6 +23,9 @@ export default defineConfig({
 			}
 		}
 	},
+	preview: {
+		port: 5173
+	},
 	// layerchart → @dagrejs/dagre ships ESM-only; if left external, Node SSR loads
 	// dagre.esm.js as CJS and throws "Unexpected token 'export'".
 	// @googlemaps/markerclusterer is the mirror case: it's CJS, so Node SSR can't
@@ -34,23 +34,13 @@ export default defineConfig({
 	ssr: {
 		noExternal: ['layerchart', '@dagrejs/dagre', '@googlemaps/markerclusterer']
 	},
-    plugins: [
-        paraglideVitePlugin({
+	plugins: [
+		paraglideVitePlugin({
 			project: './project.inlang',
 			outdir: './src/shared/lib/paraglide',
 			strategy: ['url', 'cookie', 'baseLocale'],
-			routeStrategies: [
-				{ match: '/admin/:path(.*)?', strategy: ['cookie', 'baseLocale'] },
-				{ match: '/api/:path(.*)?', exclude: true }
-			],
+			routeStrategies: [{ match: '/api/:path(.*)?', exclude: true }],
 			urlPatterns: [
-				{
-					pattern: ':protocol://:domain(.*)::port?/admin/:path(.*)?',
-					localized: [
-						['sr', ':protocol://:domain(.*)::port?/admin/:path(.*)?'],
-						['en', ':protocol://:domain(.*)::port?/admin/:path(.*)?']
-					]
-				},
 				{
 					pattern: ':protocol://:domain(.*)::port?/:path(.*)?',
 					localized: [
@@ -60,7 +50,7 @@ export default defineConfig({
 				}
 			]
 		}),
-        tailwindcss(), 
-        sveltekit()
-    ] 
+		tailwindcss(),
+		sveltekit()
+	]
 });

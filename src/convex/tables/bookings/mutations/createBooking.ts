@@ -4,6 +4,7 @@ import { mutation } from '@/convex/_generated/server';
 
 // UTILS
 import { authComponent } from '@/convex/auth/auth';
+import { analytics, ANALYTICS_EVENT, hostAnalyticsScope } from '@/convex/analytics';
 import { sendCreateBookingEmail } from '@/convex/email/sendCreateBookingEmail';
 import { calculatePrice } from '@/shared/features/pricing/utils/calculatePrice';
 import { makeBookingCode } from '@/shared/features/booking/utils/makeBookingCode';
@@ -13,6 +14,7 @@ import { nightsBetween } from '@/shared/utils/dateUtils';
 import { paymentMethod } from '@/convex/tables/accommodations/schemas/accommodationsSchemas';
 import { pendingExpiresAtFrom } from '@/shared/features/booking/utils/pendingExpiresAtFrom';
 import { mutationResultData } from '@/convex/schemas/schemas';
+import { hasOverlappingBooking } from '@/convex/tables/bookings/helpers/hasOverlappingBooking';
 
 const bookingData = v.object({
 	bookingId: v.id('bookings'),
@@ -25,7 +27,7 @@ const bookingData = v.object({
  * Public (no auth): guests book without an account. The returned `bookingId` is the
  * unguessable access key for `/reservations/[id]`; `bookingCode` is the short code shown
  * to the guest and used for support lookups. Status is `confirmed` for instant-book
- * listings, otherwise `pending` (host review). Payment is `pending` — cash is settled
+ * accommodations, otherwise `pending` (host review). Payment is `pending` — cash is settled
  * on arrival.
  */
 export const createBooking = mutation({
@@ -70,7 +72,26 @@ export const createBooking = mutation({
 			};
 		}
 
-		// Price is derived from the listing server-side — never trusted from the client. The
+		// The guest's payment method must be one the apartment accepts ('both' → either).
+		const acceptedPayment = apartment.paymentMethod ?? 'cash';
+		if (acceptedPayment !== 'both' && args.paymentMethod !== acceptedPayment) {
+			return {
+				success: false,
+				message: { key: 'GenericMessages.PAYMENT_METHOD_NOT_ACCEPTED' }
+			};
+		}
+
+		// Double-booking guard: reject if any active booking overlaps the requested nights.
+		// Runs inside the mutation, so Convex's transactional serialization makes two
+		// simultaneous submissions for the same dates impossible to both succeed.
+		if (await hasOverlappingBooking(ctx, apartment._id, args.checkInDate, args.checkOutDate)) {
+			return {
+				success: false,
+				message: { key: 'GenericMessages.DATES_UNAVAILABLE' }
+			};
+		}
+
+		// Price is derived from the accommodation server-side — never trusted from the client. The
 		// apartment doc carries the `pricePerNight` / `discountAmount` / `cleaningFee` shape
 		// `calculatePrice` expects.
 		const quote = calculatePrice(apartment, numberOfNights);
@@ -114,6 +135,16 @@ export const createBooking = mutation({
 
 			updatedAt: now
 		});
+
+		await analytics.track(ctx, ANALYTICS_EVENT.BOOKING_CREATED, {
+			properties: { paymentMethod: args.paymentMethod, instant: isInstant }
+		});
+		if (isInstant) {
+			await analytics.track(ctx, ANALYTICS_EVENT.BOOKING_CONFIRMED, {
+				scopes: [hostAnalyticsScope(args.hostId)],
+				properties: { totalEuros: quote.total, paymentMethod: args.paymentMethod }
+			});
+		}
 
 		const hostEmail = hostUser?.email?.trim();
 

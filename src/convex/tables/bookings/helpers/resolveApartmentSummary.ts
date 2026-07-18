@@ -20,6 +20,6 @@ export async function resolveApartmentSummary(
 		title: apartment?.title ?? 'Stay',
 		city: apartment?.city ?? '',
 		type: apartment?.type ?? '',
-		imageUrl: apartment?.images?.[apartment.coverImageIndex ?? 0]?.url ?? ''
+		imageUrl: apartment?.images?.[0]?.url ?? ''
 	};
 }

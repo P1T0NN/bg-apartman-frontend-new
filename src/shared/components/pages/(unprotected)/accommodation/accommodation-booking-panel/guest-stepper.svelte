@@ -34,7 +34,7 @@
 	/>
 
 	<Separator />
-	
+
 	<NumberStepper
 		label={m['BookAccommodationPage.GuestStepper.children']()}
 		hint={m['BookAccommodationPage.GuestStepper.ages212']()}

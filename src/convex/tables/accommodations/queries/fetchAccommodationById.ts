@@ -15,7 +15,7 @@ import type { Doc } from '@/convex/_generated/dataModel';
  *
  * Returns the apartment only when it exists AND belongs to the signed-in host;
  * otherwise `null` (the edit page renders a "not found" state). Returning `null`
- * rather than throwing for a missing/foreign id keeps other hosts' listings from
+ * rather than throwing for a missing/foreign id keeps other hosts' accommodations from
  * being probed through this endpoint.
  */
 export const fetchAccommodationById = query({

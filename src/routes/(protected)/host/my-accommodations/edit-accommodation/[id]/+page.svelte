@@ -36,7 +36,11 @@
 	});
 </script>
 
-<SvelteHead title="Edit accommodation" description="Edit your accommodation listing." noIndex />
+<SvelteHead
+	title="Edit accommodation"
+	description="Edit your accommodation accommodation."
+	noIndex
+/>
 
 <section class="flex w-full flex-col gap-6 p-4 md:p-6">
 	{#if accommodationQuery.error}

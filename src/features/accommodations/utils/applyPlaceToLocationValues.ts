@@ -15,7 +15,7 @@ type AccommodationLocationValues = Pick<
 /**
  * Apply a picked **Country/City** region to the form.
  *
- * Fills `city`/`country` and resolves the listing's merged city+country `placeId` (the required
+ * Fills `city`/`country` and resolves the accommodation's merged city+country `placeId` (the required
  * gate, set through `setPlaceId` so its validation error clears — the place's own id first so the
  * gate passes immediately, then the resolved region id once the lookups return). The region's
  * viewport is handed back via `onViewport` to scope the follow-up street search. Any street picked

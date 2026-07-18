@@ -62,7 +62,7 @@ export const AMENITIES = [
 	{ id: 'childrens_playground', label: m['Amenities.childrensPlayground']() }
 ] as const;
 
-/** Lucide icon per amenity id — used on listing pages and forms. */
+/** Lucide icon per amenity id — used on accommodation pages and forms. */
 export const AMENITY_ICONS: Record<string, Component> = {
 	wifi: WifiIcon,
 	air_conditioning: SnowflakeIcon,

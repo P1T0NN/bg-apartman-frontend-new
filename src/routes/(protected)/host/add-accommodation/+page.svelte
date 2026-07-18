@@ -3,6 +3,9 @@
 	import { api } from '@/convex/_generated/api';
 	import { m } from '@/shared/lib/paraglide/messages';
 
+	// CONFIG
+	import { PROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
+
 	// COMPONENTS
 	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
 	import ConvexMutationForm from '@/shared/components/ui/mutation-form/convex-mutation-form.svelte';
@@ -19,6 +22,7 @@
 	import { addAccommodationForm } from '@/features/accommodations/forms/addAccommodationForm';
 
 	// UTILS
+	import { appGoto } from '@/utils/app-navigation';
 	import { getLocale } from '@/shared/lib/paraglide/runtime';
 	import {
 		applyRegionToValues,
@@ -81,6 +85,8 @@
 	// Viewport of the picked country/city — scopes the street search to that region.
 	let regionViewport = $state<RegionBounds | undefined>();
 	const regionSelected = $derived(Boolean(values.city || values.country));
+
+	const goToMyAccommodations = () => appGoto(PROTECTED_PAGE_ENDPOINTS.MY_ACCOMMODATIONS);
 </script>
 
 <SvelteHead
@@ -167,7 +173,8 @@
 		sections={addAccommodationForm}
 		schema={addAccommodationSchema as unknown as ZodType<typesAddAccommodationForm>}
 		runFunction={api.tables.accommodations.mutations.createAccommodation.createApartment}
-		mapArgs={(formValues) => ({ ...formValues, locale: getLocale() })}
+		mapArgs={(_formValues, args) => ({ ...args, locale: getLocale() })}
+		onSuccess={goToMyAccommodations}
 		submitLabel={m['AddAccommodationPage.ConvexMutationForm.submitLabel']()}
 		customFields={{
 			placeId: regionField,

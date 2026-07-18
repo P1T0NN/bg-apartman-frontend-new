@@ -9,7 +9,7 @@ import type { MutationCtx } from '@/convex/_generated/server';
  *
  * Dedupes keys, drops the owning row (so the orphan cron has nothing left to
  * chase) and deletes the R2 object. Used by the update mutation (photos the host
- * removed) and the delete mutation (all of a listing's photos, flat-mapped from
+ * removed) and the delete mutation (all of a accommodation's photos, flat-mapped from
  * the deleted docs).
  */
 export async function deleteApartmentImageKeys(ctx: MutationCtx, keys: string[]): Promise<void> {

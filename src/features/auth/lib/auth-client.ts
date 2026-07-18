@@ -18,6 +18,11 @@ import { rateLimitMessage } from '@/utils/rateLimitMessages';
 
 export const authClient = createAuthClient({
 	plugins: [convexClient(), emailOTPClient()],
+	// No `/get-session` refetch on tab refocus — that refetch churns the session atom,
+	// which re-runs `convexClient.setAuth` and can flash auth state. See FixAuth.md §1.
+	sessionOptions: {
+		refetchOnWindowFocus: false
+	},
 	fetchOptions: {
 		onError: async (context) => {
 			if (context.response.status !== 429) return;
@@ -25,9 +30,7 @@ export const authClient = createAuthClient({
 			const retryAfterHeader = context.response.headers.get('X-Retry-After');
 			const retryAfterSec = retryAfterHeader ? Number(retryAfterHeader) : NaN;
 			const retryAfterMs =
-				Number.isFinite(retryAfterSec) && retryAfterSec > 0
-					? retryAfterSec * 1000
-					: undefined;
+				Number.isFinite(retryAfterSec) && retryAfterSec > 0 ? retryAfterSec * 1000 : undefined;
 
 			toast.error(rateLimitMessage(retryAfterMs));
 		}

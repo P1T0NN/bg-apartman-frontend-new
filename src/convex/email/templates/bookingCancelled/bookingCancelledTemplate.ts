@@ -1,5 +1,5 @@
 // SHARED
-import { emailBody } from '../shared';
+import { emailBody, stayDateFormatter } from '../shared';
 import { emailHeaderTemplate } from '../header/emailHeaderTemplate';
 import { emailFooterTemplate } from '../footer/emailFooterTemplate';
 import { t, pickLocale } from '@/convex/i18n';
@@ -12,6 +12,8 @@ type BookingCancelledData = {
 	/** ISO `YYYY-MM-DD`. */
 	checkInDate: string;
 	checkOutDate: string;
+	/** Cancellation reason; omitted on legacy call sites. */
+	cancelReason?: string;
 	browseUrl: string;
 	/** Guest's locale; unknown values fall back to `en`. */
 	locale: string;
@@ -24,7 +26,7 @@ export function bookingCancelledTemplate(data: BookingCancelledData): {
 	const locale = pickLocale(data.locale);
 	const ns = 'bookingCancelled';
 
-	const dateFmt = new Intl.DateTimeFormat(locale, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+	const dateFmt = stayDateFormatter(locale);
 
 	const subject = t(locale, `${ns}.subject`, { code: data.bookingCode });
 
@@ -40,7 +42,13 @@ export function bookingCancelledTemplate(data: BookingCancelledData): {
 			rows: [
 				{ label: t(locale, `${ns}.rowStay`), value: data.apartmentTitle },
 				{ label: t(locale, `${ns}.rowCheckIn`), value: dateFmt.format(new Date(data.checkInDate)) },
-				{ label: t(locale, `${ns}.rowCheckOut`), value: dateFmt.format(new Date(data.checkOutDate)) }
+				{
+					label: t(locale, `${ns}.rowCheckOut`),
+					value: dateFmt.format(new Date(data.checkOutDate))
+				},
+				...(data.cancelReason
+					? [{ label: t(locale, `${ns}.rowReason`), value: data.cancelReason }]
+					: [])
 			],
 			cta: { label: t(locale, `${ns}.cta`), url: data.browseUrl }
 		}) +

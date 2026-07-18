@@ -46,7 +46,7 @@
 		}
 	}
 
-	// The trip selection arrives from the listing's Reserve button as query params; it seeds
+	// The trip selection arrives from the accommodation's Reserve button as query params; it seeds
 	// local state once, then the guest edits dates/guests in place under "Your trip".
 	// ponytail: local state only — edits don't sync to the URL (a refresh resets to the link's values).
 	let dateRange = $state<DateRange>({

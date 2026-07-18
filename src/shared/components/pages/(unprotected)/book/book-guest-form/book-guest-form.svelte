@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	// TYPES
-	import type { PaymentMethod } from '@/features/bookings/data/paymentMethods';
+	import type { Doc } from '@/convex/_generated/dataModel';
 
 	type GuestDetails = Record<string, unknown> & {
 		firstName: string;
@@ -8,7 +8,7 @@
 		email: string;
 		phone: string;
 		specialRequests?: string;
-		paymentMethod: PaymentMethod;
+		paymentMethod: Doc<'bookings'>['paymentMethod'];
 		checkIn: string;
 		checkOut: string;
 	};
@@ -54,7 +54,8 @@
 		datesMissing?: boolean;
 	} = $props();
 
-	// Seeded once from the listing payment settings; the guest may change it locally.
+	// Seeded once from the accommodation payment settings; the guest may change it locally.
+	// `both` means the guest chooses — default to cash, the picker shows both options.
 	// svelte-ignore state_referenced_locally
 	let values = $state<GuestDetails>({
 		firstName: '',
@@ -62,7 +63,7 @@
 		email: '',
 		phone: '',
 		specialRequests: '',
-		paymentMethod: accommodation.paymentMethod,
+		paymentMethod: accommodation.paymentMethod === 'both' ? 'cash' : accommodation.paymentMethod,
 		checkIn: checkIn ?? '',
 		checkOut: checkOut ?? ''
 	});
@@ -77,7 +78,7 @@
 	});
 
 	// Form fields are UI-named (firstName, …) and the guest counts live outside the form, so map
-	// the validated values onto the mutation's `guest*` args and inject the listing context.
+	// the validated values onto the mutation's `guest*` args and inject the accommodation context.
 	const toBookingArgs = (v: GuestDetails) => ({
 		apartmentSlug: accommodation.slug,
 		hostId: accommodation.host.id,
@@ -102,7 +103,7 @@
 </script>
 
 {#snippet paymentFields()}
-	<BookPaymentField bind:paymentMethod={values.paymentMethod} />
+	<BookPaymentField bind:paymentMethod={values.paymentMethod} accepted={accommodation.paymentMethod} />
 {/snippet}
 
 {#snippet confirmActions({ busy }: { busy: boolean })}

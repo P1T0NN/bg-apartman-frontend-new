@@ -1,5 +1,5 @@
 // LIBRARIES
-import { useQuery } from '@mmailaender/convex-svelte';
+import { useQuery } from 'convex-svelte';
 import { api } from '@/convex/_generated/api';
 
 // TYPES

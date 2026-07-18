@@ -2,12 +2,23 @@
 import { m } from '@/shared/lib/paraglide/messages';
 import { getLocale } from '@/shared/lib/paraglide/runtime';
 
+// UTILS
+import { formatMoney } from '@/shared/utils/formatMoney';
+
 export function formatCurrency(amount: number): string {
-	return new Intl.NumberFormat(getLocale(), {
-		style: 'currency',
-		currency: 'EUR',
-		maximumFractionDigits: 0
-	}).format(amount);
+	return formatMoney(amount, getLocale());
+}
+
+/** Signed delta for stat-tile context lines: "+3" / "−3" / "0" (true minus sign). */
+export function formatSignedCount(delta: number): string {
+	const sign = delta > 0 ? '+' : delta < 0 ? '−' : '';
+	return `${sign}${Math.abs(delta)}`;
+}
+
+/** Signed currency delta for stat-tile context lines: "+€120" / "−€45" / "€0". */
+export function formatSignedCurrency(delta: number): string {
+	const sign = delta > 0 ? '+' : delta < 0 ? '−' : '';
+	return `${sign}${formatCurrency(Math.abs(delta))}`;
 }
 
 /** Format a timestamp (epoch number or ISO string) as a locale-formatted date/time. */
@@ -60,9 +71,12 @@ export function formatDateRange(startISO: string, endISO: string): string {
 	const locale = getLocale();
 	const start = new Date(startISO);
 	const end = new Date(endISO);
-	const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+	const sameMonth =
+		start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
 
-	const startFmt = new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric' }).format(start);
+	const startFmt = new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric' }).format(
+		start
+	);
 
 	const endFmt = new Intl.DateTimeFormat(
 		locale,

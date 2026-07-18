@@ -50,16 +50,16 @@ export type PlaceDetails = {
 
 /**
  * Primary types the search box offers — only cities and countries. Kept in lockstep with
- * {@link resolveMergedRegionPlaceId} (which resolves a listing's city as a `locality` and its
- * country as a `country`), so the place id the box yields equals the id stored on the listing.
+ * {@link resolveMergedRegionPlaceId} (which resolves a accommodation's city as a `locality` and its
+ * country as a `country`), so the place id the box yields equals the id stored on the accommodation.
  */
 export const REGION_PRIMARY_TYPES = ['locality', 'country'] as const;
 
 /**
- * Cities-only filter for the listing's location search. `(cities)` is Google's type collection for
+ * Cities-only filter for the accommodation's location search. `(cities)` is Google's type collection for
  * city-level results (localities + smaller admin areas), so countries never appear on their own —
  * the host picks a city and we derive the country from it. Suggestions still show the country as
- * secondary text. The merged listing key is still resolved per {@link resolveMergedRegionPlaceId}.
+ * secondary text. The merged accommodation key is still resolved per {@link resolveMergedRegionPlaceId}.
  */
 export const CITY_PRIMARY_TYPES = ['(cities)'] as const;
 
@@ -125,9 +125,9 @@ export async function resolveRegionPlaceId(
 }
 
 /**
- * The listing's location key: its city + country place ids joined with a space (e.g.
+ * The accommodation's location key: its city + country place ids joined with a space (e.g.
  * `"<cityId> <countryId>"`). Resolved through {@link resolveRegionPlaceId} so both ids match the
- * search box, letting one listing surface for a city search *and* a country search, in either
+ * search box, letting one accommodation surface for a city search *and* a country search, in either
  * language. Falls back to the place's own id when neither region resolves (so the field is never
  * empty and the form can still submit).
  */

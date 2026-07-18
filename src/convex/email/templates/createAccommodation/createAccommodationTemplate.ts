@@ -4,7 +4,7 @@ import { emailHeaderTemplate } from '../header/emailHeaderTemplate';
 import { emailFooterTemplate } from '../footer/emailFooterTemplate';
 import { t, pickLocale } from '@/convex/i18n';
 
-/** "Listing created" email sent to the host. `manageUrl` must be absolute. */
+/** "Accommodation created" email sent to the host. `manageUrl` must be absolute. */
 type CreateAccommodationData = {
 	hostName: string;
 	apartmentTitle: string;
@@ -24,7 +24,9 @@ export function createAccommodationTemplate(data: CreateAccommodationData): {
 	const live = data.live;
 	const ns = 'createAccommodation';
 
-	const subject = t(locale, live ? `${ns}.subjectLive` : `${ns}.subjectPending`, { title: data.apartmentTitle });
+	const subject = t(locale, live ? `${ns}.subjectLive` : `${ns}.subjectPending`, {
+		title: data.apartmentTitle
+	});
 
 	const html =
 		emailHeaderTemplate(locale) +
@@ -35,9 +37,12 @@ export function createAccommodationTemplate(data: CreateAccommodationData): {
 				title: data.apartmentTitle
 			}),
 			rows: [
-				{ label: t(locale, `${ns}.rowListing`), value: data.apartmentTitle },
+				{ label: t(locale, `${ns}.rowAccommodation`), value: data.apartmentTitle },
 				{ label: t(locale, `${ns}.rowLocation`), value: data.city },
-				{ label: t(locale, `${ns}.rowStatus`), value: t(locale, live ? `${ns}.statusPublished` : `${ns}.statusInReview`) }
+				{
+					label: t(locale, `${ns}.rowStatus`),
+					value: t(locale, live ? `${ns}.statusPublished` : `${ns}.statusInReview`)
+				}
 			],
 			cta: { label: t(locale, `${ns}.cta`), url: data.manageUrl }
 		}) +

@@ -42,7 +42,11 @@
 		try {
 			const n = selected.length;
 
-			const optimizedImages = await optimizeImages(selected, undefined, progress.setOptimizeProgress);
+			const optimizedImages = await optimizeImages(
+				selected,
+				undefined,
+				progress.setOptimizeProgress
+			);
 
 			const uploadOne = FEATURES.USE_R2 ? uploadFileToR2 : uploadFileToConvexStorage;
 			const uploaded: string[] = [];
@@ -75,7 +79,7 @@
 {#if saving}
 	<div class="flex w-full flex-col gap-2">
 		<Progress value={progress.percent} class="h-2" />
-		<p class="text-muted-foreground text-xs tabular-nums">{progress.label}</p>
+		<p class="text-xs text-muted-foreground tabular-nums">{progress.label}</p>
 	</div>
 {/if}
 

@@ -18,7 +18,15 @@ export const apartmentStatus = v.union(
 	v.literal('archived')
 );
 
+/** What a guest actually chose for a booking. */
 export const paymentMethod = v.union(v.literal('cash'), v.literal('online'));
+
+/** What an apartment accepts — `both` lets the guest choose at checkout. */
+export const apartmentPaymentMethod = v.union(
+	v.literal('cash'),
+	v.literal('online'),
+	v.literal('both')
+);
 
 export const coordinates = v.object({
 	lat: v.number(),
@@ -26,7 +34,7 @@ export const coordinates = v.object({
 });
 
 /**
- * A listing photo stored in Cloudflare R2.
+ * A accommodation photo stored in Cloudflare R2.
  *
  * - `key`: the R2 object key (used for deletion; the matching `uploadedFilesR2`
  *   row keeps the object alive — the orphan cron only deletes objects with no row).

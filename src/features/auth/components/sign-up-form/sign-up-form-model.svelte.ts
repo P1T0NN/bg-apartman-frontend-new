@@ -8,7 +8,7 @@ import { PROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
 // UTILS
 import { authClient } from '@/features/auth/lib/auth-client';
 import { signUpFormSchema } from './sign-up-form-schema.js';
-import { zodIssuesToFieldErrors } from '@/shared/utils/validationUtils.js';
+import { zodIssuesToFieldErrors } from '@/shared/utils/zodFieldErrors';
 import { rateLimitMessage } from '@/utils/rateLimitMessages';
 import { appGoto } from '@/utils/app-navigation';
 
@@ -52,7 +52,9 @@ export function createSignUpForm(copy: SignUpFormCopy) {
 		}
 
 		if (p.data.password !== p.data.confirmPassword) {
-			fieldErrors = { confirmPassword: m['ValidationMessages.SignUpForm.passwordsMustMatch']() };
+			fieldErrors = {
+				confirmPassword: m['ValidationMessages.signUpFormSchema.passwordsMustMatch']()
+			};
 			errorMessage = null;
 			return;
 		}
@@ -104,7 +106,7 @@ export function createSignUpForm(copy: SignUpFormCopy) {
 	async function onVerifySuccess() {
 		toast.success(copy.accountCreatedToast());
 		await appGoto(PROTECTED_PAGE_ENDPOINTS.DASHBOARD);
-	}	
+	}
 
 	return {
 		get step() {

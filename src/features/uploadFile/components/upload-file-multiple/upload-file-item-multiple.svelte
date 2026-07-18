@@ -1,6 +1,6 @@
 <script lang="ts">
 	// LIBRARIES
-	import { m } from "@/shared/lib/paraglide/messages";
+	import { m } from '@/shared/lib/paraglide/messages';
 
 	// COMPONENTS
 	import { Button } from '@/shared/components/ui/button/index.js';
@@ -10,75 +10,101 @@
 
 	// LUCIDE ICONS
 	import FileTextIcon from '@lucide/svelte/icons/file-text';
+	import StarIcon from '@lucide/svelte/icons/star';
 	import XIcon from '@lucide/svelte/icons/x';
 
+	// Presentational photo tile — knows nothing about File vs stored image. Used by the
+	// upload list (new Files) and the edit page's existing-photos grid (stored R2 refs).
 	type Props = {
 		class?: string;
-		file: File;
-		index: number;
-		files?: File[];
-		selectedFile?: File | null;
 		previewUrl?: string | null;
+		/** Accessible name used in the control labels. */
+		name: string;
+		/** Footer line 1 (e.g. file name). Footer hidden when omitted. */
+		title?: string;
+		/** Footer line 2 (e.g. "image/png · 1.2 MB"). */
+		subtitle?: string;
+		hasCoverImage?: boolean;
+		isCover?: boolean;
+		onSetCover?: () => void;
+		onRemove: () => void;
 	};
 
 	let {
 		class: className,
-		file,
-		index,
-		files = $bindable<File[]>([]),
-		selectedFile = $bindable<File | null>(null),
-		previewUrl = null
+		previewUrl = null,
+		name,
+		title,
+		subtitle,
+		hasCoverImage = false,
+		isCover = false,
+		onSetCover,
+		onRemove
 	}: Props = $props();
-
-	function formatBytes(bytes: number): string {
-		if (bytes === 0) return '0 B';
-		const k = 1024;
-		const sizes = ['B', 'KB', 'MB', 'GB'] as const;
-		const i = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), sizes.length - 1);
-		return `${parseFloat((bytes / Math.pow(k, i)).toFixed(i > 0 ? 1 : 0))} ${sizes[i]}`;
-	}
-
-	function remove() {
-		files = files.filter((_, j) => j !== index);
-	}
 </script>
 
 <div
 	class={cn(
-		'border-input bg-card group/item relative overflow-hidden rounded-xl border shadow-sm',
+		'group/item relative overflow-hidden rounded-xl border border-input bg-card shadow-sm',
 		className
 	)}
 >
-	<div class="bg-muted/30 relative aspect-square max-h-56 w-full">
+	<div class="relative aspect-square max-h-56 w-full bg-muted/30">
 		{#if previewUrl}
 			<img src={previewUrl} alt="" class="size-full object-cover" draggable="false" />
 		{:else}
-			<div class="text-muted-foreground flex size-full items-center justify-center">
+			<div class="flex size-full items-center justify-center text-muted-foreground">
 				<FileTextIcon class="size-12" aria-hidden="true" />
 			</div>
 		{/if}
-		
+
+		{#if hasCoverImage}
+			<div class="absolute start-1.5 top-1.5">
+				{#if isCover}
+					<span
+						class="flex items-center gap-1 rounded-md bg-primary px-1.5 py-1 text-[0.65rem] font-medium text-primary-foreground shadow-md"
+					>
+						<StarIcon class="size-3.5 fill-current" aria-hidden="true" />
+						{m['UploadFile.UploadFileMultiple.cover']()}
+					</span>
+				{:else}
+					<Button
+						type="button"
+						variant="secondary"
+						size="icon-sm"
+						class="shadow-md"
+						onclick={onSetCover}
+						aria-label={m['UploadFile.UploadFileMultiple.setCover']({ name })}
+					>
+						<StarIcon class="size-3.5" aria-hidden="true" />
+					</Button>
+				{/if}
+			</div>
+		{/if}
+
 		<div class="absolute end-1.5 top-1.5">
 			<Button
 				type="button"
 				variant="destructive"
 				size="icon-sm"
 				class="shadow-md"
-				onclick={remove}
-				aria-label={m['UploadFile.UploadFileMultiple.remove']({ name: file.name })}
+				onclick={onRemove}
+				aria-label={m['UploadFile.UploadFileMultiple.remove']({ name })}
 			>
 				<XIcon class="size-3.5" aria-hidden="true" />
 			</Button>
 		</div>
 	</div>
 
-	<div class="space-y-0.5 px-2.5 py-2">
-		<p class="text-foreground truncate text-xs font-medium" title={file.name}>
-			{file.name}
-		</p>
+	{#if title}
+		<div class="space-y-0.5 px-2.5 py-2">
+			<p class="truncate text-xs font-medium text-foreground" {title}>
+				{title}
+			</p>
 
-		<p class="text-muted-foreground text-[0.65rem] leading-tight">
-			{file.type || m['UploadFile.UploadFileMultiple.unknown']()} · {formatBytes(file.size)}
-		</p>
-	</div>
+			{#if subtitle}
+				<p class="text-[0.65rem] leading-tight text-muted-foreground">{subtitle}</p>
+			{/if}
+		</div>
+	{/if}
 </div>

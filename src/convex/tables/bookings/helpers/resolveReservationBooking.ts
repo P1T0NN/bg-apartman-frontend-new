@@ -6,7 +6,7 @@ import type { Doc } from '@/convex/_generated/dataModel';
 import type { QueryCtx } from '@/convex/_generated/server';
 import type { typesReservationBooking } from '@/shared/features/booking/types/bookingTypes';
 
-/** Public reservation-page payload: booking facts + listing/host labels for the UI. */
+/** Public reservation-page payload: booking facts + accommodation/host labels for the UI. */
 export async function resolveReservationBooking(
 	ctx: QueryCtx,
 	booking: Doc<'bookings'>

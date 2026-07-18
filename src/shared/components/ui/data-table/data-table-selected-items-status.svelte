@@ -41,19 +41,19 @@
 	role="status"
 	aria-live="polite"
 	class={cn(
-		'bg-primary/5 border-primary/20 flex items-center justify-between gap-3 rounded-lg border px-3 py-2',
+		'flex items-center justify-between gap-3 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2',
 		className
 	)}
 >
 	<div class="flex min-w-0 items-center gap-2">
 		<span
-			class="bg-primary/15 text-primary grid size-6 shrink-0 place-items-center rounded-full"
+			class="grid size-6 shrink-0 place-items-center rounded-full bg-primary/15 text-primary"
 			aria-hidden="true"
 		>
 			<CheckIcon class="size-3.5" />
 		</span>
 
-		<span class="text-foreground truncate text-sm font-medium tabular-nums">
+		<span class="truncate text-sm font-medium text-foreground tabular-nums">
 			{m['DataTable.itemsSelected']({ count })}
 		</span>
 	</div>
@@ -68,13 +68,7 @@
 				{/if}
 			</ActionButton>
 		{/if}
-		<Button
-			type="button"
-			variant="ghost"
-			size="sm"
-			disabled={isDeleting}
-			onclick={onClear}
-		>
+		<Button type="button" variant="ghost" size="sm" disabled={isDeleting} onclick={onClear}>
 			{m['DataTable.clearSelection']()}
 		</Button>
 	</div>

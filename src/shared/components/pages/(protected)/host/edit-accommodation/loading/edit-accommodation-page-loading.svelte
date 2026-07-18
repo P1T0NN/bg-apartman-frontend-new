@@ -3,10 +3,10 @@
 	import { Skeleton } from '@/shared/components/ui/skeleton/index.js';
 </script>
 
-<!-- Mirrors the real edit page: header + "View listing" action, the 3-tab list,
+<!-- Mirrors the real edit page: header + "View accommodation" action, the 3-tab list,
      and the Information form's section cards. Pure skeletons, no copy. -->
 <div class="flex flex-col gap-6">
-	<!-- Header: title + subtitle, and the View listing button -->
+	<!-- Header: title + subtitle, and the View accommodation button -->
 	<div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
 		<div class="flex flex-col gap-2">
 			<Skeleton class="h-8 w-56" />

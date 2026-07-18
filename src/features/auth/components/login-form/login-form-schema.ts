@@ -1,16 +1,15 @@
 // LIBRARIES
 import { z } from 'zod';
-import { m } from '@/shared/lib/paraglide/messages';
 
 export const loginFormSchema = z.object({
 	email: z
 		.string()
 		.trim()
-		.min(1, m['ValidationMessages.LoginForm.emailRequired']())
-		.email(m['ValidationMessages.LoginForm.invalidEmail']()),
+		.min(1, 'ValidationMessages.loginFormSchema.emailRequired')
+		.email('ValidationMessages.loginFormSchema.invalidEmail'),
 	password: z
 		.string()
-		.min(1, m['ValidationMessages.LoginForm.passwordRequired']())
-		.min(8, m['ValidationMessages.LoginForm.passwordMinLength']()),
+		.min(1, 'ValidationMessages.loginFormSchema.passwordRequired')
+		.min(8, 'ValidationMessages.loginFormSchema.passwordMinLength'),
 	flow: z.literal('signIn')
 });

@@ -10,9 +10,6 @@ import { convexRateLimitRegistry } from './rateLimits/registry';
  * For the common "auth user + limit" case, prefer
  * {@link import('./helpers/convexGetRateLimitedUserId').convexGetRateLimitedUserId}.
  */
-export const convexRateLimiter = new RateLimiter(
-	components.rateLimiter,
-	convexRateLimitRegistry
-);
+export const convexRateLimiter = new RateLimiter(components.rateLimiter, convexRateLimitRegistry);
 
 export type { ConvexRateLimitName } from './rateLimits/registry';

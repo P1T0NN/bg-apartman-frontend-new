@@ -32,7 +32,10 @@ type SendCreateBookingEmailInput = {
  * On a new booking: send the confirmation to the guest and the notification to the owner.
  * Call from the mutation that creates the booking, after the insert succeeds.
  */
-export async function sendCreateBookingEmail(ctx: EmailCtx, input: SendCreateBookingEmailInput): Promise<void> {
+export async function sendCreateBookingEmail(
+	ctx: EmailCtx,
+	input: SendCreateBookingEmailInput
+): Promise<void> {
 	const url = reservationUrl(input.bookingId);
 
 	const guestEmailContent = createBookingForGuestTemplate({
@@ -69,7 +72,7 @@ export async function sendCreateBookingEmail(ctx: EmailCtx, input: SendCreateBoo
 	});
 
 	await sendEmail(ctx, input.guestEmail, guestEmailContent);
-	
+
 	if (input.hostEmail) {
 		await sendEmail(ctx, input.hostEmail, ownerEmailContent);
 	}

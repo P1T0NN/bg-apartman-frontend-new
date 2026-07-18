@@ -37,18 +37,18 @@
 
 <div
 	class={cn(
-		'bg-popover text-popover-foreground ring-foreground/10 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-lg shadow-md ring-1 duration-100',
+		'absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-lg bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95',
 		dropdownClass
 	)}
 	data-open
 >
 	{#if loading}
 		<div class="px-3 py-6 text-center">
-			<p class="text-muted-foreground text-sm">{loadingText}</p>
+			<p class="text-sm text-muted-foreground">{loadingText}</p>
 		</div>
 	{:else if error}
 		<div class="px-3 py-6 text-center">
-			<p class="text-destructive text-sm font-medium">{error}</p>
+			<p class="text-sm font-medium text-destructive">{error}</p>
 		</div>
 	{:else if hasResults}
 		<ul

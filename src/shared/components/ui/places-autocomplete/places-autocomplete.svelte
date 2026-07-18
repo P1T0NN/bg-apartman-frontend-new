@@ -61,7 +61,7 @@
 				: variant === 'city'
 					? CITY_PRIMARY_TYPES
 					: undefined,
-		// Only listing addresses need a timezone; region/city search doesn't.
+		// Only accommodation addresses need a timezone; region/city search doesn't.
 		resolveTimeZone: variant === 'address'
 	});
 

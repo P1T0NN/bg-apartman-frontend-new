@@ -1,20 +1,30 @@
 <script lang="ts">
-	import { Avatar as AvatarPrimitive } from "bits-ui";
-	import { cn } from "@/utils/utils.js";
+	import type { HTMLAttributes } from 'svelte/elements';
+	import { cn, type WithElementRef } from '@/utils/utils.js';
+	import { getAvatarContext } from './avatar.svelte';
 
 	let {
 		ref = $bindable(null),
 		class: className,
+		children,
 		...restProps
-	}: AvatarPrimitive.FallbackProps = $props();
+	}: WithElementRef<HTMLAttributes<HTMLSpanElement>> = $props();
+
+	const avatar = getAvatarContext();
 </script>
 
-<AvatarPrimitive.Fallback
-	bind:ref
-	data-slot="avatar-fallback"
-	class={cn(
-		"bg-muted text-muted-foreground rounded-full flex size-full items-center justify-center text-sm group-data-[size=sm]/avatar:text-xs",
-		className
-	)}
-	{...restProps}
-/>
+<!-- Only when there's genuinely no image to show: no src or a failed load (both resolve to 'error').
+     During 'loading' we render nothing rather than flashing initials over an image that's about to appear. -->
+{#if avatar.status === 'error'}
+	<span
+		bind:this={ref}
+		data-slot="avatar-fallback"
+		class={cn(
+			'flex size-full items-center justify-center rounded-full bg-muted text-sm text-muted-foreground group-data-[size=sm]/avatar:text-xs',
+			className
+		)}
+		{...restProps}
+	>
+		{@render children?.()}
+	</span>
+{/if}

@@ -64,7 +64,7 @@
 	data-slot="paginated-data"
 	class={cn('flex w-full items-center justify-between gap-2', className)}
 >
-	<span class="text-muted-foreground text-sm tabular-nums">
+	<span class="text-sm text-muted-foreground tabular-nums">
 		{#if isLoading}
 			<span class="inline-block min-w-[8ch]" aria-busy="true">…</span>
 		{:else if totalPages !== undefined}

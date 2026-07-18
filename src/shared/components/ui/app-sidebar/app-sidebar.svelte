@@ -34,10 +34,13 @@
 
 	const pathnameLogical = $derived(new URL(deLocalizeUrl(page.url.href)).pathname);
 
-	const navMainItems = $derived(
-		navItems.navMain.map((item) => ({
-			...item,
-			isActive: isNavItemActive(pathnameLogical, item.url)
+	const navMainGroups = $derived(
+		navItems.navMain.map((group) => ({
+			label: group.label,
+			items: group.items.map((item) => ({
+				...item,
+				isActive: isNavItemActive(pathnameLogical, item.url)
+			}))
 		}))
 	);
 
@@ -65,7 +68,7 @@
 	</Sidebar.Header>
 
 	<Sidebar.Content>
-		<NavMain items={navMainItems} />
+		<NavMain groups={navMainGroups} />
 		{#if navSecondaryItems}
 			<NavSecondary items={navSecondaryItems} class="mt-auto" />
 		{/if}

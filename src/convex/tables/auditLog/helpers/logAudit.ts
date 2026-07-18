@@ -54,16 +54,20 @@ export function logAudit(
 	if (!FEATURES.AUDIT_LOGS) return;
 
 	try {
-		void ctx.scheduler.runAfter(0, internal.tables.auditLog.helpers.auditLogInternal.writeAuditLog, {
-			userId: opts.userId,
-			action,
-			resource: opts.resource,
-			before: opts.before === undefined ? undefined : redact(opts.before),
-			after: opts.after === undefined ? undefined : redact(opts.after),
-			metadata: opts.metadata === undefined ? undefined : redact(opts.metadata),
-			status: opts.status ?? 'success',
-			errorMessage: opts.errorMessage
-		});
+		void ctx.scheduler.runAfter(
+			0,
+			internal.tables.auditLog.helpers.auditLogInternal.writeAuditLog,
+			{
+				userId: opts.userId,
+				action,
+				resource: opts.resource,
+				before: opts.before === undefined ? undefined : redact(opts.before),
+				after: opts.after === undefined ? undefined : redact(opts.after),
+				metadata: opts.metadata === undefined ? undefined : redact(opts.metadata),
+				status: opts.status ?? 'success',
+				errorMessage: opts.errorMessage
+			}
+		);
 	} catch (err) {
 		// Scheduling itself failing should not break the parent mutation.
 		console.error('[auditLog] schedule failed', { action, err });

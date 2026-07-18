@@ -12,12 +12,14 @@
 
 	let { accommodation }: { accommodation: typesAccommodationEnriched } = $props();
 
-	// Listing page shows a starting nightly price; the real total is on the book page.
+	// Accommodation page shows a starting nightly price; the real total is on the book page.
 	const nightly = $derived(effectiveNightlyPrice(accommodation));
 </script>
 
 <div class="flex items-baseline gap-1.5">
-	<span class="text-sm text-muted-foreground">{m['AccommodationPage.BookingPanelPrice.from']()}</span>
+	<span class="text-sm text-muted-foreground"
+		>{m['AccommodationPage.BookingPanelPrice.from']()}</span
+	>
 	<span class="text-2xl font-semibold">{formatCurrency(nightly)}</span>
 	<span class="text-muted-foreground">{m['AccommodationPage.BookingPanelPrice.night']()}</span>
 

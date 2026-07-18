@@ -24,6 +24,9 @@ export default defineConfig(
 			// typescript-eslint strongly recommend that you do not use the no-undef lint rule on TypeScript projects.
 			// see: https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
 			'no-undef': 'off',
+			// Allow the `const { drop, ...rest } = obj` idiom used to omit keys (e.g. peeling
+			// server-only columns off a Doc before returning the client-safe shape).
+			'@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],
 			'svelte/no-internal-route': 'off',
 			'svelte/no-navigation-without-resolve': 'off',
 			'svelte/require-each-key': 'off'

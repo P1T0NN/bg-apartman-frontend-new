@@ -53,7 +53,9 @@
 		<span
 			class={cn(
 				'hidden shrink-0 rounded-md px-1.5 py-0.5 text-xs sm:inline-flex',
-				active ? 'bg-accent-foreground/10 text-accent-foreground' : 'bg-secondary text-secondary-foreground'
+				active
+					? 'bg-accent-foreground/10 text-accent-foreground'
+					: 'bg-secondary text-secondary-foreground'
 			)}
 		>
 			{item.category}

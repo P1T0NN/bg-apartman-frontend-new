@@ -29,7 +29,7 @@ export function accommodationPublishedTemplate(data: AccommodationPublishedData)
 			heading: t(locale, `${ns}.heading`),
 			intro: t(locale, `${ns}.intro`, { name: data.hostName, title: data.apartmentTitle }),
 			rows: [
-				{ label: t(locale, `${ns}.rowListing`), value: data.apartmentTitle },
+				{ label: t(locale, `${ns}.rowAccommodation`), value: data.apartmentTitle },
 				{ label: t(locale, `${ns}.rowLocation`), value: data.city },
 				{ label: t(locale, `${ns}.rowStatus`), value: t(locale, `${ns}.statusPublished`) }
 			],

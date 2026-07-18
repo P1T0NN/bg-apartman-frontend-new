@@ -52,7 +52,10 @@ function parseArgs(argv) {
 		if (a === '--no-recursive') opts.recursive = false;
 		else if (a === '--recursive') opts.recursive = true;
 		else if (a === '--sizes')
-			opts.sizes = argv[++i].split(',').map((s) => parseInt(s.trim(), 10)).filter(Boolean);
+			opts.sizes = argv[++i]
+				.split(',')
+				.map((s) => parseInt(s.trim(), 10))
+				.filter(Boolean);
 		else if (a === '--quality') opts.quality = parseInt(argv[++i], 10);
 		else if (a === '--out') opts.out = argv[++i];
 		else if (a.startsWith('--')) throw new Error(`Unknown option: ${a}`);
@@ -153,8 +156,7 @@ async function discoverStaticFolders(opts) {
 
 async function main() {
 	const { folders: folderArgs, opts } = parseArgs(process.argv.slice(2));
-	const folders =
-		folderArgs.length > 0 ? folderArgs : await discoverStaticFolders(opts);
+	const folders = folderArgs.length > 0 ? folderArgs : await discoverStaticFolders(opts);
 
 	if (folders.length === 0) {
 		console.warn('No images found under ./static');

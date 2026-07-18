@@ -49,7 +49,7 @@
 					</dt>
 					<dd class="flex items-baseline gap-1.5">
 						{#if discounted}
-							<span class="text-xs text-muted-foreground/60 line-through tabular-nums">
+							<span class="text-xs text-muted-foreground/60 tabular-nums line-through">
 								{formatCurrency(accommodation.pricePerNight * nights)}
 							</span>
 						{/if}
@@ -59,7 +59,9 @@
 
 				{#if quote.cleaningFee > 0}
 					<div class="flex items-baseline justify-between gap-3">
-						<dt class="text-muted-foreground">{m['BookAccommodationPage.BookPrice.cleaningFee']()}</dt>
+						<dt class="text-muted-foreground">
+							{m['BookAccommodationPage.BookPrice.cleaningFee']()}
+						</dt>
 						<dd class="font-medium tabular-nums">{formatCurrency(quote.cleaningFee)}</dd>
 					</div>
 				{/if}
@@ -70,7 +72,9 @@
 			<!-- Total — the anchor of the card: biggest, boldest line so the eye lands here first. -->
 			<div class="flex items-baseline justify-between gap-3">
 				<span class="text-base font-semibold">{m['BookAccommodationPage.BookPrice.total']()}</span>
-				<span class="text-xl font-bold tracking-tight tabular-nums">{formatCurrency(quote.total)}</span>
+				<span class="text-xl font-bold tracking-tight tabular-nums"
+					>{formatCurrency(quote.total)}</span
+				>
 			</div>
 		</div>
 	{:else}

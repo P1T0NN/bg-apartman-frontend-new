@@ -1,41 +1,44 @@
 <script lang="ts">
-	import { RangeCalendar as RangeCalendarPrimitive } from "bits-ui";
-	import * as RangeCalendar from "./index.js";
-	import { cn, type WithoutChildrenOrChild } from "@/utils/utils.js";
-	import type { ButtonVariant } from "@/shared/components/ui/button/index.js";
-	import type { Snippet } from "svelte";
-	import { isEqualMonth, type DateValue } from "@internationalized/date";
+	import { RangeCalendar as RangeCalendarPrimitive } from 'bits-ui';
+	import * as RangeCalendar from './index.js';
+	import { cn, type WithoutChildrenOrChild } from '@/utils/utils.js';
+	import type { ButtonVariant } from '@/shared/components/ui/button/index.js';
+	import type { Snippet } from 'svelte';
+	import { isEqualMonth, type DateValue } from '@internationalized/date';
 
 	let {
 		ref = $bindable(null),
 		value = $bindable(),
 		placeholder = $bindable(),
-		weekdayFormat = "short",
+		weekdayFormat = 'short',
 		class: className,
-		buttonVariant = "ghost",
-		captionLayout = "label",
-		locale = "en-US",
+		buttonVariant = 'ghost',
+		captionLayout = 'label',
+		locale = 'en-US',
 		months: monthsProp,
 		years,
 		monthFormat: monthFormatProp,
-		yearFormat = "numeric",
+		yearFormat = 'numeric',
 		day,
 		disableDaysOutsideMonth = false,
+		hideOutsideDays = false,
 		...restProps
 	}: WithoutChildrenOrChild<RangeCalendarPrimitive.RootProps> & {
 		buttonVariant?: ButtonVariant;
-		captionLayout?: "dropdown" | "dropdown-months" | "dropdown-years" | "label";
-		months?: RangeCalendarPrimitive.MonthSelectProps["months"];
-		years?: RangeCalendarPrimitive.YearSelectProps["years"];
-		monthFormat?: RangeCalendarPrimitive.MonthSelectProps["monthFormat"];
-		yearFormat?: RangeCalendarPrimitive.YearSelectProps["yearFormat"];
+		captionLayout?: 'dropdown' | 'dropdown-months' | 'dropdown-years' | 'label';
+		months?: RangeCalendarPrimitive.MonthSelectProps['months'];
+		years?: RangeCalendarPrimitive.YearSelectProps['years'];
+		monthFormat?: RangeCalendarPrimitive.MonthSelectProps['monthFormat'];
+		yearFormat?: RangeCalendarPrimitive.YearSelectProps['yearFormat'];
 		day?: Snippet<[{ day: DateValue; outsideMonth: boolean }]>;
+		/** Render days from adjacent months as blank, non-interactive cells (grid stays aligned). */
+		hideOutsideDays?: boolean;
 	} = $props();
 
 	const monthFormat = $derived.by(() => {
 		if (monthFormatProp) return monthFormatProp;
-		if (captionLayout.startsWith("dropdown")) return "short";
-		return "long";
+		if (captionLayout.startsWith('dropdown')) return 'short';
+		return 'long';
 	});
 </script>
 
@@ -44,9 +47,9 @@
 	bind:value
 	bind:placeholder
 	{weekdayFormat}
-	{disableDaysOutsideMonth}
+	disableDaysOutsideMonth={disableDaysOutsideMonth || hideOutsideDays}
 	class={cn(
-		"p-2 [--cell-radius:var(--radius-md)] [--cell-size:--spacing(7)] bg-background group/calendar p-3 [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
+		'group/calendar bg-background p-2 p-3 [--cell-radius:var(--radius-md)] [--cell-size:--spacing(7)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent',
 		className
 	)}
 	{locale}
@@ -90,12 +93,12 @@
 							{#each month.weeks as weekDates (weekDates)}
 								<RangeCalendar.GridRow class="mt-2 w-full">
 									{#each weekDates as date (date)}
+										{@const outsideMonth = !isEqualMonth(date, month.value)}
 										<RangeCalendar.Cell {date} month={month.value}>
 											{#if day}
-												{@render day({
-													day: date,
-													outsideMonth: !isEqualMonth(date, month.value),
-												})}
+												{@render day({ day: date, outsideMonth })}
+											{:else if hideOutsideDays && outsideMonth}
+												<!-- Outside-month day: blank, non-interactive cell (grid alignment preserved). -->
 											{:else}
 												<RangeCalendar.Day />
 											{/if}

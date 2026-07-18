@@ -11,7 +11,7 @@
 {#if trips.length}
 	<div class="space-y-3">
 		<h3 class="text-sm font-medium text-muted-foreground">More upcoming</h3>
-		
+
 		<div class="grid gap-3">
 			{#each trips as trip (trip.id)}
 				<DashboardUpcomingItem {trip} />

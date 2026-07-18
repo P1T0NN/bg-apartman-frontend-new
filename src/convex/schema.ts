@@ -10,10 +10,12 @@ import {
 	apartmentType,
 	apartmentStatus,
 	paymentMethod,
+	apartmentPaymentMethod,
 	coordinates,
 	apartmentImage
 } from './tables/accommodations/schemas/accommodationsSchemas';
 import { bookingStatus, paymentStatus } from './tables/bookings/schemas/bookingsSchemas';
+import { reportCategory } from './tables/reports/schemas/reportsSchemas';
 
 const schema = defineSchema({
 	// Users (with `role` and other custom fields) live in the better-auth component;
@@ -65,11 +67,11 @@ const schema = defineSchema({
 		addressNumber: v.optional(v.string()),
 		city: v.string(),
 		country: v.optional(v.string()),
-		// The listing's city + country Google place ids, space-joined into one string (e.g.
+		// The accommodation's city + country Google place ids, space-joined into one string (e.g.
 		// "<cityId> <countryId>"). Resolved via Places Autocomplete at save — the same source the
 		// search box uses — so the ids are identical and language-independent ("Beograd" and
 		// "Belgrade" share a place id). Search matches when the picked place id is one of the parts,
-		// so a listing surfaces for a city search AND a country search.
+		// so a accommodation surfaces for a city search AND a country search.
 		placeId: v.optional(v.string()),
 		coordinates: v.optional(coordinates),
 		// IANA zone resolved from the pin (e.g. 'Europe/Belgrade'). The availability
@@ -94,7 +96,7 @@ const schema = defineSchema({
 
 		// === BOOKING RULES ===
 		instantBooking: v.boolean(),
-		paymentMethod: v.optional(paymentMethod), // optional for rows created before host payment settings existed
+		paymentMethod: v.optional(apartmentPaymentMethod), // what the apartment accepts ('both' = guest chooses); optional for rows created before host payment settings existed
 		sameDayReservation: v.boolean(),
 		singleDayReservation: v.boolean(), // allows check-in and check-out on same day
 		petsAllowed: v.boolean(),
@@ -111,8 +113,7 @@ const schema = defineSchema({
 		amenities: v.array(v.string()),
 
 		// === MEDIA ===
-		images: v.array(apartmentImage),
-		coverImageIndex: v.optional(v.number()), // index of cover image in images array
+		images: v.array(apartmentImage), // images[0] is the cover
 
 		// === HOUSE RULES (free text) ===
 		houseRules: v.optional(v.string()),
@@ -120,6 +121,11 @@ const schema = defineSchema({
 		// === STATUS ===
 		status: apartmentStatus,
 		isFeatured: v.boolean(), // for homepage/promotional display
+
+		// === MODERATION (stamped by moderateApartmentStatus; absent on unmoderated rows) ===
+		moderatedAt: v.optional(v.number()),
+		moderatedBy: v.optional(v.string()), // admin's better-auth user id
+		moderationReason: v.optional(v.string()), // required for suspensions, shown to the host
 
 		// === PAYMENT ===
 		paidAt: v.optional(v.number()), // timestamp when payment was completed (undefined = unpaid)
@@ -144,14 +150,27 @@ const schema = defineSchema({
 		// by_status_bedrooms: same idea for bedroom count filter
 		.index('by_status_bedrooms', ['status', 'bedrooms']),
 
+	/** Marketing newsletter opt-ins. `_creationTime` is the subscribe timestamp. */
+	newsletter: defineTable({
+		email: v.string()
+	}).index('by_email', ['email']),
+
+	/** Public bug/idea/feedback reports from the `/report` form. `_creationTime` is when it landed.
+	    `email` is optional — present only when the reporter wants a follow-up. */
+	reports: defineTable({
+		category: reportCategory,
+		message: v.string(),
+		email: v.optional(v.string())
+	}).index('by_category', ['category']),
+
 	bookings: defineTable({
 		// === BOOKING CODE ===
 		bookingCode: v.string(), // unique 10-character code for guest access (e.g., "BK7X9M2P4Q")
 
 		// === RELATIONSHIPS ===
-		// `apartmentId` points at the real apartment row once listings are persisted; it's
+		// `apartmentId` points at the real apartment row once accommodations are persisted; it's
 		// omitted during the current dummy-data phase (no apartments are stored yet), so
-		// `apartmentSlug` carries the listing reference the reservation page resolves + links.
+		// `apartmentSlug` carries the accommodation reference the reservation page resolves + links.
 		apartmentId: v.optional(v.id('apartments')),
 		apartmentSlug: v.string(),
 		// Better-auth user ids stored as plain strings — there is no `users` table in this
@@ -205,6 +224,10 @@ const schema = defineSchema({
 		// trip" / "upcoming" reads only matching rows via .first()/.take() instead of scanning.
 		.index('by_guest', ['guestId'])
 		.index('by_guest_status_checkin', ['guestId', 'status', 'checkInDate'])
+		// Host-scoped twin of `by_guest_status_checkin` — powers the host dashboard: pending
+		// action queue (eq host+status), today's check-ins (eq host+status+checkInDate) and the
+		// trailing-12-months stats read (eq host+status, range checkInDate) without table scans.
+		.index('by_host_status_checkin', ['hostId', 'status', 'checkInDate'])
 		.index('by_status', ['status'])
 		.index('by_apartment_dates', ['apartmentId', 'checkInDate', 'checkOutDate'])
 });

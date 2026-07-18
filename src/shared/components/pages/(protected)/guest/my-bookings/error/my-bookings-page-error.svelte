@@ -32,7 +32,7 @@
 
 	<div class="flex flex-wrap items-center justify-center gap-2">
 		<RefreshQueryButton />
-		
+
 		<Button href={localizeHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT)} variant="outline">
 			<SearchIcon class="size-4" aria-hidden="true" />
 			Browse stays

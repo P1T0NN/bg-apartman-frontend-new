@@ -21,10 +21,10 @@
 	import AccommodationPageError from '@/shared/components/pages/(unprotected)/accommodation/error/accommodation-page-error.svelte';
 
 	// TYPES
-	import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
+	import type { typesAccommodationForViewer } from '@/shared/features/accommodation/types/accommodationTypes';
 
 	// The route param is the lookup key — resolving reactively means navigating between
-	// listings (client-side) re-runs the query for the new slug. `page` is app-wide so
+	// accommodations (client-side) re-runs the query for the new slug. `page` is app-wide so
 	// `params.slug` is `string | undefined`; this route always has one at runtime.
 	const slug = $derived(page.params.slug ?? '');
 
@@ -32,7 +32,9 @@
 		api.tables.accommodations.queries.fetchAccommodationBySlugSafe.fetchAccommodationBySlugSafe,
 		() => (slug ? { slug } : 'skip')
 	);
-	const accommodation = $derived(accommodationQuery.data as typesAccommodationEnriched | null | undefined);
+	const accommodation = $derived(
+		accommodationQuery.data as typesAccommodationForViewer | null | undefined
+	);
 
 	const images = $derived(
 		accommodation ? [...accommodation.images].sort((a, b) => a.order - b.order) : []

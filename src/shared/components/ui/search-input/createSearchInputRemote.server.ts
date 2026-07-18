@@ -24,10 +24,7 @@ import type {
 	FunctionReturnType
 } from 'convex/server';
 import type { ConvexRateLimitName } from '@/convex/rateLimits/registry.js';
-import type {
-	SearchInputItem,
-	SearchInputRemoteCommandResult
-} from './types.js';
+import type { SearchInputItem, SearchInputRemoteCommandResult } from './types.js';
 
 const DEFAULT_SEARCH_LIMIT_SECRET_ENV = 'SEARCH_INPUT_RATE_LIMIT_SECRET';
 const DEFAULT_REMOTE_SEARCH_RESULTS = 5;

@@ -24,10 +24,6 @@ export function applyHostAction(
 				updatedAt: now,
 				cancelReason: 'Declined by host.'
 			};
-		case 'check_in':
-			return { status: 'checked_in', updatedAt: now };
-		case 'check_out':
-			return { status: 'checked_out', updatedAt: now };
 		case 'cancel':
 			return {
 				status: 'cancelled',

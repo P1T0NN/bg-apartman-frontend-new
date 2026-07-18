@@ -16,7 +16,7 @@ type InfiniteScrollOptions = {
 
 // NOTE: Canonical infinite-loading recipe. No server `fetchInfinite` needed — a
 // `fetchOptimized` cursor query already returns { page, isDone, continueCursor }, and
-// `usePaginatedQuery` (@mmailaender/convex-svelte) accumulates the pages reactively.
+// `usePaginatedQuery` (convex-svelte) accumulates the pages reactively.
 // Same array feeds the list and the map; this attachment is only the "load more" trigger.
 //
 //   const list = usePaginatedQuery(api.tables.x.fetchX, () => ({ /* filters */ }), {

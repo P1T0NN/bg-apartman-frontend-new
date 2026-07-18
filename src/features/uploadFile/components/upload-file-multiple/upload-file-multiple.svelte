@@ -15,8 +15,8 @@
 		accept?: string;
 		disabled?: boolean;
 		id?: string;
-		/** Render the dropzone with a destructive border (failed validation). */
-		invalid?: boolean;
+		/** Show a star control on each preview; the starred image becomes `files[0]` (the cover). */
+		hasCoverImage?: boolean;
 	};
 
 	let {
@@ -26,7 +26,7 @@
 		accept,
 		disabled = false,
 		id: inputId,
-		invalid = false
+		hasCoverImage = false
 	}: Props = $props();
 
 	const pickerInputId = $derived(inputId ?? 'upload-file-input-multiple');
@@ -58,7 +58,6 @@
 			{pickerInputId}
 			{accept}
 			{disabled}
-			{invalid}
 			multipleFiles={true}
 			dragOver={upload.dragOver}
 			bind:fileInputRef={upload.inputRef}
@@ -77,9 +76,9 @@
 			<UploadFileMultipleList
 				rows={upload.contentRows}
 				bind:files
-				bind:selectedFile={file}
 				onDragOver={upload.handleDragOver}
 				onDrop={upload.handleDrop}
+				{hasCoverImage}
 			/>
 		{/if}
 	</div>

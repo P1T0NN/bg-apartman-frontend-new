@@ -7,9 +7,7 @@ import { v, type GenericValidator, type Infer } from 'convex/values';
  */
 export const translatableMessage = v.object({
 	key: v.string(),
-	params: v.optional(
-		v.record(v.string(), v.union(v.string(), v.number(), v.boolean()))
-	)
+	params: v.optional(v.record(v.string(), v.union(v.string(), v.number(), v.boolean())))
 });
 
 export type TranslatableMessage = Infer<typeof translatableMessage>;

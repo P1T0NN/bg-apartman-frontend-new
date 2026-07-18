@@ -7,6 +7,7 @@ This repository uses **Bun**.
 For one-off CLIs, always use `bunx` instead of `npx`.
 
 Examples:
+
 ```bash
 bunx @sveltejs/mcp svelte-autofixer ...
 bunx convex codegen
@@ -29,6 +30,7 @@ Always use the MCP tools systematically instead of relying on memory alone.
 Use this FIRST when working with Svelte or SvelteKit.
 
 This returns available documentation sections with:
+
 - titles
 - use cases
 - paths
@@ -44,6 +46,7 @@ Do not skip this step.
 After using `list-sections`, fetch ALL documentation sections relevant to the task.
 
 Prioritize:
+
 - official patterns
 - idiomatic Svelte 5 approaches
 - SSR compatibility
@@ -58,6 +61,7 @@ Never rely on assumptions when documentation is available.
 ### 3. `svelte-autofixer`
 
 Whenever writing or modifying Svelte code:
+
 1. Run the autofixer
 2. Review all warnings and suggestions
 3. Apply meaningful improvements
@@ -80,6 +84,7 @@ Do not finalize Svelte code before running the autofixer.
 This project is treated as a reusable long-term architecture foundation, not a one-off application.
 
 Assume components, utilities, patterns, and modules will later be:
+
 - copied into future projects
 - extracted into shared libraries
 - extended by other developers
@@ -88,6 +93,7 @@ Assume components, utilities, patterns, and modules will later be:
 - reused in unrelated domains
 
 Optimize for:
+
 1. Reusability
 2. Maintainability
 3. Developer experience (DX)
@@ -103,6 +109,7 @@ Never optimize for quick hacks that create future coupling.
 # Architecture Standards
 
 Before implementing code, evaluate:
+
 - portability
 - scalability
 - composability
@@ -113,6 +120,7 @@ Before implementing code, evaluate:
 - long-term maintainability
 
 Prefer:
+
 - composition over inheritance
 - explicit APIs
 - backend-agnostic abstractions
@@ -124,6 +132,7 @@ Prefer:
 - reusable primitives
 
 Avoid:
+
 - project-specific assumptions
 - hardcoded business logic
 - tightly coupled components
@@ -141,6 +150,7 @@ Business logic should remain separable from UI whenever practical.
 Do not tightly couple UI components to Convex.
 
 Avoid embedding:
+
 - Convex-specific assumptions
 - database schema assumptions
 - direct mutation/query logic in reusable UI
@@ -148,6 +158,7 @@ Avoid embedding:
 - hardcoded endpoints
 
 Prefer:
+
 - adapters
 - composables
 - injected data sources
@@ -162,6 +173,7 @@ Components should remain usable even if Convex is later replaced.
 Use idiomatic Svelte 5 patterns.
 
 Prefer:
+
 - runes where appropriate
 - local reasoning
 - explicit data flow
@@ -171,6 +183,7 @@ Prefer:
 - minimal reactive complexity
 
 Avoid:
+
 - React-style architecture patterns
 - unnecessary stores
 - excessive derived state
@@ -188,6 +201,7 @@ Keep components understandable and easy to extend.
 Code should feel excellent to work with.
 
 Prioritize:
+
 - strong typing
 - intuitive APIs
 - self-documenting code
@@ -210,6 +224,7 @@ Prefer APIs that are understandable without documentation.
 Default to production-grade performance patterns.
 
 Prefer:
+
 - minimal reactive cascades
 - low hydration cost
 - SSR when beneficial
@@ -231,6 +246,7 @@ Prioritize architectural performance over trivial optimizations.
 Assume every exported component may become part of a shared internal library.
 
 Therefore:
+
 - keep dependencies minimal
 - avoid hidden assumptions
 - expose extensible APIs
@@ -248,6 +264,7 @@ When reasonable, design components like reusable framework primitives rather tha
 Before finalizing any implementation, perform an internal review.
 
 Evaluate:
+
 - Is this reusable?
 - Is this portable?
 - Is this overly coupled to the current project?
