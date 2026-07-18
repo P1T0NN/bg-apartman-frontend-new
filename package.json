@@ -62,7 +62,7 @@
 		"@piton-/analytics-convex": "^1.0.1",
 		"@types/d3-scale": "^4.0.9",
 		"@types/d3-shape": "^3.1.8",
-		"better-auth": "1.5.3",
+		"better-auth": "1.6.23",
 		"botid": "^1.5.11",
 		"browser-image-compression": "^2.0.2",
 		"chrono-node": "^2.9.0",
@@ -71,11 +71,11 @@
 		"convex-svelte": "^0.14.0",
 		"d3-scale": "^4.0.2",
 		"d3-shape": "^3.2.0",
-		"layerchart": "2.0.0-next.48",
+		"layerchart": "2.0.1",
 		"little-date": "^1.2.1",
 		"nuqs-svelte": "^1.2.2",
 		"resend": "^6.12.2",
-		"sharp": "^0.34.5",
+		"sharp": "^0.35.3",
 		"tz-lookup": "^6.1.25",
 		"zod": "^4.4.3"
 	}
