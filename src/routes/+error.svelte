@@ -3,12 +3,12 @@
 	import { page } from '$app/state';
 
 	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
 	// COMPONENTS
-	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
-	import { Button } from '@/shared/components/ui/button/index.js';
-	import Link from '@/shared/components/ui/link/link.svelte';
+	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
+	import { Button } from '@/components/ui/button/index.js';
+	import Link from '@/components/ui/link/link.svelte';
 
 	// LUCIDE ICONS
 	import CompassIcon from '@lucide/svelte/icons/compass';

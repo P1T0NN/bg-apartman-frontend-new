@@ -1,3 +1,6 @@
+// CONFIG
+import { UPLOAD_LIMITS } from '@/shared/config';
+
 // LIBRARIES
 import { ConvexError, v } from 'convex/values';
 
@@ -18,7 +21,6 @@ const TABLE = 'uploadedFiles' as const;
  * The client-side picker should mirror these for UX, but the server is the trust
  * boundary: client checks are advisory only.
  */
-const MAX_UPLOAD_BYTES = 10 * 1024 * 1024; // 10 MB
 /** Allow-list of accepted MIME types. Add/remove per project needs. */
 const ALLOWED_CONTENT_TYPES = new Set<string>([
 	'image/jpeg',
@@ -61,7 +63,7 @@ export const saveUploadedFile = authMutation('saveUploadedFile')({
 				message: { key: 'GenericMessages.UPLOAD_NOT_FOUND' }
 			} satisfies ConvexErrorPayload);
 		}
-		if (meta.size > MAX_UPLOAD_BYTES) {
+		if (meta.size > UPLOAD_LIMITS.MAX_UPLOAD_BYTES) {
 			await ctx.storage.delete(args.storageId);
 			throw new ConvexError({
 				code: 'UPLOAD_TOO_LARGE',

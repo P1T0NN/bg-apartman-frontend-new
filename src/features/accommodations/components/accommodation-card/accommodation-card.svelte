@@ -1,9 +1,9 @@
 <script lang="ts">
 	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
 	// COMPONENTS
-	import { QualityImage } from '@/shared/components/ui/quality-image';
+	import { QualityImage } from '@/components/ui/quality-image';
 	import ToggleFavoriteButton from '@/features/favorites/components/toggle-favorite-button.svelte';
 	import SuperhostBadge from '@/features/accommodations/components/superhost-badge.svelte';
 	import NewAccommodationBadge from './new-accommodation-badge.svelte';

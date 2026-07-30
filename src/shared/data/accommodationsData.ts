@@ -1,5 +1,5 @@
 // TYPES
-import type { MutationFormSelectOption } from '@/shared/components/ui/mutation-form/types';
+import type { MutationFormSelectOption } from '@/components/ui/mutation-form/types';
 
 /** Property types — mirrors `apartmentType` in accommodationsSchemas.ts. */
 export const ACCOMMODATION_TYPES: MutationFormSelectOption[] = [

@@ -2,7 +2,7 @@
 import { addAccommodationForm } from './addAccommodationForm';
 
 // TYPES
-import type { MutationFormSection } from '@/shared/components/ui/mutation-form/types';
+import type { MutationFormSection } from '@/components/ui/mutation-form/types';
 
 /**
  * Edit form layout: identical to {@link addAccommodationForm} except the Photos

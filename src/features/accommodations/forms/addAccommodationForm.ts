@@ -3,7 +3,7 @@ import { ACCOMMODATION_PAYMENT_METHOD_OPTIONS } from '@/features/bookings/data/p
 import { ACCOMMODATION_TYPES } from '@/shared/data/accommodationsData';
 
 // TYPES
-import type { MutationFormSection } from '@/shared/components/ui/mutation-form/types';
+import type { MutationFormSection } from '@/components/ui/mutation-form/types';
 
 // LUCIDE ICONS
 import HouseIcon from '@lucide/svelte/icons/house';

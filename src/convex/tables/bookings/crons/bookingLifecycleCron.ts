@@ -1,10 +1,12 @@
 // UTILS
-import { internalMutation } from '@/convex/_generated/server';
+import { OPERATIONAL_LIMITS } from '@/shared/config';
+import { internalMutation } from '@/convex/functions';
+import { authComponent } from '@/convex/auth/auth';
 import { sendBookingAutoDeclinedEmail } from '@/convex/email/sendBookingAutoDeclinedEmail';
-import { todayIsoUtc } from '@/shared/features/booking/utils/daysUntilCheckIn';
-
-/** Hard cap per status per run so a backlog can't blow the function budget. */
-const MAX_PER_RUN = 1_000;
+import { sendBookingMissedEmail } from '@/convex/email/sendBookingMissedEmail';
+import { applyAutoDecline } from '@/shared/features/booking/utils/applyAutoDecline';
+import { todayInPropertyZone } from '@/shared/features/booking/utils/daysUntilCheckIn';
+import { settleBookingPayment } from '@/convex/payments/helpers/settleBookingPayment';
 
 /**
  * Idempotent booking-lifecycle sweep. Runs on a schedule (see {@link registerBookingCrons}) and
@@ -13,26 +15,32 @@ const MAX_PER_RUN = 1_000;
  *   - `confirmed` whose check-in date has arrived  → `checked_in`
  *   - `confirmed`/`checked_in` past their check-out → `checked_out` (self-heals a missed run by
  *     jumping straight from `confirmed` if the whole stay elapsed between passes)
- *   - `pending` past `pendingExpiresAt`             → `auto_declined` (+ guest email)
+ *   - `pending` past `pendingExpiresAt`             → `auto_declined` (+ guest email, + hold released)
+ *   - `pending` + `awaiting` past `paymentDeadlineAt` → hard-deleted (abandoned checkout)
  *
  * ISO dates (`YYYY-MM-DD`) compare correctly with `<`/`>=` lexicographically. Check-out fires the
  * day *after* the checkout date so a guest still counts as `checked_in` on their departure morning.
  * Safe to run on any cadence; each pass only touches rows that are actually due.
+ *
+ * "Today" is the PROPERTY's day, not UTC (BookingSystemDesign.md §3): a 23:00 UTC run is
+ * already tomorrow in Belgrade, so a UTC clock would flip stays a day early for two hours
+ * of every night.
  */
 export const advanceBookingLifecycle = internalMutation({
 	args: {},
 	handler: async (ctx) => {
-		const today = todayIsoUtc();
+		const today = todayInPropertyZone();
 		const now = Date.now();
 		let checkedIn = 0;
 		let checkedOut = 0;
 		let autoDeclined = 0;
+		let reaped = 0;
 
 		// confirmed → checked_in / checked_out
 		const confirmed = await ctx.db
 			.query('bookings')
 			.withIndex('by_status', (q) => q.eq('status', 'confirmed'))
-			.take(MAX_PER_RUN);
+			.take(OPERATIONAL_LIMITS.BOOKING_LIFECYCLE_MAX_PER_RUN);
 		for (const b of confirmed) {
 			if (today > b.checkOutDate) {
 				await ctx.db.patch(b._id, { status: 'checked_out', updatedAt: now });
@@ -47,7 +55,7 @@ export const advanceBookingLifecycle = internalMutation({
 		const checkedInRows = await ctx.db
 			.query('bookings')
 			.withIndex('by_status', (q) => q.eq('status', 'checked_in'))
-			.take(MAX_PER_RUN);
+			.take(OPERATIONAL_LIMITS.BOOKING_LIFECYCLE_MAX_PER_RUN);
 		for (const b of checkedInRows) {
 			if (today > b.checkOutDate) {
 				await ctx.db.patch(b._id, { status: 'checked_out', updatedAt: now });
@@ -55,23 +63,40 @@ export const advanceBookingLifecycle = internalMutation({
 			}
 		}
 
-		// pending → auto_declined (expired) + notify the guest
+		// pending → auto_declined (expired) + notify the guest, and abandoned checkouts reaped
 		const pending = await ctx.db
 			.query('bookings')
 			.withIndex('by_status', (q) => q.eq('status', 'pending'))
-			.take(MAX_PER_RUN);
+			.take(OPERATIONAL_LIMITS.BOOKING_LIFECYCLE_MAX_PER_RUN);
 		for (const b of pending) {
+			// Abandoned checkout: hard-DELETE past the deadline (PaymentsSystemDesign.md §3).
+			// Not a status-machine violation — an `awaiting` booking never entered the
+			// machine: no email was sent, no human ever saw the row, nothing references it,
+			// and the provider hold expires with its own session. (A *completed* checkout
+			// that lost the race is different — that guest gets a real `auto_declined` row.)
+			if (b.paymentStatus === 'awaiting') {
+				if (b.paymentDeadlineAt !== undefined && b.paymentDeadlineAt <= now) {
+					await ctx.db.delete(b._id);
+					reaped++;
+				}
+				continue;
+			}
+
 			if (b.pendingExpiresAt === undefined || b.pendingExpiresAt > now) continue;
 
-			await ctx.db.patch(b._id, {
-				status: 'auto_declined',
-				updatedAt: now,
-				cancelledBy: 'system',
-				cancelReason: 'Request expired — the host did not respond in time.',
-				pendingExpiresAt: undefined
-			});
+			// Same transition shape as the lost-overlap-race path in `confirmBooking` —
+			// one util owns what an auto-decline writes, so the two can't drift.
+			const patch = applyAutoDecline(b, 'expired', now);
+			if (!patch) continue;
 
-			const apartment = b.apartmentId ? await ctx.db.get(b.apartmentId) : null;
+			// Expiry of an `authorized` booking releases the hold — the guest was never
+			// charged, which is exactly what the email below tells them (PaymentsSystemDesign.md
+			// §4, §11). Cash bookings settle to an empty patch.
+			const settlement = await settleBookingPayment(ctx, b);
+
+			await ctx.db.patch(b._id, { ...patch, ...settlement });
+
+			const apartment = await ctx.db.get(b.apartmentId);
 			const apartmentTitle = apartment?.title ?? b.apartmentSlug;
 
 			await sendBookingAutoDeclinedEmail(ctx, {
@@ -84,9 +109,27 @@ export const advanceBookingLifecycle = internalMutation({
 				checkInDate: b.checkInDate,
 				checkOutDate: b.checkOutDate
 			});
+
+			// The host's "you missed one" nudge (BookingSystemDesign.md §8) — once per event,
+			// sent here and nowhere else, so it can never become a drip.
+			const host = await authComponent.getAnyUserById(ctx, b.hostId);
+			const hostEmail = host?.email?.trim();
+			if (hostEmail) {
+				await sendBookingMissedEmail(ctx, {
+					locale: 'en',
+					bookingId: b._id,
+					bookingCode: b.bookingCode,
+					guestName: `${b.guestFirstName} ${b.guestLastName}`,
+					hostName: host?.name?.trim() || 'Host',
+					hostEmail,
+					apartmentTitle,
+					checkInDate: b.checkInDate,
+					checkOutDate: b.checkOutDate
+				});
+			}
 			autoDeclined++;
 		}
 
-		return { checkedIn, checkedOut, autoDeclined };
+		return { checkedIn, checkedOut, autoDeclined, reaped };
 	}
 });

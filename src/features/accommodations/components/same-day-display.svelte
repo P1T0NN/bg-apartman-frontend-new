@@ -1,7 +1,4 @@
 <script lang="ts">
-	// LIBRARIES
-	import { m } from '@/shared/lib/paraglide/messages';
-
 	// UTILS
 	import { cn } from '@/utils/utils.js';
 
@@ -17,8 +14,8 @@
 
 <p class={cn(className)}>
 	{#if enabled}
-		{m['SameDayDisplay.available']()}
+		Same-day check-in available
 	{:else}
-		{m['SameDayDisplay.unavailable']()}
+		No same-day check-in
 	{/if}
 </p>

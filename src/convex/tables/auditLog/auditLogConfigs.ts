@@ -26,7 +26,12 @@ export const AUDIT_ACTIONS = {
 
 	// Moderation
 	APARTMENT_MODERATE: 'apartment.moderate',
+	APARTMENT_FEATURE: 'apartment.feature',
 	BOOKING_ADMIN_CANCEL: 'booking.admin_cancel',
+	BOOKING_PAYMENT_FLAG_CLEAR: 'booking.payment_flag.clear',
+
+	// Money recorded by a human — the audit entry IS the trail (AccommodationsSystemDesign.md §8).
+	APARTMENT_FEE_STAMP: 'apartment.fee.stamp',
 
 	// Files
 	FILE_UPLOAD: 'file.upload',
@@ -49,7 +54,12 @@ export const AUDIT_RETENTION_DAYS: Partial<Record<AuditAction, number>> = {
 	'user.session.revoke': 365 * 5,
 	'user.sessions.revoke_all': 365 * 5,
 	'apartment.moderate': 365 * 5,
-	'booking.admin_cancel': 365 * 5
+	'booking.admin_cancel': 365 * 5,
+	// Money-adjacent evidence: the clear entry proves a failed payment op was finished by
+	// a human, and the stamp grants paid time with no money trail of its own — keep both
+	// as long as the financial records they stand in for.
+	'booking.payment_flag.clear': 365 * 5,
+	'apartment.fee.stamp': 365 * 5
 };
 
 /**

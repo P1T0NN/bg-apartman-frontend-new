@@ -29,6 +29,8 @@ export const ANALYTICS_EVENT = {
 	BOOKING_CREATED: 'booking.created',
 	BOOKING_CONFIRMED: 'booking.confirmed',
 	BOOKING_CANCELLED: 'booking.cancelled',
+	BOOKING_NIGHTS_BOOKED: 'booking.nights_booked',
+	BOOKING_NIGHTS_RELEASED: 'booking.nights_released',
 	INVOICE_PAID: 'invoice.paid',
 	INVOICE_FAILED: 'invoice.failed',
 	REFUND_CREATED: 'refund.created',
@@ -110,6 +112,29 @@ export const analytics = defineAnalytics(components.analytics, {
 				cancelledBy: property.string()
 			}
 		}),
+		/**
+		 * Occupancy, pre-split by calendar month. Emitted ONE PER MONTH a stay touches, with
+		 * `occurredAt` dated into that month — so a stay straddling July/August emits two
+		 * events, each carrying only its own side of the boundary (`nightsByMonth`).
+		 *
+		 * Why an event and not an aggregate: "nights booked in July" is a function of
+		 * (booking, window), not a property of the booking row, and an aggregate's `sumValue`
+		 * can only read a scalar off the row. Splitting at write time is what lets the host
+		 * dashboard read occupancy from the rollups instead of scanning every booking.
+		 */
+		bookingNightsBooked: event('booking.nights_booked', {
+			label: 'Nights booked',
+			properties: { nights: property.number({ required: true }) }
+		}),
+		/**
+		 * The reversal twin, same split, same dating — subtract from `nightsBooked` per bucket
+		 * exactly as `gmvCancelled` is subtracted from `gmv`. Emitted only when a booking
+		 * leaves an earning status, because only then were the nights ever counted.
+		 */
+		bookingNightsReleased: event('booking.nights_released', {
+			label: 'Nights released',
+			properties: { nights: property.number({ required: true }) }
+		}),
 		invoicePaid: event('invoice.paid', {
 			label: 'Invoice paid',
 			properties: {
@@ -190,6 +215,17 @@ export const analytics = defineAnalytics(components.analytics, {
 		// (net = confirmed − cancelled per bucket) and the booking-conversion funnel.
 		bookingsConfirmed: count('Bookings confirmed').from('booking.confirmed').by('paymentMethod'),
 		bookingsCancelled: count('Bookings cancelled').from('booking.cancelled').by('cancelledBy'),
+		// Occupancy numerator: `nightsBooked − nightsReleased` per month bucket. NOT admin-only
+		// — a host reads their own occupancy, and the host resource scope already partitions
+		// the rollups so one host can never read another's.
+		nightsBooked: sum('Nights booked', 'count')
+			.description('Booked nights, split into the calendar month each night falls in')
+			.from('booking.nights_booked')
+			.value('nights'),
+		nightsReleased: sum('Nights released', 'count')
+			.description('Nights freed by cancellation — subtract from Nights booked')
+			.from('booking.nights_released')
+			.value('nights'),
 		gmv: sum('GMV', 'currency')
 			.description('Confirmed booking totals (whole euros)')
 			.from('booking.confirmed')

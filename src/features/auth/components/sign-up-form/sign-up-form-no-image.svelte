@@ -1,25 +1,17 @@
 <script lang="ts">
-	// LIBRARIES
-	import { m } from '@/shared/lib/paraglide/messages';
-
 	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
 	// COMPONENTS
-	import { Button } from '@/shared/components/ui/button/index.js';
-	import * as Card from '@/shared/components/ui/card/index.js';
+	import { Button } from '@/components/ui/button/index.js';
+	import * as Card from '@/components/ui/card/index.js';
 	import EmailVerificationForm from '@/features/auth/components/email-verification-form/email-verification-form.svelte';
-	import {
-		FieldGroup,
-		Field,
-		FieldDescription,
-		FieldError
-	} from '@/shared/components/ui/field/index.js';
-	import { FormField } from '@/shared/components/ui/form-field/index.js';
+	import { FieldGroup, Field, FieldDescription, FieldError } from '@/components/ui/field/index.js';
+	import { FormField } from '@/components/ui/form-field/index.js';
 	import GoogleLoginButton from '@/features/auth/components/google-login-button/google-login-button.svelte';
-	import { Input } from '@/shared/components/ui/input/index.js';
+	import { Input } from '@/components/ui/input/index.js';
 	import PasswordInput from '@/features/auth/components/password-input/password-input.svelte';
-	import Link from '@/shared/components/ui/link/link.svelte';
+	import Link from '@/components/ui/link/link.svelte';
 
 	// TYPES
 	import type { ComponentProps } from 'svelte';
@@ -31,26 +23,23 @@
 	const id = $props.id();
 
 	const form = createSignUpForm({
-		signUpFailed: () => m['SignUpForm.SignUpFormNoImage.signUpFailed'](),
-		accountCreatedToast: () => m['SignUpForm.SignUpFormNoImage.accountCreatedToast']()
+		signUpFailed: () =>
+			"We couldn't create your account. Check your details and try again, or sign in if you already have one.",
+		accountCreatedToast: () => 'Account created successfully.'
 	});
 </script>
 
 <Card.Root {...restProps}>
 	{#if form.step === 'signUp'}
 		<Card.Header>
-			<Card.Title>{m['SignUpForm.SignUpFormNoImage.title']()}</Card.Title>
-			<Card.Description>{m['SignUpForm.SignUpFormNoImage.description']()}</Card.Description>
+			<Card.Title>Create an account</Card.Title>
+			<Card.Description>Enter your information below to create your account</Card.Description>
 		</Card.Header>
 
 		<Card.Content>
 			<form onsubmit={form.onSignUpSubmit}>
 				<FieldGroup>
-					<FormField
-						id="name-{id}"
-						label={m['SignUpForm.SignUpFormNoImage.fullName']()}
-						error={form.fieldErrors.name}
-					>
+					<FormField id="name-{id}" label="Full Name" error={form.fieldErrors.name}>
 						<Input
 							id="name-{id}"
 							name="name"
@@ -65,9 +54,9 @@
 
 					<FormField
 						id="email-{id}"
-						label={m['SignUpForm.SignUpFormNoImage.email']()}
+						label="Email"
 						error={form.fieldErrors.email}
-						description={m['SignUpForm.SignUpFormNoImage.emailHelp']()}
+						description="We'll use this to contact you. We will not share your email with anyone else."
 					>
 						<Input
 							id="email-{id}"
@@ -82,9 +71,9 @@
 
 					<FormField
 						id="password-{id}"
-						label={m['SignUpForm.SignUpFormNoImage.password']()}
+						label="Password"
 						error={form.fieldErrors.password}
-						description={m['SignUpForm.SignUpFormNoImage.passwordHelp']()}
+						description="Must be at least 8 characters long."
 					>
 						<PasswordInput
 							id="password-{id}"
@@ -96,9 +85,9 @@
 
 					<FormField
 						id="confirm-password-{id}"
-						label={m['SignUpForm.SignUpFormNoImage.confirmPassword']()}
+						label="Confirm Password"
 						error={form.fieldErrors.confirmPassword}
-						description={m['SignUpForm.SignUpFormNoImage.confirmPasswordHelp']()}
+						description="Please confirm your password."
 					>
 						<PasswordInput
 							id="confirm-password-{id}"
@@ -115,16 +104,12 @@
 					{/if}
 
 					<Field>
-						<Button type="submit" class="w-full" disabled={form.busy}>
-							{m['SignUpForm.SignUpFormNoImage.submit']()}
-						</Button>
+						<Button type="submit" class="w-full" disabled={form.busy}>Create Account</Button>
 						<GoogleLoginButton class="w-full" />
 
 						<FieldDescription class="text-center">
-							{m['SignUpForm.SignUpFormNoImage.alreadyHaveAccount']()}
-							<Link href={UNPROTECTED_PAGE_ENDPOINTS.LOGIN}>
-								{m['SignUpForm.SignUpFormNoImage.signIn']()}
-							</Link>
+							Already have an account?
+							<Link href={UNPROTECTED_PAGE_ENDPOINTS.LOGIN}>Sign in</Link>
 						</FieldDescription>
 					</Field>
 				</FieldGroup>

@@ -2,11 +2,11 @@
 import { toast } from 'svelte-sonner';
 
 // CONFIG
-import { PROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
+import { PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
 // UTILS
 import { authClient } from '@/features/auth/lib/auth-client';
-import { loginFormSchema } from './login-form-schema.js';
+import { loginFormSchema } from '@/shared/features/auth/schemas/authSchemas';
 import { zodIssuesToFieldErrors } from '@/shared/utils/zodFieldErrors';
 import { rateLimitMessage } from '@/utils/rateLimitMessages';
 import { appGoto } from '@/utils/app-navigation';

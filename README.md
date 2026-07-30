@@ -5,7 +5,7 @@ Production-leaning starter combining:
 - **SvelteKit 5** (Svelte runes) + Tailwind + shadcn-svelte
 - **Convex** as the database / backend, with `@convex-dev/better-auth` in **local-install** mode (auth tables live in your schema; you control fields and indexes)
 - **Better Auth**: email/password + email OTP + Google OAuth + account linking
-- **Paraglide** for i18n (`messages/en.json`, `messages/de.json`)
+- English-only UI copy (transactional emails keep their own catalog in `src/convex/i18n/messages/`)
 - **Resend** for transactional email (OTP, contact form)
 - Unified rate limiting via `@convex-dev/rate-limiter` (app mutations + Better Auth HTTP routes)
 - Audit log scaffolding (off by default — see `src/convex/features.ts`)
@@ -101,8 +101,12 @@ src/
     (protected)/             gated by locals.token + currentUser
     (unprotected)/           public pages
     api/                     BA HTTP routes (mounted via convex.config)
-  shared/                    UI kit, utils, paraglide messages
-hooks.server.ts              paraglide → convex auth → security headers
+  components/                UI kit
+  config/                    route endpoints
+  hooks/                     reusable Svelte hooks
+  lib/                       assets, google-maps loaders
+  shared/                    config, types, utils, shared feature logic
+hooks.server.ts              convex auth → security headers
 ```
 
 ## Production checklist

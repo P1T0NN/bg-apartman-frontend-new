@@ -1,12 +1,12 @@
 <script lang="ts">
 	// CONFIG
-	import { COMPANY_DATA } from '@/shared/constants';
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
+	import { COMPANY_DATA } from '@/shared/config';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
 	// COMPONENTS
 	import SignUpFormNoImage from '@/features/auth/components/sign-up-form/sign-up-form-no-image.svelte';
 	import SignUpFormWithImage from '@/features/auth/components/sign-up-form/sign-up-form-with-image.svelte';
-	import Link from '@/shared/components/ui/link/link.svelte';
+	import Link from '@/components/ui/link/link.svelte';
 
 	// LUCIDE ICONS
 	import GalleryVerticalEndIcon from '@lucide/svelte/icons/gallery-vertical-end';

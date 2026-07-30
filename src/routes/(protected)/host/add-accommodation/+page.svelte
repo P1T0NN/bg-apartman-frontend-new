@@ -1,29 +1,30 @@
 <script lang="ts">
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
-	import { m } from '@/shared/lib/paraglide/messages';
 
 	// CONFIG
-	import { PROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
+	import { PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
 	// COMPONENTS
-	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
-	import ConvexMutationForm from '@/shared/components/ui/mutation-form/convex-mutation-form.svelte';
-	import PlacesAutocomplete from '@/shared/components/ui/places-autocomplete/places-autocomplete.svelte';
-	import LocationMap from '@/shared/components/ui/location-map/location-map.svelte';
-	import AmenitiesField from '@/shared/components/pages/(protected)/host/add-accommodation/amenities-field.svelte';
-	import PaymentMethodField from '@/shared/components/pages/(protected)/host/add-accommodation/payment-method-field.svelte';
-	import AddAccommodationHeader from '@/shared/components/pages/(protected)/host/add-accommodation/add-accommodation-header.svelte';
+	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
+	import ConvexMutationForm from '@/components/ui/mutation-form/convex-mutation-form.svelte';
+	import PlacesAutocomplete from '@/components/ui/places-autocomplete/places-autocomplete.svelte';
+	import LocationMap from '@/components/ui/location-map/location-map.svelte';
+	import AmenitiesField from '@/components/pages/(protected)/host/add-accommodation/amenities-field.svelte';
+	import PaymentMethodField from '@/components/pages/(protected)/host/add-accommodation/payment-method-field.svelte';
+	import AddAccommodationHeader from '@/components/pages/(protected)/host/add-accommodation/add-accommodation-header.svelte';
 
 	// SCHEMAS
-	import { addAccommodationSchema } from '@/features/accommodations/schemas/addAccommodationSchema';
+	import {
+		addAccommodationSchema,
+		createAccommodationSchema
+	} from '@/shared/features/accommodation/schemas/accommodationsSchemas';
 
 	// FORMS
 	import { addAccommodationForm } from '@/features/accommodations/forms/addAccommodationForm';
 
 	// UTILS
 	import { appGoto } from '@/utils/app-navigation';
-	import { getLocale } from '@/shared/lib/paraglide/runtime';
 	import {
 		applyRegionToValues,
 		applyStreetToValues
@@ -31,7 +32,7 @@
 
 	// TYPES
 	import type { typesAddAccommodationForm } from '@/shared/features/accommodation/types/accommodationTypes';
-	import type { RegionBounds } from '@/shared/lib/google-maps/places';
+	import type { RegionBounds } from '@/lib/google-maps/places';
 	import type { ZodType } from 'zod';
 
 	const addAccommodationInitialValues: typesAddAccommodationForm = {
@@ -90,8 +91,8 @@
 </script>
 
 <SvelteHead
-	title={m['AddAccommodationPage.SEO.title']()}
-	description={m['AddAccommodationPage.SEO.description']()}
+	title="List your accommodation"
+	description="Fill in the details below. Everything can be edited later — your accommodation goes live after a quick review."
 />
 
 <!-- City autocomplete — cities only (country shown as secondary text). On select it fills
@@ -167,15 +168,19 @@
 <section class="flex w-full flex-col gap-6 p-4 md:p-6">
 	<AddAccommodationHeader />
 
+	<!-- The form collects strings; the WIRE schema coerces them to the numbers the mutation
+	     stores, so the browser sends exactly what the server will re-parse — the same object,
+	     validated twice, defined once. `args` already has `photos` swapped from picked Files
+	     to uploaded R2 keys by the upload pipeline. -->
 	<ConvexMutationForm
 		bind:values
 		wizard
 		sections={addAccommodationForm}
 		schema={addAccommodationSchema as unknown as ZodType<typesAddAccommodationForm>}
 		runFunction={api.tables.accommodations.mutations.createAccommodation.createApartment}
-		mapArgs={(_formValues, args) => ({ ...args, locale: getLocale() })}
+		mapArgs={(_formValues, args) => createAccommodationSchema.parse({ ...args, locale: 'en' })}
 		onSuccess={goToMyAccommodations}
-		submitLabel={m['AddAccommodationPage.ConvexMutationForm.submitLabel']()}
+		submitLabel="Submit for review"
 		customFields={{
 			placeId: regionField,
 			address: streetField,

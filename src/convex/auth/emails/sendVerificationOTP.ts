@@ -2,7 +2,7 @@
 import { Resend as ResendAPI } from 'resend';
 
 // CONFIG
-import { COMPANY_DATA } from '@/shared/constants.js';
+import { COMPANY_DATA } from '@/shared/config.js';
 
 type OtpType = 'sign-in' | 'email-verification' | 'forget-password' | 'change-email';
 

@@ -1,6 +1,9 @@
 <script lang="ts">
 	// COMPONENTS
-	import BookingsStatus from '../bookings-status.svelte';
+	import { FeatureStatus } from '@/components/ui/feature-status/index.js';
+
+	// DATA
+	import { PAYMENT_STATUS_CONFIG } from '@/features/bookings/data/bookingsData';
 
 	// TYPES
 	import type { typesBookingSafe } from '@/shared/features/booking/types/bookingTypes';
@@ -8,4 +11,4 @@
 	let { booking }: { booking: typesBookingSafe } = $props();
 </script>
 
-<BookingsStatus kind="payment" status={booking.paymentStatus} />
+<FeatureStatus config={PAYMENT_STATUS_CONFIG} status={booking.paymentStatus} />

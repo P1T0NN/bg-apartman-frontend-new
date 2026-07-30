@@ -1,9 +1,10 @@
 // LIBRARIES
-import { ConvexError, v } from 'convex/values';
+import { v } from 'convex/values';
 import { query } from '@/convex/_generated/server';
 
 // HELPERS
-import { getAuthUserId } from '@/convex/auth/helpers/getAuthUserId';
+import { requireAuthUserId } from '@/convex/auth/helpers/requireAuthUserId';
+import { collectScopedBookings } from '@/convex/tables/bookings/helpers/collectScopedBookings';
 import {
 	normalizeOneBasedPage,
 	paginatedQueryArgs,
@@ -12,30 +13,17 @@ import {
 
 // UTILS
 import { bookingToBookingSafe } from '@/convex/tables/bookings/utils/bookingToBookingSafe';
+import { matchesBookingFilter } from '@/shared/features/booking/utils/matchesBookingFilter';
+import { matchesBookingSearch } from '@/shared/features/booking/utils/matchesBookingSearch';
+
+// DATA
+import { CLOSED_BOOKING_STATUSES } from '@/shared/features/booking/data/bookingsData';
 
 // TYPES
-import type { Doc } from '@/convex/_generated/dataModel';
-import type { QueryCtx } from '@/convex/_generated/server';
-import type { PaginatedListPayload } from '@/shared/components/ui/data-table/types';
-import type { ConvexErrorPayload } from '@/shared/types/types';
 import type {
-	typesBookingFilter,
-	typesBookingSafe,
-	typesBookingStatus
+	typesBookingFilterCounts,
+	typesUserBookingsPayload
 } from '@/shared/features/booking/types/bookingTypes';
-
-type Scope = 'host' | 'guest';
-
-/** Per-filter counts for the bookings table's segmented control. */
-export type BookingFilterCounts = Record<typesBookingFilter, number>;
-
-/** Payload of `listUserBookingsQuery` — one page plus the tab counts, one subscription. */
-export type UserBookingsPayload = PaginatedListPayload<typesBookingSafe> & {
-	extra: { counts: BookingFilterCounts };
-};
-
-/** Statuses folded into the "cancelled" tab — mirrors the client filter taxonomy. */
-const CLOSED_STATUSES = new Set<typesBookingStatus>(['cancelled', 'declined', 'auto_declined']);
 
 /** Filter values the table's tabs send ("all" is expressed by omitting the arg). */
 const bookingFilterArg = v.union(
@@ -46,55 +34,6 @@ const bookingFilterArg = v.union(
 	v.literal('cancelled')
 );
 
-async function requireUserId(ctx: QueryCtx): Promise<string> {
-	const userId = await getAuthUserId(ctx);
-	if (!userId) {
-		throw new ConvexError({
-			code: 'NOT_AUTHENTICATED',
-			message: { key: 'GenericMessages.NOT_AUTHENTICATED' }
-		} satisfies ConvexErrorPayload);
-	}
-	return userId;
-}
-
-/** Index-bounded read of the signed-in user's whole booking scope, newest first. */
-async function collectScoped(
-	ctx: QueryCtx,
-	scope: Scope,
-	userId: string
-): Promise<Doc<'bookings'>[]> {
-	return scope === 'host'
-		? ctx.db
-				.query('bookings')
-				.withIndex('by_host', (q) => q.eq('hostId', userId))
-				.order('desc')
-				.collect()
-		: ctx.db
-				.query('bookings')
-				.withIndex('by_guest', (q) => q.eq('guestId', userId))
-				.order('desc')
-				.collect();
-}
-
-function matchesFilter(
-	b: Doc<'bookings'>,
-	filter: 'pending' | 'confirmed' | 'checked_in' | 'checked_out' | 'cancelled'
-): boolean {
-	if (filter === 'cancelled') return CLOSED_STATUSES.has(b.status);
-	return b.status === filter;
-}
-
-/** Free-text match over the booking doc fields a host/guest is likely to search by. */
-function matchesSearch(b: Doc<'bookings'>, needle: string): boolean {
-	return [
-		`${b.guestFirstName} ${b.guestLastName}`,
-		b.bookingCode,
-		b.guestEmail,
-		b.guestPhone ?? '',
-		b.apartmentSlug
-	].some((field) => field.toLowerCase().includes(needle));
-}
-
 /**
  * Factory for the host/guest bookings-table query: one subscription returns the page AND the
  * per-filter tab counts (`extra.counts`). Counts need the whole scope regardless of the active
@@ -104,7 +43,7 @@ function matchesSearch(b: Doc<'bookings'>, needle: string): boolean {
  * booking volumes; if a single user's bookings outgrow a few thousand rows, move counts to a
  * counter table and the list back to per-status index reads with cursor pagination.
  */
-export function listUserBookingsQuery(scope: Scope) {
+export function listUserBookingsQuery(scope: 'host' | 'guest') {
 	return query({
 		args: {
 			...paginatedQueryArgs,
@@ -114,12 +53,12 @@ export function listUserBookingsQuery(scope: Scope) {
 			sortColumn: v.optional(v.union(v.literal('stay'), v.literal('total'))),
 			sortDirection: v.optional(v.union(v.literal('asc'), v.literal('desc')))
 		},
-		handler: async (ctx, args): Promise<UserBookingsPayload> => {
-			const userId = await requireUserId(ctx);
-			const rows = await collectScoped(ctx, scope, userId);
+		handler: async (ctx, args): Promise<typesUserBookingsPayload> => {
+			const userId = await requireAuthUserId(ctx);
+			const rows = await collectScopedBookings(ctx, scope, userId);
 
 			// Tab counts over the whole scope — computed here so the table needs no second query.
-			const counts: BookingFilterCounts = {
+			const counts: typesBookingFilterCounts = {
 				all: rows.length,
 				pending: 0,
 				confirmed: 0,
@@ -127,18 +66,19 @@ export function listUserBookingsQuery(scope: Scope) {
 				checked_out: 0,
 				declined: 0,
 				auto_declined: 0,
+				withdrawn: 0,
 				cancelled: 0
 			};
 			for (const b of rows) {
-				if (CLOSED_STATUSES.has(b.status)) counts.cancelled += 1;
+				if (CLOSED_BOOKING_STATUSES.has(b.status)) counts.cancelled += 1;
 				else counts[b.status] += 1;
 			}
 
 			const needle = args.search?.trim().toLowerCase() ?? '';
 			const all = rows.filter(
 				(b) =>
-					(args.filter === undefined || matchesFilter(b, args.filter)) &&
-					(needle === '' || matchesSearch(b, needle))
+					(args.filter === undefined || matchesBookingFilter(b, args.filter)) &&
+					(needle === '' || matchesBookingSearch(b, needle))
 			);
 
 			const dir = args.sortDirection === 'asc' ? 1 : -1;
@@ -146,8 +86,13 @@ export function listUserBookingsQuery(scope: Scope) {
 				all.sort((a, b) => a.checkInDate.localeCompare(b.checkInDate) * dir);
 			} else if (args.sortColumn === 'total') {
 				all.sort((a, b) => (a.total - b.total) * dir);
+			} else if (scope === 'host') {
+				// Host default: deadline-ascending, so the request closest to dying is row one
+				// (HostSystemDesign.md §3). Rows without a deadline (every status but `pending`)
+				// sort last and — `Array.sort` being stable — keep the indexed newest-first order.
+				all.sort((a, b) => (a.pendingExpiresAt ?? Infinity) - (b.pendingExpiresAt ?? Infinity));
 			}
-			// Default order: newest first, already guaranteed by the indexed `.order('desc')`.
+			// Guest default: newest first, already guaranteed by the indexed `.order('desc')`.
 
 			const { numItems } = resolvePaginationOpts(args.paginationOpts);
 			const start = (normalizeOneBasedPage(args.page) - 1) * numItems;

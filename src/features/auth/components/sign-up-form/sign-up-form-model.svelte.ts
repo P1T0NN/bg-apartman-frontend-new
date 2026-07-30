@@ -1,13 +1,12 @@
 // LIBRARIES
-import { m } from '@/shared/lib/paraglide/messages';
 import { toast } from 'svelte-sonner';
 
 // CONFIG
-import { PROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
+import { PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
 // UTILS
 import { authClient } from '@/features/auth/lib/auth-client';
-import { signUpFormSchema } from './sign-up-form-schema.js';
+import { signUpFormSchema } from '@/shared/features/auth/schemas/authSchemas';
 import { zodIssuesToFieldErrors } from '@/shared/utils/zodFieldErrors';
 import { rateLimitMessage } from '@/utils/rateLimitMessages';
 import { appGoto } from '@/utils/app-navigation';
@@ -53,7 +52,7 @@ export function createSignUpForm(copy: SignUpFormCopy) {
 
 		if (p.data.password !== p.data.confirmPassword) {
 			fieldErrors = {
-				confirmPassword: m['ValidationMessages.signUpFormSchema.passwordsMustMatch']()
+				confirmPassword: 'Passwords must match.'
 			};
 			errorMessage = null;
 			return;

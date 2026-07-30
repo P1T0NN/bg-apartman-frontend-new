@@ -11,7 +11,7 @@ export type typesApiResult<TData = unknown> = {
 export type FieldErrors<T extends string = string> = Partial<Record<T, string>>;
 
 /**
- * Locale-agnostic message descriptor: a Paraglide message key + its interpolation params.
+ * Locale-agnostic message descriptor: a message key + its interpolation params.
  * The backend emits these; the frontend resolves them in whatever locale the user is in.
  *
  * `params` must be JSON-serialisable (it crosses the wire). Use only `string | number | boolean`.

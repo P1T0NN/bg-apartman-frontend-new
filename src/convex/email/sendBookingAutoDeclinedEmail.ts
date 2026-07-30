@@ -12,9 +12,11 @@ type SendBookingAutoDeclinedEmailInput = {
 	apartmentTitle: string;
 	checkInDate: string;
 	checkOutDate: string;
+	/** Defaults to `expired` (the 48h window lapsed). */
+	reason?: 'expired' | 'dates_taken';
 };
 
-/** When a pending request expires unanswered: tell the guest it lapsed. */
+/** When a pending request ends without a host decision: tell the guest which way it ended. */
 export async function sendBookingAutoDeclinedEmail(
 	ctx: EmailCtx,
 	input: SendBookingAutoDeclinedEmailInput
@@ -26,7 +28,8 @@ export async function sendBookingAutoDeclinedEmail(
 		bookingCode: input.bookingCode,
 		checkInDate: input.checkInDate,
 		checkOutDate: input.checkOutDate,
-		browseUrl: homeUrl()
+		browseUrl: homeUrl(),
+		reason: input.reason
 	});
 
 	await sendEmail(ctx, input.guestEmail, content);

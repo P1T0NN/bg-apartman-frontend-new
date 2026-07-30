@@ -5,20 +5,29 @@
 	// TYPES
 	import type { typesBookingSafe } from '@/shared/features/booking/types/bookingTypes';
 
+	// The table's detail-sheet state, bound straight through: this cell is one of the two
+	// places a row opens from, so it does the opening itself.
 	let {
 		booking,
-		onSelect
+		selected = $bindable(null),
+		open = $bindable(false)
 	}: {
 		booking: typesBookingSafe;
-		onSelect: () => void;
+		selected?: typesBookingSafe | null;
+		open?: boolean;
 	} = $props();
 
 	const name = $derived(`${booking.guestFirstName} ${booking.guestLastName}`);
+
+	function openDetail() {
+		selected = booking;
+		open = true;
+	}
 </script>
 
 <button
 	type="button"
-	onclick={onSelect}
+	onclick={openDetail}
 	class="group/guest flex w-full items-center gap-3 text-left"
 >
 	<span

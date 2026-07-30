@@ -1,5 +1,6 @@
 // TYPES
 import type { Doc } from '@/convex/_generated/dataModel';
+import type { PaginatedListPayload } from '@/components/ui/data-table/types';
 
 /** Derived from `bookings.status` in convex/schema.ts — do not duplicate manually. */
 export type typesBookingStatus = Doc<'bookings'>['status'];
@@ -28,18 +29,10 @@ export type typesBookingTransitionPatch = {
 	cancelledBy?: Doc<'bookings'>['cancelledBy'];
 	cancelReason?: string;
 	pendingExpiresAt?: number;
+	lateCancellation?: boolean;
 };
 
 export type typesBookingFilterOption = { value: typesBookingFilter; label: string };
-export type typesStatusTone = {
-	label: string;
-	/** Pill classes (ring style, matches the accommodations table badges). */
-	badgeClass: string;
-	/** Solid dot used in stat cards / legends. */
-	dotClass: string;
-};
-export type typesBookingStatusConfig = Record<typesBookingStatus, typesStatusTone>;
-export type typesPaymentStatusConfig = Record<typesPaymentStatus, typesStatusTone>;
 
 /**
  * Denormalized accommodation summary joined onto a booking for list/detail UI. `title`/`city`
@@ -74,10 +67,50 @@ export type typesReservationBooking = Pick<
 	| 'numberOfAdults'
 	| 'numberOfChildren'
 	| 'paymentMethod'
+	| 'paymentStatus'
 	| 'status'
 	| 'total'
+	| 'policy'
+	| 'cancelledBy'
+	| 'cancelReason'
+	| 'stayConfirmationRequestedAt'
+	| 'stayConfirmedAt'
 > & {
 	apartmentTitle: string;
 	apartmentSlug: string;
+	/** Whether the listing is still `published` — gates the "Book again" link. */
+	apartmentIsBookable: boolean;
 	hostName: string;
+};
+
+/** The cancellation/response rules frozen onto a booking at creation. */
+export type typesBookingPolicySnapshot = Doc<'bookings'>['policy'];
+
+/**
+ * A listing's occupied nights, as the host calendar renders them: sold nights (`booked`)
+ * and nights the host closed (`blocked`). Ranges are half-open — `end` is the checkout day.
+ */
+export type typesApartmentCalendar = {
+	start: string;
+	end: string;
+	status: 'booked' | 'blocked';
+	/** `booked` ranges only — the stay the host jumps to from the cell. Host surface only:
+	 *  the public booking calendar never carries booking ids. */
+	bookingId?: string;
+}[];
+
+/** Filter values the bookings table's tabs send ("all" is expressed by omitting the arg). */
+export type typesBookingTabFilter =
+	| 'pending'
+	| 'confirmed'
+	| 'checked_in'
+	| 'checked_out'
+	| 'cancelled';
+
+/** Per-filter counts for the bookings table's segmented control. */
+export type typesBookingFilterCounts = Record<typesBookingFilter, number>;
+
+/** Payload of `listUserBookingsQuery` — one page plus the tab counts, one subscription. */
+export type typesUserBookingsPayload = PaginatedListPayload<typesBookingSafe> & {
+	extra: { counts: typesBookingFilterCounts };
 };

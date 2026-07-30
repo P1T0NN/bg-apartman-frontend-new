@@ -5,7 +5,6 @@ import { error } from '@sveltejs/kit';
 // LIBRARIES
 import { checkBotId } from 'botid/server';
 import { dev } from '$app/environment';
-import { m } from '@/shared/lib/paraglide/messages';
 import { z } from 'zod';
 
 // TYPES
@@ -50,7 +49,7 @@ export const safeCommand = <S extends z.ZodType, R>(
 		});
 
 		if (verification.isBot) {
-			throw error(403, m['GenericMessages.FORBIDDEN']());
+			throw error(403, "You're not allowed to perform this action.");
 		}
 
 		const data = schema.parse(raw) as z.output<S>;

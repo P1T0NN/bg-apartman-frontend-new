@@ -2,7 +2,7 @@
 import { query } from '@/convex/_generated/server';
 
 // CONFIG
-import { GUEST_DASHBOARD } from '@/convex/pages/guest/dashboard/config';
+import { GUEST_DASHBOARD } from '@/shared/config';
 
 // HELPERS
 import { getAuthUserId } from '@/convex/auth/helpers/getAuthUserId';

@@ -11,7 +11,7 @@ import {
 import { resolveFavoriteAccommodations } from '../helpers/resolveFavoriteAccommodations';
 
 // TYPES
-import type { PaginatedListPayload } from '@/shared/components/ui/data-table/types';
+import type { PaginatedListPayload } from '@/components/ui/data-table/types';
 import type { SearchAccommodation } from '@/shared/features/accommodation/types/accommodationTypes';
 
 /**

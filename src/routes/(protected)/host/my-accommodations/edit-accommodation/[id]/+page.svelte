@@ -5,14 +5,14 @@
 	import { page } from '$app/state';
 
 	// CLASSES
-	import { siteHeaderBreadcrumb } from '@/shared/components/ui/app-sidebar/site-header-breadcrumb.svelte.js';
+	import { siteHeaderBreadcrumb } from '@/components/ui/app-sidebar/site-header-breadcrumb.svelte.js';
 
 	// COMPONENTS
-	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
-	import EditAccommodationTabs from '@/shared/components/pages/(protected)/host/edit-accommodation/edit-accommodation-tabs.svelte';
-	import EditAccommodationPageLoading from '@/shared/components/pages/(protected)/host/edit-accommodation/loading/edit-accommodation-page-loading.svelte';
-	import EditAccommodationPageEmpty from '@/shared/components/pages/(protected)/host/edit-accommodation/empty/edit-accommodation-page-empty.svelte';
-	import EditAccommodationPageError from '@/shared/components/pages/(protected)/host/edit-accommodation/error/edit-accommodation-page-error.svelte';
+	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
+	import EditAccommodationTabs from '@/components/pages/(protected)/host/edit-accommodation/edit-accommodation-tabs.svelte';
+	import EditAccommodationPageLoading from '@/components/pages/(protected)/host/edit-accommodation/loading/edit-accommodation-page-loading.svelte';
+	import EditAccommodationPageEmpty from '@/components/pages/(protected)/host/edit-accommodation/empty/edit-accommodation-page-empty.svelte';
+	import { ErrorComponent } from '@/components/ui/error-component/index.js';
 
 	// TYPES
 	import type { Doc, Id } from '@/convex/_generated/dataModel';
@@ -44,7 +44,11 @@
 
 <section class="flex w-full flex-col gap-6 p-4 md:p-6">
 	{#if accommodationQuery.error}
-		<EditAccommodationPageError />
+		<ErrorComponent
+			variant="alert"
+			title="Couldn't load this accommodation"
+			description="Something went wrong while loading this accommodation. Please try again in a moment."
+		/>
 	{:else if accommodation === null}
 		<EditAccommodationPageEmpty />
 	{:else if accommodation === undefined}

@@ -2,9 +2,7 @@
 import { sequence } from '@sveltejs/kit/hooks';
 
 // LIBRARIES
-import { paraglideMiddleware } from '@/shared/lib/paraglide/server';
 import { getToken } from '@mmailaender/convex-better-auth-svelte/sveltekit';
-import { getTextDirection } from '@/shared/lib/paraglide/runtime';
 import { withServerConvexToken } from 'convex-svelte/sveltekit/server';
 
 // UTILS
@@ -36,18 +34,6 @@ const securityHeadersHandle: Handle = async ({ event, resolve }) => {
 	return response;
 };
 
-// Paraglide SSR middleware — locale detection, redirects, URL de-localization.
-// https://inlang.com/m/gerre34r/library-inlang-paraglideJs/sveltekit
-// https://inlang.com/m/gerre34r/library-inlang-paraglideJs/middleware
-const paraglideHandle: Handle = ({ event, resolve }) =>
-	paraglideMiddleware(event.request, ({ request: localizedRequest, locale }) => {
-		event.request = localizedRequest;
-		return resolve(event, {
-			transformPageChunk: ({ html }) =>
-				html.replace('%lang%', locale).replace('%dir%', getTextDirection(locale))
-		});
-	});
-
 // Convex auth handle - exposes token on locals and to server-side Convex calls
 const convexAuthHandle: Handle = ({ event, resolve }) => {
 	const token = getToken(event.cookies);
@@ -55,5 +41,5 @@ const convexAuthHandle: Handle = ({ event, resolve }) => {
 	return withServerConvexToken(token, () => resolve(event));
 };
 
-// Paraglide first (de-localize request for matchers); then convex auth, then security headers
-export const handle: Handle = sequence(paraglideHandle, convexAuthHandle, securityHeadersHandle);
+// Convex auth first (token on locals), then security headers
+export const handle: Handle = sequence(convexAuthHandle, securityHeadersHandle);

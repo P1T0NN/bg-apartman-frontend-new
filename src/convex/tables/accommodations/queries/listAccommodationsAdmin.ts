@@ -16,16 +16,26 @@ import { apartmentStatus, apartmentType } from '../schemas/accommodationsSchemas
 
 // TYPES
 import type { Doc } from '@/convex/_generated/dataModel';
-import type { PaginatedListPayload } from '@/shared/components/ui/data-table/types';
+import type { PaginatedListPayload } from '@/components/ui/data-table/types';
 
 /** Lean row for the `/admin/accommodations` DataTable (and the user-detail Accommodations tab). */
 export type AdminAccommodationRow = Pick<
 	Doc<'apartments'>,
-	'_id' | '_creationTime' | 'title' | 'slug' | 'city' | 'type' | 'pricePerNight' | 'status'
+	| '_id'
+	| '_creationTime'
+	| 'title'
+	| 'slug'
+	| 'city'
+	| 'type'
+	| 'pricePerNight'
+	| 'status'
+	| 'isFeatured'
 > & {
 	imageUrl: string;
 	hostId: string;
 	hostName: string;
+	/** `listing_fee` mode only — drives the renewal state shown next to the fee action. */
+	apartmentSubscriptionExpiryDate?: number;
 };
 
 /**
@@ -107,6 +117,8 @@ export const listAccommodationsAdmin = query({
 				type: a.type,
 				pricePerNight: a.pricePerNight,
 				status: a.status,
+				isFeatured: a.isFeatured,
+				apartmentSubscriptionExpiryDate: a.apartmentSubscriptionExpiryDate,
 				imageUrl: a.images[0]?.url ?? '',
 				hostId: a.hostId,
 				hostName: hosts.get(a.hostId)?.name?.trim() || (hosts.get(a.hostId)?.email ?? '—')

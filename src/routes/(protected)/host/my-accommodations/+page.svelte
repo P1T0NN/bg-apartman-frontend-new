@@ -1,8 +1,8 @@
 <script lang="ts">
 	// COMPONENTS
-	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
-	import MyAccommodationsHeader from '@/shared/components/pages/(protected)/host/my-accommodations/my-accommodations-header.svelte';
-	import MyAccommodationsTable from '@/shared/components/pages/(protected)/host/my-accommodations/my-accommodations-table.svelte';
+	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
+	import MyAccommodationsHeader from '@/components/pages/(protected)/host/my-accommodations/my-accommodations-header.svelte';
+	import MyAccommodationsTable from '@/components/pages/(protected)/host/my-accommodations/my-accommodations-table/my-accommodations-table.svelte';
 </script>
 
 <SvelteHead

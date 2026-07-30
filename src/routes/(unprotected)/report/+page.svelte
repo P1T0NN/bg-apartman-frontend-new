@@ -1,21 +1,20 @@
 <script lang="ts">
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
-	import { m } from '@/shared/lib/paraglide/messages';
 
 	// COMPONENTS
-	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
-	import Section from '@/shared/components/ui/section/section.svelte';
-	import ConvexMutationForm from '@/shared/components/ui/mutation-form/convex-mutation-form.svelte';
-	import { Button } from '@/shared/components/ui/button/index.js';
-	import ReportHeader from '@/shared/components/pages/(unprotected)/report/report-header.svelte';
+	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
+	import Section from '@/components/ui/section/section.svelte';
+	import ConvexMutationForm from '@/components/ui/mutation-form/convex-mutation-form.svelte';
+	import { Button } from '@/components/ui/button/index.js';
+	import ReportHeader from '@/components/pages/(unprotected)/report/report-header.svelte';
 
 	// SCHEMAS
 	import {
 		createReportSchema,
 		type CreateReportInput,
 		type ReportCategory
-	} from '@/features/reports/schemas/reportsSchemas';
+	} from '@/shared/features/report/schemas/reportsSchemas';
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
@@ -24,7 +23,7 @@
 	import type {
 		MutationFormFieldSnippetProps,
 		MutationFormSection
-	} from '@/shared/components/ui/mutation-form/types.js';
+	} from '@/components/ui/mutation-form/types.js';
 
 	// LUCIDE ICONS
 	import BugIcon from '@lucide/svelte/icons/bug';
@@ -33,9 +32,9 @@
 	import SendIcon from '@lucide/svelte/icons/send';
 
 	const categories = $derived([
-		{ id: 'bug' as const, label: m['ReportPage.categoryBug'](), icon: BugIcon },
-		{ id: 'idea' as const, label: m['ReportPage.categoryIdea'](), icon: LightbulbIcon },
-		{ id: 'other' as const, label: m['ReportPage.categoryOther'](), icon: MessageCircleIcon }
+		{ id: 'bug' as const, label: 'Something is broken', icon: BugIcon },
+		{ id: 'idea' as const, label: 'I have an idea', icon: LightbulbIcon },
+		{ id: 'other' as const, label: 'Something else', icon: MessageCircleIcon }
 	]);
 
 	const sections = $derived<MutationFormSection[]>([
@@ -46,23 +45,24 @@
 				{
 					id: 'category',
 					kind: 'radio',
-					label: m['ReportPage.categoryLabel']()
+					label: "What's this about?"
 				},
 				{
 					id: 'message',
 					kind: 'textarea',
 					rows: 6,
-					label: m['ReportPage.fieldMessage'](),
-					placeholder: m['ReportPage.fieldMessagePlaceholder'](),
+					label: 'Details',
+					placeholder:
+						'Describe what you were doing and what went wrong. The more detail, the faster we can fix it.',
 					required: true
 				},
 				{
 					id: 'email',
 					kind: 'input',
 					type: 'email',
-					label: m['ReportPage.fieldEmail'](),
-					placeholder: m['ReportPage.fieldEmailPlaceholder'](),
-					description: m['ReportPage.fieldEmailDescription'](),
+					label: 'Email (optional)',
+					placeholder: 'you@example.com',
+					description: "Leave your email if you'd like us to follow up.",
 					autocomplete: 'email'
 				}
 			]
@@ -76,7 +76,10 @@
 	});
 </script>
 
-<SvelteHead title={m['ReportPage.SEO.title']()} description={m['ReportPage.SEO.description']()} />
+<SvelteHead
+	title="Report an issue"
+	description="Tell us about a bug or anything else you ran into."
+/>
 
 <!-- min-h-dvh: the page fills the viewport on its own, so the footer only appears once the
      visitor scrolls (a percentage min-h-full can't resolve inside the layout's flex wrapper). -->
@@ -94,7 +97,7 @@
 		{#snippet actions({ busy }: { busy: boolean })}
 			<Button type="submit" size="lg" class="w-full gap-2" disabled={busy}>
 				<SendIcon class="size-4" />
-				{m['ReportPage.submit']()}
+				Send report
 			</Button>
 		{/snippet}
 	</ConvexMutationForm>

@@ -1,7 +1,4 @@
 <script lang="ts">
-	// LIBRARIES
-	import { m } from '@/shared/lib/paraglide/messages';
-
 	// COMPONENTS
 	import UploadFileItemSingle from './upload-file-item-single.svelte';
 
@@ -54,7 +51,7 @@
 <div
 	class={cn('flex flex-col gap-3', className)}
 	role="region"
-	aria-label={m['UploadFile.UploadFileSingle.placeholder']()}
+	aria-label="File preview. Drop a file here to replace."
 	aria-live="polite"
 	ondragover={onDragOver}
 	ondrop={onDrop}

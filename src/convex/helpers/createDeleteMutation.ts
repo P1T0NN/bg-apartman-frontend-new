@@ -1,7 +1,11 @@
+// CONFIG
+import { OPERATIONAL_LIMITS } from '@/shared/config';
+
 // LIBRARIES
 import { ConvexError, v } from 'convex/values';
 import { getAuthUserId } from '@/convex/auth/helpers/getAuthUserId';
-import { mutation } from '../_generated/server';
+// Trigger-wrapped constructor — bulk deletes on aggregated tables must update the counts (see functions.ts).
+import { mutation } from '../functions';
 
 // HELPERS
 import { convexGetRateLimitedUserId } from './convexGetRateLimitedUserId.js';
@@ -18,8 +22,6 @@ import type { AuditAction } from '../tables/auditLog/auditLogConfigs';
 // ─── Config types ────────────────────────────────────────────────────────────
 
 /** Default cap on `ids.length` per request. Overridable per call site. */
-const DEFAULT_MAX_BATCH_SIZE = 200;
-
 /**
  * Phase 2 execution strategy. Controls how per-row work (`onDelete` → `ctx.db.delete`)
  * is scheduled across the rows in a batch.
@@ -167,7 +169,7 @@ export type CreateDeleteMutationOptions<T extends TableNames> = {
 	 */
 	onDelete?: (ctx: MutationCtx, doc: Doc<T>) => Promise<void>;
 	/**
-	 * Max ids accepted per request. Default {@link DEFAULT_MAX_BATCH_SIZE}. Enforced BEFORE
+	 * Max ids accepted per request. Default {@link OPERATIONAL_LIMITS.DEFAULT_MAX_DELETE_BATCH}. Enforced BEFORE
 	 * the rate-limit charge, so oversized payloads get a cheap rejection.
 	 */
 	maxBatchSize?: number;
@@ -302,7 +304,7 @@ export function createDeleteMutation<T extends TableNames>(
 		adminOnly,
 		runStorageDelete,
 		onDelete,
-		maxBatchSize = DEFAULT_MAX_BATCH_SIZE,
+		maxBatchSize = OPERATIONAL_LIMITS.DEFAULT_MAX_DELETE_BATCH,
 		skipRateLimit,
 		phase2Strategy = 'sequential',
 		audit: auditOption

@@ -119,7 +119,12 @@ export const convexRateLimitRegistry = {
 	updateApartment: limitPresets.interactiveWrite,
 	setApartmentStatus: limitPresets.interactiveWrite,
 	moderateApartmentStatus: limitPresets.interactiveWrite,
+	setApartmentFeatured: limitPresets.interactiveWrite,
+	stampListingFeePayment: limitPresets.interactiveWrite,
 	deleteApartment: limitPresets.bulkDelete,
+	blockApartmentDates: limitPresets.interactiveWrite,
+	unblockApartmentDates: limitPresets.interactiveWrite,
+	requestStayConfirmation: limitPresets.interactiveWrite,
 
 	// Convex storage uploads
 	generateConvexUploadUrl: limitPresets.fileUpload,
@@ -137,8 +142,19 @@ export const convexRateLimitRegistry = {
 	declineBooking: limitPresets.interactiveWrite,
 	cancelBookingOwner: limitPresets.interactiveWrite,
 	cancelBookingAdmin: limitPresets.interactiveWrite,
+	clearPaymentFlag: limitPresets.interactiveWrite,
 	cancelBookingGuest: limitPresets.interactiveWrite,
 	withdrawBookingGuest: limitPresets.interactiveWrite,
+	/** Reservation-link recovery, keyed by the submitted email — tight, it guards a guessable code. */
+	findMyReservation: {
+		kind: 'token bucket' as const,
+		rate: 10,
+		period: MINUTE,
+		capacity: 5
+	},
+
+	// Reports
+	setReportStatus: limitPresets.interactiveWrite,
 
 	// Search / expensive reads
 	fetchTestRows: limitPresets.searchQuery,

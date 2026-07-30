@@ -1,24 +1,39 @@
 // LIBRARIES
 import { v } from 'convex/values';
-import { mutation } from '@/convex/_generated/server';
+import { zodToConvexFields } from 'convex-helpers/server/zod4';
+import { mutation } from '@/convex/functions';
+
+// CONFIG
+import { PAYMENTS_CONFIG } from '@/shared/config';
 
 // UTILS
 import { authComponent } from '@/convex/auth/auth';
+import { onlinePaymentsEnabled } from '@/convex/payments/adapter';
+import { getAuthUserId } from '@/convex/auth/helpers/getAuthUserId';
 import { analytics, ANALYTICS_EVENT, hostAnalyticsScope } from '@/convex/analytics';
+import { trackBookingNights } from '@/convex/tables/bookings/helpers/trackBookingNights';
 import { sendCreateBookingEmail } from '@/convex/email/sendCreateBookingEmail';
 import { calculatePrice } from '@/shared/features/pricing/utils/calculatePrice';
 import { makeBookingCode } from '@/shared/features/booking/utils/makeBookingCode';
 import { nightsBetween } from '@/shared/utils/dateUtils';
 
 // SCHEMAS
-import { paymentMethod } from '@/convex/tables/accommodations/schemas/accommodationsSchemas';
+import { createBookingSchema } from '@/shared/features/booking/schemas/bookingsSchemas';
 import { pendingExpiresAtFrom } from '@/shared/features/booking/utils/pendingExpiresAtFrom';
+import { currentBookingPolicySnapshot } from '@/shared/features/booking/utils/currentBookingPolicySnapshot';
 import { mutationResultData } from '@/convex/schemas/schemas';
-import { hasOverlappingBooking } from '@/convex/tables/bookings/helpers/hasOverlappingBooking';
+import { hasAvailabilityConflict } from '@/convex/tables/bookings/helpers/hasAvailabilityConflict';
+import { findOpenDuplicateRequest } from '@/convex/tables/bookings/helpers/findOpenDuplicateRequest';
 
 const bookingData = v.object({
 	bookingId: v.id('bookings'),
-	bookingCode: v.string()
+	bookingCode: v.string(),
+	/**
+	 * Online bookings only: the row is `awaiting` and invisible until the guest pays. The
+	 * caller must send them to `createCheckoutSession`'s redirect URL rather than straight
+	 * to the reservation page (PaymentsSystemDesign.md §3).
+	 */
+	checkoutRequired: v.optional(v.boolean())
 });
 
 /**
@@ -27,38 +42,32 @@ const bookingData = v.object({
  * Public (no auth): guests book without an account. The returned `bookingId` is the
  * unguessable access key for `/reservations/[id]`; `bookingCode` is the short code shown
  * to the guest and used for support lookups. Status is `confirmed` for instant-book
- * accommodations, otherwise `pending` (host review). Payment is `pending` — cash is settled
- * on arrival.
+ * accommodations, otherwise `pending` (host review). Cash payment is `on_arrival` end to
+ * end — the platform never witnesses the handover.
+ *
+ * Args are DERIVED from the shared `createBookingSchema` (`zodToConvexFields`) — the wire
+ * twin of the form schema the browser validates — and the handler re-runs it
+ * authoritatively. Shape rules (required fields, email format, ≥ 1 night) live only in the
+ * schema; everything semantic below (availability, listing status, payment-method
+ * acceptance, duplicates) stays here, where the database is.
  */
 export const createBooking = mutation({
-	args: {
-		apartmentSlug: v.string(),
-		hostId: v.string(),
-
-		guestFirstName: v.string(),
-		guestLastName: v.string(),
-		guestEmail: v.string(),
-		guestPhone: v.string(),
-		specialRequests: v.optional(v.string()),
-
-		checkInDate: v.string(),
-		checkOutDate: v.string(),
-		numberOfAdults: v.number(),
-		numberOfChildren: v.number(),
-
-		paymentMethod,
-		instantBooking: v.boolean(),
-		locale: v.optional(v.string())
-	},
+	args: zodToConvexFields(createBookingSchema.shape),
 	returns: mutationResultData(bookingData),
-	handler: async (ctx, args) => {
-		const numberOfNights = nightsBetween(args.checkInDate, args.checkOutDate);
-		if (numberOfNights < 1) {
+	handler: async (ctx, rawArgs) => {
+		// Authoritative run of the shared schema (the form's pre-submit check is advisory).
+		// A failure means a client bypassed validation — generic envelope, no per-issue copy.
+		const parsed = createBookingSchema.safeParse(rawArgs);
+		if (!parsed.success) {
 			return {
 				success: false,
 				message: { key: 'GenericMessages.INVALID_BOOKING_DATES' }
 			};
 		}
+		// Trimmed + coerced by the schema, so the handler never re-cleans a field.
+		const args = parsed.data;
+
+		const numberOfNights = nightsBetween(args.checkInDate, args.checkOutDate);
 
 		const apartment = await ctx.db
 			.query('apartments')
@@ -81,10 +90,42 @@ export const createBooking = mutation({
 			};
 		}
 
-		// Double-booking guard: reject if any active booking overlaps the requested nights.
-		// Runs inside the mutation, so Convex's transactional serialization makes two
-		// simultaneous submissions for the same dates impossible to both succeed.
-		if (await hasOverlappingBooking(ctx, apartment._id, args.checkInDate, args.checkOutDate)) {
+		// The dark-ship gate, enforced server-side rather than trusted from the form: while
+		// `PROVIDER: 'none'` there is no checkout to send the guest to, so an online request
+		// must not create an `awaiting` row that can never be finished. Legacy listings
+		// stamped `online`/`both` before the gate existed are covered by this too.
+		const isOnline = args.paymentMethod === 'online';
+		if (isOnline && !onlinePaymentsEnabled()) {
+			return {
+				success: false,
+				message: { key: 'GenericMessages.PAYMENT_METHOD_NOT_ACCEPTED' }
+			};
+		}
+
+		// Double-submit guard: the same guest asking for the same stay twice gets their
+		// existing request back, not a second row in the host's queue (GSD §2). Checked
+		// before availability so a duplicate never trips the "dates unavailable" path.
+		const duplicate = await findOpenDuplicateRequest(
+			ctx,
+			apartment._id,
+			args.guestEmail,
+			args.checkInDate,
+			args.checkOutDate
+		);
+		if (duplicate) {
+			return {
+				success: true,
+				message: { key: 'GenericMessages.BOOKING_ALREADY_REQUESTED' },
+				data: { bookingId: duplicate._id, bookingCode: duplicate.bookingCode }
+			};
+		}
+
+		// Double-booking guard: reject if a confirmed/checked-in booking or a host calendar
+		// block covers the requested nights. Runs inside the mutation, so Convex's
+		// transactional serialization makes two simultaneous submissions for the same dates
+		// impossible to both succeed. Other `pending` requests are NOT a conflict — the host
+		// picks a winner at confirm time (BookingSystemDesign.md §6).
+		if (await hasAvailabilityConflict(ctx, apartment._id, args.checkInDate, args.checkOutDate)) {
 			return {
 				success: false,
 				message: { key: 'GenericMessages.DATES_UNAVAILABLE' }
@@ -99,6 +140,8 @@ export const createBooking = mutation({
 		const bookingCode = makeBookingCode();
 		const now = Date.now();
 		const isInstant = args.instantBooking;
+		// Cash request only — online rows get their clock at the authorization webhook.
+		const pendingExpiresAt = isInstant || isOnline ? undefined : pendingExpiresAtFrom(now);
 
 		const hostUser = (await authComponent.getAnyUserById(ctx, args.hostId)) as {
 			name?: string;
@@ -111,11 +154,18 @@ export const createBooking = mutation({
 			apartmentSlug: args.apartmentSlug,
 			hostId: args.hostId,
 
-			guestFirstName: args.guestFirstName.trim(),
-			guestLastName: args.guestLastName.trim(),
-			guestEmail: args.guestEmail.trim(),
-			guestPhone: args.guestPhone.trim(),
-			specialRequests: args.specialRequests?.trim() || undefined,
+			// Already trimmed by the schema — the handler stores what the parse produced.
+			guestFirstName: args.guestFirstName,
+			guestLastName: args.guestLastName,
+			// Lowercased so `by_guest_email` lookups (the account claim, support search) match
+			// whatever casing the guest typed — GuestSystemDesign.md §1.
+			guestEmail: args.guestEmail.toLowerCase(),
+			// Stamped when the booker is signed in, whatever email they typed
+			// (GuestSystemDesign.md §1/§9). Anonymous bookings join an account later via
+			// `claimMyBookings`.
+			guestId: (await getAuthUserId(ctx)) ?? undefined,
+			guestPhone: args.guestPhone,
+			specialRequests: args.specialRequests || undefined,
 
 			checkInDate: args.checkInDate,
 			checkOutDate: args.checkOutDate,
@@ -125,16 +175,45 @@ export const createBooking = mutation({
 
 			subtotal: quote.accommodationTotal,
 			cleaningFee: quote.cleaningFee,
+			// Derived from ACCOMMODATIONS_CONFIG by `calculatePrice`; 0 outside
+			// `booking_fee` mode. Snapshotted here so a later config change can never
+			// reprice this booking.
+			platformFee: quote.platformFee,
 			total: quote.total,
 			currency: 'EUR',
 
 			paymentMethod: args.paymentMethod,
-			paymentStatus: 'pending',
-			status: isInstant ? 'confirmed' : 'pending',
-			pendingExpiresAt: isInstant ? undefined : pendingExpiresAtFrom(now),
+			// Cash is `on_arrival` end to end — the platform never witnesses the handover.
+			//
+			// Online opens a checkout instead: the row exists, nobody has been told anything,
+			// and it stays that way until the authorization webhook lands
+			// (PaymentsSystemDesign.md §3). An `awaiting` booking is invisible — no emails, no
+			// host queue entry, no host clock (an abandoned checkout must not eat the host's
+			// 48h window), and no dates blocked (`pending` never blocks dates anyway). Instant
+			// listings are `pending` here too: they become `confirmed` inside the webhook,
+			// after capture.
+			paymentStatus: isOnline ? 'awaiting' : 'on_arrival',
+			paymentDeadlineAt: isOnline
+				? now + PAYMENTS_CONFIG.CHECKOUT_DEADLINE_MINUTES * 60_000
+				: undefined,
+			status: isInstant && !isOnline ? 'confirmed' : 'pending',
+			// Frozen so later config changes can never move THIS booking's windows.
+			policy: currentBookingPolicySnapshot(),
+			pendingExpiresAt,
 
 			updatedAt: now
 		});
+
+		// Nothing is announced for an online booking yet — not to the guest, not to the host,
+		// not to analytics. The webhook owns all of that at authorization; a checkout the
+		// guest abandons is reaped without ever having been a fact (§3, §11).
+		if (isOnline) {
+			return {
+				success: true,
+				message: { key: 'GenericMessages.BOOKING_CREATED' },
+				data: { bookingId, bookingCode, checkoutRequired: true }
+			};
+		}
 
 		await analytics.track(ctx, ANALYTICS_EVENT.BOOKING_CREATED, {
 			properties: { paymentMethod: args.paymentMethod, instant: isInstant }
@@ -144,6 +223,18 @@ export const createBooking = mutation({
 				scopes: [hostAnalyticsScope(args.hostId)],
 				properties: { totalEuros: quote.total, paymentMethod: args.paymentMethod }
 			});
+			// Occupancy ledger, split per calendar month — only instant bookings are earning
+			// at creation. A `pending` request's nights are counted when the host confirms.
+			await trackBookingNights(
+				ctx,
+				{
+					_id: bookingId,
+					hostId: args.hostId,
+					checkInDate: args.checkInDate,
+					checkOutDate: args.checkOutDate
+				},
+				'booked'
+			);
 		}
 
 		const hostEmail = hostUser?.email?.trim();
@@ -160,10 +251,11 @@ export const createBooking = mutation({
 			total: quote.total,
 			currency: 'EUR',
 			instantBooking: args.instantBooking,
-			guestFirstName: args.guestFirstName.trim(),
-			guestLastName: args.guestLastName.trim(),
-			guestEmail: args.guestEmail.trim(),
-			guestPhone: args.guestPhone.trim(),
+			respondBy: pendingExpiresAt,
+			guestFirstName: args.guestFirstName,
+			guestLastName: args.guestLastName,
+			guestEmail: args.guestEmail,
+			guestPhone: args.guestPhone,
 			hostName: hostUser?.name?.trim() || 'Host',
 			hostEmail: hostEmail ?? ''
 		});

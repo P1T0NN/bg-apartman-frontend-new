@@ -2,10 +2,7 @@
 import { redirect } from '@sveltejs/kit';
 
 // CONFIG
-import { UNPROTECTED_PAGE_ENDPOINTS, PROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
-
-// UTILS
-import { localizeHref } from '@/shared/lib/paraglide/runtime';
+import { UNPROTECTED_PAGE_ENDPOINTS, PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
 // TYPES
 import type { LayoutServerLoad } from '../$types';
@@ -15,11 +12,11 @@ export const load: LayoutServerLoad = async (event) => {
 	const { currentUser } = await event.parent();
 
 	if (!currentUser) {
-		throw redirect(302, localizeHref(UNPROTECTED_PAGE_ENDPOINTS.LOGIN));
+		throw redirect(302, UNPROTECTED_PAGE_ENDPOINTS.LOGIN);
 	}
 
 	if ((currentUser as { role?: string }).role !== 'admin') {
-		throw redirect(302, localizeHref(PROTECTED_PAGE_ENDPOINTS.GUEST_DASHBOARD));
+		throw redirect(302, PROTECTED_PAGE_ENDPOINTS.GUEST_DASHBOARD);
 	}
 
 	return { currentUser };

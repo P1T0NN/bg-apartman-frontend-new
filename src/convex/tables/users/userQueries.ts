@@ -9,7 +9,7 @@ import { requireAdmin } from '@/convex/auth/middleware/authMiddleware';
 import { paginatedQueryArgs, resolvePaginationOpts } from '@/convex/helpers/paginationHelpers';
 
 // TYPES
-import type { PaginatedListPayload } from '@/shared/components/ui/data-table/types';
+import type { PaginatedListPayload } from '@/components/ui/data-table/types';
 import type { Doc } from '@/convex/auth/component/_generated/dataModel';
 
 /**

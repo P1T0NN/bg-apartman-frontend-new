@@ -1,10 +1,7 @@
 <script lang="ts">
-	// LIBRARIES
-	import { m } from '@/shared/lib/paraglide/messages';
-
 	// COMPONENTS
-	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
-	import BookingsStatus from '@/features/bookings/components/bookings-status.svelte';
+	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
+	import { FeatureStatus } from '@/components/ui/feature-status/index.js';
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
@@ -32,22 +29,24 @@
 		{
 			status: 'pending',
 			icon: ClockIcon,
-			description: m['BookingStatusExplanation.pendingDescription']()
+			description:
+				"The booking request has been sent and is waiting for the host to confirm. Nothing is charged until it's accepted."
 		},
 		{
 			status: 'confirmed',
 			icon: CircleCheckIcon,
-			description: m['BookingStatusExplanation.confirmedDescription']()
+			description:
+				'The host has accepted the booking. The dates are reserved and a confirmation email has been sent.'
 		},
 		{
 			status: 'checked_in',
 			icon: LogInIcon,
-			description: m['BookingStatusExplanation.checkedInDescription']()
+			description: 'The guest has arrived and the stay is currently in progress.'
 		},
 		{
 			status: 'checked_out',
 			icon: LogOutIcon,
-			description: m['BookingStatusExplanation.checkedOutDescription']()
+			description: 'The stay is finished and the guest has checked out.'
 		}
 	];
 
@@ -55,8 +54,8 @@
 </script>
 
 <SvelteHead
-	title={m['BookingStatusExplanation.seoTitle']()}
-	description={m['BookingStatusExplanation.seoDescription']()}
+	title="Booking statuses, explained"
+	description="A quick guide to what each booking status means — pending, confirmed, checked in, checked out and cancelled."
 />
 
 <div class="mx-auto w-full max-w-2xl px-4 py-10 sm:px-6 sm:py-14">
@@ -67,10 +66,11 @@
 			<RouteIcon class="size-7" aria-hidden="true" />
 		</div>
 		<h1 class="mt-5 text-2xl font-semibold tracking-tight sm:text-3xl">
-			{m['BookingStatusExplanation.title']()}
+			Booking statuses, explained
 		</h1>
 		<p class="mx-auto mt-3 max-w-prose text-sm text-muted-foreground sm:text-base">
-			{m['BookingStatusExplanation.subtitle']()}
+			Every booking moves through a few simple stages. Here's what each status means, so you always
+			know where things stand.
 		</p>
 	</header>
 
@@ -98,7 +98,7 @@
 				</div>
 
 				<div class="flex-1 space-y-2 pt-1.5">
-					<BookingsStatus kind="booking" status={step.status} showHelp={false} />
+					<FeatureStatus config={BOOKING_STATUS_CONFIG} status={step.status} />
 					<p class="text-sm leading-relaxed text-muted-foreground">{step.description}</p>
 				</div>
 			</li>
@@ -108,7 +108,7 @@
 	<!-- Exception: cancelled. Set apart so it doesn't read as the natural last step. -->
 	<section class="mt-8">
 		<h2 class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-			{m['BookingStatusExplanation.exceptionHeading']()}
+			If something changes
 		</h2>
 
 		<div
@@ -124,12 +124,13 @@
 			</div>
 
 			<div class="flex-1 space-y-2 pt-1.5">
-				<BookingsStatus kind="booking" status="cancelled" showHelp={false} />
+				<FeatureStatus config={BOOKING_STATUS_CONFIG} status="cancelled" />
 				<p class="text-sm leading-relaxed text-muted-foreground">
-					{m['BookingStatusExplanation.cancelledDescription']()}
+					The booking was called off — by the guest or host — and the dates have been released.
 				</p>
 				<p class="text-xs text-muted-foreground/80">
-					{m['BookingStatusExplanation.cancelledNote']()}
+					Guests can cancel a confirmed stay for free when check-in is at least 7 days away. Inside
+					that window, contact the host directly.
 				</p>
 			</div>
 		</div>

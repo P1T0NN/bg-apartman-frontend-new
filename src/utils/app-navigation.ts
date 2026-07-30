@@ -1,12 +1,11 @@
 // LIBRARIES
 import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
-import { localizeHref } from '@/shared/lib/paraglide/runtime';
 
 /** Canonical app path → locale-aware SvelteKit href (e.g. `/demo` → `/sr/demo`). */
 export function appHref(href: string): string {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	return resolve(localizeHref(href) as any);
+	return resolve(href as any);
 }
 
 /** Navigate to a canonical app path with locale prefix applied when needed. */

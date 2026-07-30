@@ -1,7 +1,6 @@
 <script lang="ts">
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
-	import { m } from '@/shared/lib/paraglide/messages';
 
 	// CONFIG
 	import { PAGINATION_DATA } from '@/shared/config';
@@ -10,11 +9,11 @@
 	import { favoritesClass } from '@/features/favorites/classes/favoritesClass.svelte';
 
 	// COMPONENTS
-	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
+	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
 	import AccommodationCard from '@/features/accommodations/components/accommodation-card/accommodation-card.svelte';
-	import ConvexDataList from '@/shared/components/ui/data-list/convex-data-list.svelte';
-	import FavoritesPageLoading from '@/shared/components/pages/(protected)/guest/favorites/loading/favorites-page-loading.svelte';
-	import FavoritesPageEmpty from '@/shared/components/pages/(protected)/guest/favorites/empty/favorites-page-empty.svelte';
+	import ConvexDataList from '@/components/ui/data-list/convex-data-list.svelte';
+	import FavoritesPageLoading from '@/components/pages/(protected)/guest/favorites/loading/favorites-page-loading.svelte';
+	import FavoritesPageEmpty from '@/components/pages/(protected)/guest/favorites/empty/favorites-page-empty.svelte';
 
 	// UTILS
 	import { formatPlaces } from '@/utils/formatters';
@@ -33,20 +32,16 @@
 	const hasSavedIds = $derived(favoriteIds.length > 0);
 </script>
 
-<SvelteHead
-	title={m['FavoritesPage.title']()}
-	description={m['FavoritesPage.metaDescription']()}
-	noIndex
-/>
+<SvelteHead title="Saved stays" description="Places you've saved for later." noIndex />
 
 <section class="flex w-full flex-col gap-6 p-4 md:p-6">
 	<header class="flex flex-col gap-1 border-b pb-5">
-		<h1 class="text-2xl font-semibold tracking-tight md:text-3xl">{m['FavoritesPage.title']()}</h1>
+		<h1 class="text-2xl font-semibold tracking-tight md:text-3xl">Saved stays</h1>
 		<p class="max-w-2xl text-sm leading-relaxed text-muted-foreground">
 			{#if hasSavedIds}
-				{m['FavoritesPage.savedPlacesSubtitle']({ places: formatPlaces(favoriteIds.length) })}
+				{formatPlaces(favoriteIds.length)} you've saved for later.
 			{:else}
-				{m['FavoritesPage.subtitleDefault']()}
+				Places you've saved for later.
 			{/if}
 		</p>
 	</header>

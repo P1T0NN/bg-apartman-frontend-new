@@ -1,7 +1,7 @@
 /**
  * Server-side translations for the Convex transactional emails. Self-contained, email-only catalog
- * (`./messages/{locale}.json`) — deliberately NOT the global Paraglide UI catalog, so Convex bundles
- * only these few strings, not the whole app's copy, and never the Paraglide client runtime.
+ * (`./messages/{locale}.json`) — deliberately separate from the app's UI copy, so Convex bundles
+ * only these few strings. Emails render server-side, so they keep a locale the UI no longer has.
  *
  * Plain JSON: each top-level key is one email (`createBooking`, `createAccommodation`, plus shared
  * `footer`). Author copy there with the `{param}` convention; `t()` interpolates it.

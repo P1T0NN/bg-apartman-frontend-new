@@ -1,20 +1,17 @@
-// LIBRARIES
-import { m } from '@/shared/lib/paraglide/messages';
+// CONFIG
+import { BACKEND_MESSAGES } from './messages';
+
+// TYPES
 import type { TranslatableMessage } from '@/shared/types/types';
 
 /**
- * Minimal lookup shape over the Paraglide catalog. We intentionally cast `m` to this instead
- * of typing every known key — the catalog is huge, generated, and the backend only emits
- * `string` keys anyway. Unknown keys fall back to the key literal (visible in dev), which is
- * exactly what you want for missing-translation debugging.
- */
-type ParaglideMessageFn = (params?: Record<string, string | number | boolean>) => string;
-type ParaglideCatalog = Record<string, ParaglideMessageFn>;
-
-/**
- * Resolve a backend-issued {@link TranslatableMessage} in the frontend's current locale.
+ * Resolve a backend-issued {@link TranslatableMessage} to display text.
  *
- * Single lookup + single call — no reactive state, no overhead. Safe to call from event
+ * The backend never returns prose — only `{ key, params? }` — so this is the single seam where
+ * a key becomes words. Unknown keys fall back to the key literal, which is exactly what you
+ * want for spotting a missing entry in dev.
+ *
+ * Single lookup + a placeholder pass — no reactive state, no overhead. Safe to call from event
  * handlers, render blocks, etc.
  *
  * @example
@@ -23,8 +20,14 @@ type ParaglideCatalog = Record<string, ParaglideMessageFn>;
  */
 export function translateFromBackend(message: TranslatableMessage | string): string {
 	const descriptor: TranslatableMessage = typeof message === 'string' ? { key: message } : message;
-	const fn = (m as unknown as ParaglideCatalog)[descriptor.key];
-	return fn ? fn(descriptor.params) : descriptor.key;
+	const text = BACKEND_MESSAGES[descriptor.key];
+	if (text === undefined) return descriptor.key;
+
+	const params = descriptor.params;
+	if (!params) return text;
+	return text.replace(/\{(\w+)\}/g, (whole, name: string) =>
+		name in params ? String(params[name]) : whole
+	);
 }
 
 /**

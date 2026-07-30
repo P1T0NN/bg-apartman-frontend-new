@@ -4,7 +4,10 @@ import { emailHeaderTemplate } from '../header/emailHeaderTemplate';
 import { emailFooterTemplate } from '../footer/emailFooterTemplate';
 import { t, pickLocale } from '@/convex/i18n';
 
-/** Sent to the guest when a pending request expires unanswered. `browseUrl` must be absolute. */
+/**
+ * Sent to the guest when a pending request ends without a host decision.
+ * `browseUrl` must be absolute.
+ */
 type BookingAutoDeclinedData = {
 	guestFirstName: string;
 	apartmentTitle: string;
@@ -15,6 +18,12 @@ type BookingAutoDeclinedData = {
 	browseUrl: string;
 	/** Guest's locale; unknown values fall back to `en`. */
 	locale: string;
+	/**
+	 * Why the request ended. `expired` = the 48h window ran out; `dates_taken` = the host
+	 * confirmed someone else for these nights. A guest who lost a race deserves to hear
+	 * that, not "you weren't answered" (BookingSystemDesign.md §6/§8).
+	 */
+	reason?: 'expired' | 'dates_taken';
 };
 
 export function bookingAutoDeclinedTemplate(data: BookingAutoDeclinedData): {
@@ -26,13 +35,16 @@ export function bookingAutoDeclinedTemplate(data: BookingAutoDeclinedData): {
 
 	const dateFmt = stayDateFormatter(locale);
 
-	const subject = t(locale, `${ns}.subject`, { code: data.bookingCode });
+	// Same layout, different explanation — the key suffix is the only thing that varies.
+	const suffix = data.reason === 'dates_taken' ? 'DatesTaken' : '';
+
+	const subject = t(locale, `${ns}.subject${suffix}`, { code: data.bookingCode });
 
 	const html =
 		emailHeaderTemplate(locale) +
 		emailBody({
-			heading: t(locale, `${ns}.heading`),
-			intro: t(locale, `${ns}.intro`, {
+			heading: t(locale, `${ns}.heading${suffix}`),
+			intro: t(locale, `${ns}.intro${suffix}`, {
 				name: data.guestFirstName,
 				title: data.apartmentTitle,
 				code: data.bookingCode

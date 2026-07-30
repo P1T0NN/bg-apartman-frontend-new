@@ -4,10 +4,9 @@
 
 	// LIBRARIES
 	import { useAuth } from '@mmailaender/convex-better-auth-svelte/svelte';
-	import { localizeHref } from '@/shared/lib/paraglide/runtime';
 
 	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
 	let { children } = $props();
 
@@ -20,7 +19,7 @@
 	// leave for the login page instead of idling on a dead shell.
 	$effect(() => {
 		if (!auth.isLoading && !auth.isAuthenticated) {
-			goto(localizeHref(UNPROTECTED_PAGE_ENDPOINTS.LOGIN));
+			goto(UNPROTECTED_PAGE_ENDPOINTS.LOGIN);
 		}
 	});
 </script>

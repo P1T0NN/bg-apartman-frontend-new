@@ -1,5 +1,8 @@
 // TYPES
-import type { typesPendingExpiryChip, typesPendingExpiryTone } from '@/shared/features/booking/types/bookingTypes';
+import type {
+	typesPendingExpiryChip,
+	typesPendingExpiryTone
+} from '@/shared/features/booking/types/bookingTypes';
 
 /** Urgency chip for a pending booking's host response deadline. */
 export function getPendingExpiryChip(

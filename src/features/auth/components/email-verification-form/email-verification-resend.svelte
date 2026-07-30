@@ -1,10 +1,7 @@
 <script lang="ts">
-	// LIBRARIES
-	import { m } from '@/shared/lib/paraglide/messages';
-
 	// COMPONENTS
-	import { Button } from '@/shared/components/ui/button/index.js';
-	import { FieldDescription } from '@/shared/components/ui/field/index.js';
+	import { Button } from '@/components/ui/button/index.js';
+	import { FieldDescription } from '@/components/ui/field/index.js';
 
 	// UTILS
 	import { authClient } from '@/features/auth/lib/auth-client';
@@ -78,7 +75,7 @@
 
 <FieldDescription class="text-center">
 	<span class="inline-flex flex-wrap items-center justify-center gap-x-1">
-		<span>{m['EmailVerificationForm.resendPrompt']()}</span>
+		<span>Didn't receive the code?</span>
 
 		<Button
 			type="button"
@@ -87,9 +84,7 @@
 			disabled={blocked}
 			onclick={handleResend}
 		>
-			{cooldownRemaining > 0
-				? m['EmailVerificationForm.resendIn']({ seconds: cooldownRemaining })
-				: m['EmailVerificationForm.resend']()}
+			{cooldownRemaining > 0 ? `Resend in ${cooldownRemaining}s` : 'Resend'}
 		</Button>
 	</span>
 </FieldDescription>

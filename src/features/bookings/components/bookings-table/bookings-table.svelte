@@ -1,7 +1,6 @@
 <script lang="ts">
 	// COMPONENTS
-	import ConvexDataTable from '@/shared/components/ui/data-table/convex-data-table.svelte';
-	import BookingsDetailSheet from './bookings-detail-sheet.svelte';
+	import ConvexDataTable from '@/components/ui/data-table/convex-data-table.svelte';
 	import BookingsTableFilters from './bookings-table-filters.svelte';
 	import GuestField from './guest-field.svelte';
 	import ApartmentField from './apartment-field.svelte';
@@ -12,46 +11,46 @@
 	import TotalField from './total-field.svelte';
 	import ActionsField from './actions-field.svelte';
 
-	// DATA
-	import {
-		BOOKING_FILTERS,
-		BOOKING_STATUS_CONFIG,
-		PAYMENT_STATUS_CONFIG
-	} from '@/features/bookings/data/bookingsData';
-
 	// UTILS
-	import { createTabComponentState } from '@/shared/components/ui/tab-component/tab-component.svelte.js';
+	import { createTabComponentState } from '@/components/ui/tab-component/tab-component.svelte.js';
+
+	// DATA
+	import { BOOKING_FILTERS } from '@/features/bookings/data/bookingsData';
+	import { BOOKINGS_TABLE_COLUMNS, EMPTY_COUNTS } from './bookingsTableData';
 
 	// TYPES
 	import type { Snippet } from 'svelte';
 	import type { FunctionReference } from 'convex/server';
 	import type {
-		BookingFilterCounts,
-		UserBookingsPayload
-	} from '@/convex/tables/bookings/helpers/listUserBookings';
-	import type {
 		typesBookingSafe,
-		typesBookingAction,
-		typesBookingFilter
+		typesBookingFilter,
+		typesUserBookingsPayload
 	} from '@/shared/features/booking/types/bookingTypes';
 	import type {
-		ColumnDef,
 		DataTableCellSnippetProps,
 		DataTableSortDirection
-	} from '@/shared/components/ui/data-table/types.js';
+	} from '@/components/ui/data-table/types.js';
 
 	let {
 		query,
-		onAction,
-		errorContent
+		selected = $bindable(null),
+		sheetOpen = $bindable(false),
+		errorContent,
+		defaultFilter = 'all'
 	}: {
 		/** Scoped list query (host reservations / guest my-bookings) — see `listUserBookingsQuery`.
 		 *  One subscription: pages AND the tab counts (`extra.counts`) come from the same payload. */
-		query: FunctionReference<'query', 'public', Record<string, unknown>, UserBookingsPayload>;
-		/** Omitted for read-only views (e.g. guest my-bookings). */
-		onAction?: (booking: typesBookingSafe, action: typesBookingAction) => void;
+		query: FunctionReference<'query', 'public', Record<string, unknown>, typesUserBookingsPayload>;
+		/** The row a cell picked. The table does NOT render the detail sheet — the page does, so
+		 *  there is exactly one sheet per page and other openers (a `?booking=` deep link, a
+		 *  calendar cell) write this same pair instead of mounting a second one. */
+		selected?: typesBookingSafe | null;
+		sheetOpen?: boolean;
 		/** Rendered instead of the table when the list query errors (page-specific error card). */
 		errorContent?: Snippet;
+		/** Tab shown when the URL carries no `?status=`. The host queue opens on the actionable
+		 *  slice (HostSystemDesign.md §3); the guest list opens on everything. */
+		defaultFilter?: typesBookingFilter;
 	} = $props();
 
 	// Status filter is URL-backed (?status=confirmed) so the guest dashboard's
@@ -59,90 +58,26 @@
 	const statusFilter = createTabComponentState(() => ({
 		tabs: BOOKING_FILTERS,
 		queryKey: 'status',
-		defaultValue: 'all' as typesBookingFilter,
+		defaultValue: defaultFilter,
 		options: { history: 'replace', shallow: true, scroll: false, clearOnDefault: true }
 	}));
 	const activeFilter = $derived(statusFilter.state.current);
-
-	function setFilter(filter: typesBookingFilter): void {
-		void statusFilter.state.set(filter, statusFilter.options);
-	}
 
 	// "all" is expressed by omitting the arg; ConvexDataTable resets to page 1 on args change.
 	const listArgs = $derived(activeFilter === 'all' ? {} : { filter: activeFilter });
 
 	// Tab counts ride along in the list payload's `extra` — no second subscription.
 	let extra = $state<unknown>(undefined);
-	const EMPTY_COUNTS: BookingFilterCounts = {
-		all: 0,
-		pending: 0,
-		confirmed: 0,
-		checked_in: 0,
-		checked_out: 0,
-		declined: 0,
-		auto_declined: 0,
-		cancelled: 0
-	};
-	const counts = $derived(
-		(extra as UserBookingsPayload['extra'] | undefined)?.counts ?? EMPTY_COUNTS
-	);
+	const counts = $derived((extra as typesUserBookingsPayload['extra'] | undefined)?.counts ?? EMPTY_COUNTS);
 
 	// Search + sort round-trip to the server through ConvexDataTable's bindable state.
 	let search = $state('');
 	let sortColumn = $state<string | undefined>(undefined);
 	let sortDirection = $state<DataTableSortDirection | undefined>(undefined);
 
-	// Detail-sheet selection.
-	let selected = $state<typesBookingSafe | null>(null);
-	let sheetOpen = $state(false);
-
-	function openDetail(booking: typesBookingSafe): void {
-		selected = booking;
-		sheetOpen = true;
+	function setFilter(filter: typesBookingFilter): void {
+		void statusFilter.state.set(filter, statusFilter.options);
 	}
-
-	function guestName(b: typesBookingSafe): string {
-		return `${b.guestFirstName} ${b.guestLastName}`;
-	}
-
-	const columns: ColumnDef<typesBookingSafe>[] = [
-		{
-			id: 'guest',
-			header: 'Guest',
-			accessor: (r) => guestName(r),
-			cellClass: 'min-w-[15rem]',
-			wrap: true
-		},
-		{
-			id: 'apartment',
-			header: 'Property',
-			accessor: (r) => r.apartment.title,
-			hideBelow: 'sm',
-			wrap: true
-		},
-		{ id: 'stay', header: 'Stay', accessor: (r) => r.checkInDate, sortable: true, wrap: true },
-		{
-			id: 'guests',
-			header: 'Guests',
-			accessor: (r) => `${r.numberOfAdults + r.numberOfChildren}`,
-			hideBelow: 'lg'
-		},
-		{
-			id: 'status',
-			header: 'Status',
-			accessor: (r) => BOOKING_STATUS_CONFIG[r.status].label,
-			wrap: true
-		},
-		{
-			id: 'payment',
-			header: 'Payment',
-			accessor: (r) => PAYMENT_STATUS_CONFIG[r.paymentStatus].label,
-			hideBelow: 'lg',
-			wrap: true
-		},
-		{ id: 'total', header: 'Total', accessor: (r) => r.total, sortable: true },
-		{ id: 'actions', header: '', accessor: () => '', hideBelow: 'md', cellClass: 'w-12 text-right' }
-	];
 </script>
 
 <div class="flex flex-col gap-4">
@@ -151,7 +86,7 @@
 	<ConvexDataTable
 		{query}
 		queryArgs={listArgs}
-		{columns}
+		columns={BOOKINGS_TABLE_COLUMNS}
 		optimizationStrategy="offset"
 		getRowId={(row) => row._id}
 		customCells={{
@@ -175,10 +110,8 @@
 	/>
 </div>
 
-<BookingsDetailSheet booking={selected} bind:open={sheetOpen} {onAction} />
-
 {#snippet guestCell({ row }: DataTableCellSnippetProps<typesBookingSafe>)}
-	<GuestField booking={row} onSelect={() => openDetail(row)} />
+	<GuestField booking={row} bind:selected bind:open={sheetOpen} />
 {/snippet}
 
 {#snippet apartmentCell({ row }: DataTableCellSnippetProps<typesBookingSafe>)}
@@ -206,5 +139,5 @@
 {/snippet}
 
 {#snippet actionsCell({ row }: DataTableCellSnippetProps<typesBookingSafe>)}
-	<ActionsField booking={row} onSelect={() => openDetail(row)} />
+	<ActionsField booking={row} bind:selected bind:open={sheetOpen} />
 {/snippet}

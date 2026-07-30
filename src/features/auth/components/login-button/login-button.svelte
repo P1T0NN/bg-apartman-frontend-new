@@ -1,15 +1,9 @@
 <script lang="ts">
-	// LIBRARIES
-	import { localizeHref } from '@/shared/lib/paraglide/runtime';
-	import { m } from '@/shared/lib/paraglide/messages';
-
 	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
 	// COMPONENTS
-	import Button from '@/shared/components/ui/button/button.svelte';
+	import Button from '@/components/ui/button/button.svelte';
 </script>
 
-<Button variant="outline" href={localizeHref(UNPROTECTED_PAGE_ENDPOINTS.LOGIN)}>
-	{m['LoginButton.login']()}
-</Button>
+<Button variant="outline" href={UNPROTECTED_PAGE_ENDPOINTS.LOGIN}>Login</Button>

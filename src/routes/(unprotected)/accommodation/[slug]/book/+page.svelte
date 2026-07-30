@@ -6,18 +6,17 @@
 	import { api } from '@/convex/_generated/api';
 	import { useQuery } from 'convex-svelte';
 	import { parseDate, type DateValue } from '@internationalized/date';
-	import { m } from '@/shared/lib/paraglide/messages';
 
 	// COMPONENTS
-	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
-	import { Separator } from '@/shared/components/ui/separator/index.js';
-	import BookDetails from '@/shared/components/pages/(unprotected)/book/book-details/book-details.svelte';
-	import BookSummaryCard from '@/shared/components/pages/(unprotected)/book/book-summary-card/book-summary-card.svelte';
-	import BookGuestForm from '@/shared/components/pages/(unprotected)/book/book-guest-form/book-guest-form.svelte';
-	import BookHeader from '@/shared/components/pages/(unprotected)/book/book-guest-form/book-header.svelte';
-	import AccommodationPageLoading from '@/shared/components/pages/(unprotected)/accommodation/loading/accommodation-page-loading.svelte';
-	import AccommodationPageEmpty from '@/shared/components/pages/(unprotected)/accommodation/empty/accommodation-page-empty.svelte';
-	import AccommodationPageError from '@/shared/components/pages/(unprotected)/accommodation/error/accommodation-page-error.svelte';
+	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
+	import { Separator } from '@/components/ui/separator/index.js';
+	import BookDetails from '@/components/pages/(unprotected)/book/book-details/book-details.svelte';
+	import BookSummaryCard from '@/components/pages/(unprotected)/book/book-summary-card/book-summary-card.svelte';
+	import BookGuestForm from '@/components/pages/(unprotected)/book/book-guest-form/book-guest-form.svelte';
+	import BookHeader from '@/components/pages/(unprotected)/book/book-guest-form/book-header.svelte';
+	import AccommodationPageLoading from '@/components/pages/(unprotected)/accommodation/loading/accommodation-page-loading.svelte';
+	import AccommodationPageEmpty from '@/components/pages/(unprotected)/accommodation/empty/accommodation-page-empty.svelte';
+	import { ErrorComponent } from '@/components/ui/error-component/index.js';
 
 	// UTILS
 	import { nightsBetween } from '@/shared/utils/dateUtils';
@@ -62,13 +61,17 @@
 </script>
 
 <SvelteHead
-	title={m['BookAccommodationPage.SEO.title']({ accommodationTitle: accommodation?.title ?? '' })}
-	description={m['BookAccommodationPage.SEO.description']()}
+	title={`Book ${accommodation?.title ?? ''}`}
+	description="Confirm your booking details."
 	noIndex
 />
 
 {#if accommodationQuery.error}
-	<AccommodationPageError />
+	<ErrorComponent
+		variant="alert"
+		title="Couldn't load this accommodation"
+		description="Something went wrong while loading this accommodation. Please try again in a moment."
+	/>
 {:else if accommodation === null}
 	<AccommodationPageEmpty />
 {:else if accommodation === undefined}

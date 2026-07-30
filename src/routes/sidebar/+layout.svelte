@@ -1,9 +1,9 @@
 <script lang="ts">
 	// COMPONENTS
-	import * as Sidebar from '@/shared/components/ui/sidebar/index.js';
-	import AppSidebar from '@/shared/components/ui/app-sidebar/app-sidebar.svelte';
-	import SiteHeader from '@/shared/components/ui/app-sidebar/site-header.svelte';
-	import type { AppSidebarNavItems } from '@/shared/components/ui/app-sidebar/types.js';
+	import * as Sidebar from '@/components/ui/sidebar/index.js';
+	import AppSidebar from '@/components/ui/app-sidebar/app-sidebar.svelte';
+	import SiteHeader from '@/components/ui/app-sidebar/site-header.svelte';
+	import type { AppSidebarNavItems } from '@/components/ui/app-sidebar/types.js';
 
 	const navItems: AppSidebarNavItems = {
 		navMain: []

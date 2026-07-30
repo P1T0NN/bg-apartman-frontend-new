@@ -1,5 +1,5 @@
 // SEND
-import { sendEmail, reservationUrl, type EmailCtx } from './resend';
+import { sendEmail, reservationUrl, hostBookingUrl, type EmailCtx } from './resend';
 
 // TEMPLATES
 import { createBookingForGuestTemplate } from './templates/createBooking/createBookingForGuestTemplate';
@@ -18,6 +18,8 @@ type SendCreateBookingEmailInput = {
 	total: number;
 	currency: string;
 	instantBooking: boolean;
+	/** Pending requests only — when the host's response window lapses (epoch ms). */
+	respondBy?: number;
 	// guest
 	guestFirstName: string;
 	guestLastName: string;
@@ -68,7 +70,11 @@ export async function sendCreateBookingEmail(
 		total: input.total,
 		currency: input.currency,
 		instantBooking: input.instantBooking,
-		bookingUrl: url
+		respondBy: input.respondBy,
+		// The host's CTA is their queue with THIS booking's sheet open — one click from
+		// inbox to the confirm/decline buttons (HostSystemDesign.md §6). The guest URL
+		// above stays the guest's reservation page.
+		bookingUrl: hostBookingUrl(input.bookingId)
 	});
 
 	await sendEmail(ctx, input.guestEmail, guestEmailContent);

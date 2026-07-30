@@ -1,7 +1,4 @@
 <script lang="ts">
-	// LIBRARIES
-	import { m } from '@/shared/lib/paraglide/messages';
-
 	// UTILS
 	import { cn } from '@/utils/utils.js';
 
@@ -73,22 +70,18 @@
 		<div class="space-y-0.5">
 			<p class="text-sm font-medium text-foreground">
 				<span class="text-primary"
-					>{m['UploadFile.UploadFileEmpty.choose']()}
-					{multipleFiles
-						? m['UploadFile.UploadFileEmpty.files']()
-						: m['UploadFile.UploadFileEmpty.file']()}</span
+					>Choose
+					{multipleFiles ? 'files' : 'file'}</span
 				>
 				<span class="font-normal text-muted-foreground">
-					{m['UploadFile.UploadFileEmpty.orDrag']()}
-					{multipleFiles
-						? m['UploadFile.UploadFileEmpty.them']()
-						: m['UploadFile.UploadFileEmpty.it']()}
-					{m['UploadFile.UploadFileEmpty.here']()}
+					or drag
+					{multipleFiles ? 'them' : 'it'}
+					here
 				</span>
 			</p>
 			{#if accept}
 				<p class="text-xs text-muted-foreground">
-					{m['UploadFile.UploadFileEmpty.accepted']()}: {accept}
+					Accepted: {accept}
 				</p>
 			{/if}
 		</div>

@@ -1,5 +1,8 @@
 // TYPES
-import type { typesBookingSafe, typesGuestBookingAction } from '@/shared/features/booking/types/bookingTypes';
+import type {
+	typesBookingSafe,
+	typesGuestBookingAction
+} from '@/shared/features/booking/types/bookingTypes';
 
 export function applyGuestBookingAction(
 	b: typesBookingSafe,
@@ -9,7 +12,9 @@ export function applyGuestBookingAction(
 	if (action === 'withdraw') {
 		return {
 			...b,
-			status: 'cancelled',
+			// Mirrors `applyGuestAction` server-side: withdrawing is its own terminal status,
+			// never `cancelled` (BookingSystemDesign.md §2).
+			status: 'withdrawn',
 			cancelledBy: 'guest',
 			cancelledAt: now,
 			cancelReason: 'Withdrawn by guest.',

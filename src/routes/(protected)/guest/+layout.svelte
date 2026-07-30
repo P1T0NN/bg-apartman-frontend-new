@@ -4,17 +4,18 @@
 
 	// CONFIG
 	import {
+		ADMIN_PAGE_ENDPOINTS,
 		PROTECTED_PAGE_ENDPOINTS,
 		UNPROTECTED_PAGE_ENDPOINTS
-	} from '@/shared/routeEndpoints.js';
+	} from '@/config/routeEndpoints.js';
 
 	// COMPONENTS
-	import * as Sidebar from '@/shared/components/ui/sidebar/index.js';
-	import AppSidebar from '@/shared/components/ui/app-sidebar/app-sidebar.svelte';
-	import SiteHeader from '@/shared/components/ui/app-sidebar/site-header.svelte';
+	import * as Sidebar from '@/components/ui/sidebar/index.js';
+	import AppSidebar from '@/components/ui/app-sidebar/app-sidebar.svelte';
+	import SiteHeader from '@/components/ui/app-sidebar/site-header.svelte';
 
 	// TYPES
-	import type { AppSidebarNavItems } from '@/shared/components/ui/app-sidebar/types.js';
+	import type { AppSidebarNavItems } from '@/components/ui/app-sidebar/types.js';
 
 	// LUCIDE ICONS
 	import LayoutDashboardIcon from '@lucide/svelte/icons/layout-dashboard';
@@ -22,11 +23,15 @@
 	import HeartIcon from '@lucide/svelte/icons/heart';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import StoreIcon from '@lucide/svelte/icons/store';
+	import ShieldIcon from '@lucide/svelte/icons/shield';
 
 	let { children } = $props();
 
 	// Non-hosts see a "Become a host" CTA; existing hosts see "Switch to hosting".
 	const isHost = $derived(authClass.currentUser?.isHost === true);
+
+	// Admins only — the sidebar entry is UX; every admin function re-checks the role server-side.
+	const isAdmin = $derived(authClass.currentUser?.role === 'admin');
 
 	const navItems = $derived<AppSidebarNavItems>({
 		navMain: [
@@ -53,7 +58,10 @@
 				url: PROTECTED_PAGE_ENDPOINTS.HOST_DASHBOARD,
 				icon: StoreIcon,
 				highlight: true
-			}
+			},
+			...(isAdmin
+				? [{ name: 'Admin Page', url: ADMIN_PAGE_ENDPOINTS.DASHBOARD, icon: ShieldIcon }]
+				: [])
 		]
 	});
 </script>

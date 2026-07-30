@@ -1,6 +1,6 @@
-// NOTE: `zodIssuesToFieldErrors` moved to `./zodFieldErrors` — it resolves Paraglide keys and
+// NOTE: `zodIssuesToFieldErrors` moved to `./zodFieldErrors` — it resolves message keys and
 // so pulls in the client i18n catalog. This module stays catalog-free because Convex mutations
-// import `num`/`optNum`/`optStr` from here, and we never want the Paraglide runtime in that bundle.
+// import `num`/`optNum`/`optStr` from here, and we never want the message catalog in that bundle.
 
 /**
  * Coerce a form value into a number. `convex-mutation-form` submits the *raw*

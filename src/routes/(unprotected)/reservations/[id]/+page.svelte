@@ -5,18 +5,17 @@
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useQuery } from 'convex-svelte';
-	import { m } from '@/shared/lib/paraglide/messages';
 
 	// CONFIG
-	import { COMPANY_DATA } from '@/shared/constants';
+	import { COMPANY_DATA } from '@/shared/config';
 
 	// COMPONENTS
-	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
-	import Section from '@/shared/components/ui/section/section.svelte';
-	import ReservationConfirmation from '@/shared/components/pages/(unprotected)/reservation/reservation-confirmation.svelte';
-	import ReservationPageLoading from '@/shared/components/pages/(unprotected)/reservation/loading/reservation-page-loading.svelte';
-	import ReservationPageEmpty from '@/shared/components/pages/(unprotected)/reservation/empty/reservation-page-empty.svelte';
-	import ReservationPageError from '@/shared/components/pages/(unprotected)/reservation/error/reservation-page-error.svelte';
+	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
+	import Section from '@/components/ui/section/section.svelte';
+	import ReservationConfirmation from '@/components/pages/(unprotected)/reservation/reservation-confirmation.svelte';
+	import ReservationPageLoading from '@/components/pages/(unprotected)/reservation/loading/reservation-page-loading.svelte';
+	import ReservationPageEmpty from '@/components/pages/(unprotected)/reservation/empty/reservation-page-empty.svelte';
+	import { ErrorComponent } from '@/components/ui/error-component/index.js';
 
 	// TYPES
 	import type { Id } from '@/convex/_generated/dataModel';
@@ -34,13 +33,8 @@
 </script>
 
 <SvelteHead
-	title={m['ReservationPage.SEO.title']({
-		accommodationTitle: booking?.apartmentTitle ?? '',
-		companyName: COMPANY_DATA.NAME
-	})}
-	description={m['ReservationPage.SEO.description']({
-		accommodationTitle: booking?.apartmentTitle ?? ''
-	})}
+	title={`Your reservation for ${booking?.apartmentTitle ?? ''} | ${COMPANY_DATA.NAME}`}
+	description={`Your booking details and confirmation code for ${booking?.apartmentTitle ?? ''}.`}
 	noIndex
 />
 
@@ -50,12 +44,16 @@
 	containerClass="max-w-2xl flex min-h-full flex-col justify-center"
 >
 	{#if bookingQuery.error}
-		<ReservationPageError />
+		<ErrorComponent
+			variant="alert"
+			title="Something went wrong"
+			description="We couldn’t load this reservation. Please try again in a moment."
+		/>
 	{:else if booking === undefined}
 		<ReservationPageLoading />
 	{:else if booking === null}
 		<ReservationPageEmpty />
 	{:else}
-		<ReservationConfirmation {booking} />
+		<ReservationConfirmation bookingId={id as Id<'bookings'>} {booking} />
 	{/if}
 </Section>

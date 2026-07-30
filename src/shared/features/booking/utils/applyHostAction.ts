@@ -19,12 +19,20 @@ export function applyHostAction(
 		case 'confirm':
 			return { status: 'confirmed', updatedAt: now, pendingExpiresAt: undefined };
 		case 'decline':
+			// Terminal and actor-driven, so it carries its evidence like every other one
+			// (BookingSystemDesign.md I2). Callers overwrite `cancelReason` with the host's
+			// own words — the guest reads it.
 			return {
 				status: 'declined',
 				updatedAt: now,
-				cancelReason: 'Declined by host.'
+				cancelledAt: now,
+				cancelledBy: 'host',
+				cancelReason: 'Declined by host.',
+				pendingExpiresAt: undefined
 			};
 		case 'cancel':
+			// Like decline, the caller overwrites `cancelReason` with the host's own words
+			// (mandatory — cancelBookingOwnerSchema); this string is only the fallback shape.
 			return {
 				status: 'cancelled',
 				updatedAt: now,

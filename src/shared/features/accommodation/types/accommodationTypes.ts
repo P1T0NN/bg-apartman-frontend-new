@@ -6,6 +6,22 @@ import type { Doc, Id } from '@/convex/_generated/dataModel';
 export type typesAccommodation = Doc<'apartments'>;
 export type typesAccommodationImage = Doc<'apartments'>['images'][number];
 export type typesAccommodationStatus = Doc<'apartments'>['status'];
+export type typesAccommodationType = Doc<'apartments'>['type'];
+
+// ─── Listing fee ──────────────────────────────────────────────────────────────
+
+/** Where one listing stands against its paid period — read via `listingFeeState`. */
+export type typesAccommodationFeeState =
+	/** Mode is off, or the row has no period yet — no billing surface at all. */
+	| { kind: 'inactive' }
+	/** Paid and comfortably live. */
+	| { kind: 'active'; expiresAt: number; daysLeft: number }
+	/** Inside the reminder window — the T−7 nudge has been (or is about to be) sent. */
+	| { kind: 'expiring'; expiresAt: number; daysLeft: number }
+	/** Past expiry but inside grace: still published, renewal still extends from expiry. */
+	| { kind: 'grace'; expiresAt: number; daysLeft: number }
+	/** Past grace — the cron has flipped (or is about to flip) it to `expired`. */
+	| { kind: 'lapsed'; expiresAt: number; daysLeft: number };
 
 // ─── Search results ───────────────────────────────────────────────────────────
 

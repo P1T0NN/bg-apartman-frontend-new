@@ -1,9 +1,6 @@
 <script lang="ts">
-	// LIBRARIES
-	import { m } from '@/shared/lib/paraglide/messages';
-
 	// COMPONENTS
-	import { Button } from '@/shared/components/ui/button/index.js';
+	import { Button } from '@/components/ui/button/index.js';
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
@@ -65,17 +62,13 @@
 		</p>
 
 		<p class="mt-0.5 text-xs text-muted-foreground">
-			{file.type || m['UploadFile.UploadFileSingle.unknownType']()} · {formatBytes(file.size)}
+			{file.type || 'Unknown type'} · {formatBytes(file.size)}
 		</p>
 
 		<div class="mt-3 flex flex-wrap items-center gap-2">
-			<Button type="button" variant="outline" size="sm" onclick={replace}>
-				{m['UploadFile.UploadFileSingle.replace']()}
-			</Button>
+			<Button type="button" variant="outline" size="sm" onclick={replace}>Replace</Button>
 
-			<Button type="button" variant="destructive" size="sm" onclick={remove}>
-				{m['UploadFile.UploadFileSingle.remove']()}
-			</Button>
+			<Button type="button" variant="destructive" size="sm" onclick={remove}>Remove</Button>
 		</div>
 	</div>
 </div>

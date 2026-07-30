@@ -43,7 +43,7 @@ function parseDescriptor(raw: string): TranslatableMessage | null {
  * - `rateLimitMessage(retryAfterMs?)` — localized UI copy (toasts, inline errors).
  * - `rateLimitMessage(rawError, fallback)` — localized copy; parses JSON from auth errors.
  *
- * Server-side wire JSON is built in {@link convexCreateRateLimit} (Convex cannot import Paraglide).
+ * Server-side wire JSON is built in {@link convexCreateRateLimit} (Convex cannot import the message catalog).
  */
 export function rateLimitMessage(input?: number | string | null, second?: string): string {
 	if (typeof input === 'string') {

@@ -14,6 +14,12 @@ type BookingCancelledData = {
 	checkOutDate: string;
 	/** Cancellation reason; omitted on legacy call sites. */
 	cancelReason?: string;
+	/**
+	 * Where the guest's money ended up (BookingSystemDesign.md §8's "+ refund status") —
+	 * derived from the settled `paymentStatus`, never guessed. Omitted for cash: the
+	 * platform never touched the money, so there is nothing to report.
+	 */
+	paymentNote?: 'refunded' | 'released' | 'kept';
 	browseUrl: string;
 	/** Guest's locale; unknown values fall back to `en`. */
 	locale: string;
@@ -48,6 +54,17 @@ export function bookingCancelledTemplate(data: BookingCancelledData): {
 				},
 				...(data.cancelReason
 					? [{ label: t(locale, `${ns}.rowReason`), value: data.cancelReason }]
+					: []),
+				...(data.paymentNote
+					? [
+							{
+								label: t(locale, `${ns}.rowPayment`),
+								value: t(
+									locale,
+									`${ns}.payment${data.paymentNote.charAt(0).toUpperCase() + data.paymentNote.slice(1)}`
+								)
+							}
+						]
 					: [])
 			],
 			cta: { label: t(locale, `${ns}.cta`), url: data.browseUrl }

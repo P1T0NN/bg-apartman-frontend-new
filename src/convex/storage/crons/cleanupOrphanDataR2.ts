@@ -1,3 +1,6 @@
+// CONFIG
+import { OPERATIONAL_LIMITS } from '@/shared/config';
+
 // LIBRARIES
 import { internalMutation } from '../../_generated/server';
 
@@ -15,21 +18,18 @@ import { r2 } from '../r2/r2';
  * Safe to run bidirectionally because the R2 bucket is dedicated to this table — no
  * other feature stores keys here. If that ever changes, narrow the object→row direction.
  *
- * Sizing: one page of R2 metadata is `PAGE_SIZE` keys; we walk up to `MAX_PAGES`. For a
- * datasets larger than `PAGE_SIZE * MAX_PAGES` orphans accumulate beyond the sweep
+ * Sizing: one page of R2 metadata is `OPERATIONAL_LIMITS.ORPHAN_CLEANUP_PAGE_SIZE` keys; we walk up to `OPERATIONAL_LIMITS.ORPHAN_CLEANUP_MAX_PAGES`. For a
+ * datasets larger than `OPERATIONAL_LIMITS.ORPHAN_CLEANUP_PAGE_SIZE * OPERATIONAL_LIMITS.ORPHAN_CLEANUP_MAX_PAGES` orphans accumulate beyond the sweep
  * window — bump the constants or split into a paginated-by-cron design.
  */
-const PAGE_SIZE = 200;
-const MAX_PAGES = 25;
-
 export const cleanupOrphanDataR2 = internalMutation({
 	args: {},
 	handler: async (ctx) => {
 		// 1. Snapshot R2 keys (paginate through the component's metadata table).
 		const r2Keys = new Set<string>();
 		let cursor: string | null = null;
-		for (let i = 0; i < MAX_PAGES; i++) {
-			const page = await r2.listMetadata(ctx, PAGE_SIZE, cursor);
+		for (let i = 0; i < OPERATIONAL_LIMITS.ORPHAN_CLEANUP_MAX_PAGES; i++) {
+			const page = await r2.listMetadata(ctx, OPERATIONAL_LIMITS.ORPHAN_CLEANUP_PAGE_SIZE, cursor);
 			for (const m of page.page) r2Keys.add(m.key);
 			if (page.isDone) break;
 			cursor = page.continueCursor;

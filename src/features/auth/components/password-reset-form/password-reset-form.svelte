@@ -1,12 +1,9 @@
 <script lang="ts">
-	// LIBRARIES
-	import { m } from '@/shared/lib/paraglide/messages';
-
 	// COMPONENTS
-	import { Button } from '@/shared/components/ui/button/index.js';
-	import * as Card from '@/shared/components/ui/card/index.js';
+	import { Button } from '@/components/ui/button/index.js';
+	import * as Card from '@/components/ui/card/index.js';
 	import * as InputOTP from '@/features/auth/components/input-otp/index.js';
-	import { Input } from '@/shared/components/ui/input/index.js';
+	import { Input } from '@/components/ui/input/index.js';
 	import PasswordInput from '@/features/auth/components/password-input/password-input.svelte';
 	import {
 		FieldGroup,
@@ -14,8 +11,8 @@
 		FieldLabel,
 		FieldDescription,
 		FieldError
-	} from '@/shared/components/ui/field/index.js';
-	import { FormField } from '@/shared/components/ui/form-field/index.js';
+	} from '@/components/ui/field/index.js';
+	import { FormField } from '@/components/ui/form-field/index.js';
 	import EmailVerificationResend from '@/features/auth/components/email-verification-form/email-verification-resend.svelte';
 
 	import { createPasswordResetForm } from './password-reset-form-model.svelte.js';
@@ -31,17 +28,16 @@
 {#if form.step === 'forgot'}
 	<Card.Root class="mx-auto w-full max-w-sm">
 		<Card.Header>
-			<Card.Title class="text-2xl">{m['PasswordResetForm.titleRequest']()}</Card.Title>
-			<Card.Description>{m['PasswordResetForm.descriptionRequest']()}</Card.Description>
+			<Card.Title class="text-2xl">Reset your password</Card.Title>
+			<Card.Description
+				>Enter the email for your account. We will send you a one-time code you can use to choose a
+				new password.</Card.Description
+			>
 		</Card.Header>
 		<Card.Content>
 			<form onsubmit={form.onForgotSubmit}>
 				<FieldGroup>
-					<FormField
-						id="pr-email-{id}"
-						label={m['PasswordResetForm.email']()}
-						error={form.fieldErrors.email}
-					>
+					<FormField id="pr-email-{id}" label="Email" error={form.fieldErrors.email}>
 						<Input
 							id="pr-email-{id}"
 							name="email"
@@ -60,9 +56,7 @@
 					{/if}
 
 					<Field>
-						<Button type="submit" class="w-full" disabled={form.busy}>
-							{m['PasswordResetForm.sendCode']()}
-						</Button>
+						<Button type="submit" class="w-full" disabled={form.busy}>Send code</Button>
 					</Field>
 				</FieldGroup>
 			</form>
@@ -71,16 +65,17 @@
 {:else}
 	<Card.Root class="mx-auto w-full max-w-sm">
 		<Card.Header>
-			<Card.Title class="text-2xl">{m['PasswordResetForm.titleReset']()}</Card.Title>
+			<Card.Title class="text-2xl">Choose a new password</Card.Title>
 			<Card.Description class="text-balance">
-				{m['PasswordResetForm.descriptionReset']({ email: form.step.email })}
+				We sent a code to {form.step.email}. Enter it below along with your new password. The code
+				is valid for 5 minutes.
 			</Card.Description>
 		</Card.Header>
 		<Card.Content>
 			<form onsubmit={form.onResetSubmit}>
 				<FieldGroup>
 					<Field>
-						<FieldLabel for="pr-code-{id}">{m['PasswordResetForm.code']()}</FieldLabel>
+						<FieldLabel for="pr-code-{id}">Code</FieldLabel>
 						<InputOTP.Root
 							id="pr-otp-{id}"
 							inputId="pr-code-{id}"
@@ -101,17 +96,13 @@
 								</InputOTP.Group>
 							{/snippet}
 						</InputOTP.Root>
-						<FieldDescription>{m['EmailVerificationForm.codeHint']()}</FieldDescription>
+						<FieldDescription>Enter the 8-digit code from your email.</FieldDescription>
 						{#if form.fieldErrors.code}
 							<FieldError>{form.fieldErrors.code}</FieldError>
 						{/if}
 					</Field>
 
-					<FormField
-						id="pr-new-pw-{id}"
-						label={m['PasswordResetForm.newPassword']()}
-						error={form.fieldErrors.newPassword}
-					>
+					<FormField id="pr-new-pw-{id}" label="New password" error={form.fieldErrors.newPassword}>
 						<PasswordInput
 							id="pr-new-pw-{id}"
 							name="newPassword"
@@ -123,7 +114,7 @@
 
 					<FormField
 						id="pr-confirm-pw-{id}"
-						label={m['PasswordResetForm.confirmNewPassword']()}
+						label="Confirm new password"
 						error={form.fieldErrors.confirmPassword}
 					>
 						<PasswordInput
@@ -142,9 +133,7 @@
 					{/if}
 
 					<Field>
-						<Button type="submit" class="w-full" disabled={form.busy}>
-							{m['PasswordResetForm.continue']()}
-						</Button>
+						<Button type="submit" class="w-full" disabled={form.busy}>Continue</Button>
 						<Button
 							type="button"
 							variant="outline"
@@ -152,7 +141,7 @@
 							disabled={form.busy}
 							onclick={form.backToForgot}
 						>
-							{m['PasswordResetForm.cancel']()}
+							Cancel
 						</Button>
 					</Field>
 

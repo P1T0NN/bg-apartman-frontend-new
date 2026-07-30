@@ -7,7 +7,12 @@ import { resolveReservationBooking } from '@/convex/tables/bookings/helpers/reso
 
 // SCHEMAS
 import { paymentMethod } from '@/convex/tables/accommodations/schemas/accommodationsSchemas';
-import { bookingStatus } from '@/convex/tables/bookings/schemas/bookingsSchemas';
+import {
+	bookingStatus,
+	paymentStatus,
+	bookingPolicy,
+	cancelledBy
+} from '@/convex/tables/bookings/schemas/bookingsSchemas';
 
 // TYPES
 import type { typesReservationBooking } from '@/shared/features/booking/types/bookingTypes';
@@ -20,10 +25,17 @@ const reservationBooking = v.object({
 	numberOfAdults: v.number(),
 	numberOfChildren: v.number(),
 	paymentMethod,
+	paymentStatus,
 	status: bookingStatus,
 	total: v.number(),
+	policy: bookingPolicy,
+	cancelledBy: v.optional(cancelledBy),
+	cancelReason: v.optional(v.string()),
+	stayConfirmationRequestedAt: v.optional(v.number()),
+	stayConfirmedAt: v.optional(v.number()),
 	apartmentTitle: v.string(),
 	apartmentSlug: v.string(),
+	apartmentIsBookable: v.boolean(),
 	hostName: v.string()
 });
 

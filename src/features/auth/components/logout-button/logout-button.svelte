@@ -1,11 +1,8 @@
 <script lang="ts">
-	// LIBRARIES
-	import { m } from '@/shared/lib/paraglide/messages';
-
 	// COMPONENTS
-	import * as DropdownMenu from '@/shared/components/ui/dropdown-menu/index.js';
-	import Button from '@/shared/components/ui/button/button.svelte';
-	import Spinner from '@/shared/components/ui/spinner/spinner.svelte';
+	import * as DropdownMenu from '@/components/ui/dropdown-menu/index.js';
+	import Button from '@/components/ui/button/button.svelte';
+	import Spinner from '@/components/ui/spinner/spinner.svelte';
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
@@ -56,7 +53,7 @@
 		{:else}
 			<LogOutIcon />
 		{/if}
-		<span>{m['LogoutButton.logout']()}</span>
+		<span>Logout</span>
 	</DropdownMenu.Item>
 {:else}
 	<Button {variant} disabled={disabled || loggingOut} onclick={logout} class={cn(className)}>
@@ -65,6 +62,6 @@
 		{:else}
 			<LogOutIcon />
 		{/if}
-		<span>{m['LogoutButton.logout']()}</span>
+		<span>Logout</span>
 	</Button>
 {/if}

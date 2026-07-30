@@ -4,8 +4,8 @@
 	import { goto } from '$app/navigation';
 
 	// COMPONENTS
-	import { AlertDialog } from '@/shared/components/ui/alert-dialog/index.js';
-	import { Button } from '@/shared/components/ui/button/index.js';
+	import { AlertDialog } from '@/components/ui/alert-dialog/index.js';
+	import { Button } from '@/components/ui/button/index.js';
 
 	// LUCIDE ICONS
 	import ShieldAlertIcon from '@lucide/svelte/icons/shield-alert';

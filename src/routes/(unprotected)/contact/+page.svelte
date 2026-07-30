@@ -1,10 +1,10 @@
 <script lang="ts">
 	// CONFIG
-	import { COMPANY_DATA } from '@/shared/constants.js';
+	import { COMPANY_DATA } from '@/shared/config.js';
 
 	// COMPONENTS
-	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
-	import MutationForm from '@/shared/components/ui/mutation-form/mutation-form.svelte';
+	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
+	import MutationForm from '@/components/ui/mutation-form/mutation-form.svelte';
 	import { toast } from 'svelte-sonner';
 
 	// ACTIONS
@@ -14,7 +14,7 @@
 	import {
 		sendContactFormEmailSchema,
 		type SendContactFormEmailSchema
-	} from '@/features/contact/schemas/contactSchemas';
+	} from '@/shared/features/contact/schemas/contactSchemas';
 
 	// SVGS
 	import InstagramIcon from '@/svgs/instagram.svelte';
@@ -23,7 +23,7 @@
 	import TikTokIcon from '@/svgs/tiktok.svelte';
 
 	// TYPES
-	import type { MutationFormSection } from '@/shared/components/ui/mutation-form/types';
+	import type { MutationFormSection } from '@/components/ui/mutation-form/types';
 	import type { ZodType } from 'zod';
 
 	// LUCIDE ICONS
@@ -44,7 +44,7 @@
 					id: 'name',
 					label: 'Your name',
 					kind: 'input',
-					placeholder: 'Marko Marković',
+					placeholder: 'Marko MarkoviÄ‡',
 					autocomplete: 'name'
 				},
 				{
@@ -59,7 +59,8 @@
 					id: 'message',
 					label: 'How can we help?',
 					kind: 'textarea',
-					placeholder: 'Tell us a little about what you need — dates, a place you saw, or a question.',
+					placeholder:
+						'Tell us a little about what you need â€” dates, a place you saw, or a question.',
 					rows: 6
 				}
 			]
@@ -105,8 +106,8 @@
 </script>
 
 <SvelteHead
-	title="Contact — {COMPANY_DATA.NAME}"
-	description="Questions about a stay, a booking or hosting in Belgrade? Send us a message or email us directly — we usually reply within one business day."
+	title="Contact â€” {COMPANY_DATA.NAME}"
+	description="Questions about a stay, a booking or hosting in Belgrade? Send us a message or email us directly â€” we usually reply within one business day."
 />
 
 <div class="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
@@ -120,7 +121,7 @@
 		</h1>
 		<p class="mt-4 text-lg text-pretty text-muted-foreground">
 			Whether it's a question about a booking, a place you have your eye on, or hosting your own
-			apartment — we read every message and reply personally.
+			apartment â€” we read every message and reply personally.
 		</p>
 	</div>
 
@@ -154,7 +155,9 @@
 			</dl>
 
 			<div class="mt-10 border-t border-border pt-8">
-				<p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">Follow along</p>
+				<p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+					Follow along
+				</p>
 				<div class="mt-4 flex gap-3">
 					{#each socials as social (social.label)}
 						<a

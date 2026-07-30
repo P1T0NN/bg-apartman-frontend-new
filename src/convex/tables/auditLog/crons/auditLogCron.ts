@@ -5,9 +5,7 @@ import { AUDIT_RETENTION_DAYS, AUDIT_RETENTION_DEFAULT_DAYS } from '../auditLogC
 // TYPES
 import type { Doc } from '@/convex/_generated/dataModel';
 
-const DAY_MS = 24 * 60 * 60 * 1000;
-/** Hard cap per run so a backlog after a long downtime can't blow the function budget. */
-const MAX_DELETES_PER_RUN = 5_000;
+import { MS_PER_DAY, OPERATIONAL_LIMITS } from '@/shared/config';
 
 /**
  * Retention sweep. Walks the `auditLogs` table from oldest to newest and
@@ -30,7 +28,7 @@ export const purgeStaleAuditLogs = internalMutation({
 		const cursor = ctx.db.query('auditLogs');
 
 		for await (const row of cursor) {
-			if (deleted >= MAX_DELETES_PER_RUN) break;
+			if (deleted >= OPERATIONAL_LIMITS.AUDIT_LOG_MAX_DELETES_PER_RUN) break;
 
 			const days =
 				AUDIT_RETENTION_DAYS[row.action as keyof typeof AUDIT_RETENTION_DAYS] ??
@@ -39,7 +37,7 @@ export const purgeStaleAuditLogs = internalMutation({
 			if (!Number.isFinite(days)) continue; // 'keep forever' — skip without breaking the scan.
 
 			const age = now - (row as Doc<'auditLogs'>)._creationTime;
-			if (age <= days * DAY_MS) {
+			if (age <= days * MS_PER_DAY) {
 				// We're inside retention for this action; but other actions may have shorter
 				// retention and still be eligible. Keep scanning rather than breaking.
 				continue;

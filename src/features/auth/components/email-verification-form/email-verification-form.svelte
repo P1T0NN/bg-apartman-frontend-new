@@ -1,21 +1,18 @@
 <script lang="ts">
-	// LIBRARIES
-	import { m } from '@/shared/lib/paraglide/messages';
-
 	// UTILS
 	import { authClient } from '@/features/auth/lib/auth-client';
 
 	// COMPONENTS
-	import * as Card from '@/shared/components/ui/card/index.js';
-	import { FieldGroup, Field, FieldLabel, FieldError } from '@/shared/components/ui/field/index.js';
-	import { Button } from '@/shared/components/ui/button/index.js';
+	import * as Card from '@/components/ui/card/index.js';
+	import { FieldGroup, Field, FieldLabel, FieldError } from '@/components/ui/field/index.js';
+	import { Button } from '@/components/ui/button/index.js';
 	import * as InputOTP from '@/features/auth/components/input-otp/index.js';
 	import EmailVerificationResend from './email-verification-resend.svelte';
 
 	const OTP_MAX_LENGTH = 8;
 
 	// UTILS
-	import { emailVerificationFormSchema } from './email-verification-form-schema.js';
+	import { emailVerificationFormSchema } from '@/shared/features/auth/schemas/authSchemas';
 	import { cn, type WithElementRef } from '@/utils/utils.js';
 	import { zodIssuesToFieldErrors } from '@/shared/utils/zodFieldErrors';
 	import { rateLimitMessage } from '@/utils/rateLimitMessages';
@@ -89,14 +86,14 @@
 				console.error('Email verification: verifyEmail failed:', error);
 				errorMessage = rateLimitMessage(
 					error.message,
-					m['EmailVerificationForm.verificationFailed']()
+					'Invalid or expired code. Please try again.'
 				);
 				busy = false;
 				return;
 			}
 		} catch (error) {
 			console.error('Email verification: verifyEmail failed:', error);
-			errorMessage = m['EmailVerificationForm.verificationFailed']();
+			errorMessage = 'Invalid or expired code. Please try again.';
 			busy = false;
 			return;
 		}
@@ -115,12 +112,10 @@
 
 {#if variant === 'card'}
 	<Card.Header>
-		<Card.Title class="text-2xl">
-			{m['EmailVerificationForm.title']()}
-		</Card.Title>
+		<Card.Title class="text-2xl">Check your email</Card.Title>
 
 		<Card.Description>
-			{m['EmailVerificationForm.description']({ email })}
+			We sent a verification code to {email}. Enter it below to continue.
 		</Card.Description>
 	</Card.Header>
 
@@ -128,7 +123,7 @@
 		<form class="w-full" onsubmit={onVerifySubmit}>
 			<FieldGroup>
 				<Field>
-					<FieldLabel for="ev-code-{id}">{m['EmailVerificationForm.code']()}</FieldLabel>
+					<FieldLabel for="ev-code-{id}">Verification code</FieldLabel>
 					<InputOTP.Root
 						id="ev-otp-{id}"
 						inputId="ev-code-{id}"
@@ -163,7 +158,7 @@
 
 				<Field>
 					<Button type="submit" class={fullWidthButtons ? 'w-full' : ''} disabled={busy}>
-						{m['EmailVerificationForm.continue']()}
+						Continue
 					</Button>
 					<Button
 						type="button"
@@ -172,7 +167,7 @@
 						disabled={busy}
 						onclick={handleCancel}
 					>
-						{m['EmailVerificationForm.cancel']()}
+						Cancel
 					</Button>
 				</Field>
 				{#if resend}
@@ -190,16 +185,14 @@
 	>
 		<FieldGroup>
 			<div class="flex flex-col items-center gap-1 text-center">
-				<h1 class="text-2xl font-bold">
-					{m['EmailVerificationForm.title']()}
-				</h1>
+				<h1 class="text-2xl font-bold">Check your email</h1>
 				<p class="text-sm text-balance text-muted-foreground">
-					{m['EmailVerificationForm.description']({ email })}
+					We sent a verification code to {email}. Enter it below to continue.
 				</p>
 			</div>
 
 			<Field>
-				<FieldLabel for="ev-code-{id}-stacked">{m['EmailVerificationForm.code']()}</FieldLabel>
+				<FieldLabel for="ev-code-{id}-stacked">Verification code</FieldLabel>
 				<InputOTP.Root
 					id="ev-otp-{id}-stacked"
 					inputId="ev-code-{id}-stacked"
@@ -234,7 +227,7 @@
 
 			<Field>
 				<Button type="submit" class={fullWidthButtons ? 'w-full' : ''} disabled={busy}>
-					{m['EmailVerificationForm.continue']()}
+					Continue
 				</Button>
 				<Button
 					type="button"
@@ -243,7 +236,7 @@
 					disabled={busy}
 					onclick={handleCancel}
 				>
-					{m['EmailVerificationForm.cancel']()}
+					Cancel
 				</Button>
 			</Field>
 			{#if resend}

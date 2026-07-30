@@ -16,5 +16,11 @@ export type typesCalculatedPrice = {
 	nights: number;
 	accommodationTotal: number;
 	cleaningFee: number;
+	/**
+	 * Platform cut, derived from `ACCOMMODATIONS_CONFIG.MONETIZATION` at call time — 0 in
+	 * every mode but `booking_fee`. Included in {@link typesCalculatedPrice.total} so the
+	 * guest sees it before committing, never first on the receipt.
+	 */
+	platformFee: number;
 	total: number;
 };

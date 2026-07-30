@@ -14,6 +14,8 @@ type SendBookingCancelledEmailInput = {
 	checkOutDate: string;
 	/** Cancellation reason to surface in the email. */
 	cancelReason?: string;
+	/** Where the guest's money ended up (post-settlement). Omitted for cash. */
+	paymentNote?: 'refunded' | 'released' | 'kept';
 };
 
 /** When a booking is cancelled: tell the guest. */
@@ -29,6 +31,7 @@ export async function sendBookingCancelledEmail(
 		checkInDate: input.checkInDate,
 		checkOutDate: input.checkOutDate,
 		cancelReason: input.cancelReason,
+		paymentNote: input.paymentNote,
 		browseUrl: homeUrl()
 	});
 

@@ -1,9 +1,8 @@
 // LIBRARIES
-import { m } from '@/shared/lib/paraglide/messages';
 import { authClient } from '@/features/auth/lib/auth-client';
 
 // CONFIG
-import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
+import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
 // COMPONENTS
 import { toast } from 'svelte-sonner';
@@ -26,7 +25,7 @@ export function useLogout() {
 				return;
 			}
 
-			toast.success(m['LogoutButton.logoutSuccess']());
+			toast.success('Logged out successfully.');
 			await appGoto(UNPROTECTED_PAGE_ENDPOINTS.LOGIN);
 		} finally {
 			isLoggingOut = false;

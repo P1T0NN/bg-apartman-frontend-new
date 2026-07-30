@@ -30,6 +30,19 @@ export const authComponent = createClient<DataModel, typeof authSchema>(componen
 					properties: { role: user.role }
 				});
 			}
+		},
+		session: {
+			// Every sign-in (and the session BA mints after signup / OAuth) claims the user's
+			// anonymous bookings — GuestSystemDesign.md §1. Scheduled, never awaited: the claim
+			// must never block or fail auth, and the scheduled mutation is the aggregate-safe
+			// write path (@/convex/functions). Idempotent, so re-running per login is a no-op.
+			onCreate: async (ctx, session) => {
+				await ctx.scheduler.runAfter(
+					0,
+					internal.tables.bookings.mutations.claimMyBookings.claimMyBookings,
+					{ userId: session.userId }
+				);
+			}
 		}
 	},
 	authFunctions

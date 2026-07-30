@@ -1,23 +1,21 @@
 <script lang="ts">
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
-	import { m } from '@/shared/lib/paraglide/messages';
-	import { getLocale } from '@/shared/lib/paraglide/runtime';
 
 	// COMPONENTS
-	import { AlertDialog } from '@/shared/components/ui/alert-dialog';
-	import { Button } from '@/shared/components/ui/button/index.js';
-	import { Textarea } from '@/shared/components/ui/textarea/index.js';
-	import ConvexMutationForm from '@/shared/components/ui/mutation-form/convex-mutation-form.svelte';
+	import { AlertDialog } from '@/components/ui/alert-dialog';
+	import { Button } from '@/components/ui/button/index.js';
+	import { Textarea } from '@/components/ui/textarea/index.js';
+	import ConvexMutationForm from '@/components/ui/mutation-form/convex-mutation-form.svelte';
 
 	// SCHEMAS
-	import { declineBookingSchema } from '@/shared/features/booking/schemas/declineBookingSchema';
+	import { declineBookingSchema } from '@/shared/features/booking/schemas/bookingsSchemas';
 
 	// TYPES
-	import type { z } from 'zod';
 	import type { Id } from '@/convex/_generated/dataModel';
+	import type { typesDeclineBookingInput } from '@/shared/features/booking/schemas/bookingsSchemas';
 	import type { typesBookingSafe } from '@/shared/features/booking/types/bookingTypes';
-	import type { MutationFormFieldDef } from '@/shared/components/ui/mutation-form/types';
+	import type { MutationFormFieldDef } from '@/components/ui/mutation-form/types';
 
 	// LUCIDE ICONS
 	import { Loader } from '@lucide/svelte';
@@ -37,26 +35,20 @@
 		open?: boolean;
 	} = $props();
 
-	type DeclineBookingValues = z.infer<typeof declineBookingSchema>;
-
 	// The form validates the whole `declineBookingSchema` client-side — the exact schema the
 	// `declineBooking` mutation re-validates at the Convex boundary. `bookingId`/`locale` ride
-	// along in the values (no `mapArgs` needed), so there's a single validated payload.
-	function freshValues(): DeclineBookingValues {
-		return {
-			bookingId: (booking?._id ?? '') as Id<'bookings'>,
-			declineReason: '',
-			locale: getLocale()
-		};
-	}
-
-	let values = $state<DeclineBookingValues>(freshValues());
+	// along in the values (no `mapArgs` needed), so there's a single validated payload; opening
+	// the dialog fills in whichever booking is being declined.
+	let values = $state<typesDeclineBookingInput>({
+		bookingId: '' as Id<'bookings'>,
+		declineReason: '',
+		locale: 'en'
+	});
 
 	const reasonLength = $derived(values.declineReason.trim().length);
-	const isValid = $derived(declineBookingSchema.safeParse(values).success);
 
 	const fields: MutationFormFieldDef[] = [
-		{ id: 'declineReason', kind: 'textarea', label: m['DeclineBookingDialog.reasonLabel']() }
+		{ id: 'declineReason', kind: 'textarea', label: 'Reason for declining' }
 	];
 </script>
 
@@ -66,17 +58,16 @@
 	class="ring-destructive/30"
 	onOpenChange={(next) => {
 		// Start every opening from a clean slate for whichever booking is being declined.
-		if (next) values = freshValues();
+		if (next && booking) {
+			values.bookingId = booking._id as Id<'bookings'>;
+			values.declineReason = '';
+		}
 	}}
 >
 	<div class="alert-dialog__header">
-		<h2 class="text-destructive">
-			{m['DeclineBookingDialog.title']()}
-		</h2>
+		<h2 class="text-destructive">Decline this reservation request?</h2>
 		<p>
-			{m['DeclineBookingDialog.description']({
-				guest: booking ? `${booking.guestFirstName} ${booking.guestLastName}` : ''
-			})}
+			This declines {booking ? `${booking.guestFirstName} ${booking.guestLastName}` : ''}s request and emails them your reason. It can't be undone, so please explain your decision briefly and courteously.
 		</p>
 	</div>
 
@@ -113,7 +104,7 @@
 		oninput={(e) => setValue(e.currentTarget.value)}
 		maxlength={500}
 		rows={4}
-		placeholder={m['DeclineBookingDialog.reasonPlaceholder']()}
+		placeholder="e.g. These dates are no longer available for booking."
 		aria-invalid={!!error}
 	/>
 	<span
@@ -129,13 +120,16 @@
 {#snippet formActions({ busy }: { busy: boolean })}
 	<div class="alert-dialog__footer">
 		<Button type="button" variant="outline" onclick={() => (open = false)} disabled={busy}>
-			{m['DeclineBookingDialog.cancel']()}
+			Keep request
 		</Button>
-		<Button type="submit" variant="destructive" disabled={busy || !isValid}>
+		
+		<!-- Never disabled on validity: clicking must SAY what's wrong (the form's own
+		     field errors + toast), not silently refuse. -->
+		<Button type="submit" variant="destructive" disabled={busy}>
 			{#if busy}
 				<Loader class="h-3 w-3 animate-spin" />
 			{/if}
-			{m['DeclineBookingDialog.confirm']()}
+			Decline request
 		</Button>
 	</div>
 {/snippet}

@@ -1,9 +1,6 @@
 <script lang="ts">
-	// LIBRARIES
-	import { m } from '@/shared/lib/paraglide/messages';
-
 	// COMPONENTS
-	import { Button } from '@/shared/components/ui/button/index.js';
+	import { Button } from '@/components/ui/button/index.js';
 
 	// UTILS
 	import { authClient } from '@/features/auth/lib/auth-client';
@@ -37,5 +34,5 @@
 			fill="currentColor"
 		/>
 	</svg>
-	{m['LoginPage.continueWithGoogle']()}
+	Continue with Google
 </Button>

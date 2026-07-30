@@ -1,12 +1,9 @@
 <script lang="ts">
-	// LIBRARIES
-	import { m } from '@/shared/lib/paraglide/messages';
-
 	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
 	// COMPONENTS
-	import { Button } from '@/shared/components/ui/button/index.js';
+	import { Button } from '@/components/ui/button/index.js';
 	import EmailVerificationForm from '@/features/auth/components/email-verification-form/email-verification-form.svelte';
 	import {
 		FieldGroup,
@@ -14,12 +11,12 @@
 		FieldDescription,
 		FieldSeparator,
 		FieldError
-	} from '@/shared/components/ui/field/index.js';
-	import { FormField } from '@/shared/components/ui/form-field/index.js';
+	} from '@/components/ui/field/index.js';
+	import { FormField } from '@/components/ui/form-field/index.js';
 	import GoogleLoginButton from '@/features/auth/components/google-login-button/google-login-button.svelte';
-	import { Input } from '@/shared/components/ui/input/index.js';
+	import { Input } from '@/components/ui/input/index.js';
 	import PasswordInput from '@/features/auth/components/password-input/password-input.svelte';
-	import Link from '@/shared/components/ui/link/link.svelte';
+	import Link from '@/components/ui/link/link.svelte';
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
@@ -38,8 +35,9 @@
 	const id = $props.id();
 
 	const form = createSignUpForm({
-		signUpFailed: () => m['SignUpForm.SignUpFormWithImage.signUpFailed'](),
-		accountCreatedToast: () => m['SignUpForm.SignUpFormWithImage.accountCreatedToast']()
+		signUpFailed: () =>
+			"We couldn't create your account. Check your details and try again, or sign in if you already have one.",
+		accountCreatedToast: () => 'Account created successfully.'
 	});
 </script>
 
@@ -52,17 +50,13 @@
 	>
 		<FieldGroup>
 			<div class="flex flex-col items-center gap-1 text-center">
-				<h1 class="text-2xl font-bold">{m['SignUpForm.SignUpFormWithImage.title']()}</h1>
+				<h1 class="text-2xl font-bold">Create your account</h1>
 				<p class="text-sm text-balance text-muted-foreground">
-					{m['SignUpForm.SignUpFormWithImage.description']()}
+					Fill in the form below to create your account
 				</p>
 			</div>
 
-			<FormField
-				id="name-{id}"
-				label={m['SignUpForm.SignUpFormWithImage.fullName']()}
-				error={form.fieldErrors.name}
-			>
+			<FormField id="name-{id}" label="Full Name" error={form.fieldErrors.name}>
 				<Input
 					id="name-{id}"
 					name="name"
@@ -77,9 +71,9 @@
 
 			<FormField
 				id="email-{id}"
-				label={m['SignUpForm.SignUpFormWithImage.email']()}
+				label="Email"
 				error={form.fieldErrors.email}
-				description={m['SignUpForm.SignUpFormWithImage.emailHelp']()}
+				description="We'll use this to contact you. We will not share your email with anyone else."
 			>
 				<Input
 					id="email-{id}"
@@ -94,9 +88,9 @@
 
 			<FormField
 				id="password-{id}"
-				label={m['SignUpForm.SignUpFormWithImage.password']()}
+				label="Password"
 				error={form.fieldErrors.password}
-				description={m['SignUpForm.SignUpFormWithImage.passwordHelp']()}
+				description="Must be at least 8 characters long."
 			>
 				<PasswordInput
 					id="password-{id}"
@@ -108,9 +102,9 @@
 
 			<FormField
 				id="confirm-password-{id}"
-				label={m['SignUpForm.SignUpFormWithImage.confirmPassword']()}
+				label="Confirm Password"
 				error={form.fieldErrors.confirmPassword}
-				description={m['SignUpForm.SignUpFormWithImage.confirmPasswordHelp']()}
+				description="Please confirm your password."
 			>
 				<PasswordInput
 					id="confirm-password-{id}"
@@ -127,22 +121,18 @@
 			{/if}
 
 			<Field>
-				<Button type="submit" disabled={form.busy}>
-					{m['SignUpForm.SignUpFormWithImage.submit']()}
-				</Button>
+				<Button type="submit" disabled={form.busy}>Create Account</Button>
 			</Field>
 
-			<FieldSeparator>
-				{m['SignUpForm.SignUpFormWithImage.orContinueWith']()}
-			</FieldSeparator>
+			<FieldSeparator>Or continue with</FieldSeparator>
 
 			<Field>
 				<GoogleLoginButton class="w-full" />
 
 				<FieldDescription class="px-6 text-center">
-					{m['SignUpForm.SignUpFormWithImage.alreadyHaveAccount']()}
+					Already have an account?
 					<Link href={UNPROTECTED_PAGE_ENDPOINTS.LOGIN} class="underline underline-offset-4">
-						{m['SignUpForm.SignUpFormWithImage.signIn']()}
+						Sign in
 					</Link>
 				</FieldDescription>
 			</Field>

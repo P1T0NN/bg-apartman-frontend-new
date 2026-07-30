@@ -3,7 +3,7 @@ import { Resend } from '@convex-dev/resend';
 import { components } from '../_generated/api';
 
 // CONFIG
-import { COMPANY_DATA } from '@/shared/constants.js';
+import { COMPANY_DATA } from '@/shared/config.js';
 
 // TYPES
 import type { MutationCtx, ActionCtx } from '../_generated/server';
@@ -15,7 +15,7 @@ export type EmailCtx = MutationCtx | ActionCtx;
  * Convex table with retries + rate-limiting, so a failed Resend API call doesn't drop the email
  * (unlike a fire-and-forget `fetch`). Triggered from the mutation/action that owns the data.
  *
- * `testMode: false` → real delivery. In test mode the component only sends to Resend-approved test
+ * `testMode: false` â†’ real delivery. In test mode the component only sends to Resend-approved test
  * addresses, so production mail would silently not arrive.
  */
 export const resend = new Resend(components.resend, { testMode: false });
@@ -35,5 +35,11 @@ export const homeUrl = (): string => process.env.SITE_URL!;
 export const reservationUrl = (bookingId: string): string =>
 	`${process.env.SITE_URL!}/reservations/${bookingId}`;
 export const hostReservationsUrl = (): string => `${process.env.SITE_URL!}/host/reservations`;
+/** The host queue deep-linked to ONE booking's sheet (HostSystemDesign.md §6: every host
+ *  email's primary action is one click from inbox to the button). */
+export const hostBookingUrl = (bookingId: string): string =>
+	`${process.env.SITE_URL!}/host/reservations?booking=${bookingId}`;
+export const hostDashboardUrl = (): string => `${process.env.SITE_URL!}/host/dashboard`;
+export const myAccommodationsUrl = (): string => `${process.env.SITE_URL!}/host/my-accommodations`;
 export const editAccommodationUrl = (apartmentId: string): string =>
 	`${process.env.SITE_URL!}/host/my-accommodations/edit-accommodation/${apartmentId}`;

@@ -4,6 +4,7 @@ import { formatMoney } from '@/shared/utils/formatMoney';
 import { emailHeaderTemplate } from '../header/emailHeaderTemplate';
 import { emailFooterTemplate } from '../footer/emailFooterTemplate';
 import { t, pickLocale } from '@/convex/i18n';
+import { BOOKING_POLICY } from '@/shared/config';
 
 /** New-booking notification sent to the apartment owner. `bookingUrl` must be absolute. */
 type CreateBookingForOwnerData = {
@@ -23,6 +24,12 @@ type CreateBookingForOwnerData = {
 	currency: string;
 	/** Instant-book → already confirmed; otherwise a request awaiting the host's action. */
 	instantBooking: boolean;
+	/**
+	 * Pending requests only: the moment the request expires (epoch ms). HostSystemDesign.md
+	 * §6 — the email states the deadline DATETIME, not "48 hours": the fact the host must
+	 * plan around, phrased as the moment it lapses.
+	 */
+	respondBy?: number;
 	bookingUrl: string;
 	/** Owner's locale; unknown values fall back to `en`. */
 	locale: string;
@@ -69,7 +76,24 @@ export function createBookingForOwnerTemplate(data: CreateBookingForOwnerData): 
 					value: dateFmt.format(new Date(data.checkOutDate))
 				},
 				{ label: t(locale, `${ns}.rowGuests`), value: guests },
-				{ label: t(locale, `${ns}.rowTotal`), value: total }
+				{ label: t(locale, `${ns}.rowTotal`), value: total },
+				// The deadline as a concrete moment, in the PROPERTY's day — not the server's
+				// UTC and not "48 hours" (HostSystemDesign.md §6, BookingSystemDesign.md §3).
+				...(!confirmed && data.respondBy !== undefined
+					? [
+							{
+								label: t(locale, `${ns}.rowRespondBy`),
+								value: new Intl.DateTimeFormat(locale, {
+									weekday: 'short',
+									month: 'short',
+									day: 'numeric',
+									hour: '2-digit',
+									minute: '2-digit',
+									timeZone: BOOKING_POLICY.PROPERTY_TIMEZONE
+								}).format(new Date(data.respondBy))
+							}
+						]
+					: [])
 			],
 			cta: { label: t(locale, `${ns}.cta`), url: data.bookingUrl }
 		}) +

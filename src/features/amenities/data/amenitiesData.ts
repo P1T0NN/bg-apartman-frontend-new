@@ -1,6 +1,3 @@
-// LIBRARIES
-import { m } from '@/shared/lib/paraglide/messages';
-
 // TYPES
 import type { Component } from 'svelte';
 
@@ -34,32 +31,32 @@ import FerrisWheelIcon from '@lucide/svelte/icons/ferris-wheel';
 
 /** Curated amenity options rendered as toggle chips by the amenities field. */
 export const AMENITIES = [
-	{ id: 'wifi', label: m['Amenities.wifi']() },
-	{ id: 'air_conditioning', label: m['Amenities.airConditioning']() },
-	{ id: 'heating', label: m['Amenities.heating']() },
-	{ id: 'kitchen', label: m['Amenities.kitchen']() },
-	{ id: 'washer', label: m['Amenities.washer']() },
-	{ id: 'dryer', label: m['Amenities.dryer']() },
-	{ id: 'free_parking', label: m['Amenities.freeParking']() },
-	{ id: 'pool', label: m['Amenities.pool']() },
-	{ id: 'tv', label: m['Amenities.tv']() },
-	{ id: 'workspace', label: m['Amenities.dedicatedWorkspace']() },
-	{ id: 'elevator', label: m['Amenities.elevator']() },
-	{ id: 'balcony', label: m['Amenities.balcony']() },
-	{ id: 'dishwasher', label: m['Amenities.dishwasher']() },
-	{ id: 'coffee_maker', label: m['Amenities.coffeeMaker']() },
-	{ id: 'self_checkin', label: m['Amenities.selfCheckin']() },
-	{ id: 'smoke_alarm', label: m['Amenities.smokeAlarm']() },
-	{ id: 'shower', label: m['Amenities.shower']() },
-	{ id: 'bathtub', label: m['Amenities.bathtub']() },
-	{ id: 'towels', label: m['Amenities.towels']() },
-	{ id: 'hot_tub', label: m['Amenities.hotTub']() },
-	{ id: 'sauna', label: m['Amenities.sauna']() },
-	{ id: 'private_parking', label: m['Amenities.privateParking']() },
-	{ id: 'public_parking', label: m['Amenities.publicParking']() },
-	{ id: 'toilet_paper', label: m['Amenities.toiletPaper']() },
-	{ id: 'shampoo', label: m['Amenities.shampoo']() },
-	{ id: 'childrens_playground', label: m['Amenities.childrensPlayground']() }
+	{ id: 'wifi', label: 'Wi-Fi' },
+	{ id: 'air_conditioning', label: 'Air conditioning' },
+	{ id: 'heating', label: 'Heating' },
+	{ id: 'kitchen', label: 'Kitchen' },
+	{ id: 'washer', label: 'Washer' },
+	{ id: 'dryer', label: 'Dryer' },
+	{ id: 'free_parking', label: 'Free parking' },
+	{ id: 'pool', label: 'Pool' },
+	{ id: 'tv', label: 'TV' },
+	{ id: 'workspace', label: 'Dedicated workspace' },
+	{ id: 'elevator', label: 'Elevator' },
+	{ id: 'balcony', label: 'Balcony' },
+	{ id: 'dishwasher', label: 'Dishwasher' },
+	{ id: 'coffee_maker', label: 'Coffee maker' },
+	{ id: 'self_checkin', label: 'Self check-in' },
+	{ id: 'smoke_alarm', label: 'Smoke alarm' },
+	{ id: 'shower', label: 'Shower' },
+	{ id: 'bathtub', label: 'Bathtub' },
+	{ id: 'towels', label: 'Towels' },
+	{ id: 'hot_tub', label: 'Hot tub' },
+	{ id: 'sauna', label: 'Sauna' },
+	{ id: 'private_parking', label: 'Private parking' },
+	{ id: 'public_parking', label: 'Public parking' },
+	{ id: 'toilet_paper', label: 'Toilet paper' },
+	{ id: 'shampoo', label: 'Shampoo' },
+	{ id: 'childrens_playground', label: "Children's playground" }
 ] as const;
 
 /** Lucide icon per amenity id — used on accommodation pages and forms. */

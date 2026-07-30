@@ -1,17 +1,14 @@
 <script lang="ts">
-	// LIBRARIES
-	import { m } from '@/shared/lib/paraglide/messages';
-
 	// CONFIG
-	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
 	// COMPONENTS
-	import { Button } from '@/shared/components/ui/button/index.js';
-	import * as Card from '@/shared/components/ui/card/index.js';
+	import { Button } from '@/components/ui/button/index.js';
+	import * as Card from '@/components/ui/card/index.js';
 	import GoogleLoginButton from '@/features/auth/components/google-login-button/google-login-button.svelte';
-	import { Input } from '@/shared/components/ui/input/index.js';
+	import { Input } from '@/components/ui/input/index.js';
 	import PasswordInput from '@/features/auth/components/password-input/password-input.svelte';
-	import Link from '@/shared/components/ui/link/link.svelte';
+	import Link from '@/components/ui/link/link.svelte';
 	import EmailVerificationForm from '@/features/auth/components/email-verification-form/email-verification-form.svelte';
 	import {
 		FieldGroup,
@@ -19,34 +16,30 @@
 		FieldLabel,
 		FieldDescription,
 		FieldError
-	} from '@/shared/components/ui/field/index.js';
-	import { FormField } from '@/shared/components/ui/form-field/index.js';
+	} from '@/components/ui/field/index.js';
+	import { FormField } from '@/components/ui/form-field/index.js';
 
 	import { createLoginForm } from './login-form-model.svelte.js';
 
 	const id = $props.id();
 
 	const form = createLoginForm({
-		signInFailed: () => m['LoginForm.LoginFormNoImage.signInFailed'](),
-		signedInToast: () => m['LoginForm.LoginFormNoImage.signedInToast']()
+		signInFailed: () => 'Sign in failed. Please check your credentials and try again.',
+		signedInToast: () => 'Signed in successfully.'
 	});
 </script>
 
 <Card.Root class="mx-auto w-full max-w-sm">
 	{#if form.step === 'signIn'}
 		<Card.Header>
-			<Card.Title class="text-2xl">{m['LoginForm.LoginFormNoImage.title']()}</Card.Title>
-			<Card.Description>{m['LoginForm.LoginFormNoImage.description']()}</Card.Description>
+			<Card.Title class="text-2xl">Login</Card.Title>
+			<Card.Description>Enter your email below to login to your account</Card.Description>
 		</Card.Header>
 
 		<Card.Content>
 			<form onsubmit={form.onSignInSubmit}>
 				<FieldGroup>
-					<FormField
-						id="email-{id}"
-						label={m['LoginForm.LoginFormNoImage.email']()}
-						error={form.fieldErrors.email}
-					>
+					<FormField id="email-{id}" label="Email" error={form.fieldErrors.email}>
 						<Input
 							id="email-{id}"
 							name="email"
@@ -61,15 +54,13 @@
 
 					<Field>
 						<div class="flex items-center">
-							<FieldLabel for="password-{id}">
-								{m['LoginForm.LoginFormNoImage.password']()}
-							</FieldLabel>
+							<FieldLabel for="password-{id}">Password</FieldLabel>
 
 							<Link
 								href={UNPROTECTED_PAGE_ENDPOINTS.FORGOT_PASSWORD}
 								class="ms-auto inline-block text-sm underline"
 							>
-								{m['LoginForm.LoginFormNoImage.forgotPassword']()}
+								Forgot your password?
 							</Link>
 						</div>
 
@@ -91,16 +82,12 @@
 					{/if}
 
 					<Field>
-						<Button type="submit" class="w-full" disabled={form.busy}>
-							{m['LoginForm.LoginFormNoImage.submit']()}
-						</Button>
+						<Button type="submit" class="w-full" disabled={form.busy}>Login</Button>
 						<GoogleLoginButton class="w-full" />
 
 						<FieldDescription class="text-center">
-							{m['LoginForm.LoginFormNoImage.dontHaveAccount']()}
-							<Link href={UNPROTECTED_PAGE_ENDPOINTS.SIGNUP}>
-								{m['LoginForm.LoginFormNoImage.signUp']()}
-							</Link>
+							Don't have an account?
+							<Link href={UNPROTECTED_PAGE_ENDPOINTS.SIGNUP}>Sign up</Link>
 						</FieldDescription>
 					</Field>
 				</FieldGroup>

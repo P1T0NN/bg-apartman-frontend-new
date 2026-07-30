@@ -11,12 +11,32 @@ export const apartmentType = v.union(
 	v.literal('villa')
 );
 
+/**
+ * Listing states (AccommodationsSystemDesign.md §1). `published` is the ONLY bookable
+ * one — bookability is a single equality check everywhere, never an enumeration.
+ *
+ * `expired` is cron-only (listing fee lapsed in `listing_fee` mode) and distinct from
+ * `suspended`: billing is not moderation, and renewal returns a listing straight to
+ * `published` without re-review, because paying again is not a content event.
+ */
+export const APARTMENT_STATUSES = [
+	'pending_review',
+	'published',
+	'suspended',
+	'expired',
+	'archived'
+] as const;
+
 export const apartmentStatus = v.union(
 	v.literal('pending_review'),
 	v.literal('published'),
 	v.literal('suspended'),
+	v.literal('expired'),
 	v.literal('archived')
 );
+
+/** Machine-readable cause stamped by the cron whenever it sets `expired`. */
+export const apartmentExpiredReason = v.literal('listing_fee_lapsed');
 
 /** What a guest actually chose for a booking. */
 export const paymentMethod = v.union(v.literal('cash'), v.literal('online'));

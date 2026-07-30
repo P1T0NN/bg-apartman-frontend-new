@@ -4,7 +4,9 @@ import { customAction, customCtx, customMutation } from 'convex-helpers/server/c
 import { zCustomMutation } from 'convex-helpers/server/zod4';
 
 // UTILS
-import { action, mutation } from '@/convex/_generated/server';
+import { action } from '@/convex/_generated/server';
+// Trigger-wrapped constructor — keeps table-count aggregates in sync (see functions.ts).
+import { mutation } from '@/convex/functions';
 import { authComponent } from '@/convex/auth/auth';
 import { convexGetRateLimitedUserId } from '@/convex/helpers/convexGetRateLimitedUserId';
 import { logAudit } from '@/convex/tables/auditLog/helpers/logAudit';

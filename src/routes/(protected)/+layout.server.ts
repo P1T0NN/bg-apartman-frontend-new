@@ -2,7 +2,7 @@
 import { redirect } from '@sveltejs/kit';
 
 // CONFIG
-import { UNPROTECTED_PAGE_ENDPOINTS } from '@/shared/routeEndpoints.js';
+import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
 // UTILS
 import { localizedPath } from '@/utils/localizedPath';

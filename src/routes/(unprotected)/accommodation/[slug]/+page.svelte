@@ -5,20 +5,20 @@
 	import { page } from '$app/state';
 
 	// COMPONENTS
-	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
-	import { Card } from '@/shared/components/ui/card/index.js';
-	import { Separator } from '@/shared/components/ui/separator/index.js';
-	import AccommodationGallerySection from '@/shared/components/pages/(unprotected)/accommodation/accommodation-gallery-section/accommodation-gallery-section.svelte';
-	import AccommodationOverviewSection from '@/shared/components/pages/(unprotected)/accommodation/accommodation-overview-section/accommodation-overview-section.svelte';
-	import AccommodationSummarySection from '@/shared/components/pages/(unprotected)/accommodation/accommodation-summary-section/accommodation-summary-section.svelte';
-	import AccommodationAmenitiesSection from '@/shared/components/pages/(unprotected)/accommodation/accommodations-amenities-section/accommodation-amenities-section.svelte';
-	import AccommodationLocationSection from '@/shared/components/pages/(unprotected)/accommodation/accommodation-location-section/accommodation-location-section.svelte';
-	import AccommodationPoliciesSection from '@/shared/components/pages/(unprotected)/accommodation/accommodation-policies-section/accommodation-policies-section.svelte';
-	import AccommodationBookingPanel from '@/shared/components/pages/(unprotected)/accommodation/accommodation-booking-panel/accommodation-booking-panel.svelte';
-	import AccommodationMobileBar from '@/shared/components/pages/(unprotected)/accommodation/accommodation-mobile-bar.svelte';
-	import AccommodationPageLoading from '@/shared/components/pages/(unprotected)/accommodation/loading/accommodation-page-loading.svelte';
-	import AccommodationPageEmpty from '@/shared/components/pages/(unprotected)/accommodation/empty/accommodation-page-empty.svelte';
-	import AccommodationPageError from '@/shared/components/pages/(unprotected)/accommodation/error/accommodation-page-error.svelte';
+	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
+	import { Card } from '@/components/ui/card/index.js';
+	import { Separator } from '@/components/ui/separator/index.js';
+	import AccommodationGallerySection from '@/components/pages/(unprotected)/accommodation/accommodation-gallery-section/accommodation-gallery-section.svelte';
+	import AccommodationOverviewSection from '@/components/pages/(unprotected)/accommodation/accommodation-overview-section/accommodation-overview-section.svelte';
+	import AccommodationSummarySection from '@/components/pages/(unprotected)/accommodation/accommodation-summary-section/accommodation-summary-section.svelte';
+	import AccommodationAmenitiesSection from '@/components/pages/(unprotected)/accommodation/accommodations-amenities-section/accommodation-amenities-section.svelte';
+	import AccommodationLocationSection from '@/components/pages/(unprotected)/accommodation/accommodation-location-section/accommodation-location-section.svelte';
+	import AccommodationPoliciesSection from '@/components/pages/(unprotected)/accommodation/accommodation-policies-section/accommodation-policies-section.svelte';
+	import AccommodationBookingPanel from '@/components/pages/(unprotected)/accommodation/accommodation-booking-panel/accommodation-booking-panel.svelte';
+	import AccommodationMobileBar from '@/components/pages/(unprotected)/accommodation/accommodation-mobile-bar.svelte';
+	import AccommodationPageLoading from '@/components/pages/(unprotected)/accommodation/loading/accommodation-page-loading.svelte';
+	import AccommodationPageEmpty from '@/components/pages/(unprotected)/accommodation/empty/accommodation-page-empty.svelte';
+	import { ErrorComponent } from '@/components/ui/error-component/index.js';
 
 	// TYPES
 	import type { typesAccommodationForViewer } from '@/shared/features/accommodation/types/accommodationTypes';
@@ -51,7 +51,11 @@
 <SvelteHead title={headTitle} description={headDescription} />
 
 {#if accommodationQuery.error}
-	<AccommodationPageError />
+	<ErrorComponent
+		variant="alert"
+		title="Couldn't load this accommodation"
+		description="Something went wrong while loading this accommodation. Please try again in a moment."
+	/>
 {:else if accommodation === null}
 	<AccommodationPageEmpty />
 {:else if accommodation === undefined}

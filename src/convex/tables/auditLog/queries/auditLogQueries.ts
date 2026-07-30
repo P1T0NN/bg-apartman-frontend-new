@@ -8,7 +8,7 @@ import { requireAdmin } from '@/convex/auth/middleware/authMiddleware';
 
 // TYPES
 import type { Doc } from '@/convex/_generated/dataModel';
-import type { PaginatedListPayload } from '@/shared/components/ui/data-table/types';
+import type { PaginatedListPayload } from '@/components/ui/data-table/types';
 
 /**
  * Paginated list for the admin audit-log viewer. Admin-only — audit data is

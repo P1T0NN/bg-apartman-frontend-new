@@ -3,7 +3,7 @@ import { v, type GenericValidator, type Infer } from 'convex/values';
 
 /**
  * Locale-agnostic message descriptor returned by mutations/actions.
- * The frontend resolves `key` (+ optional `params`) via Paraglide.
+ * The frontend resolves `key` (+ optional `params`) via `translateFromBackend`.
  */
 export const translatableMessage = v.object({
 	key: v.string(),

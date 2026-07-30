@@ -1,8 +1,8 @@
 // UTILS
-import { resolveMergedRegionPlaceId } from '@/shared/lib/google-maps/places';
+import { resolveMergedRegionPlaceId } from '@/lib/google-maps/places';
 
 // TYPES
-import type { PlaceDetails, RegionBounds } from '@/shared/lib/google-maps/places';
+import type { PlaceDetails, RegionBounds } from '@/lib/google-maps/places';
 import type { typesAddAccommodationForm } from '@/shared/features/accommodation/types/accommodationTypes';
 
 /** Location fields the autocompletes fill directly on the `$state` form proxy. The required

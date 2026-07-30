@@ -3,17 +3,16 @@ import { RESEND_API_KEY } from '$env/static/private';
 
 // LIBRARIES
 import { Resend } from 'resend';
-import { m } from '@/shared/lib/paraglide/messages';
 
 // CONFIG
-import { COMPANY_DATA } from '@/shared/constants';
+import { COMPANY_DATA } from '@/shared/config';
 
 // UTILS
 import { safeCommand } from '@/utils/remoteFunctionsUtils';
 import { escapeHtml } from '@/shared/utils/escapeHtml.js';
 
 // SCHEMAS
-import { sendContactFormEmailSchema } from '@/features/contact/schemas/contactSchemas';
+import { sendContactFormEmailSchema } from '@/shared/features/contact/schemas/contactSchemas';
 
 export const sendContactFormEmail = safeCommand(sendContactFormEmailSchema, async (data) => {
 	const resend = new Resend(RESEND_API_KEY);
@@ -33,5 +32,5 @@ export const sendContactFormEmail = safeCommand(sendContactFormEmailSchema, asyn
 		return { success: false, message: error.message, data: null };
 	}
 
-	return { success: true, message: m['GenericMessages.EMAIL_SENT_SUCCESSFULLY'](), data: null };
+	return { success: true, message: 'Email sent successfully.', data: null };
 });

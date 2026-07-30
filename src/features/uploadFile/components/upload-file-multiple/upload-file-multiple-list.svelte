@@ -1,7 +1,4 @@
 <script lang="ts">
-	// LIBRARIES
-	import { m } from '@/shared/lib/paraglide/messages';
-
 	// COMPONENTS
 	import UploadFileItemMultiple from './upload-file-item-multiple.svelte';
 
@@ -42,7 +39,7 @@
 <div
 	class={cn('grid grid-cols-2 gap-3 sm:grid-cols-3', className)}
 	role="region"
-	aria-label={m['UploadFile.UploadFileMultiple.placeholder']()}
+	aria-label="Uploaded files. Drop more files here to add."
 	aria-live="polite"
 	ondragover={onDragOver}
 	ondrop={onDrop}
@@ -52,7 +49,7 @@
 			previewUrl={row.previewUrl}
 			name={row.file.name}
 			title={row.file.name}
-			subtitle={`${row.file.type || m['UploadFile.UploadFileMultiple.unknown']()} · ${formatBytes(row.file.size)}`}
+			subtitle={`${row.file.type || 'Unknown'} · ${formatBytes(row.file.size)}`}
 			{hasCoverImage}
 			isCover={hasCoverImage && row.index === 0}
 			onSetCover={() => (files = [row.file, ...files.filter((_, j) => j !== row.index)])}

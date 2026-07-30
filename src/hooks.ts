@@ -1,10 +1,4 @@
-// LIBRARIES
-import { deLocalizeUrl } from '@/shared/lib/paraglide/runtime';
-
 // TYPES
-import type { Reroute, Transport } from '@sveltejs/kit';
-
-/** Map locale-prefixed URLs to SvelteKit route paths. Must live in hooks.ts (not hooks.server.ts). */
-export const reroute: Reroute = ({ url }) => deLocalizeUrl(url).pathname;
+import type { Transport } from '@sveltejs/kit';
 
 export const transport = {} satisfies Transport;

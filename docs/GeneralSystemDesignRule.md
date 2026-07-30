@@ -1,0 +1,701 @@
+# General System Design Rule — Realtime Is Opt-In, Not Default
+
+> Status: **standing rule** (decided 2026-07-23). Applies to this project and is written to be
+> portable to any future project, with or without Convex. Backend-agnostic: "subscription"
+> below means any live data channel (Convex `useQuery`, GraphQL subscriptions, Firebase
+> listeners, Supabase realtime, raw WebSockets, SSE, polling loops).
+
+## The rule
+
+**Every piece of data starts as a one-shot fetch. It earns a realtime subscription only by
+proving it changes underneath the user while they are looking at it.**
+
+A subscription is not a convenience default — it is a standing cost you pay for as long as the
+component is mounted: server-side query tracking, an open push channel, invalidation traffic,
+and client-side reactive bookkeeping. Paying that cost for data that only changes when the
+user themselves navigates away and edits it elsewhere buys you nothing.
+
+## The decision test
+
+Ask one question per piece of data:
+
+> **"Can this data change while the user is looking at this screen, in a way they must see
+> without acting?"**
+
+- **NO → one-shot fetch.** Fetch once on mount (or in the route loader). Navigation back to
+  the screen remounts and refetches, which is always fresh enough — the only way the data
+  changed is that somebody navigated somewhere and changed it.
+- **YES → subscription.** The data moves under the user: another user writes it, a background
+  process advances it, or the same screen both displays and mutates it.
+
+### Worked examples (from this project)
+
+| Data                                                          | Verdict                      | Why                                                                                          |
+| ------------------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------- |
+| Category options in the add/edit-product form                 | **One-shot**                 | Categories are edited on a _different_ page. Getting back to the form remounts it → refetch. |
+| Slug→name lookup for a table column                           | **One-shot**                 | Same reasoning; the lookup set changes on another page.                                      |
+| The admin orders table                                        | **Subscription**             | New orders arrive from _other people_ while the admin is watching.                           |
+| The cart sidebar                                              | **Subscription**             | The same screen mutates it (add/remove) and server-side pruning can change it.               |
+| A products table on the page where products are edited inline | **Subscription**             | Display and mutation share the screen.                                                       |
+| Static-ish config, feature lists, country lists               | **One-shot** (or build-time) | Changes require a deploy or an admin action elsewhere.                                       |
+
+## Companion rules
+
+1. **Fetch the shape you need, not the row.** A one-shot lookup endpoint returns the minimal
+   projection (`{ slug, name }`), not full documents. Smaller payload, no accidental coupling
+   to fields the consumer never reads.
+2. **Whole-set reads get a whole-set endpoint.** If a consumer needs _all_ rows of a small set
+   (a `<select>`, a lookup map), give it a dedicated non-paginated query with a known-small
+   bound — do not loop a paginated API to drain pages, and never silently render page 1 as if
+   it were the whole set. (Paginated UI lists keep pagination + visible pager controls.)
+3. **Fetch where the data is used.** No layout-level fetching + global store mirror for feature
+   data — that makes every page pay for one page's need. Lift a fetch to a layout only for
+   data genuinely read on ~every page (in this project: auth/session only).
+4. **Dedupe repeated fetch logic into a feature-scoped hook/helper** once ≥2 call sites are
+   identical — but the hook stays one-shot; DRY is not a license to add realtime.
+5. **When in doubt, start one-shot.** Upgrading to a subscription later is a small, local
+   change. Downgrading is too — but you'll never notice you need to, and the subscription
+   quietly costs you forever. Default to the cheap side.
+
+## Why this matters (cost model)
+
+Per unnecessary subscription you pay, continuously:
+
+- **Server:** the backend tracks the query's read set to know when to invalidate it; every
+  write to an overlapping range triggers re-execution and a push.
+- **Network:** an entry on the WebSocket/live channel, invalidation pushes, reconnect replay.
+- **Client:** reactive graph bookkeeping, re-renders on every push, memory for the mirror.
+- **Billing:** realtime backends (Convex included) bill function re-executions — idle
+  subscriptions to hot tables re-run on every write someone else makes.
+
+A one-shot read costs one execution, once, and is typically served from cache. For lookup
+data the difference is orders of magnitude, and the user cannot tell.
+
+---
+
+## § DATA-LOADING MECHANISM — WHEN TO USE WHAT FOR MAXIMUM PERFORMANCE & SPEED
+
+> Status: **standing rule** (added 2026-07-23). Companion to the realtime rule above. Where
+> the realtime rule decides **WHAT** kind of read a piece of data gets (one-shot vs
+> subscription), this section decides **HOW and WHERE** you actually wire that read for the
+> fastest possible perceived and real performance. Our app is **hybrid**: it is SPA-leaning,
+> but **some routes use a server loader (`+page.server.ts`) and some do not** — so the
+> mechanism choice includes _which loader file_ the read goes in. Source framework:
+> turtledev.io, "SvelteKit SPA — when to use load functions and onMount", reconciled with our
+> project and extended to cover server loaders.
+
+### The three orthogonal decisions
+
+Every data wire-up is really three questions, answered in order. Answering an earlier one does
+**not** answer a later one:
+
+1. **WHAT** (realtime rule, above): one-shot or subscription?
+2. **WHERE** (this section): does the read go in a **route loader**
+   (`+page.ts` / `+page.server.ts` / `+layout.ts`) or in the **component lifecycle**
+   (`onMount` / `$effect`)? One-shot reads are almost always fastest in a loader; subscriptions
+   and lifecycle work belong in the component.
+3. **WHICH FILE + HOW** (this section): if it's a loader, is it a **universal** loader
+   (`+page.ts`) or a **server** loader (`+page.server.ts`)? And is the promise **streamed**
+   (returned un-awaited) or **awaited** (blocking)?
+
+The realtime verdict, the universal-vs-server choice, and the streamed-vs-awaited choice are
+independent knobs. The rest of this section is the detail.
+
+### The performance principle (why the loader wins)
+
+The goal is a small, fixed budget: **start the request as early as possible, and paint
+something the instant navigation begins.** Two facts drive every rule below:
+
+- **The route loader starts earlier than the component.** SvelteKit begins running `+page.ts`
+  as soon as navigation is _decided_ — before the page component is instantiated. `onMount`, by
+  contrast, only fires _after_ the component has been created and mounted. Fetching in
+  `onMount` therefore inserts a guaranteed waterfall: mount → _then_ fetch → _then_ render.
+  The loader collapses that to: fetch (already in flight) → render.
+- **The loader is what preloading hooks into.** `data-sveltekit-preload-data` (hover/tap
+  intent) can only prefetch data that lives in a loader. Data fetched in `onMount` cannot be
+  preloaded, so it can never be "already settled by the time the user clicks." This is the
+  single biggest free speed win in the app, and it is loader-only.
+
+**Consequence:** in an SPA, "no SSR" does _not_ mean "fetch in the component." The loader still
+runs (in the browser), still starts before the component, and still enables preloading. Default
+one-shot reads to the loader, not to `onMount`.
+
+### Which loader file — universal `+page.ts` vs server `+page.server.ts`
+
+Once a read is going in a loader (step 2), pick the file. We use **both**, per route, on
+purpose. The default is the **universal** loader; a **server** loader is opt-in and must earn
+its place, for the same reason a subscription must — it costs a mandatory server round-trip.
+
+**Universal loader (`+page.ts`) — the default.**
+
+- Runs in the browser on client-side navigation (and on the server too during SSR, but we lean
+  SPA). On an in-app navigation it goes **straight from the browser to the data source** — one
+  hop.
+- With a separate backend (Convex, our API), this is the fast path: browser → backend directly,
+  **no SvelteKit server middleman**. For most of our pages this is what you want.
+- Can return **anything** — promises (so it streams, Pattern A), class instances, functions —
+  because the value never has to be serialized across the wire.
+- Use it whenever the read needs only things safe in the browser: public endpoints, the public
+  API, `PUBLIC_*` env, the client SDK.
+
+**Server loader (`+page.server.ts`) — opt-in, when the read must run server-side.**
+
+Reach for it **only** when at least one is true:
+
+- The read needs a **secret**: private env / API key / service credential that must never reach
+  the browser bundle.
+- It does **direct DB / server-only access** (a driver or SDK that must not run client-side), or
+  uses server-only Node libraries.
+- It must read/write **server-side cookies, headers, or the session** during load.
+- You want to **hide the query shape or origin** from the client entirely.
+
+**The performance cost of a server loader:** on every _client-side_ navigation SvelteKit must
+make a round-trip to our own server to run `+page.server.ts` before the page can render — an
+extra hop the universal loader does not pay when it talks to the backend directly. It also
+constrains the return value to **serializable data** (devalue: no class instances, no
+functions; promises can still be streamed). So a server loader is the right call for
+secret/DB-bound reads, and the wrong default for a public read that a universal loader could
+fetch directly.
+
+**Combine them when a page needs both.** `+page.server.ts` can return the secret/DB-bound part;
+`+page.ts` runs after it, receives that via its `data` argument, and augments with public,
+non-serializable, or streamed reads. Don't push a public read into the server loader just
+because a sibling read on the same page needs the server.
+
+Both files support **streaming and awaiting** (Patterns A/B below) and both are **preloadable** —
+those choices are independent of universal-vs-server.
+
+Quick test:
+
+> **"Does this read need a secret, direct DB access, or server-only cookies/session?"**
+> **YES → `+page.server.ts`. NO → `+page.ts`** (default; one hop to the backend, can stream
+> anything).
+
+### The three patterns
+
+Patterns A and B are about **streamed vs awaited**, and apply to **either** loader file
+(`+page.ts` or `+page.server.ts`). Pattern C is the component-lifecycle escape hatch.
+
+#### Pattern A — `+page.ts` **streamed** (return the promise, don't `await`) → THE DEFAULT
+
+Use for **content you consume, not edit**: lists, tables, dashboards, search results, detail
+views without inline editing. This is the default for most pages in the app.
+
+Return the promise from the loader instead of awaiting it. The page shell renders immediately;
+the data resolves into an `{#await}` block:
+
+```ts
+// +page.ts
+export const load = ({ fetch }) => {
+	return { todos: getTodos(fetch) }; // NOT awaited — streams
+};
+```
+
+```svelte
+{#await data.todos}
+	<TodosSkeleton />
+{:then todos}
+	{#each todos as todo}...{/each}
+{:catch}
+	<p>Could not load todos.</p>
+{/await}
+```
+
+Why it is the fast default:
+
+- **Instant navigation.** The shell paints before the request finishes — the user sees layout +
+  skeleton immediately, never a blank or stale screen.
+- **Pending / resolved / error for free.** `{#await}` gives all three branches with no manual
+  `loading`/`error` flags.
+- **Preload on intent.** With `data-sveltekit-preload-data` on links, the fetch starts on hover;
+  it is often already settled by the time the click lands.
+- **Cheap refresh after mutations.** `invalidate('app:todos')` re-runs the loader and re-renders
+  — no manual cache patching.
+- **Param changes auto-refetch.** `/todos/1` → `/todos/2` re-runs the loader with the new param
+  and cancels the in-flight prior request automatically.
+
+#### Pattern B — `+page.ts` **awaited** (block on the promise) → SINGLE-ENTITY EDIT FORMS
+
+Use for **edit pages for one record** where you need dirty-state detection: profile/account
+settings, a single-record edit page, onboarding forms prefilled with current values.
+
+Await inside the loader so `data` holds the concrete server value, not a promise:
+
+```ts
+// +page.ts
+export const load = async () => {
+	return { profile: await getProfile().then((r) => r.data) };
+};
+```
+
+Why awaited here and not streamed:
+
+- **Cheap dirty detection.** Because `data.profile` is the real server truth (a stable
+  reference), you diff the live form state against it directly to know if there are unsaved
+  changes — and warn before navigation. Streaming would hand you a promise, forcing an
+  `$effect` to await and re-seed form state, and you'd lose that cheap reference.
+- **No manual snapshot.** You don't hand-manage an `original` copy on every save the way you
+  would if you fetched in `onMount`.
+- **Trade-off:** awaited blocks navigation until the data arrives. That's acceptable for a
+  single small record. If the fetch is slow, show a skeleton from the **parent layout** using
+  the `navigating` store matched against the target route ID — do not switch to streaming just
+  to hide latency.
+
+#### Pattern C — `onMount` (and `$effect`) → LIFECYCLE, NOT ONE-SHOT DATA
+
+Use **only** when the work outlives a single fetch — i.e. it needs the component to be alive:
+
+- **Subscriptions** (this is where the realtime rule's "YES → subscription" lands): WebSocket /
+  SSE / Convex `useQuery` / Firebase listeners. The channel must open on mount and, critically,
+  **tear down on unmount** — a loader has no unmount hook, so a subscription started there
+  leaks.
+- **Polling timers** (`setInterval` refresh) — must be cleared on unmount.
+- **Progress-driven UI**: XHR/file-upload progress events updating reactive state.
+- **Browser/device APIs** that need the DOM or a live element: `IntersectionObserver`, media
+  queries, geolocation, canvas, focus management.
+
+`onMount` and loaders are **not mutually exclusive** — the common shape is a dashboard whose
+initial data streams from the loader (Pattern A) while `onMount` layers a WebSocket on top for
+live updates. Load the first paint from the loader; let `onMount` own the ongoing channel.
+
+Do **not** use `onMount` merely to fetch one-shot data "because it's familiar" — that forfeits
+the earlier start and the preloading win for nothing.
+
+### Decision matrix
+
+| Data / scenario                                         | Realtime verdict | Where                  | Loader file                                                                 | Streamed / awaited                          |
+| ------------------------------------------------------- | ---------------- | ---------------------- | --------------------------------------------------------------------------- | ------------------------------------------- |
+| List, table, dashboard, search results, detail view     | One-shot         | Loader                 | `+page.ts` (unless secret/DB → `+page.server.ts`)                           | **Streamed** (Pattern A)                    |
+| Single-record edit form (profile, settings, onboarding) | One-shot         | Loader                 | `+page.ts` (unless secret/DB → `+page.server.ts`)                           | **Awaited** (Pattern B)                     |
+| Small lookup / `<select>` options / slug→name map       | One-shot         | Loader                 | `+page.ts` (whole-set endpoint)                                             | Streamed or awaited — small, either is fine |
+| Session / auth needed on ~every page                    | One-shot         | Loader                 | `+layout.server.ts` if it reads httpOnly cookies/secrets; else `+layout.ts` | Awaited (gates the app)                     |
+| Read needing a secret / private env / direct DB access  | One-shot         | Loader                 | **`+page.server.ts`** (required)                                            | Streamed or awaited per Pattern A/B         |
+| Public read from our backend / Convex (most pages)      | One-shot         | Loader                 | **`+page.ts`** (one hop, no server middleman)                               | Streamed (Pattern A)                        |
+| Admin orders table, cart sidebar, inline-edit table     | Subscription     | Component              | n/a                                                                         | `onMount` / `useQuery`                      |
+| Chat, notifications, live presence                      | Subscription     | Component              | n/a                                                                         | `onMount` (open + teardown)                 |
+| Polling refresh, upload progress, device/DOM APIs       | Lifecycle        | Component              | n/a                                                                         | `onMount`                                   |
+| Initial paint + live updates on one screen              | Both             | Loader **+** component | loader (`+page.ts`/`.server.ts`) streams first paint                        | Streamed **+** `onMount` channel            |
+
+### Speed checklist (run per page)
+
+1. **Is this one-shot?** (realtime rule) If yes, it goes in a **loader**, not `onMount`.
+2. **Which loader file?** Needs a secret / direct DB / server-only cookies → **`+page.server.ts`**.
+   Otherwise → **`+page.ts`** (default; one hop straight to the backend, no server round-trip).
+3. **Editing one record?** → **awaited** loader (Pattern B) for cheap dirty state. Otherwise →
+   **streamed** loader (Pattern A) so the shell paints instantly. (Applies to either file.)
+4. **Enable preloading.** Ensure links use `data-sveltekit-preload-data` (hover intent) so
+   loader data is in flight before the click. Works for both loader files.
+5. **No waterfalls in the loader.** Fire independent requests in parallel (`Promise.all` /
+   return multiple promises), never `await` one just to start the next.
+6. **Fetch where used, minimal projection, whole-set endpoint for selects** — unchanged from
+   the companion rules above; they apply to the loader too.
+7. **Subscriptions and timers live in `onMount` and MUST tear down on unmount.**
+
+### § FOR LLMs / AI ASSISTANTS — READ BEFORE WIRING A PAGE'S DATA
+
+1. **First apply the realtime rule** (one-shot vs subscription). Then apply this section for the
+   mechanism. They are separate decisions — do not skip the second.
+2. **One-shot ⇒ route loader by default, streamed.** Reach for a loader returning an
+   un-awaited promise rendered through `{#await}`. Do NOT fetch one-shot data in `onMount` —
+   that adds a mount→fetch waterfall and forfeits preloading. If you write a one-shot fetch in
+   `onMount`, justify in a code comment why the loader was unsuitable (almost never true).
+3. **Pick the loader file explicitly — do not default to `+page.server.ts`.** Use **`+page.ts`
+   (universal)** unless the read needs a **secret / private env, direct DB or server-only
+   access, or server-side cookies/session** — only then use **`+page.server.ts`**. A server
+   loader forces an extra browser→our-server round-trip on every client navigation and
+   restricts the return to serializable data; a universal loader talks to our backend/Convex in
+   one hop. If you choose `+page.server.ts`, state in a comment which of the three triggers
+   applies. When both are needed on one page, put the secret/DB part in `+page.server.ts` and
+   let `+page.ts` augment via its `data` arg — don't move a public read to the server loader.
+4. **Await in the loader ONLY for single-entity edit forms** that need dirty-state detection.
+   Everywhere else, stream. (Universal or server — the await/stream choice is independent of the
+   file.)
+5. **`onMount` is for lifecycle, not fetching:** subscriptions, polling, progress, device/DOM
+   APIs — anything that must set up on mount and **tear down on unmount**. A subscription in a
+   loader leaks; never put one there.
+6. **Combine, don't choose, when a screen needs both:** stream the first paint from the loader
+   AND open the live channel in `onMount`.
+7. **Never introduce a loader waterfall.** Start independent requests in parallel.
+8. **When uncertain, say so in your summary,** e.g. "one-shot, streamed via universal `+page.ts`
+   per GeneralSystemDesignRule.md; say the word if this needs a server loader for a secret,
+   awaited dirty-state, or a live channel."
+
+Mental checklist to run on every page wire-up:
+`one-shot? → loader (universal +page.ts by default; +page.server.ts only for secret/DB/cookies; stream by default, await only for single-record edit forms) | subscription/lifecycle? → onMount with teardown | both? → loader stream + onMount channel | always: preload links, parallel requests, minimal projection, fetch where used.`
+
+---
+
+## § FOR LLMs / AI ASSISTANTS — READ THIS BEFORE WIRING DATA
+
+You are likely biased toward subscribing to everything, because framework examples
+(`useQuery`, `onSnapshot`, live queries) make subscriptions the path of least resistance.
+In this codebase — and any project citing this document — that default is **inverted**:
+
+1. **DEFAULT = one-shot fetch on mount / in the route loader.** Reach for the client's
+   imperative call (`client.query(...)`, plain `fetch`, one-time read) inside `onMount` or
+   the loader. Do NOT reach for the reactive/subscribing primitive first.
+2. **Before you write any subscribing call, state the justification** in a code comment on
+   that line, answering: _what changes this data while this exact screen is open, without
+   the user acting?_ If the honest answer is "another user", "a background job/cron", or
+   "this same screen writes it" — subscribe. If the answer is "the user edits it on another
+   page" or "rarely/never" — one-shot. No justification ⇒ one-shot.
+3. **Never render one page of a paginated API as the full set.** Either the UI has pager
+   controls wired to the cursor/offset, or the consumer calls a dedicated non-paginated
+   whole-set endpoint. Silently truncated lists are bugs, not simplifications.
+4. **Do not lift feature fetches into layouts or global stores** to "share" them. Fetch in
+   the page/component that uses the data. Shared _logic_ goes in a feature-scoped hook that
+   still fetches one-shot per mount. The only layout-level live data is session/auth-class
+   information needed by effectively every page.
+5. **Minimal projection.** New lookup endpoints return only the fields consumers use.
+6. **When uncertain, choose one-shot and say so** in your summary, e.g. "fetched one-shot
+   per GeneralSystemDesignRule.md; say the word if this needs to be live." Do not silently
+   choose the subscription.
+
+Checklist to run mentally on every data wire-up:
+`changes-under-viewer? → subscribe (justify in comment) | else → one-shot, minimal shape,
+fetched where used, whole-set endpoint if a select/lookup needs all rows.`
+
+---
+
+## § DYNAMIC IMPORTS / CODE-SPLITTING — WHEN TO LAZY-LOAD FOR INITIAL PERFORMANCE
+
+> Status: **standing rule** (added 2026-07-24). Same philosophy as the realtime rule:
+> **lazy-loading is opt-in, not default.** Framework-aware but portable: any router that
+> code-splits per route (SvelteKit, Next, Nuxt, TanStack Router) gives you the first and
+> biggest split for free — everything below is about the _second_ split, inside a route.
+
+### What you already get for free
+
+**SvelteKit code-splits per route.** Every `+page.svelte` (with everything it statically
+imports) is its own chunk, downloaded only when that route is visited. An admin page's
+dialog, table, and form never reach a shopper's browser, no matter how big they are. This
+free split is why most components should just be imported statically — the route boundary
+already did the work.
+
+**Consequence:** a component only _candidates_ for a dynamic import when the route-level
+split isn't enough — i.e. it is heavy **relative to the route it lives in** and most visits
+to that route never use it.
+
+### The decision test
+
+A component earns `await import(...)` only when **ALL FOUR** are true:
+
+1. **Heavy.** It (or a dependency it drags in) is genuinely large: rich-text editor,
+   charting library, map SDK, PDF/video renderer, image cropper, QR/barcode scanner,
+   diagramming, syntax highlighter. Rule of thumb: the chunk is tens of KB min+gz or more.
+   A dialog made of Buttons and Inputs is NOT heavy — the primitives are already in the
+   shared bundle; its incremental cost is a few KB.
+2. **Interaction-gated.** It renders only after a deliberate user action (open editor,
+   expand preview, start scan) — not on first paint, not above the fold, not "usually
+   opened right away".
+3. **The saving reaches real users.** The route is public / high-traffic. On an admin-only
+   route the audience is a handful of staff who visit daily with a warm cache — route
+   splitting already protected everyone else, so shaving the admin chunk buys ~nothing.
+4. **Nothing needs it mounted before the interaction.** Critically: **native declarative
+   triggers require their target to already be in the DOM.** A `<button commandfor={id}>`
+   (dialog invoker) or `popovertarget` cannot open a component that hasn't been mounted
+   yet — lazy-loading such a target silently breaks the button. Same for anchors of CSS
+   anchor-positioning and any `bind:`/id contract established at page mount.
+
+Any test fails → **static import.** When in doubt, static: an unnecessary static import
+costs a few KB inside an already-split route chunk; an unnecessary dynamic import costs
+first-interaction latency (spinner flash on click), a second network round-trip, an extra
+error state to handle, and it silently opts out of the route preloader (which prefetches
+the route's static chunks on hover — a dynamic import only starts loading at the click).
+
+### Worked examples (from this project)
+
+| Component                                                             | Verdict     | Why                                                                                                                                            |
+| --------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AdminUpsellsCustomizeDialog` on `/admin/upsells`                     | **Static**  | Fails 1 (Buttons/Inputs, already-shared deps), fails 3 (admin-only route), fails 4 (opened by native `NativeDialogTrigger` → must be mounted). |
+| Hero carousel (embla) on `/`                                          | **Static**  | Fails 2 — above the fold, needed for first paint.                                                                                              |
+| Cart sidebar / upsell dialog on shop pages                            | **Static**  | Fails 1 — small components; the route chunk already carries them cheaply.                                                                      |
+| A future rich-text editor for product descriptions                    | **Dynamic** | Heavy (editor libs are 100KB+), behind an edit click… but note test 3: admin-only, so even this one is optional.                               |
+| A future map / store-locator behind a "Ver mapa" tab on a public page | **Dynamic** | Heavy SDK, interaction-gated, public traffic, JS-opened. Textbook case.                                                                        |
+| Chart library on the admin dashboard                                  | **Static**  | Charts ARE the page (fails 2), admin-only (fails 3). Route splitting already contains it.                                                      |
+
+### How to do it (when a candidate passes)
+
+Load on interaction, render through `{#await}`, keep the trigger JS-controlled:
+
+```svelte
+<script lang="ts">
+	let editorPromise = $state<Promise<typeof import('./heavy-editor.svelte')> | null>(null);
+	const openEditor = () => (editorPromise ??= import('./heavy-editor.svelte'));
+</script>
+
+<Button onclick={openEditor}>Editar descripción</Button>
+
+{#if editorPromise}
+	{#await editorPromise}
+		<Skeleton class="h-40 w-full" />
+	{:then { default: HeavyEditor }}
+		<HeavyEditor />
+	{:catch}
+		<p class="text-sm text-destructive">No se pudo cargar el editor. Inténtalo de nuevo.</p>
+	{/await}
+{/if}
+```
+
+Rules of the pattern: cache the promise (`??=`) so re-opens don't refetch; always render
+the pending skeleton and the `{:catch}` (a dynamic chunk is a network request that can
+fail); optionally warm it on hover/focus of the trigger (`onmouseenter={openEditor}`) to
+hide the latency. Never `await import()` at module top level — that just recreates a static
+import with extra steps.
+
+### Measure, don't guess
+
+Before adding a dynamic import, prove the weight: `bunx vite-bundle-visualizer` (or
+`rollup-plugin-visualizer`) on the build, and look at the actual route chunk. If the
+component you want to split is a few KB inside its route chunk, the split is complexity
+with no payoff. Re-check after: the win should be visible in the route's initial chunk size.
+
+### § FOR LLMs / AI ASSISTANTS — READ BEFORE ADDING A DYNAMIC IMPORT
+
+1. **Default = static import.** SvelteKit already code-splits per route; do not add
+   `await import(...)` unless the four-part test above passes, and say which tests pass in
+   a code comment on the import.
+2. **Never lazy-load the target of a native declarative trigger** (`commandfor`,
+   `popovertarget`, anchor-positioning anchors). Those need the element mounted before the
+   click; lazy-loading it makes the button silently do nothing (test 4).
+3. **Admin-only routes almost never qualify** (test 3) — the route split already protected
+   real users; staff have warm caches. Don't churn admin code into dynamic imports for
+   vanity bundle numbers.
+4. **"Dialog/modal" is not a heuristic for lazy.** Interaction-gated (test 2) is necessary
+   but not sufficient — a dialog of design-system primitives is a few KB (fails test 1).
+   The heuristic is the _dependency_: editor / chart / map / PDF / scanner SDKs.
+5. **When a candidate passes:** cache the promise, skeleton in `{#await}`, handle
+   `{:catch}`, consider hover-warming, and keep the trigger JS-controlled.
+6. **When uncertain, import statically and say so** in your summary, e.g. "imported
+   statically per GeneralSystemDesignRule.md § dynamic imports; say the word if this should
+   be lazy — it fails test N." Do not silently add the dynamic import.
+
+Mental checklist before any `await import(...)`:
+`heavy dep? + interaction-gated? + public traffic? + not a native-trigger target? → all
+four yes: lazy (cached promise, skeleton, catch) | any no: static import, route splitting
+already has you covered.`
+
+---
+
+## § TABLE COUNTS VS ANALYTICS — TWO ENGINES, STRICT SPLIT
+
+> Status: **standing rule** (added 2026-07-27). We run two counting-adjacent components and
+> they are NOT interchangeable. `@convex-dev/aggregate` answers **"how many rows are X right
+> now"**. `@piton-/analytics-convex` answers **everything else about what happened**: events,
+> funnels, revenue, time series, per-scope stats.
+
+### The rule
+
+**`@convex-dev/aggregate` is for counts of current table state — and ONLY that. All other
+analytics (events, revenue, series, "how many happened today") belong to
+`@piton-/analytics-convex`. Never `.collect().length` a table to count it, and never bend the
+analytics component into a row counter.**
+
+The two answer different questions and fail in each other's territory:
+
+- An aggregate mirrors the table. Rows that get deleted, patched to another status, or
+  archived move the count — that's the point. It can never tell you "5 bookings were created
+  today" once one of them is cancelled: table state has no memory.
+- An analytics event is an immutable fact with a timestamp. `booking.created` fired today is
+  true forever, whatever the row's status is now. But summing events can never reliably tell
+  you "how many rows are pending right now" — you'd be replaying a ledger to reconstruct
+  state the table already has.
+
+### The decision test
+
+> **"Is the number a property of table rows as they are NOW, or of things that HAPPENED?"**
+
+- **NOW → `@convex-dev/aggregate`** (`aggregateX.count(ctx, …)`, O(log n)).
+- **HAPPENED → `@piton-/analytics-convex`** (event counts, sums, series).
+
+### Worked examples (from this project)
+
+| Number                                             | Engine        | Why                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| -------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Published listings                                 | **aggregate** | Current rows with `status = 'published'`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Pending booking requests open                      | **aggregate** | Current rows in `pending`; moves when the cron advances them.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Check-ins today (confirmed, `checkInDate = today`) | **aggregate** | Still current state — a date-bounded count of rows as they are.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Total reports                                      | **aggregate** | Row count, plain.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Bookings **created** today                         | **analytics** | An event count — stays 5 even if 2 get cancelled later.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Revenue this month / 12-month series               | **analytics** | Sums over events in time buckets.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Occupancy % for a month                            | **analytics** | The interesting one — it looks like a NOW-question ("how many of my nights are booked") but is not answerable as one. "Nights in July" is a function of (booking, window): a stay clipped to a month boundary, not a scalar on the row, so an aggregate's `sumValue` cannot express it. Solved by moving the clip to WRITE time — `booking.nights_booked` is emitted once per month a stay touches, dated into that month (`occurredAt`), and the tile reads `nightsBooked − nightsReleased`. See § when a NOW-question has to become a HAPPENED-question. |
+| Signups today / users total                        | **analytics** | `user.signed_up` events. (Also: the BA user table lives in the auth component — our triggers can't see its writes, so an aggregate on it would drift. Analytics is not just preferred here, it's the only correct option.)                                                                                                                                                                                                                                                                                                                                 |
+
+### How it's wired in this project
+
+- Aggregates live in `src/convex/aggregates.ts`: `aggregateReports` (plain count),
+  `aggregateApartments` (namespace = status, key = `hostId`), `aggregateHostEarnings`
+  (namespace = `hostId`, key = earning status, sums `net`). One component instance per
+  table in `convex.config.ts`.
+- **The key is how one tree serves two scopes.** `aggregateApartments` answers the admin's
+  platform-wide `count(ns 'pending_review', bounds {})` AND the host dashboard's
+  `count(ns 'published', bounds [hostId, hostId])` — no second component, no doubled write
+  cost. Reach for a `hostId`/`ownerId` sort key before provisioning a per-owner aggregate.
+- **A `bookings` aggregate is deliberately NOT provisioned.** It existed, was read by
+  nothing, and cost a tree write on every booking mutation (create, confirm, check-in,
+  check-out, cancel, cron expiry — bookings are the hottest table here). Its only designed
+  consumer is the admin dashboard (`AdminDashboardPageSystemDesign.md` §today), which is
+  still an empty stub. Re-provision it **with** that page, not before: component instance +
+  `TableAggregate` + `triggers.register` + one backfill run.
+- **Sync is automatic via triggers — with one obligation:** `src/convex/functions.ts` exports
+  trigger-wrapped `mutation` / `internalMutation`. Every write to an aggregated table MUST use
+  those constructors, never the raw ones from `_generated/server`. The auth wrappers
+  (`authMutation`, `zAuthMutation`, `adminMutation`, …) already build on them, so most
+  endpoints are covered for free; the rule bites on raw `mutation(...)` / `internalMutation(...)`
+  call sites (public forms, crons).
+- Backfill for pre-existing rows: `aggregates:backfillAggregates` (idempotent, paginated,
+  run once per table — already run on dev).
+- Aggregating a **new** table = component instance in `convex.config.ts` + `TableAggregate`
+  in `aggregates.ts` + `triggers.register(...)` in `functions.ts` + one backfill run.
+
+### When a NOW-question has to become a HAPPENED-question
+
+Sometimes the split above gives an answer the engines cannot honour. The test is mechanical:
+
+> **Is the number a scalar sitting on the row, or a function of (row, window)?**
+
+An aggregate's `sumValue` reads ONE field off ONE document. If your number needs the row
+_and_ the question's window to compute — occupancy needs `nightsWithinWindow(stay, month)` —
+no aggregate can serve it, however NOW-ish it feels. The options are only:
+
+1. **Scan the rows at read time.** Correct and self-healing, but scales with the table.
+   Fine while bounded (the today strip does this, capped at one day).
+2. **Clip at WRITE time and emit an event per bucket.** The clip happens once, into a rollup
+   the read side just sums. This is what occupancy does: `nightsByMonth` splits a stay at
+   confirm, one `booking.nights_booked` per month with `occurredAt` dated INTO that month, and
+   the reversal twin `booking.nights_released` on cancel — the same `gmv` / `gmvCancelled`
+   shape.
+3. **Materialize a table + cron.** Only when neither of the above fits. Occupancy did not
+   need this, and reaching for it first is the common mistake.
+
+**The obligation option 2 creates.** An event ledger does not self-heal. A scan recomputes
+from current rows, so an edited booking is automatically right; a ledger is only as correct
+as the events written into it. Any mutation that changes an input to the split — a confirmed
+booking's DATES, its host — must emit the reversal for the old value and a fresh event for
+the new one, or the number drifts permanently with nothing to detect it. Take option 2 only
+when the write sites are few and enumerable (occupancy has six), and note them in the
+helper's doc comment so the next edit site knows it has joined a contract.
+
+### § FOR LLMs / AI ASSISTANTS — READ BEFORE COUNTING ANYTHING
+
+1. **Never count by reading rows.** `.collect().length`, draining `.paginate`, or a capped
+   `.take(N + 1)` as a count workaround — all replaced by `aggregateX.count(ctx, …)`. If the
+   aggregate for that table doesn't exist, add it (four steps above), don't scan.
+2. **Never use `@piton-/analytics-convex` for current-state counts**, and never use an
+   aggregate for "happened today/this month" questions. Run the NOW-vs-HAPPENED test; put the
+   verdict in a code comment when it's not obvious.
+3. **Writes to aggregated tables go through `@/convex/functions`** — importing `mutation` /
+   `internalMutation` from `_generated/server` in a file that writes `reports`, `apartments`,
+   or `bookings` is a bug (silent count drift), even if it typechecks.
+4. **The BA auth component's tables cannot be aggregated** (triggers don't see component
+   writes). User counts come from analytics events.
+5. **When uncertain, say so in your summary**, e.g. "counted via aggregate per
+   GeneralSystemDesignRule.md § table counts; say the word if this is really a
+   happened-question for analytics."
+
+Mental checklist before writing any count:
+`property of rows NOW? → aggregate.count() (and the write path uses @/convex/functions) |
+something that HAPPENED? → analytics event query | neither engine fits? → you're probably
+asking two questions; split them.`
+
+---
+
+## § BACKEND RETURNS DATA, FRONTEND RENDERS DISPLAY — NO SERVER-COMPOSED TEXT
+
+> Status: **standing rule** (added 2026-07-24). Backend-agnostic. Exists so i18n can later be
+> added ENTIRELY client-side: the backend never bundles translation machinery, and no display
+> string is baked server-side where a locale can't reach it.
+
+### The rule
+
+**Convex (any backend) returns raw data fields. The frontend is the only place display
+strings are composed, formatted, or fabricated.**
+
+- **Raw field passthrough is fine and unavoidable** — `product.name`, `variant.label`,
+  `category.name` are _content_ stored in the DB; returning them verbatim is returning data.
+- **Composition is display work** — concatenating `` `${product.name} · ${variant.label}` ``,
+  fabricating a readable name from a ref (`titleCase('boards-1-M')`), pluralizing, or
+  formatting money/dates for humans. None of that belongs in a query result.
+- **UI copy never comes from the backend** — errors and toasts travel as **message keys**
+  (`{ key: 'UpsellsMessages.RULE_CREATED' }`), translated client-side
+  (`translateFromBackend`). Never return a human-readable sentence from a mutation/query.
+
+### How it's wired in this project
+
+- The wire shape is **`TranslatableMessage`** (`src/shared/types/types.ts`):
+  `{ key: string; params?: Record<string, string | number | boolean> }`. Every mutation returns
+  `ConvexMutationResult` — `{ success, message: TranslatableMessage, data? }` — and errors throw
+  `ConvexError` whose `data.message` is the same shape.
+- The **single client-side seam** is `translateFromBackend`
+  (`src/utils/translateFromBackend.ts`): looks the key up in `BACKEND_MESSAGES`
+  (`src/utils/messages.ts`), interpolates `params`, falls back to the key literal when missing
+  (visible-in-dev debugging for free). `safeMutation` / `safeAction` route errors through it
+  automatically via `hasTranslatableMessage` — call sites just
+  `toast(translateFromBackend(result.message))`.
+- Zod schemas shared with Convex follow the same convention: `message:` values are **keys**,
+  resolved at display time (`zodFieldErrors.ts`) — never a catalog lookup inside a schema that
+  Convex imports.
+- Convex must NEVER import `translateFromBackend`, `messages.ts`, or any display util. The
+  backend knows keys as opaque strings, nothing more. (The UI is English-only today; the
+  transactional emails keep their own server-side catalog — see the exceptions below.)
+
+### The DX recipe — why keys never become a pain (library-agnostic)
+
+The whole pattern is one type + one function, and only the function knows which i18n library
+you use:
+
+1. **One wire type.** `{ key, params }`. The backend composes nothing — a key names the
+   sentence, `params` carries the raw values (`{ count: 3 }`, `{ email }`). Pluralization,
+   interpolation, dates, currency all happen client-side where the locale lives.
+2. **One translation seam.** A single `translateFromBackend(message)` function is the only
+   place backend keys meet the catalog. Today it reads a plain English object; swapping in
+   Paraglide (`m[key](params)`), i18next (`i18next.t(key, params)`), or wuchale → you rewrite
+   ~5 lines in one file; zero backend files, zero call sites change.
+3. **Auto-translation at the boundary, not per call site.** The mutation/error helpers
+   (`safeMutation`, form components, `DataTable`) already pipe `message` through the seam, so
+   the everyday DX is: return `{ key: 'X.Y' }` from Convex, add `X.Y` to `BACKEND_MESSAGES`,
+   done. No page-level plumbing per feature.
+4. **Missing key ≠ crash.** The seam falls back to rendering the key literal
+   (`AdminReportsPage.resolved`) — instantly recognizable in dev, harmless in prod.
+5. **Backend never drags the bundle.** Because Convex only ever emits strings, no message
+   catalog, runtime, or locale data ships server-side — the i18n cost stays in the client
+   bundle where the route splitter already manages it.
+
+Cost of the discipline: naming a key instead of typing a sentence. That's the whole trade,
+and it's what makes locale #2 (and #3) a catalog-only change.
+
+### The three deliberate exceptions
+
+1. **Stored snapshots** — an order line's `name` is composed once at WRITE time
+   (`calculateOrderPrice.snapshotLineName`) and frozen into the order, like an invoice. That
+   is storage of a fact, not display; historical documents don't re-translate.
+2. **Emails** (`src/convex/emails/**`) — rendered server-side by nature; you cannot send an
+   email from the client. Future email i18n keys off the _recipient's_ locale server-side —
+   a separate concern from UI i18n, deliberately not shared with it.
+3. **Non-display strings** — search text blobs (`buildOrderSearchText`), slugs, refs, order
+   numbers, audit payloads. Machine-facing, not shown as prose.
+
+### § FOR LLMs / AI ASSISTANTS — READ BEFORE RETURNING ANYTHING FROM CONVEX
+
+1. **Never concatenate display strings in a Convex query/mutation result.** Return the raw
+   fields (`title`, `email`, amounts, dates as numbers) and let the consumer compose. If you
+   write `` `${a} · ${b}` ``, `titleCase(...)`, or number/date formatting inside `src/convex/**`
+   and it flows to the client, it is a bug — unless it is one of the three exceptions above,
+   named in a code comment.
+2. **Never return raw human-readable messages.** Mutations return `ConvexMutationResult` —
+   `{ success, message: { key, params? } }` — and errors throw `ConvexError` with the same
+   `message` shape. Every new user-facing string = a new key in `src/utils/messages.ts`,
+   resolved client-side via `translateFromBackend`.
+3. **Never import `translateFromBackend`, `messages.ts`, or any display/i18n util from
+   `src/convex/**`.** Zod schemas shared with Convex use key strings as `message:` values, not
+   catalog lookups.
+4. **Route new UI through the existing seams** (`safeMutation`/`safeAction`, mutation form,
+   `DataTable`) instead of hand-translating per call site — they already resolve
+   `TranslatableMessage`.
+5. **When uncertain, return the rawest shape and say so** in your summary, e.g. "returned raw
+   fields per GeneralSystemDesignRule.md § backend returns data; frontend composes."
+
+Mental checklist for every Convex return value:
+`is every string either a verbatim DB field, an id/ref/slug, or a message KEY? → good |
+composed/fabricated/pluralized/formatted for humans? → move it to the frontend (or name the
+exception: snapshot / email / machine-facing).`

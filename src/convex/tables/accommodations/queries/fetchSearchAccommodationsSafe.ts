@@ -1,3 +1,6 @@
+// CONFIG
+import { OPERATIONAL_LIMITS } from '@/shared/config';
+
 // LIBRARIES
 import { v } from 'convex/values';
 
@@ -6,7 +9,7 @@ import { query } from '@/convex/_generated/server';
 
 // UTILS
 import { apartmentToSearchAccommodation } from '../utils/apartmentToSearchAccommodation';
-import { hasOverlappingBooking } from '@/convex/tables/bookings/helpers/hasOverlappingBooking';
+import { hasAvailabilityConflict } from '@/convex/tables/bookings/helpers/hasAvailabilityConflict';
 
 // TYPES
 import type { SearchAccommodation } from '@/shared/features/accommodation/types/accommodationTypes';
@@ -15,8 +18,6 @@ import type { SearchAccommodation } from '@/shared/features/accommodation/types/
 // shows every marker; the list paginates client-side), so we cap reads here.
 // ponytail: fine while accommodations number in the dozens/low hundreds — switch the panes to
 // cursor pagination (fetchOptimized) if the catalogue grows past this.
-const SEARCH_LIMIT = 200;
-
 /**
  * Public search over published apartments for the results page (list + map).
  *
@@ -24,7 +25,7 @@ const SEARCH_LIMIT = 200;
  * fields), not raw apartment rows. Convex reads whole documents — the trim happens in
  * `apartmentToSearchAccommodation` before anything leaves the server.
  *
- * Lists published rows via `by_status` (capped at {@link SEARCH_LIMIT}), then filters in memory:
+ * Lists published rows via `by_status` (capped at {@link OPERATIONAL_LIMITS.SEARCH_SCAN_LIMIT}), then filters in memory:
  * when a region is chosen the client sends its `placeId` (the picked city's or country's Google
  * place id), and a accommodation matches if its merged `placeId` ("<cityId> <countryId>") contains it —
  * so picking a city keeps that city's accommodations and picking a country keeps the whole country.
@@ -39,7 +40,7 @@ const SEARCH_LIMIT = 200;
  * Fine at the documented scale; switch to a search index + pagination past it.
  *
  * `checkIn`/`checkOut`: when a valid range is chosen, apartments with an active overlapping
- * booking are excluded via {@link hasOverlappingBooking} (indexed per-apartment reads).
+ * booking are excluded via {@link hasAvailabilityConflict} (indexed per-apartment reads).
  */
 export const fetchSearchAccommodationsSafe = query({
 	args: {
@@ -56,7 +57,7 @@ export const fetchSearchAccommodationsSafe = query({
 		const candidates = await ctx.db
 			.query('apartments')
 			.withIndex('by_status', (q) => q.eq('status', 'published'))
-			.take(SEARCH_LIMIT);
+			.take(OPERATIONAL_LIMITS.SEARCH_SCAN_LIMIT);
 
 		const matching = candidates.filter(
 			(a) =>
@@ -70,15 +71,13 @@ export const fetchSearchAccommodationsSafe = query({
 
 		// Date availability: with a valid range chosen, drop apartments that have an active
 		// booking overlapping it. One indexed per-apartment read (by_apartment_dates) for each
-		// remaining candidate — bounded by SEARCH_LIMIT and each read is a small index slice.
+		// remaining candidate — bounded by OPERATIONAL_LIMITS.SEARCH_SCAN_LIMIT and each read is a small index slice.
 		const { checkIn, checkOut } = args;
 		if (checkIn && checkOut && checkIn < checkOut) {
 			const availability = await Promise.all(
-				matching.map((a) => hasOverlappingBooking(ctx, a._id, checkIn, checkOut))
+				matching.map((a) => hasAvailabilityConflict(ctx, a._id, checkIn, checkOut))
 			);
-			return matching
-				.filter((_, i) => !availability[i])
-				.map(apartmentToSearchAccommodation);
+			return matching.filter((_, i) => !availability[i]).map(apartmentToSearchAccommodation);
 		}
 
 		return matching.map(apartmentToSearchAccommodation);

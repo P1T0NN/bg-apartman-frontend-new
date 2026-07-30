@@ -1,91 +1,42 @@
 // LIBRARIES
-import { v, type ObjectType } from 'convex/values';
+import { zodToConvexFields } from 'convex-helpers/server/zod4';
 
 // UTILS
 import { authMutation, adminMutation } from '@/convex/auth/middleware/authMiddleware';
 import { authComponent } from '@/convex/auth/auth';
 import { sendCreateAccommodationEmail } from '@/convex/email/sendCreateAccommodationEmail';
-import { num, optNum, optStr } from '@/shared/utils/validationUtils';
+import { optStr } from '@/shared/utils/validationUtils';
 import { r2PublicUrl } from '@/convex/storage/r2/r2';
+import { validateImageCount } from '@/shared/features/accommodation/utils/validateImageCount';
+import { ensureHostPayoutAccount } from '@/convex/payments/onboarding';
+import { onlinePaymentsEnabled } from '@/convex/payments/adapter';
 
 // SCHEMAS
-import { apartmentType, coordinates, apartmentPaymentMethod } from '../schemas/accommodationsSchemas';
+import {
+	createAccommodationSchema,
+	createAccommodationAdminSchema,
+	type CreateAccommodationWireInput
+} from '@/shared/features/accommodation/schemas/accommodationsSchemas';
 import { mutationResult, type MutationResult } from '@/convex/schemas/schemas';
 
 // TYPES
 import type { Doc } from '@/convex/_generated/dataModel';
 
 /**
- * Shared form args for the host + admin create mutations. Numeric args are
- * declared as strings because that's what the form submits; they're coerced in
- * {@link buildApartmentDoc} (see {@link num}).
- */
-const apartmentFormArgs = {
-	// Basics
-	title: v.string(),
-	type: apartmentType,
-	description: v.string(),
-
-	// Location — `placeId` (merged city+country) / `coordinates` come from the Google place.
-	placeId: v.optional(v.string()),
-	address: v.string(),
-	addressNumber: v.optional(v.string()),
-	city: v.string(),
-	country: v.optional(v.string()),
-	coordinates: v.optional(coordinates),
-	timeZone: v.optional(v.string()),
-
-	// Capacity (numbers-as-strings)
-	bedrooms: v.string(),
-	bathrooms: v.string(),
-	maxGuests: v.string(),
-	squareMeters: v.string(),
-
-	// Pricing (whole euros, numbers-as-strings)
-	pricePerNight: v.string(),
-	cleaningFee: v.optional(v.string()),
-	weekendPremium: v.optional(v.string()),
-	discountAmount: v.optional(v.string()),
-	weeklyDiscount: v.optional(v.string()),
-	monthlyDiscount: v.optional(v.string()),
-
-	// Booking rules
-	paymentMethod: apartmentPaymentMethod,
-	minReservationDays: v.string(),
-	maxReservationDays: v.optional(v.string()),
-	checkInTime: v.string(),
-	checkOutTime: v.string(),
-	quietHoursStart: v.optional(v.string()),
-	quietHoursEnd: v.optional(v.string()),
-	instantBooking: v.boolean(),
-	sameDayReservation: v.boolean(),
-	singleDayReservation: v.boolean(),
-	petsAllowed: v.boolean(),
-	smokingAllowed: v.boolean(),
-	partiesAllowed: v.boolean(),
-
-	// Amenities + house rules
-	amenities: v.array(v.string()),
-	houseRules: v.optional(v.string()),
-
-	// Photos — R2 object keys from the form's upload pipeline.
-	photos: v.optional(v.array(v.string())),
-
-	locale: v.optional(v.string())
-};
-
-type ApartmentFormArgs = ObjectType<typeof apartmentFormArgs>;
-
-/**
- * Map the raw (strings) form args + ownership/status onto an `apartments` insert
- * doc. Single source of truth for the host and admin create mutations.
+ * Map the PARSED create input + ownership/status onto an `apartments` insert doc. Single
+ * source of truth for the host and admin create mutations.
+ *
+ * Numbers arrive as numbers: `accommodationFieldsShape` coerces them, so the handler stores
+ * exactly what the shared schema produced — no second `Number()` cast to drift from the
+ * validation rules. `optStr` is storage normalization, not validation: an optional text
+ * column should hold `undefined`, never `''`.
  */
 function buildApartmentDoc(
-	args: ApartmentFormArgs,
+	args: CreateAccommodationWireInput,
 	owner: { hostId: string; isSuperhost: boolean },
 	status: Doc<'apartments'>['status']
 ): Omit<Doc<'apartments'>, '_id' | '_creationTime'> {
-	const title = args.title.trim();
+	const title = args.title;
 
 	// URL-friendly slug; short base36 suffix keeps it unique enough for the MVP.
 	const slugBase =
@@ -104,28 +55,28 @@ function buildApartmentDoc(
 
 		title,
 		slug: `${slugBase}-${Date.now().toString(36)}`,
-		description: args.description.trim(),
+		description: args.description,
 		type: args.type,
 
-		address: args.address.trim(),
+		address: args.address ?? '',
 		addressNumber: optStr(args.addressNumber),
-		city: args.city.trim(),
+		city: args.city,
 		country: optStr(args.country),
 		placeId: optStr(args.placeId),
 		coordinates: args.coordinates,
 		timeZone: optStr(args.timeZone),
 
-		bedrooms: num(args.bedrooms),
-		bathrooms: num(args.bathrooms),
-		maxGuests: num(args.maxGuests),
-		squareMeters: num(args.squareMeters),
+		bedrooms: args.bedrooms,
+		bathrooms: args.bathrooms,
+		maxGuests: args.maxGuests,
+		squareMeters: args.squareMeters,
 
-		pricePerNight: num(args.pricePerNight),
-		discountAmount: optNum(args.discountAmount),
-		cleaningFee: optNum(args.cleaningFee),
-		weekendPremium: optNum(args.weekendPremium),
-		monthlyDiscount: optNum(args.monthlyDiscount),
-		weeklyDiscount: optNum(args.weeklyDiscount),
+		pricePerNight: args.pricePerNight,
+		discountAmount: args.discountAmount,
+		cleaningFee: args.cleaningFee,
+		weekendPremium: args.weekendPremium,
+		monthlyDiscount: args.monthlyDiscount,
+		weeklyDiscount: args.weeklyDiscount,
 		currency: 'EUR',
 
 		instantBooking: args.instantBooking,
@@ -135,8 +86,8 @@ function buildApartmentDoc(
 		petsAllowed: args.petsAllowed,
 		smokingAllowed: args.smokingAllowed,
 		partiesAllowed: args.partiesAllowed,
-		minReservationDays: num(args.minReservationDays, 1),
-		maxReservationDays: optNum(args.maxReservationDays),
+		minReservationDays: args.minReservationDays,
+		maxReservationDays: args.maxReservationDays,
 		checkInTime: args.checkInTime,
 		checkOutTime: args.checkOutTime,
 		quietHoursStart: optStr(args.quietHoursStart),
@@ -146,7 +97,7 @@ function buildApartmentDoc(
 
 		// R2 object keys → ordered accommodation photos. Store the permanent public URL
 		// now so reads never pay for a presigned `getUrl`.
-		images: (args.photos ?? []).map((key, order) => ({
+		images: args.photos.map((key, order) => ({
 			key,
 			url: r2PublicUrl(key),
 			order
@@ -165,19 +116,37 @@ function buildApartmentDoc(
  *
  * `authMutation` injects `ctx.userId` (the caller) and rate-limits per user.
  *
- * Photos arrive as `photos`: the R2 object keys produced by the form's upload
- * pipeline (optimize → PUT to R2 → `uploadedFilesR2` row). They're mapped to
- * `images` in submission order.
+ * Args are DERIVED from the shared `createAccommodationSchema` (`zodToConvexFields`) — the
+ * wire twin of the form schema the browser validates — and the handler re-runs it
+ * authoritatively. Field rules live ONLY in the schema; the DB-dependent rules (image-count
+ * config, the online-payments gate) stay here.
  *
- * Backend-derived fields (not collected from the form): `hostId` (caller),
- * `isSuperhost` (denormalized from the host user), `slug` (from title),
- * `currency` ('EUR'), `status` ('pending_review'), `isFeatured` (false),
- * `updatedAt` (now). Payment/published fields are left unset.
+ * Photos arrive as `photos`: the R2 object keys produced by the form's upload pipeline
+ * (optimize → PUT to R2 → `uploadedFilesR2` row). They're mapped to `images` in order.
+ *
+ * Backend-derived fields (never from the form): `hostId` (caller), `isSuperhost`,
+ * `slug` (from title), `currency`, `status` ('pending_review'), `isFeatured`, `updatedAt`.
  */
 export const createApartment = authMutation('createApartment')({
-	args: apartmentFormArgs,
+	args: zodToConvexFields(createAccommodationSchema.shape),
 	returns: mutationResult,
-	handler: async (ctx, args): Promise<MutationResult> => {
+	handler: async (ctx, rawArgs): Promise<MutationResult> => {
+		const parsed = createAccommodationSchema.safeParse(rawArgs);
+		if (!parsed.success) {
+			return { success: false, message: { key: 'GenericMessages.UNEXPECTED_ERROR' } };
+		}
+		const args = parsed.data;
+
+		// Config-driven, so it can move without touching the schema (ASD §3).
+		const photoCountError = validateImageCount(args.photos.length);
+		if (photoCountError) return { success: false, message: photoCountError };
+
+		// Server-side twin of the form's hidden options: no provider wired, no `online`
+		// listings (PaymentsSystemDesign.md §8).
+		if (args.paymentMethod !== 'cash' && !onlinePaymentsEnabled()) {
+			return { success: false, message: { key: 'GenericMessages.ONLINE_PAYMENTS_UNAVAILABLE' } };
+		}
+
 		const host = await authComponent.getAuthUser(ctx);
 
 		const doc = buildApartmentDoc(
@@ -189,6 +158,10 @@ export const createApartment = authMutation('createApartment')({
 			'pending_review'
 		);
 		const apartmentId = await ctx.db.insert('apartments', doc);
+
+		// Stage 2 (PaymentsSystemDesign.md §2): silent recipient account, nothing asked of
+		// the host. Best-effort — a failure never fails the listing.
+		if (args.paymentMethod !== 'cash') await ensureHostPayoutAccount(ctx, ctx.userId);
 
 		const hostEmail = host?.email?.trim();
 		if (hostEmail) {
@@ -213,12 +186,22 @@ export const createApartment = authMutation('createApartment')({
  * round-trip) and the owner gets the "your accommodation is live" email.
  */
 export const createApartmentAdmin = adminMutation('createApartmentAdmin')({
-	args: {
-		...apartmentFormArgs,
-		hostId: v.string()
-	},
+	args: zodToConvexFields(createAccommodationAdminSchema.shape),
 	returns: mutationResult,
-	handler: async (ctx, args): Promise<MutationResult> => {
+	handler: async (ctx, rawArgs): Promise<MutationResult> => {
+		const parsed = createAccommodationAdminSchema.safeParse(rawArgs);
+		if (!parsed.success) {
+			return { success: false, message: { key: 'GenericMessages.UNEXPECTED_ERROR' } };
+		}
+		const args = parsed.data;
+
+		const photoCountError = validateImageCount(args.photos.length);
+		if (photoCountError) return { success: false, message: photoCountError };
+
+		if (args.paymentMethod !== 'cash' && !onlinePaymentsEnabled()) {
+			return { success: false, message: { key: 'GenericMessages.ONLINE_PAYMENTS_UNAVAILABLE' } };
+		}
+
 		const owner = await authComponent.getAnyUserById(ctx, args.hostId);
 		if (!owner) {
 			return { success: false, message: { key: 'GenericMessages.USER_NOT_FOUND' } };
@@ -233,6 +216,8 @@ export const createApartmentAdmin = adminMutation('createApartmentAdmin')({
 			'published'
 		);
 		const apartmentId = await ctx.db.insert('apartments', doc);
+
+		if (args.paymentMethod !== 'cash') await ensureHostPayoutAccount(ctx, args.hostId);
 
 		ctx.audit('apartment.create', {
 			resource: { table: 'apartments', id: apartmentId },

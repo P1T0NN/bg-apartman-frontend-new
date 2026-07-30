@@ -23,7 +23,6 @@ import { toast } from 'svelte-sonner';
 import { ConvexError } from 'convex/values';
 import { isRateLimitError } from '@convex-dev/rate-limiter';
 import { rateLimitMessage } from '@/utils/rateLimitMessages';
-import { m } from '@/shared/lib/paraglide/messages';
 import { hasTranslatableMessage, translateFromBackend } from '@/utils/translateFromBackend';
 
 // TYPES
@@ -94,7 +93,7 @@ export async function uploadFileToConvexStorage(
 		uploaded = await postFileToConvexUploadUrl(postUrl, file);
 	} catch (error) {
 		console.error('[uploadFileToConvexStorage] storage POST failed', error);
-		toast.error(m['GenericMessages.UPLOAD_SAVE_FAILED']());
+		toast.error('Could not save the uploaded file. Please try again.');
 		return null;
 	}
 
@@ -130,7 +129,7 @@ export async function uploadFileToR2(client: ConvexClient, file: File): Promise<
 		if (!res.ok) throw new Error(`R2 upload failed: ${res.status}`);
 	} catch (error) {
 		console.error('[uploadFileToR2] R2 PUT failed', error);
-		toast.error(m['GenericMessages.UPLOAD_SAVE_FAILED']());
+		toast.error('Could not save the uploaded file. Please try again.');
 		return null;
 	}
 
@@ -199,6 +198,37 @@ export async function safeMutation<Mutation extends FunctionReference<'mutation'
 ): Promise<FunctionReturnType<Mutation> | null> {
 	try {
 		return await client.mutation(mutation, args);
+	} catch (error) {
+		if (handleConvexError(error)) return null;
+		throw error;
+	}
+}
+
+/**
+ * Execute a ONE-SHOT Convex query with automatic error-to-toast handling.
+ *
+ * The imperative sibling of `useQuery`, for data that does NOT change under the viewer
+ * while they look at it (GeneralSystemDesignRule.md — realtime is opt-in). `useQuery`
+ * opens a live channel that costs server-side read tracking, invalidation traffic and a
+ * re-render for as long as the component is mounted; this pays for exactly one execution
+ * and stops. Reach for it in `onMount` / `$effect` when a remount is fresh enough.
+ *
+ * See {@link safeMutation} for the error-branch rules — identical behaviour.
+ *
+ * ## Usage
+ * ```ts
+ * const client = useConvexClient();
+ * let data = $state<Payload | undefined>();
+ * onMount(async () => { data = await safeQuery(client, api.someQuery, {}) ?? undefined; });
+ * ```
+ */
+export async function safeQuery<Query extends FunctionReference<'query'>>(
+	client: ConvexClient,
+	query: Query,
+	args: FunctionArgs<Query>
+): Promise<FunctionReturnType<Query> | null> {
+	try {
+		return await client.query(query, args);
 	} catch (error) {
 		if (handleConvexError(error)) return null;
 		throw error;

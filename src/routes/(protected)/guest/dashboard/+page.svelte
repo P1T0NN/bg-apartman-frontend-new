@@ -7,14 +7,14 @@
 	import { favoritesClass } from '@/features/favorites/classes/favoritesClass.svelte';
 
 	// COMPONENTS
-	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
-	import DashboardHeader from '@/shared/components/pages/(protected)/guest/dashboard/dashboard-header.svelte';
-	import DashboardPageLoading from '@/shared/components/pages/(protected)/guest/dashboard/loading/dashboard-page-loading.svelte';
-	import DashboardPageError from '@/shared/components/pages/(protected)/guest/dashboard/error/dashboard-page-error.svelte';
-	import DashboardNextTrip from '@/shared/components/pages/(protected)/guest/dashboard/dashboard-next-trip/dashboard-next-trip.svelte';
-	import DashboardNextTripEmpty from '@/shared/components/pages/(protected)/guest/dashboard/empty/dashboard-next-trip-empty.svelte';
-	import DashboardShortcuts from '@/shared/components/pages/(protected)/guest/dashboard/dashboard-shortcuts.svelte';
-	import DashboardUpcoming from '@/shared/components/pages/(protected)/guest/dashboard/dashboard-upcoming/dashboard-upcoming.svelte';
+	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
+	import DashboardHeader from '@/components/pages/(protected)/guest/dashboard/dashboard-header.svelte';
+	import DashboardPageLoading from '@/components/pages/(protected)/guest/dashboard/loading/dashboard-page-loading.svelte';
+	import { ErrorComponent } from '@/components/ui/error-component/index.js';
+	import DashboardNextTrip from '@/components/pages/(protected)/guest/dashboard/dashboard-next-trip/dashboard-next-trip.svelte';
+	import DashboardNextTripEmpty from '@/components/pages/(protected)/guest/dashboard/empty/dashboard-next-trip-empty.svelte';
+	import DashboardShortcuts from '@/components/pages/(protected)/guest/dashboard/dashboard-shortcuts.svelte';
+	import DashboardUpcoming from '@/components/pages/(protected)/guest/dashboard/dashboard-upcoming/dashboard-upcoming.svelte';
 
 	// UTILS
 	import { countdownLabel } from '@/utils/formatters';
@@ -50,7 +50,11 @@
 	{#if isLoading}
 		<DashboardPageLoading />
 	{:else if dashboardQuery.error}
-		<DashboardPageError />
+		<ErrorComponent
+			variant="alert"
+			title="Couldn't load your dashboard"
+			description="Something went wrong while loading your trips. Please try again in a moment."
+		/>
 	{:else}
 		<DashboardHeader {subtitle} />
 

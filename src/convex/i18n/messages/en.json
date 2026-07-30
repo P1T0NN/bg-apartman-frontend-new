@@ -35,6 +35,7 @@
 		"rowTotal": "Total",
 		"guestsAdults": "{count} adults",
 		"guestsAdultsChildren": "{adults} adults · {children} children",
+		"rowRespondBy": "Respond by",
 		"cta": "View booking"
 	},
 	"createAccommodation": {
@@ -93,7 +94,38 @@
 		"rowCheckIn": "Check-in",
 		"rowCheckOut": "Check-out",
 		"cta": "Browse other stays",
-		"rowReason": "Reason"
+		"rowReason": "Reason",
+		"rowPayment": "Payment",
+		"paymentRefunded": "Refunded in full",
+		"paymentReleased": "Card hold released — you were never charged",
+		"paymentKept": "Not refunded (late cancellation)"
+	},
+	"bookingCancelledHost": {
+		"subjectGuest": "Booking cancelled by the guest — {code}",
+		"headingGuest": "Your dates are free again",
+		"introGuest": "Hi {hostName}, {guestName} cancelled their stay at {title} ({code}). The nights are open again and can be booked by someone else — nothing for you to do.",
+		"subjectHost": "You cancelled a booking — {code}",
+		"headingHost": "Cancellation confirmed",
+		"introHost": "Hi {hostName}, this confirms you cancelled {guestName}'s stay at {title} ({code}). The guest has been notified by email.",
+		"subjectAdmin": "A booking was cancelled by support — {code}",
+		"headingAdmin": "Booking cancelled by support",
+		"introAdmin": "Hi {hostName}, our support team cancelled {guestName}'s stay at {title} ({code}). The reason is below — reply to this email if anything is unclear.",
+		"rowGuest": "Guest",
+		"rowStay": "Stay",
+		"rowCheckIn": "Check-in",
+		"rowCheckOut": "Check-out",
+		"rowReason": "Reason",
+		"cta": "Open the reservation"
+	},
+	"bookingMissed": {
+		"subject": "A request expired unanswered — {code}",
+		"heading": "This one got away",
+		"intro": "Hi {hostName}, {guestName}'s request for {title} ({code}) expired before it was answered, so it was declined automatically and the guest was told the dates didn't work out. Quick replies win bookings — or turn on instant booking and never lose one to the clock.",
+		"rowGuest": "Guest",
+		"rowStay": "Stay",
+		"rowCheckIn": "Check-in",
+		"rowCheckOut": "Check-out",
+		"cta": "Open your reservations"
 	},
 	"bookingDeclined": {
 		"subject": "Your booking request was declined — {code}",
@@ -112,6 +144,64 @@
 		"rowStay": "Stay",
 		"rowCheckIn": "Check-in",
 		"rowCheckOut": "Check-out",
-		"cta": "Browse other stays"
+		"cta": "Browse other stays",
+		"subjectDatesTaken": "Those dates were just booked — {code}",
+		"headingDatesTaken": "Your dates were just booked",
+		"introDatesTaken": "Hi {name}, the host confirmed another request for {title} covering your dates, so request {code} couldn't go ahead. Nothing was charged — plenty of other places are still free for these nights."
+	},
+	"bookingWithdrawn": {
+		"subject": "A booking request was withdrawn — {code}",
+		"heading": "Request withdrawn",
+		"intro": "Hi {hostName}, {guestName} withdrew their request for {title} ({code}) before you responded. Nothing to do — the dates were never reserved, and your calendar is unchanged.",
+		"rowGuest": "Guest",
+		"rowStay": "Stay",
+		"rowCheckIn": "Check-in",
+		"rowCheckOut": "Check-out",
+		"cta": "Open your reservations"
+	},
+	"stayConfirmationRequest": {
+		"subject": "Quick check — still coming? {code}",
+		"heading": "Please confirm your stay",
+		"intro": "Hi {name}, {hostName} is getting ready for your stay at {title} ({code}) and asked us to check you're still coming. One click below confirms it — if your plans changed, you can manage the booking on the same page.",
+		"rowStay": "Stay",
+		"rowCheckIn": "Check-in",
+		"rowCheckOut": "Check-out",
+		"cta": "Confirm — I'm coming"
+	},
+	"stayConfirmed": {
+		"subject": "Guest confirmed their stay — {code}",
+		"heading": "Stay confirmed",
+		"intro": "Good news, {hostName} — {guestName} confirmed they are coming to {title} ({code}). Nothing else to do.",
+		"rowGuest": "Guest",
+		"rowStay": "Stay",
+		"rowCheckIn": "Check-in",
+		"cta": "Open your reservations"
+	},
+	"listingFeeReminder": {
+		"subject": "Your listing expires soon · {title}",
+		"heading": "Time to renew your listing",
+		"intro": "Hi {name}, your listing {title} stays live for another {days} days. Renew before then and it keeps running without a break — nothing changes for guests, and bookings you already have are unaffected.",
+		"rowAccommodation": "Accommodation",
+		"rowExpires": "Expires",
+		"rowAmount": "Renewal",
+		"cta": "Renew your listing"
+	},
+	"listingFeeLapsed": {
+		"subject": "Your listing is no longer visible · {title}",
+		"heading": "Your listing has expired",
+		"intro": "Hi {name}, {title} is no longer visible to guests because its listing period ended. Any stays you've already confirmed go ahead exactly as planned — only new bookings are paused. Renew and it goes straight back live, no review needed.",
+		"rowAccommodation": "Accommodation",
+		"rowStatus": "Status",
+		"statusExpired": "Expired",
+		"rowAmount": "Renewal",
+		"cta": "Renew and go live again"
+	},
+	"hostEarningsHeld": {
+		"subject": "You earned {amount}",
+		"heading": "You earned {amount}",
+		"intro": "Nice one, {name} — a guest just paid for their stay. {held} is being held for you. Add your payout details (about 3 minutes) and we'll send it your way. Nothing expires, so there's no rush.",
+		"rowEarned": "This booking",
+		"rowHeld": "Waiting for you",
+		"cta": "Add payout details"
 	}
 }

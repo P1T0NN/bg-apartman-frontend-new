@@ -28,10 +28,21 @@ export async function resolveReservationBooking(
 		numberOfAdults: booking.numberOfAdults,
 		numberOfChildren: booking.numberOfChildren,
 		paymentMethod: booking.paymentMethod,
+		paymentStatus: booking.paymentStatus,
 		status: booking.status,
 		total: booking.total,
+		// The window this booking lives under — the cancel dialog states the consequence
+		// from it, never from live config (BookingSystemDesign.md §0.3).
+		policy: booking.policy,
+		cancelledBy: booking.cancelledBy,
+		cancelReason: booking.cancelReason,
+		stayConfirmationRequestedAt: booking.stayConfirmationRequestedAt,
+		stayConfirmedAt: booking.stayConfirmedAt,
 		apartmentTitle: apartment?.title ?? 'Stay',
 		apartmentSlug: booking.apartmentSlug,
+		// Drives "Book again": a delisted stay must not send the guest to a dead page
+		// (GuestSystemDesign.md §3).
+		apartmentIsBookable: apartment?.status === 'published',
 		hostName: host?.name?.trim() || 'Host'
 	};
 }

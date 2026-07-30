@@ -1,13 +1,20 @@
 // Presentation types for bookings Svelte UI — not used by Convex.
 // Domain shapes live in @/shared/features/booking/types/bookingTypes.
 
-import type { MutationFormSelectOption } from '@/shared/components/ui/mutation-form/types';
+import type { MutationFormSelectOption } from '@/components/ui/mutation-form/types';
+import type { typesStatusConfig } from '@/components/ui/feature-status/types';
 import type {
 	typesBookingAction,
 	typesBookingStatus,
 	typesGuestBookingAction,
 	typesPaymentStatus
 } from '@/shared/features/booking/types/bookingTypes';
+
+/** Booking status → presentation, rendered through `FeatureStatus`. */
+export type typesBookingStatusConfig = typesStatusConfig<typesBookingStatus>;
+
+/** Payment status → presentation, rendered through `FeatureStatus`. */
+export type typesPaymentStatusConfig = typesStatusConfig<typesPaymentStatus>;
 
 export type typesBookingActionMeta = {
 	label: string;
@@ -27,14 +34,4 @@ export type typesBookingGuestActionOption = {
 
 export type typesPaymentMethodOption = MutationFormSelectOption & {
 	description: string;
-};
-
-export type typesBookingsStatusProps = (
-	| { kind: 'booking'; status: typesBookingStatus }
-	| { kind: 'payment'; status: typesPaymentStatus }
-) & {
-	/** 'badge' = ring pill (default), 'dot' = coloured dot + label (legends / compact rows). */
-	variant?: 'badge' | 'dot';
-	/** Booking only: append a "?" linking to the status guide. Default on. */
-	showHelp?: boolean;
 };

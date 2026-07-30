@@ -1,3 +1,6 @@
+// CONFIG
+import { UPLOAD_LIMITS } from '@/shared/config';
+
 // LIBRARIES
 import { v } from 'convex/values';
 import { R2, type R2Callbacks } from '@convex-dev/r2';
@@ -37,7 +40,6 @@ export function r2PublicUrl(key: string): string {
  * Mirrors the Convex-storage path in `storageMutations.ts` — keep the limits in lockstep
  * so swapping backends doesn't change UX or the trust boundary.
  */
-const MAX_UPLOAD_BYTES = 10 * 1024 * 1024; // 10 MB
 const ALLOWED_CONTENT_TYPES = new Set<string>([
 	'image/jpeg',
 	'image/png',
@@ -165,8 +167,8 @@ export const { syncMetadata, onSyncMetadata } = r2.clientApi<DataModel>({
 			await cleanup('metadata missing after sync');
 			return;
 		}
-		if (typeof meta.size === 'number' && meta.size > MAX_UPLOAD_BYTES) {
-			await cleanup(`too large (${meta.size}b > ${MAX_UPLOAD_BYTES}b)`);
+		if (typeof meta.size === 'number' && meta.size > UPLOAD_LIMITS.MAX_UPLOAD_BYTES) {
+			await cleanup(`too large (${meta.size}b > ${UPLOAD_LIMITS.MAX_UPLOAD_BYTES}b)`);
 			return;
 		}
 		if (!ALLOWED_CONTENT_TYPES.has(meta.contentType ?? '')) {

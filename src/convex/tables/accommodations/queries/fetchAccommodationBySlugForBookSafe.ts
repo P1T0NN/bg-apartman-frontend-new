@@ -6,25 +6,37 @@ import { query } from '@/convex/_generated/server';
 
 // UTILS
 import { authComponent } from '@/convex/auth/auth';
-import { ACTIVE_BOOKING_STATUSES } from '@/shared/features/booking/data/bookingsData';
+import { BLOCKING_BOOKING_STATUSES } from '@/shared/features/booking/data/bookingsData';
 
 // TYPES
 import type { Doc, Id } from '@/convex/_generated/dataModel';
 import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
 import type { QueryCtx } from '@/convex/_generated/server';
 
+/**
+ * Nights the guest cannot pick: blocking bookings + the host's own calendar blocks — the
+ * same definition of "free" the create/confirm mutations enforce. `pending` requests are
+ * excluded on purpose, so a guest can still request dates someone else has merely asked
+ * for (BookingSystemDesign.md §6).
+ */
 async function fetchBookedRanges(ctx: QueryCtx, apartmentId: Id<'apartments'>) {
-	const bookings = await ctx.db
-		.query('bookings')
-		.withIndex('by_apartment', (q) => q.eq('apartmentId', apartmentId))
-		.collect();
+	const [bookings, blocks] = await Promise.all([
+		ctx.db
+			.query('bookings')
+			.withIndex('by_apartment', (q) => q.eq('apartmentId', apartmentId))
+			.collect(),
+		ctx.db
+			.query('apartmentBlocks')
+			.withIndex('by_apartment', (q) => q.eq('apartmentId', apartmentId))
+			.collect()
+	]);
 
-	return bookings
-		.filter((booking) => ACTIVE_BOOKING_STATUSES.has(booking.status))
-		.map((booking) => ({
-			start: booking.checkInDate,
-			end: booking.checkOutDate
-		}));
+	return [
+		...bookings
+			.filter((booking) => BLOCKING_BOOKING_STATUSES.has(booking.status))
+			.map((booking) => ({ start: booking.checkInDate, end: booking.checkOutDate })),
+		...blocks.map((block) => ({ start: block.startDate, end: block.endDate }))
+	];
 }
 
 function projectAccommodationForBook(

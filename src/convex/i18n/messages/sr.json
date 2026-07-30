@@ -35,6 +35,7 @@
 		"rowTotal": "Ukupno",
 		"guestsAdults": "{count} odraslih",
 		"guestsAdultsChildren": "{adults} odraslih · {children} dece",
+		"rowRespondBy": "Odgovorite do",
 		"cta": "Pogledajte rezervaciju"
 	},
 	"createAccommodation": {
@@ -93,7 +94,38 @@
 		"rowCheckIn": "Prijava",
 		"rowCheckOut": "Odjava",
 		"cta": "Pogledajte druge smeštaje",
-		"rowReason": "Razlog"
+		"rowReason": "Razlog",
+		"rowPayment": "Plaćanje",
+		"paymentRefunded": "Vraćen ceo iznos",
+		"paymentReleased": "Rezervacija sredstava na kartici je otpuštena — ništa nije naplaćeno",
+		"paymentKept": "Bez povraćaja (kasno otkazivanje)"
+	},
+	"bookingCancelledHost": {
+		"subjectGuest": "Gost je otkazao rezervaciju — {code}",
+		"headingGuest": "Vaši termini su ponovo slobodni",
+		"introGuest": "Zdravo {hostName}, {guestName} je otkazao/la boravak u {title} ({code}). Noći su ponovo otvorene i neko drugi može da ih rezerviše — ne morate ništa da uradite.",
+		"subjectHost": "Otkazali ste rezervaciju — {code}",
+		"headingHost": "Otkazivanje potvrđeno",
+		"introHost": "Zdravo {hostName}, ovim potvrđujemo da ste otkazali boravak gosta {guestName} u {title} ({code}). Gost je obavešten imejlom.",
+		"subjectAdmin": "Podrška je otkazala rezervaciju — {code}",
+		"headingAdmin": "Rezervaciju je otkazala podrška",
+		"introAdmin": "Zdravo {hostName}, naš tim podrške je otkazao boravak gosta {guestName} u {title} ({code}). Razlog je ispod — odgovorite na ovaj imejl ako nešto nije jasno.",
+		"rowGuest": "Gost",
+		"rowStay": "Smeštaj",
+		"rowCheckIn": "Prijava",
+		"rowCheckOut": "Odjava",
+		"rowReason": "Razlog",
+		"cta": "Otvorite rezervaciju"
+	},
+	"bookingMissed": {
+		"subject": "Zahtev je istekao bez odgovora — {code}",
+		"heading": "Ovaj vam je promakao",
+		"intro": "Zdravo {hostName}, zahtev gosta {guestName} za {title} ({code}) je istekao pre nego što je odgovoreno, pa je automatski odbijen i gostu je javljeno da termini nisu prošli. Brzi odgovori osvajaju rezervacije — ili uključite instant rezervaciju i nikad više ne izgubite nijednu zbog sata.",
+		"rowGuest": "Gost",
+		"rowStay": "Smeštaj",
+		"rowCheckIn": "Prijava",
+		"rowCheckOut": "Odjava",
+		"cta": "Otvorite svoje rezervacije"
 	},
 	"bookingDeclined": {
 		"subject": "Vaš zahtev za rezervaciju je odbijen — {code}",
@@ -112,6 +144,64 @@
 		"rowStay": "Smeštaj",
 		"rowCheckIn": "Prijava",
 		"rowCheckOut": "Odjava",
-		"cta": "Pogledajte druge smeštaje"
+		"cta": "Pogledajte druge smeštaje",
+		"subjectDatesTaken": "Ovi datumi su upravo rezervisani — {code}",
+		"headingDatesTaken": "Vaši datumi su upravo rezervisani",
+		"introDatesTaken": "Zdravo {name}, domaćin je potvrdio drugi zahtev za {title} koji pokriva vaše datume, pa zahtev {code} nije mogao da prođe. Ništa nije naplaćeno — mnogi drugi smeštaji su i dalje slobodni za ove noći."
+	},
+	"bookingWithdrawn": {
+		"subject": "Zahtev za rezervaciju je povučen — {code}",
+		"heading": "Zahtev je povučen",
+		"intro": "Zdravo {hostName}, {guestName} je povukao/la svoj zahtev za {title} ({code}) pre nego što ste odgovorili. Ništa ne treba da uradite — datumi nikada nisu bili rezervisani i vaš kalendar je nepromenjen.",
+		"rowGuest": "Gost",
+		"rowStay": "Smeštaj",
+		"rowCheckIn": "Prijava",
+		"rowCheckOut": "Odjava",
+		"cta": "Otvorite svoje rezervacije"
+	},
+	"stayConfirmationRequest": {
+		"subject": "Kratka provera — dolazite li? {code}",
+		"heading": "Molimo potvrdite svoj boravak",
+		"intro": "Zdravo {name}, {hostName} se priprema za vaš boravak u {title} ({code}) i zamolio/la nas je da proverimo da li i dalje dolazite. Jedan klik ispod to potvrđuje — ako su se planovi promenili, rezervaciju možete izmeniti na istoj stranici.",
+		"rowStay": "Smeštaj",
+		"rowCheckIn": "Prijava",
+		"rowCheckOut": "Odjava",
+		"cta": "Potvrđujem — dolazim"
+	},
+	"stayConfirmed": {
+		"subject": "Gost je potvrdio boravak — {code}",
+		"heading": "Boravak potvrđen",
+		"intro": "Dobre vesti, {hostName} — {guestName} je potvrdio/la da dolazi u {title} ({code}). Ništa više ne treba da uradite.",
+		"rowGuest": "Gost",
+		"rowStay": "Smeštaj",
+		"rowCheckIn": "Prijava",
+		"cta": "Otvorite svoje rezervacije"
+	},
+	"listingFeeReminder": {
+		"subject": "Vaš oglas uskoro ističe · {title}",
+		"heading": "Vreme je da obnovite oglas",
+		"intro": "Zdravo {name}, vaš oglas {title} ostaje aktivan još {days} dana. Obnovite ga pre toga i nastavlja da radi bez prekida — za goste se ništa ne menja, a rezervacije koje već imate ostaju netaknute.",
+		"rowAccommodation": "Smeštaj",
+		"rowExpires": "Ističe",
+		"rowAmount": "Obnova",
+		"cta": "Obnovite oglas"
+	},
+	"listingFeeLapsed": {
+		"subject": "Vaš oglas više nije vidljiv · {title}",
+		"heading": "Vaš oglas je istekao",
+		"intro": "Zdravo {name}, {title} više nije vidljiv gostima jer je period oglašavanja završen. Boravci koje ste već potvrdili odvijaju se tačno kako je planirano — pauziraju se samo nove rezervacije. Obnovite oglas i odmah se vraća uživo, bez ponovne provere.",
+		"rowAccommodation": "Smeštaj",
+		"rowStatus": "Status",
+		"statusExpired": "Isteklo",
+		"rowAmount": "Obnova",
+		"cta": "Obnovite i vratite oglas uživo"
+	},
+	"hostEarningsHeld": {
+		"subject": "Zaradili ste {amount}",
+		"heading": "Zaradili ste {amount}",
+		"intro": "Svaka čast, {name} — gost je upravo platio svoj boravak. {held} vas čeka. Dodajte podatke za isplatu (oko 3 minuta) i poslaćemo vam novac. Ništa ne ističe, pa nema žurbe.",
+		"rowEarned": "Ova rezervacija",
+		"rowHeld": "Čeka vas",
+		"cta": "Dodajte podatke za isplatu"
 	}
 }

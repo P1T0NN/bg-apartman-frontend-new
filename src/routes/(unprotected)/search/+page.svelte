@@ -4,20 +4,20 @@
 		useSearchState,
 		parseCount,
 		type AccommodationSearchParams
-	} from '@/shared/components/pages/(unprotected)/search/search-state';
+	} from '@/components/pages/(unprotected)/search/search-state';
 
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useQuery } from 'convex-svelte';
 
 	// COMPONENTS
-	import SvelteHead from '@/shared/components/ui/svelte-head/svelte-head.svelte';
-	import { Button } from '@/shared/components/ui/button/index.js';
-	import SearchLeftContent from '@/shared/components/pages/(unprotected)/search/search-left-content/search-left-content.svelte';
-	import SearchRightContent from '@/shared/components/pages/(unprotected)/search/search-right-content/search-right-content.svelte';
+	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
+	import { Button } from '@/components/ui/button/index.js';
+	import SearchLeftContent from '@/components/pages/(unprotected)/search/search-left-content/search-left-content.svelte';
+	import SearchRightContent from '@/components/pages/(unprotected)/search/search-right-content/search-right-content.svelte';
 
 	// TYPES
-	import type { GoogleMapHandle } from '@/shared/components/ui/google-map/types.js';
+	import type { GoogleMapHandle } from '@/components/ui/google-map/types.js';
 	import type { Id } from '@/convex/_generated/dataModel';
 
 	// LUCIDE ICONS

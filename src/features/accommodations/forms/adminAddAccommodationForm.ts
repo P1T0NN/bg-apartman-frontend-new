@@ -2,7 +2,7 @@
 import { addAccommodationForm } from '@/features/accommodations/forms/addAccommodationForm';
 
 // TYPES
-import type { MutationFormSection } from '@/shared/components/ui/mutation-form/types';
+import type { MutationFormSection } from '@/components/ui/mutation-form/types';
 
 // LUCIDE ICONS
 import UserRoundCheckIcon from '@lucide/svelte/icons/user-round-check';

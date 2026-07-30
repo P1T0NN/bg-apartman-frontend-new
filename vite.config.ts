@@ -1,4 +1,3 @@
-import { paraglideVitePlugin } from '@inlang/paraglide-js';
 import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
@@ -34,23 +33,5 @@ export default defineConfig({
 	ssr: {
 		noExternal: ['layerchart', '@dagrejs/dagre', '@googlemaps/markerclusterer']
 	},
-	plugins: [
-		paraglideVitePlugin({
-			project: './project.inlang',
-			outdir: './src/shared/lib/paraglide',
-			strategy: ['url', 'cookie', 'baseLocale'],
-			routeStrategies: [{ match: '/api/:path(.*)?', exclude: true }],
-			urlPatterns: [
-				{
-					pattern: ':protocol://:domain(.*)::port?/:path(.*)?',
-					localized: [
-						['sr', ':protocol://:domain(.*)::port?/sr/:path(.*)?'],
-						['en', ':protocol://:domain(.*)::port?/:path(.*)?']
-					]
-				}
-			]
-		}),
-		tailwindcss(),
-		sveltekit()
-	]
+	plugins: [tailwindcss(), sveltekit()]
 });

@@ -1,5 +1,5 @@
 // TYPES
-import type { MutationFormSection } from '@/shared/components/ui/mutation-form/types';
+import type { MutationFormSection } from '@/components/ui/mutation-form/types';
 
 export const bookGuestForm: MutationFormSection[] = [
 	{

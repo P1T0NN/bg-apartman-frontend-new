@@ -4,9 +4,9 @@
 	import { toast } from 'svelte-sonner';
 
 	// COMPONENTS
-	import { Button } from '@/shared/components/ui/button/index.js';
-	import { Progress } from '@/shared/components/ui/progress/index.js';
-	import Spinner from '@/shared/components/ui/spinner/spinner.svelte';
+	import { Button } from '@/components/ui/button/index.js';
+	import { Progress } from '@/components/ui/progress/index.js';
+	import Spinner from '@/components/ui/spinner/spinner.svelte';
 
 	// HOOKS
 	import { useProgress } from '@/features/uploadFile/utils/useProgress.svelte';

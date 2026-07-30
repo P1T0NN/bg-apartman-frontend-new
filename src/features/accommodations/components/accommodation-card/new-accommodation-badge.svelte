@@ -1,6 +1,6 @@
 <script lang="ts">
 	// COMPONENTS
-	import { Badge } from '@/shared/components/ui/badge';
+	import { Badge } from '@/components/ui/badge';
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';

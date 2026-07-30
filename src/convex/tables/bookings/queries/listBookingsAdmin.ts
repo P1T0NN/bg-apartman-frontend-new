@@ -16,11 +16,15 @@ import { bookingToBookingSafe } from '@/convex/tables/bookings/utils/bookingToBo
 import { bookingStatus, paymentStatus } from '../schemas/bookingsSchemas';
 
 // TYPES
-import type { PaginatedListPayload } from '@/shared/components/ui/data-table/types';
+import type { PaginatedListPayload } from '@/components/ui/data-table/types';
 import type { typesBookingSafe } from '@/shared/features/booking/types/bookingTypes';
 
-/** Booking row enriched for the admin support table: safe shape + host label. */
-export type AdminBookingRow = typesBookingSafe & { hostName: string };
+/**
+ * Booking row enriched for the admin support table: safe shape + host label + the
+ * listing's public slug (the safe shape drops it, but the admin table links each booking
+ * to the accommodation page — AdminPagesSystemDesign.md §3).
+ */
+export type AdminBookingRow = typesBookingSafe & { hostName: string; apartmentSlug: string };
 
 /**
  * Admin bookings support table. Search routes through the exact-match indexes
@@ -44,7 +48,14 @@ export const listBookingsAdmin = query({
 		/** ISO `YYYY-MM-DD` bounds on `checkInDate`, inclusive. */
 		checkInFrom: v.optional(v.string()),
 		checkInTo: v.optional(v.string()),
-		guestId: v.optional(v.string())
+		guestId: v.optional(v.string()),
+		/**
+		 * `true` = only rows carrying a `paymentFlag` — the money operations that failed and
+		 * need a human to finish them (PaymentsSystemDesign.md §4/§6). This is the surface the
+		 * whole "failures flag, they don't loop" pattern points at, and the one the daily
+		 * reconciliation cron keeps re-populating.
+		 */
+		flagged: v.optional(v.boolean())
 	},
 	handler: async (ctx, args): Promise<PaginatedListPayload<AdminBookingRow>> => {
 		await requireAdmin(ctx);
@@ -97,6 +108,7 @@ export const listBookingsAdmin = query({
 			if (args.paymentStatus !== undefined && b.paymentStatus !== args.paymentStatus) return false;
 			if (args.checkInFrom !== undefined && b.checkInDate < args.checkInFrom) return false;
 			if (args.checkInTo !== undefined && b.checkInDate > args.checkInTo) return false;
+			if (args.flagged === true && b.paymentFlag === undefined) return false;
 			return true;
 		});
 
@@ -115,7 +127,8 @@ export const listBookingsAdmin = query({
 		const page = await Promise.all(
 			slice.map(async (b) => ({
 				...(await bookingToBookingSafe(ctx, b)),
-				hostName: hosts.get(b.hostId)?.name?.trim() || (hosts.get(b.hostId)?.email ?? '—')
+				hostName: hosts.get(b.hostId)?.name?.trim() || (hosts.get(b.hostId)?.email ?? '—'),
+				apartmentSlug: b.apartmentSlug
 			}))
 		);
 

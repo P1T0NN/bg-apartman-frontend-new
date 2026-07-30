@@ -1,12 +1,8 @@
-// LIBRARIES
-import { m } from '@/shared/lib/paraglide/messages';
-import { getLocale } from '@/shared/lib/paraglide/runtime';
-
 // UTILS
 import { formatMoney } from '@/shared/utils/formatMoney';
 
 export function formatCurrency(amount: number): string {
-	return formatMoney(amount, getLocale());
+	return formatMoney(amount, 'en');
 }
 
 /** Signed delta for stat-tile context lines: "+3" / "−3" / "0" (true minus sign). */
@@ -24,12 +20,12 @@ export function formatSignedCurrency(delta: number): string {
 /** Format a timestamp (epoch number or ISO string) as a locale-formatted date/time. */
 export function formatTs(ts: number | string): string {
 	const d = new Date(ts);
-	return Number.isNaN(d.getTime()) ? '—' : d.toLocaleString(getLocale());
+	return Number.isNaN(d.getTime()) ? '—' : d.toLocaleString('en');
 }
 
 /** "Jun 25, 2026" — used where the year matters. */
 export function formatDate(value: string | number): string {
-	return new Intl.DateTimeFormat(getLocale(), {
+	return new Intl.DateTimeFormat('en', {
 		month: 'short',
 		day: 'numeric',
 		year: 'numeric'
@@ -38,7 +34,7 @@ export function formatDate(value: string | number): string {
 
 /** "Jun 25" — compact form for dense table cells. */
 export function formatDateShort(value: string | number): string {
-	return new Intl.DateTimeFormat(getLocale(), {
+	return new Intl.DateTimeFormat('en', {
 		month: 'short',
 		day: 'numeric'
 	}).format(new Date(value));
@@ -46,7 +42,7 @@ export function formatDateShort(value: string | number): string {
 
 /** Weekday + date, e.g. "Thu, Jun 25" — used in stay timelines. */
 export function formatDateWithWeekday(value: string | number): string {
-	return new Intl.DateTimeFormat(getLocale(), {
+	return new Intl.DateTimeFormat('en', {
 		weekday: 'short',
 		month: 'short',
 		day: 'numeric'
@@ -55,7 +51,7 @@ export function formatDateWithWeekday(value: string | number): string {
 
 /** "Starts today", "Tomorrow", "In 3 days" — calendar days until an ISO date. */
 export function countdownLabel(iso: string): string {
-	const locale = getLocale();
+	const locale = 'en';
 	const todayMid = new Date().setHours(0, 0, 0, 0);
 	const n = Math.round((Date.parse(`${iso}T00:00:00`) - todayMid) / 86_400_000);
 
@@ -68,7 +64,7 @@ export function countdownLabel(iso: string): string {
 
 /** "Jun 25 – Jun 28, 2026", collapsing the month when both dates share it. */
 export function formatDateRange(startISO: string, endISO: string): string {
-	const locale = getLocale();
+	const locale = 'en';
 	const start = new Date(startISO);
 	const end = new Date(endISO);
 	const sameMonth =
@@ -88,25 +84,25 @@ export function formatDateRange(startISO: string, endISO: string): string {
 	return `${startFmt} – ${endFmt}`;
 }
 
-/** Localized count labels — one Paraglide `CountLabels` message + one helper per unit. */
+/** Count labels — one helper per unit, singular/plural picked inline. */
 export function formatGuests(count: number): string {
-	return m['CountLabels.guests']({ count });
+	return count === 1 ? `${count} guest` : `${count} guests`;
 }
 
 export function formatBedrooms(count: number): string {
-	return m['CountLabels.bedrooms']({ count });
+	return count === 1 ? `${count} bedroom` : `${count} bedrooms`;
 }
 
 export function formatBathrooms(count: number): string {
-	return m['CountLabels.bathrooms']({ count });
+	return count === 1 ? `${count} bathroom` : `${count} bathrooms`;
 }
 
 export function formatChildren(count: number): string {
-	return m['CountLabels.children']({ count });
+	return count === 1 ? `${count} child` : `${count} children`;
 }
 
 export function formatAdults(count: number): string {
-	return m['CountLabels.adults']({ count });
+	return count === 1 ? `${count} adult` : `${count} adults`;
 }
 
 /** "2 adults · 1 child" — adults always shown; children only when > 0. */
@@ -117,15 +113,15 @@ export function formatAdultsAndChildren(adults: number, children: number): strin
 }
 
 export function formatNights(count: number): string {
-	return m['CountLabels.nights']({ count });
+	return count === 1 ? `${count} night` : `${count} nights`;
 }
 
 export function formatPlaces(count: number): string {
-	return m['CountLabels.places']({ count });
+	return count === 1 ? `${count} place` : `${count} places`;
 }
 
 export function formatSquareMeters(count: number): string {
-	return m['CountLabels.squareMeters']({ count });
+	return `${count} m²`;
 }
 
 export function formatGuestsShort(adults: number, children: number): string {
@@ -136,13 +132,15 @@ export function formatGuestsShort(adults: number, children: number): string {
 }
 
 export function formatUpToGuests(count: number): string {
-	return m['AccommodationCapacity.upToGuests']({ count });
+	return count === 1 ? `Up to ${count} guest` : `Up to ${count} guests`;
 }
 
 export function formatMaxGuestsAllowed(count: number): string {
-	return m['AccommodationCapacity.maxGuestsAllowed']({ count });
+	return count === 1
+		? `This place allows up to ${count} guest.`
+		: `This place allows up to ${count} guests.`;
 }
 
 export function formatDaysSelected(count: number): string {
-	return m['AccommodationCapacity.daysSelected']({ count });
+	return count === 1 ? `${count} day selected` : `${count} days selected`;
 }
