@@ -29,6 +29,16 @@ export const BACKEND_MESSAGES: Record<string, string> = {
 	'GenericMessages.ACCOMMODATION_FEATURED': 'Accommodation added to the homepage strip.',
 	'GenericMessages.ACCOMMODATION_UNFEATURED': 'Accommodation removed from the homepage strip.',
 	'GenericMessages.LISTING_FEE_PAID': 'Listing renewed — it stays live for another period.',
+	'GenericMessages.LISTING_FEE_UNPAID':
+		"This listing's fee hasn't been paid yet, so it can't go live. Record the payment first.",
+	'GenericMessages.MONETIZATION_CHOICE_REQUIRED':
+		'Pick a plan for this listing — listing fee or per-booking fee.',
+	'GenericMessages.BOOKING_FEE_REQUIRES_ONLINE':
+		'Per-booking fee listings accept online payments only.',
+	'GenericMessages.MONETIZATION_SWITCH_FORBIDDEN':
+		'A per-booking fee listing cannot move to a listing fee — create a new listing instead.',
+	'GenericMessages.MONETIZATION_SWITCHED':
+		'Plan changed — this listing now runs on the per-booking fee.',
 	'GenericMessages.LISTING_FEE_CHARGE_FAILED':
 		"The payment didn't go through, so nothing was charged and the listing is unchanged. Please try again.",
 	'GenericMessages.RENEWAL_NEEDS_SUPPORT':
@@ -119,5 +129,5 @@ export const BACKEND_MESSAGES: Record<string, string> = {
 	'GenericMessages.USER_NOT_FOUND': 'User not found.',
 	'GenericMessages.USER_ROLE_UPDATED': 'User role updated.',
 	'GenericMessages.USER_UNBANNED': 'User unbanned.',
-	'GenericMessages.YOU_NEED_TO_CORRECT_FORM_ERRORS': 'You need to correct form errors',
+	'GenericMessages.YOU_NEED_TO_CORRECT_FORM_ERRORS': 'You need to correct form errors'
 };

@@ -100,6 +100,22 @@ export const listUsersPaginated = query({
 	}
 });
 
+// ----- countUsers -----
+
+/**
+ * Total registered users — the admin dashboard's headline stat. Lives here because the BA
+ * `user` table is component-local: the app's aggregate triggers never see its writes, so an
+ * O(log n) aggregate count is not available for it.
+ *
+ * ponytail: full-table count, same "user table is small enough in practice" judgment as the
+ * scan-with-filter in `listUsersPaginated`. Switch to a component-side counter row if the
+ * table ever nears Convex's per-query document read limit.
+ */
+export const countUsers = query({
+	args: {},
+	handler: async (ctx) => (await ctx.db.query('user').collect()).length
+});
+
 // ----- listUserSessions -----
 
 /**

@@ -2,6 +2,9 @@
 import { z } from 'zod';
 import { zid } from 'convex-helpers/server/zod4';
 
+// CONFIG
+import { ACCOMMODATIONS_CONFIG } from '@/shared/config';
+
 /**
  * Accommodation schemas — the single source of truth, shared by BOTH sides.
  *
@@ -33,6 +36,7 @@ import { zid } from 'convex-helpers/server/zod4';
 export const ACCOMMODATION_ISSUE = {
 	BEDROOMS_REQUIRED: 'accommodation.bedroomsRequired',
 	PHOTOS_MIN_TOTAL: 'accommodation.photosMinTotal',
+	MONETIZATION_REQUIRED: 'accommodation.monetizationRequired',
 	/** Marks a field invalid for styling without printing a second sentence. */
 	SILENT: 'silent'
 } as const;
@@ -60,6 +64,14 @@ export const ACCOMMODATION_TYPE_VALUES = [
 	'house',
 	'villa'
 ] as const;
+
+/**
+ * The host's per-listing monetization choice (AccommodationsSystemDesign.md §8). Lives in
+ * the CREATE schemas only — the edit surface must never accept it (A3; the one-way switch
+ * is its own mutation). Optional at the wire level: required-under-`per_listing` is a
+ * config-dependent rule, so it lives in the mutation handler like the image-count rule.
+ */
+export const accommodationMonetizationField = z.enum(['listing_fee', 'booking_fee']).optional();
 
 /**
  * Shared field rules for the add + edit accommodation forms AND the create/update
@@ -134,6 +146,24 @@ function requireBedroomsUnlessStudio(
 	}
 }
 
+/**
+ * Under `'per_listing'` the plan choice is mandatory (ASD §8) — form-side twin of the
+ * mutation's `validateMonetizationChoice`, so the wizard step complains before submit.
+ * Config-dependent, which is why it's a refinement and not a required field.
+ */
+function requireMonetizationWhenActive(
+	data: { monetization?: 'listing_fee' | 'booking_fee' },
+	ctx: z.RefinementCtx
+): void {
+	if (ACCOMMODATIONS_CONFIG.MONETIZATION === 'per_listing' && !data.monetization) {
+		ctx.addIssue({
+			code: 'custom',
+			path: ['monetization'],
+			params: { key: ACCOMMODATION_ISSUE.MONETIZATION_REQUIRED }
+		});
+	}
+}
+
 // ─── Wire shapes (what the Convex mutations receive) ──────────────────────────
 
 /**
@@ -144,10 +174,12 @@ function requireBedroomsUnlessStudio(
 export const createAccommodationSchema = z
 	.object({
 		...accommodationFieldsShape,
+		monetization: accommodationMonetizationField,
 		photos: z.array(z.string()),
 		locale: z.string().optional()
 	})
-	.superRefine(requireBedroomsUnlessStudio);
+	.superRefine(requireBedroomsUnlessStudio)
+	.superRefine(requireMonetizationWhenActive);
 
 /** Wire twin for the edit mutation: kept existing keys + newly uploaded ones. */
 export const updateAccommodationSchema = z
@@ -164,11 +196,13 @@ export const updateAccommodationSchema = z
 export const createAccommodationAdminSchema = z
 	.object({
 		...accommodationFieldsShape,
+		monetization: accommodationMonetizationField,
 		hostId: z.string().min(1),
 		photos: z.array(z.string()),
 		locale: z.string().optional()
 	})
-	.superRefine(requireBedroomsUnlessStudio);
+	.superRefine(requireBedroomsUnlessStudio)
+	.superRefine(requireMonetizationWhenActive);
 
 export type CreateAccommodationWireInput = z.infer<typeof createAccommodationSchema>;
 export type UpdateAccommodationWireInput = z.infer<typeof updateAccommodationSchema>;
@@ -183,9 +217,11 @@ export type UpdateAccommodationWireInput = z.infer<typeof updateAccommodationSch
 export const addAccommodationSchema = z
 	.object({
 		...accommodationFieldsShape,
+		monetization: accommodationMonetizationField,
 		photos: z.array(z.unknown()).min(MIN_ACCOMMODATION_PHOTOS)
 	})
-	.superRefine(requireBedroomsUnlessStudio);
+	.superRefine(requireBedroomsUnlessStudio)
+	.superRefine(requireMonetizationWhenActive);
 
 /**
  * Edit-form validation. Same field rules, but the photo minimum counts the accommodation's
@@ -223,10 +259,12 @@ export const editAccommodationSchema = z
 export const adminAddAccommodationSchema = z
 	.object({
 		...accommodationFieldsShape,
+		monetization: accommodationMonetizationField,
 		hostId: z.string().min(1),
 		photos: z.array(z.unknown()).min(MIN_ACCOMMODATION_PHOTOS)
 	})
-	.superRefine(requireBedroomsUnlessStudio);
+	.superRefine(requireBedroomsUnlessStudio)
+	.superRefine(requireMonetizationWhenActive);
 
 // ─── Moderation ───────────────────────────────────────────────────────────────
 

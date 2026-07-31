@@ -9,12 +9,12 @@
 	import AdminReportsTableActions from './admin-reports-table-actions.svelte';
 	import AdminReportDetail from './admin-report-detail.svelte';
 
+	// UTILS
+	import { cn } from '@/utils/utils.js';
+
 	// DATA
 	import { ADMIN_REPORTS_TABLE_COLUMNS } from './adminReportsTableData';
 	import { REPORT_CATEGORY_TONE } from '@/features/reports/data/reportsData';
-
-	// UTILS
-	import { cn } from '@/utils/utils.js';
 
 	// TYPES
 	import type { DataTableCellSnippetProps } from '@/components/ui/data-table/types';

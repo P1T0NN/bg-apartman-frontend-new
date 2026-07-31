@@ -26,13 +26,20 @@ export const PAYMENT_METHOD_OPTIONS: typesPaymentMethodOption[] = [
 	}
 ];
 
+/** Appended to an online option's copy while the provider is dark — the same sentence the
+ *  per-booking plan card uses, so one section never explains the same gate two ways. */
+const COMING_SOON = ' Available once online payments launch.';
+
 /**
  * Host-facing options for what an accommodation accepts — includes letting guests choose.
  *
- * The online options disappear entirely while no payment provider is wired: a listing that
- * offered `online` would send guests into a checkout that cannot exist
- * (PaymentsSystemDesign.md §8, §11's last row). Flipping `PAYMENTS_CONFIG.PROVIDER` is what
- * brings them back — that flip IS the launch.
+ * The online options are always LISTED but **disabled** while no payment provider is wired:
+ * a listing that offered `online` would send guests into a checkout that cannot exist
+ * (PaymentsSystemDesign.md §8, §11's last row), yet hiding them entirely left hosts unable
+ * to see what the platform will support. Visible-but-disabled is the same treatment the
+ * per-booking plan card gets in this section — and the server-side gate in
+ * create/update is unchanged, so this is still the UI half of one gate, never the gate.
+ * Flipping `PAYMENTS_CONFIG.PROVIDER` is what enables them — that flip IS the launch.
  */
 export const ACCOMMODATION_PAYMENT_METHOD_OPTIONS: typesPaymentMethodOption[] = [
 	{
@@ -40,18 +47,20 @@ export const ACCOMMODATION_PAYMENT_METHOD_OPTIONS: typesPaymentMethodOption[] = 
 		label: 'Cash at check-in',
 		description: 'Guests settle the full amount with you on arrival.'
 	},
-	...(ONLINE_PAYMENTS_ENABLED
-		? ([
-				{
-					value: 'online',
-					label: 'Pay online',
-					description: 'Guests pay online when the booking is confirmed.'
-				},
-				{
-					value: 'both',
-					label: 'Both — let guests choose',
-					description: 'Guests pick between cash at check-in and paying online at checkout.'
-				}
-			] as typesPaymentMethodOption[])
-		: [])
+	{
+		value: 'online',
+		label: 'Pay online',
+		description:
+			'Guests pay online when the booking is confirmed.' +
+			(ONLINE_PAYMENTS_ENABLED ? '' : COMING_SOON),
+		disabled: !ONLINE_PAYMENTS_ENABLED
+	},
+	{
+		value: 'both',
+		label: 'Both — let guests choose',
+		description:
+			'Guests pick between cash at check-in and paying online at checkout.' +
+			(ONLINE_PAYMENTS_ENABLED ? '' : COMING_SOON),
+		disabled: !ONLINE_PAYMENTS_ENABLED
+	}
 ];

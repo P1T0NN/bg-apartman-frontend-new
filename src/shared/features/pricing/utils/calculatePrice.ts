@@ -22,15 +22,19 @@ export function effectiveNightlyPrice(acc: typesPricingInput): number {
 }
 
 /**
- * The platform's cut of a stay, derived from config at call time — flipping
- * `ACCOMMODATIONS_CONFIG.MONETIZATION` changes every quote and every new booking with no
- * code edit anywhere (AccommodationsSystemDesign.md §8).
+ * The platform's cut of a stay — nonzero only when monetization is on AND this listing is
+ * on the per-booking-fee model (AccommodationsSystemDesign.md §8, revised 2026-07-31: the
+ * model is a per-listing host choice, not a global mode).
  *
  * Existing bookings are unaffected: they carry their own `platformFee` in the price
- * snapshot, so a config change can never reprice history.
+ * snapshot, so a config change or a model switch can never reprice history.
  */
-export function platformFeeFor(subtotal: number): number {
-	if (ACCOMMODATIONS_CONFIG.MONETIZATION !== 'booking_fee') return 0;
+export function platformFeeFor(
+	subtotal: number,
+	monetization?: 'listing_fee' | 'booking_fee'
+): number {
+	if (ACCOMMODATIONS_CONFIG.MONETIZATION !== 'per_listing') return 0;
+	if (monetization !== 'booking_fee') return 0;
 
 	const { PERCENT, MIN_EUROS } = ACCOMMODATIONS_CONFIG.BOOKING_FEE;
 	return Math.max(Math.round((subtotal * PERCENT) / 100), MIN_EUROS);
@@ -41,7 +45,7 @@ export function calculatePrice(acc: typesPricingInput, nights: number): typesCal
 	const nightly = effectiveNightlyPrice(acc);
 	const cleaningFee = acc.cleaningFee ?? 0;
 	const accommodationTotal = nightly * nights;
-	const platformFee = platformFeeFor(accommodationTotal);
+	const platformFee = platformFeeFor(accommodationTotal, acc.monetization);
 
 	return {
 		nightly,

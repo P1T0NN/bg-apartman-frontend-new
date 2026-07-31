@@ -48,9 +48,7 @@ export const findTransferableEarnings = internalQuery({
 		for (const account of payableHosts) {
 			const held = await ctx.db
 				.query('bookingEarnings')
-				.withIndex('by_host_status', (q) =>
-					q.eq('hostId', account.hostId).eq('status', 'held')
-				)
+				.withIndex('by_host_status', (q) => q.eq('hostId', account.hostId).eq('status', 'held'))
 				.take(OPERATIONAL_LIMITS.BOOKING_LIFECYCLE_MAX_PER_RUN);
 
 			for (const earning of held) {
@@ -117,7 +115,10 @@ export const sweepHostPayouts = internalAction({
 	handler: async (ctx) => {
 		if (!onlinePaymentsEnabled()) return { transferred: 0, failed: 0, skipped: 'no_provider' };
 
-		const eligible = await ctx.runQuery(internal.payments.crons.payoutSweepCron.findTransferableEarnings, {});
+		const eligible = await ctx.runQuery(
+			internal.payments.crons.payoutSweepCron.findTransferableEarnings,
+			{}
+		);
 
 		let transferred = 0;
 		let failed = 0;

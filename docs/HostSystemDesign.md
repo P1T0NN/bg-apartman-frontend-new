@@ -200,9 +200,15 @@ All mechanics are `PaymentsSystemDesign.md`; the host UI is exactly three artifa
    transfers activate, a quiet summary ("€{held} pending · €{total} paid out") linking to
    a simple earnings list (ledger rows, `bookingEarnings` — held/transferred/returned in
    host words). Never a modal, never dismiss-nagging (§0.3).
-2. **Listing-fee surfaces** (`listing_fee` mode only): renewal state lives on
-   `my-accommodations` rows (expiry date, renew button on `expired` —
-   `AccommodationsSystemDesign.md` §8), not on the dashboard — billing is per listing.
+2. **Billing surfaces** (since the 2026-07-31 revision the model is the host's
+   per-listing choice, made in the create wizard's FINAL "Payments & plan" step, paired
+   with the guest payment method — `AccommodationsSystemDesign.md` §8):
+   billing state lives on `my-accommodations` rows, not on the dashboard — billing is per
+   listing. `listing_fee` rows: pay button while unpaid (the first payment gates going
+   live), expiry date + renew button thereafter, and the one-way "Change plan" action.
+   `booking_fee` rows: no action — visible text instead, "Per-booking fee (10%) —
+   permanent · new listing to change plan" (`AccommodationsSystemDesign.md` §8's one-way
+   door, stated where a host would go looking for the switch).
 3. **Per-booking payment line** in the queue rows: cash → "collect €X at the property";
    online → the guest-agnostic host words ("held — charges on confirm", "paid",
    "refunded"). Same decoupling rule as everywhere: stay status and money status render

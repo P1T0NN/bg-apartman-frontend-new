@@ -142,7 +142,7 @@ code was brought up to the unified text:
 - [x] Reports schema: `status` (optional, `undefined` = `'new'`) + `by_status` index + `aggregateReports` namespace `?? 'new'`; `createReport` now stamps it. **Ritual run on dev** (`clearAggregate` → `backfillAggregates`) (APSD §4)
 - [x] `clearAggregate` internal mutation added — the re-backfill ritual was documented in three places but nothing could actually perform the "clear the component" half (GSDR § table counts)
 - [x] Sidebar badges: `fetchAdminSidebarBadgesSafe` (two aggregate counts, one subscription in the admin layout), `99+` cap, hidden at zero. `countPendingReviewSafe` and its capped `.take(51)` **deleted** (APSD §1)
-- [x] `/admin/accommodations`: review queue (own subscription, oldest-first, absent when empty) + listings table + publish/suspend/archive dialogs + feature toggle + fee-stamp dialog (`listing_fee` mode only) (APSD §2)
+- [x] `/admin/accommodations`: listings table + publish/suspend/archive dialogs + feature toggle + fee-stamp dialog (`listing_fee` listings only) (APSD §2). The separate review queue that shipped here was **removed 2026-07-31** — the sidebar badge already says work exists and the status filter shows it, so the queue was a duplicate subscription doing the table's job; its "Awaiting payment" chip moved onto the status cell
 - [x] `/admin/bookings`: support lookup + filters incl. **flagged** + row expansion + admin cancel + clear-flag. Row expansion added to the shared `DataTable` (`expandedContent` snippet, real `aria-expanded` disclosure, desktop detail row + mobile inline) — reusable, and what §3 asks for instead of a detail route (APSD §3)
 - [x] `/admin/reports`: `listReportsSafe` + `setReportStatus` + inbox UI (New/All segmented control, prose rows not table cells, resolve-with-undo, visible load-more) (APSD §4)
 - [x] `/admin/users/[id]`: "View bookings" / "View listings" cross-links, filter state in the URL so a filtered view is a shareable link (APSD §5/§7)
@@ -161,6 +161,57 @@ to five pages and its analytics rejection stands, now pointing at the host page.
 - [x] Host dashboard slimmed to pending → earnings → today → tiles: chart + per-listing table removed from the dashboard (`fetchHostDashboardCharts` deleted, `perAccommodation` dropped from `fetchHostDashboardStats`); tiles keep their two-month occupancy/revenue math (HSD §2 revision note)
 - [x] Admin side fully reverted: no `/admin/analytics` route/query/components/sidebar entry; `AdminDashboardPageSystemDesign` Band 3 keeps its own platform chart as originally designed
 - [x] Dev preview data lives in `host/analytics/dev/` (same tree-shaking gate; delete at launch)
+
+## 10d. Design revision — per-listing monetization + platform revenue (2026-07-31)
+
+Decision: monetization moves from one platform-wide mode to a **per-listing host choice**
+(ASD §8 rewritten; PSD §0.1/§1, BSD §10, HSD §5.2, APSD §2 aligned the same day). Hosts
+pick at creation: **listing fee** (€30/90d, keep 100%, cash or online, pay-to-go-live) or
+**per-booking fee** (free to list, 10% min €2 guest service fee, online-only by
+construction — the old "recorded-but-uncollectable cash fee" hole is closed structurally).
+`MONETIZATION` becomes `'none' | 'per_listing'`. Same revision fixes the admin dashboard's
+revenue definition: **platform revenue** (`invoice.paid − refund.created`), never GMV.
+
+- [x] `/admin/dashboard` built per ADPSD: three bands, one `fetchAdminDashboardPageSafe`
+      subscription, `aggregateBookings` re-provisioned + backfilled on dev, `countUsers`
+      component query (revenue tile still GMV-wired — corrected below)
+- [x] Schema + config: `apartments.monetization?: 'listing_fee' | 'booking_fee'`;
+      `MONETIZATION: 'none' | 'per_listing'`; create mutation requires the choice under
+      `per_listing`; `booking_fee` ⇒ `paymentMethod: 'online'` enforced in create/update
+      (ASD §8)
+- [x] Create-wizard **final** step "Payments & plan" — guest payment method + the two plan
+      cards in one step (they are one decision: `booking_fee` is online-only). Real numbers
+      from config; `booking_fee` card AND the `online`/`both` payment options all render
+      disabled behind the `PROVIDER` gate with "available once online payments launch"
+      (listed, not hidden). The edit form keeps the step but strips the plan field — the
+      plan is not editable (ASD §8, §2/A3, HSD §5.2)
+- [x] Publish gate: `moderateApartmentStatus` rejects `published` for unpaid `listing_fee`
+      listings (`LISTING_FEE_UNPAID`); "Paid / Awaiting payment" chip on the admin review
+      queue rows (ASD §8, APSD §2)
+- [x] Re-key existing machinery from the global mode to the listing field:
+      `listingFeeSweep` (acts on `monetization === 'listing_fee'` + stamped expiry),
+      `calculatePrice` platformFee branch, my-accommodations billing column (pay while
+      unpaid / expiry + renew after), `renewListing`, `stampListingFeePayment` visibility
+      (ASD §8)
+- [x] `switchListingMonetization` mutation (audit-logged) + "Change plan" action on
+      `listing_fee` rows only: `listing_fee → booking_fee` immediate, forfeits remaining
+      days, irreversible — dialog states forfeit + no-road-back + new-listing escape;
+      `booking_fee → listing_fee` FORBIDDEN (server-rejected, no UI; one-way door — ASD
+      §8 "Switching models"). Permanence is VISIBLE copy at all three surfaces: the
+      `booking_fee` create card ("Permanent … you'd create a new listing"), the switch
+      dialog, and the my-accommodations `booking_fee` billing column ("permanent · new
+      listing to change plan") — never tooltip-only (HSD §5.2)
+- [x] Platform-revenue tracking: `invoice.paid` at listing-fee payment
+      (`plan: 'listing_fee'`) and at booking capture when snapshot `platformFee > 0`
+      (`plan: 'booking_fee'`); `refund.created` for the fee portion on booking refunds
+      (ASD §8 "platform-revenue events")
+- [x] Admin dashboard revenue fix: `fetchAdminDashboardPageSafe` swaps
+      `gmv − gmvCancelled` for `revenue − refunds` in the tile and the chart's revenue
+      series; chart empty-state copy per ADPSD §2 (ADPSD Band 3)
+- [x] Flip backfill `backfillListingMonetization`: stamp `monetization: 'listing_fee'` +
+      free period (`now + PERIOD_DAYS`) on every existing listing — MUST run before
+      flipping `MONETIZATION: 'per_listing'` (ASD §8 "switch honesty"; supersedes
+      `backfillListingFeePeriods` as the pre-flip step)
 
 ## 11. Go live with Stripe — PSD §13.7 (LAST — gated on business decision)
 
@@ -182,8 +233,15 @@ production. Run them in this order on the production deployment.
       leaves a **`published`** listing (`seed-mock-apartment`) that guests can genuinely book.
 - [ ] **Run the aggregate backfills on production.** They have only ever run on dev:
       `bunx convex run aggregates:backfillAggregates "{table:'reports'}"` and the same for
-      `apartments` and `bookingEarnings`. Counts read zero until this happens — badges,
-      dashboard tiles and the held-earnings balance all silently under-report.
+      `apartments`, `bookingEarnings` and `bookings` (the last powers the admin
+      dashboard's pulse row). Counts read zero until this happens — badges, dashboard
+      tiles and the held-earnings balance all silently under-report.
+      ⚠️ **Run `aggregates:clearAggregate "{table:'X'}"` FIRST for any component that has
+      existed before** (notably `bookings`, which shipped once and was removed). A Convex
+      component keeps its data across removal + re-adding, so backfilling onto the old tree
+      double-counts. Observed on dev 2026-07-31: the dashboard read 2 pending requests
+      against 1 real booking until the clear + re-backfill ritual was run. Clearing is
+      harmless on a genuinely empty component, so just always clear first.
 - [ ] **Re-backfill `apartments` on DEV too.** Its aggregate gained a `hostId` sort key (so
       one tree serves both the admin's platform-wide count and the host dashboard's per-host
       counts), and a changed DEFINITION invalidates the stored tree. Dev has stale entries
@@ -202,8 +260,10 @@ production. Run them in this order on the production deployment.
       (`src/convex/email/resend.ts`); unset, links point nowhere.
 - [ ] **Verify `FEATURES` / mode constants** read the way production wants them:
       `ACCOMMODATIONS_CONFIG.MONETIZATION`, `PAYMENTS_CONFIG.PROVIDER`, `FEATURES.AUDIT_LOGS`.
-      Flipping `MONETIZATION` to `listing_fee` needs `backfillListingFeePeriods` run FIRST
-      (ASD §8's mode-switch honesty — otherwise the sweep expires live listings).
+      Flipping `MONETIZATION` to `'per_listing'` needs the step-10d
+      `backfillListingMonetization` run FIRST (ASD §8's switch honesty — stamps every
+      existing listing `listing_fee` + a free period; otherwise the sweep expires live
+      listings and creates require a choice legacy rows don't have).
 - [ ] **Resend out of test mode** — `resend.ts` already sets `testMode: false`; confirm the
       sending domain is verified, or transactional mail silently never arrives.
 

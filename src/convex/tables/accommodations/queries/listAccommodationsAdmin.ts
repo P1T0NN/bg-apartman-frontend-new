@@ -34,7 +34,9 @@ export type AdminAccommodationRow = Pick<
 	imageUrl: string;
 	hostId: string;
 	hostName: string;
-	/** `listing_fee` mode only — drives the renewal state shown next to the fee action. */
+	/** The listing's model (ASD §8) — drives the queue's payment chip and the fee action. */
+	monetization?: Doc<'apartments'>['monetization'];
+	/** `listing_fee` listings only — drives the renewal state shown next to the fee action. */
 	apartmentSubscriptionExpiryDate?: number;
 };
 
@@ -118,6 +120,7 @@ export const listAccommodationsAdmin = query({
 				pricePerNight: a.pricePerNight,
 				status: a.status,
 				isFeatured: a.isFeatured,
+				monetization: a.monetization,
 				apartmentSubscriptionExpiryDate: a.apartmentSubscriptionExpiryDate,
 				imageUrl: a.images[0]?.url ?? '',
 				hostId: a.hostId,

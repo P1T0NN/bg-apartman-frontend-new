@@ -75,17 +75,28 @@ dashboard — not acceptable in production.
 
 ### Layout
 
-Two zones, one page (no tabs — tabs hide the queue, and the queue is the job):
+**One zone: the listings table** (`DataTable` / `convex-data-table`, same as `/admin/users`).
+Columns Title, Host, City, Type, Price, Status (color + text badge), Created. Filters:
+status, type; search by title; sort by created/price. This maps 1:1 onto the existing query
+args — build no new backend for it.
 
-1. **Review queue** (top, only when non-empty — dashboard Band-1 convention): rows of
-   listings in `pending_review`, oldest first (they've waited longest). Row: cover thumbnail,
-   title, host name, city, price/night, submitted relative-time, and two actions: **Publish**
-   and **Open** (the public `/accommodation/[slug]` page in a new tab — admins review the
-   listing as guests will see it; no separate admin preview surface to build and maintain).
-2. **All listings table** (`DataTable` / `convex-data-table`, same as `/admin/users`):
-   columns Title, Host, City, Type, Price, Status (color + text badge), Created. Filters:
-   status, type; search by title; sort by created/price. This maps 1:1 onto the existing
-   query args — build no new backend for it.
+Row actions cover the whole moderation set: Publish, Suspend, Archive, Open (the public
+`/accommodation/[slug]` page in a new tab — admins review the listing as guests will see it,
+so no separate admin preview surface exists to build and maintain), feature toggle, and the
+fee stamp.
+
+> **Revised 2026-07-31 — the separate review queue was removed.** This page used to carry a
+> second zone above the table: a dedicated `pending_review` queue with its own subscription.
+> It was redundant. The **sidebar badge** already answers "is there work?" without opening
+> the page (§1 — badges are the wayfinding system), and the table's **status filter** answers
+> "show me exactly that work" in one click, with every action already on the row. Deleting it
+> removed a duplicate live query and a second way to do the same job.
+>
+> What the queue uniquely carried was kept: an **"Awaiting payment" chip** on the status cell
+> of any unpaid `listing_fee` listing, because publish is server-rejected while unpaid
+> (`AccommodationsSystemDesign.md` §8's publish gate) and the refusal must be legible before
+> it happens. Only the blocking state gets a chip — a "Paid" badge on every other row is noise
+> in a full table, which is the reason the paired chip did not survive the move.
 
 ### Actions (all existing backend, wire only)
 
@@ -97,7 +108,7 @@ Two zones, one page (no tabs — tabs hide the queue, and the queue is the job):
   inline form (native popover/sheet, not a modal-first flow) with a textarea. The reason
   reaches the host's email: the copy near the field must say so ("The host will receive this
   explanation."). That one sentence prevents careless reasons.
-- Publish from the queue row is one click + confirm. Confirmation dialogs state the
+- Publish from the table row is one click + confirm. Confirmation dialogs state the
   consequence in plain words: "This listing goes live and the host is notified by email."
 - No inline editing of listing content. Admins moderate; hosts edit. If a listing has a typo,
   the admin suspends with a reason or contacts the host. (Editing on behalf exists in the
@@ -106,10 +117,11 @@ Two zones, one page (no tabs — tabs hide the queue, and the queue is the job):
   audit-logged; this page is their sanctioned home):
   - **Feature / unfeature** → `setApartmentFeatured` — drives the homepage strip
     (`AccommodationsSystemDesign.md` §7/§13.8). Never host-facing, never purchasable.
-  - **Record fee payment** (`listing_fee` mode only) → `stampListingFeePayment` — an admin
-    records a bank-transfer renewal until the provider adapter is live
-    (`AccommodationsSystemDesign.md` §8). Takes the bank reference; the audit entry is the
-    money trail. Hidden entirely outside `listing_fee` mode.
+  - **Record fee payment** (`listing_fee` **listings** only) → `stampListingFeePayment` —
+    an admin records a bank-transfer payment (first payment or renewal) until the provider
+    adapter is live (`AccommodationsSystemDesign.md` §8). Takes the bank reference; the
+    audit entry is the money trail. Hidden entirely while `MONETIZATION: 'none'` and on
+    `booking_fee` rows.
 
 ### Data
 
@@ -117,14 +129,11 @@ Two zones, one page (no tabs — tabs hide the queue, and the queue is the job):
   (`src/convex/tables/accommodations/queries/listAccommodationsAdmin.ts`), already
   `requireAdmin`-gated with status/type/host/search/sort args. `DataTable` subscribes
   (rule's worked example: new rows arrive from hosts while the admin watches → subscription).
-- Review queue: same query with `status: 'pending_review'` fixed, or a dedicated tiny query
-  ordered oldest-first — implementer's choice; keep it one subscription if `DataTable`
-  already provides the data (filter client-side only if the queue and table share the same
-  page of data — otherwise a second small query is fine).
+- **One subscription, not two.** Reviewing is the table filtered to `pending_review` — there
+  is no second query for it (see the layout revision note above).
 
 ### States
 
-- Queue empty → zone absent.
 - Table empty (no listings at all) → empty state, no CTA (admins don't create listings).
 - Loading → skeleton table (existing `DataTable` pattern). Error → page error + retry.
 

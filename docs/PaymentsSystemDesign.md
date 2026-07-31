@@ -22,7 +22,11 @@
 1. **Never ask for money information before money exists.** Signup collects name + email.
    Listing creation collects nothing financial. Bank details are requested exactly once,
    at the moment the host has earnings to claim — when the ask is a gift, not a form
-   (§2). A host who never takes online bookings never sees a payment form, ever.
+   (§2). A host who never takes online bookings never sees a payment form, ever. The one
+   opt-in exception: a host who CHOOSES the listing-fee model
+   (`AccommodationsSystemDesign.md` §8) is asked to pay the fee itself — that is the
+   product they picked, not payout onboarding, and the payout rules above still apply to
+   them untouched.
 2. **Guest checkout never depends on host onboarding state.** The platform charges the
    guest; the host's share waits in the ledger until the host is payable. A guest must
    never see "this host hasn't finished setup" — that's the platform's problem, invisible
@@ -40,10 +44,10 @@
 
 ## 1. The three money flows
 
-| Flow | Who pays whom                 | Mode gate (`ACCOMMODATIONS_CONFIG.MONETIZATION`) | Mechanism                                                                                                                                                                                                                                                    |
+| Flow | Who pays whom                 | Gate (listing's `monetization`, under `MONETIZATION: 'per_listing'`) | Mechanism                                                                                                                                                                                                                                                    |
 | ---- | ----------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| A    | Host → platform (listing fee) | `listing_fee`                                    | Plain one-time charge (§7 `charge()`) — no Connect, no payout machinery. Renewal lifecycle: `AccommodationsSystemDesign.md` §8.                                                                                                                              |
-| B    | Guest → platform (booking)    | any mode with online payments enabled            | Checkout with **manual capture**: authorize at booking, capture at confirm (§3, §4). Platform is merchant of record.                                                                                                                                         |
+| A    | Host → platform (listing fee) | `listing_fee` listings                           | Plain one-time charge (§7 `charge()`) — no Connect, no payout machinery. First payment gates publish; renewal lifecycle: `AccommodationsSystemDesign.md` §8.                                                                                                 |
+| B    | Guest → platform (booking)    | any listing with online payments enabled         | Checkout with **manual capture**: authorize at booking, capture at confirm (§3, §4). Platform is merchant of record.                                                                                                                                         |
 | C    | Platform → host (payout)      | follows B                                        | **Separate charges and transfers**: platform holds funds, transfers the host's net share when the booking is terminal-with-money-owed AND the host is payable (§5). Platform fee = transfer-math (transfer less than gross), never a provider fee parameter. |
 
 Why separate charges & transfers and not destination charges (the other marketplace
@@ -54,8 +58,9 @@ sanctioned pattern for exactly that, and they are what makes §0.2 true (chargin
 before the host has any payout account at all).
 
 Cash stays cash: `paymentMethod: 'cash'` bookings never enter this document — `on_arrival`
-end to end (`BookingSystemDesign.md` §5), and a booking fee on cash is bookkeeping, not
-revenue (`AccommodationsSystemDesign.md` §8).
+end to end (`BookingSystemDesign.md` §5). A cash booking can only exist on a `listing_fee`
+listing — `booking_fee` listings are online-only by construction
+(`AccommodationsSystemDesign.md` §8), which is what makes the fee collectable at all.
 
 ## 2. Progressive host onboarding — the psychology, made mechanical
 
@@ -187,7 +192,7 @@ One row per **captured** booking, created at capture time, immutable amounts:
 bookingEarnings: {
   bookingId, hostId,
   gross: number,          // what the guest paid (EUR)
-  platformFee: number,    // from the booking's price snapshot (0 unless booking_fee mode)
+  platformFee: number,    // from the booking's price snapshot (0 unless a booking_fee listing)
   net: number,            // gross - platformFee — what the host is owed
   status: 'held' | 'transferred' | 'returned',   // returned = booking was refunded
   transferRef?: string, transferredAt?: number
@@ -340,7 +345,7 @@ released | refunded` (amends `BookingSystemDesign.md` §5 — `awaiting` added);
 | Payment states + provider seam sketch      | `BookingSystemDesign.md` §5        | **Amended**: `awaiting` added; seam ownership moved here (pointer edited there).                                                   |
 | Cancellation windows / who-may-cancel      | `BookingSystemDesign.md` §4        | §4 matrix is its money mirror — row-for-row.                                                                                       |
 | 48h host window vs card-hold validity      | `BookingSystemDesign.md` §1        | §3 starts the clock at authorization; the ~7-day hold constraint stands.                                                           |
-| Monetization modes & fee amounts           | `AccommodationsSystemDesign.md` §8 | Flow A implements `listing_fee`; flow B/C implement `booking_fee`'s collection (pointer there edited to cite §5 here for payouts). |
+| Per-listing monetization & fee amounts     | `AccommodationsSystemDesign.md` §8 | Flow A implements `listing_fee` listings' payments; flow B/C implement `booking_fee` listings' collection (pointer there cites §5 here for payouts). |
 | `published`-only bookability (A1)          | `AccommodationsSystemDesign.md` §1 | Re-checked in the §3 webhook before any capture.                                                                                   |
 | Reservation page is live; guest vocabulary | `GuestSystemDesign.md` §3          | §3's dumb redirect page depends on it; `awaiting` renders as "finalizing…".                                                        |
 | Admin flagged-rows surface                 | `AdminPagesSystemDesign.md` §3     | §4/§5 failure flags land in `/admin/bookings` filters.                                                                             |

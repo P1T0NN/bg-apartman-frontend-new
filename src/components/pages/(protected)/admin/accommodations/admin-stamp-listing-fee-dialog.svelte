@@ -84,9 +84,9 @@
 	<div class="alert-dialog__header">
 		<h2>Record a fee payment?</h2>
 		<p>
-			This grants {accommodation?.title ?? 'this listing'} another paid period, extending from its
-			current expiry. If the listing had expired, it goes back live immediately — no re-review. The
-			entry is audit-logged as the record of a payment the platform never processed.
+			This grants {accommodation?.title ?? 'this listing'} another paid period, extending from its current
+			expiry. If the listing had expired, it goes back live immediately — no re-review. The entry is audit-logged
+			as the record of a payment the platform never processed.
 		</p>
 	</div>
 

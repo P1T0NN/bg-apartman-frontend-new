@@ -11,7 +11,11 @@ The admin dashboard answers exactly three questions, in this order:
 1. **"Does anything need me?"** — new reports from the public `/report` form (the only inbox
    admins have today).
 2. **"Is the platform alive right now?"** — today's pulse: signups, new bookings, check-ins.
-3. **"Is it trending the right way?"** — 12-month bookings/revenue, headline totals.
+3. **"Is it trending the right way?"** — 12-month bookings/**platform revenue**, headline
+   totals. ⚠️ Revenue here means **the platform's own earnings** (listing-fee payments +
+   collected per-booking fees — `AccommodationsSystemDesign.md` §8 "platform-revenue
+   events"), NEVER hosts' booking money (GMV). The operator asked "how much do WE earn",
+   not "how much moved through us". (Corrected 2026-07-31 — the first build showed GMV.)
 
 Everything else is deliberately excluded. Browsing users is `/admin/users` (exists). Moderating
 individual bookings is the host's job (host dashboard + hourly lifecycle cron: the system
@@ -79,13 +83,18 @@ broken, not as calm.
 ### Band 3 — Platform (totals + trend)
 
 - **Four stat cards**, reusing the host dashboard stat-card component style: users total,
-  published listings, bookings this month, revenue this month (EUR, tabular-nums). Labels are
-  nouns, values are numbers, no sparkline decoration, no delta arrows in v1 (deltas need a
-  comparison-period decision — out of scope).
-- **One chart**: trailing 12 months, bar = bookings count, line = revenue EUR. Reuse the
-  revenue chart composition (`layerchart` via the shared `chart-container` — **keep the
-  rAF-defer**; chart mounts during client-side nav livelock Svelte deriveds without it).
-- Chart empty state: one line of copy when the platform has no earning bookings yet.
+  published listings, bookings this month, **platform revenue** this month (EUR,
+  tabular-nums — what WE earned: listing fees + collected booking fees, net of fee
+  refunds). Labels are nouns, values are numbers, no sparkline decoration, no delta arrows
+  in v1 (deltas need a comparison-period decision — out of scope).
+- **One chart**: trailing 12 months, bar = bookings count, line = **platform revenue** EUR.
+  Reuse the revenue chart composition (`layerchart` via the shared `chart-container` —
+  **keep the rAF-defer**; chart mounts during client-side nav livelock Svelte deriveds
+  without it).
+- Chart empty state: one line of copy when the platform has no revenue events yet (true
+  whenever `MONETIZATION: 'none'` — honest zeros, not a bug).
+- GMV (hosts' booking money) deliberately does NOT appear on this page — it answers a
+  different question and stays available in the analytics metrics for whoever asks it.
 
 ## 3. Data contract
 
@@ -114,8 +123,8 @@ type AdminDashboardPage = {
 		usersTotal: number;
 		publishedListings: number;
 		bookingsThisMonth: number;
-		revenueThisMonth: number; // EUR, earning statuses only (same set as host stats)
-		series: Array<{ month: string; bookings: number; revenue: number }>; // 12 entries
+		revenueThisMonth: number; // EUR — PLATFORM revenue: `revenue − refunds` metrics (invoice.paid / refund.created)
+		series: Array<{ month: string; bookings: number; revenue: number }>; // 12 entries, revenue = platform revenue
 	};
 };
 ```
@@ -140,16 +149,20 @@ come from the `@convex-dev/aggregate` instances in `src/convex/aggregates.ts`;
 | `today.pendingOpen`                                        | **aggregate** ⚠️ | `aggregateBookings.count(ns 'pending')` — see note below                                                 |
 | `platform.usersTotal`                                      | **analytics**    | `user.signed_up` all-time — BA component table can't be aggregated (triggers don't see component writes) |
 | `platform.publishedListings`                               | **aggregate**    | `aggregateApartments.count(ns 'published')`                                                              |
-| `platform.bookingsThisMonth`, `revenueThisMonth`, `series` | **analytics**    | `booking.*` monthly aggregates — same mechanism as the host analytics 12-month read                      |
+| `platform.bookingsThisMonth`, `series.bookings`            | **analytics**    | `bookingsConfirmed` monthly buckets — same mechanism as the host analytics 12-month read                 |
+| `platform.revenueThisMonth`, `series.revenue`              | **analytics** ⚠️ | `revenue − refunds` monthly buckets (`invoice.paid` / `refund.created`, global scope) — see note below   |
 
-> ⚠️ **`aggregateBookings` is not provisioned yet — building this page must provision it.**
-> It shipped early, was read by nothing (this page is still an empty stub), and cost a tree
-> write on every booking mutation, so it was removed rather than left to bill for an unbuilt
-> surface. The design above is unchanged and correct; it just has a prerequisite. Re-add per
-> `GeneralSystemDesignRule.md` § how it's wired: component instance in `convex.config.ts`
-> (`name: 'aggregateBookings'`, namespace = status, key = `checkInDate`) + `TableAggregate`
-> in `aggregates.ts` + `triggers.register('bookings', …)` in `functions.ts` + a `bookings`
-> case in `backfillAggregates`/`clearAggregate` + one backfill run per deployment.
+> ⚠️ **Platform revenue depends on the `invoice.paid` / `refund.created` tracking calls**
+> defined in `AccommodationsSystemDesign.md` §8 "platform-revenue events" (listing-fee
+> payments + booking fees at capture + fee refunds). Nothing tracks `invoice.paid` today,
+> so the tile and line read €0 until `TODOSystemDesigns.md` step 10d lands — an honest
+> zero under `MONETIZATION: 'none'`, a bug after the flip. The first build wired this tile
+> to `gmv − gmvCancelled` (hosts' money) — that read is corrected by the same step.
+>
+> ✅ `aggregateBookings` was re-provisioned with the page build (2026-07-31): component
+> instance in `convex.config.ts` (namespace = status, key = `checkInDate`), trigger in
+> `functions.ts`, `backfillAggregates`/`clearAggregate` cases, backfilled on dev.
+> **Production still needs its one backfill run** (launch checklist).
 
 No schema changes needed: the aggregates replace the platform-wide status index this design
 originally required, and `pendingCapped` disappears from the contract (aggregate counts are

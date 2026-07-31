@@ -142,7 +142,10 @@
 						<p class="mt-1 flex items-center justify-end gap-1 text-xs">
 							{#if row.trend}
 								{#if row.trend.dir === 'up'}
-									<ArrowUpIcon class="size-3 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+									<ArrowUpIcon
+										class="size-3 shrink-0 text-emerald-600 dark:text-emerald-400"
+										aria-hidden="true"
+									/>
 								{:else if row.trend.dir === 'down'}
 									<ArrowDownIcon class="size-3 shrink-0 text-destructive" aria-hidden="true" />
 								{/if}

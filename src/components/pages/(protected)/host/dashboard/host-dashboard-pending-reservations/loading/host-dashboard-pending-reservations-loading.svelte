@@ -16,11 +16,7 @@
 	 */
 </script>
 
-<Card
-	class="gap-0 border-primary/30 bg-primary/3 p-4 sm:p-5"
-	role="status"
-	aria-busy="true"
->
+<Card class="gap-0 border-primary/30 bg-primary/3 p-4 sm:p-5" role="status" aria-busy="true">
 	<span class="sr-only">Loading pending reservations</span>
 
 	<div class="mb-4 flex items-start gap-3">

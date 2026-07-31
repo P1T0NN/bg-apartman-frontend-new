@@ -14,7 +14,8 @@
 	// TYPES
 	import type { Id } from '@/convex/_generated/dataModel';
 
-	let { apartmentId }: { apartmentId: Id<'apartments'> } = $props();
+	let { apartmentId, label = 'Renew' }: { apartmentId: Id<'apartments'>; label?: string } =
+		$props();
 
 	const convex = useConvexClient();
 
@@ -44,5 +45,5 @@
 	{#if renewing}
 		<Spinner />
 	{/if}
-	Renew
+	{label}
 </Button>

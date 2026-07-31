@@ -29,8 +29,7 @@ export function nextSubscriptionExpiry(
 	periodDays: number,
 	graceDays: number
 ): number {
-	const withinGrace =
-		currentExpiry !== undefined && currentExpiry + graceDays * MS_PER_DAY >= now;
+	const withinGrace = currentExpiry !== undefined && currentExpiry + graceDays * MS_PER_DAY >= now;
 
 	const base = withinGrace ? currentExpiry : now;
 	return base + periodDays * MS_PER_DAY;

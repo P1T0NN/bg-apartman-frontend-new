@@ -12,6 +12,7 @@
 	import LocationMap from '@/components/ui/location-map/location-map.svelte';
 	import AmenitiesField from '@/components/pages/(protected)/host/add-accommodation/amenities-field.svelte';
 	import PaymentMethodField from '@/components/pages/(protected)/host/add-accommodation/payment-method-field.svelte';
+	import MonetizationField from '@/components/pages/(protected)/host/add-accommodation/monetization-field.svelte';
 	import AddAccommodationHeader from '@/components/pages/(protected)/host/add-accommodation/add-accommodation-header.svelte';
 
 	// SCHEMAS
@@ -69,6 +70,7 @@
 
 		instantBooking: false,
 		paymentMethod: 'cash',
+		monetization: undefined,
 		sameDayReservation: false,
 		singleDayReservation: false,
 		petsAllowed: false,
@@ -165,6 +167,24 @@
 	<PaymentMethodField {value} {setValue} />
 {/snippet}
 
+<!-- The "Your plan" cards (ASD §8). Picking the per-booking plan locks payment method to
+     online in the same click — the model and the payment method are one fact. -->
+{#snippet monetizationField({
+	value,
+	setValue
+}: {
+	value: unknown;
+	setValue: (next: unknown) => void;
+})}
+	<MonetizationField
+		{value}
+		setValue={(next) => {
+			setValue(next);
+			if (next === 'booking_fee') values.paymentMethod = 'online';
+		}}
+	/>
+{/snippet}
+
 <section class="flex w-full flex-col gap-6 p-4 md:p-6">
 	<AddAccommodationHeader />
 
@@ -186,7 +206,8 @@
 			address: streetField,
 			coordinates: mapField,
 			amenities: amenitiesField,
-			paymentMethod: paymentMethodField
+			paymentMethod: paymentMethodField,
+			monetization: monetizationField
 		}}
 	/>
 </section>

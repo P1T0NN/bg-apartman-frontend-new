@@ -86,6 +86,23 @@ export const aggregateHostEarnings = new TableAggregate<{
 });
 
 /**
+ * Bookings namespaced by status, keyed by check-in date (ISO string, so bounds compare the
+ * way the `by_*_status_checkin` indexes already do). Powers the admin dashboard's pulse row
+ * (AdminDashboardPageSystemDesign.md §3):
+ * - check-ins today: `count(ctx, { namespace: 'confirmed', bounds: { lower/upper: today } })`
+ * - pending open:    `count(ctx, { namespace: 'pending', bounds: {} })`
+ */
+export const aggregateBookings = new TableAggregate<{
+	Namespace: Doc<'bookings'>['status'];
+	Key: string;
+	DataModel: DataModel;
+	TableName: 'bookings';
+}>(components.aggregateBookings, {
+	namespace: (doc) => doc.status,
+	sortKey: (doc) => doc.checkInDate
+});
+
+/**
  * One-time backfill of pre-existing rows into an aggregate. Idempotent
  * (`insertIfDoesNotExist`), paginated, self-scheduling until the table is drained.
  *
@@ -95,15 +112,31 @@ export const aggregateHostEarnings = new TableAggregate<{
  * bunx convex run aggregates:backfillAggregates '{"table":"reports"}'
  * bunx convex run aggregates:backfillAggregates '{"table":"apartments"}'
  * bunx convex run aggregates:backfillAggregates '{"table":"bookingEarnings"}'
+ * bunx convex run aggregates:backfillAggregates '{"table":"bookings"}'
  * ```
  *
  * Also re-run for a table whose aggregate DEFINITION changed (namespace / sort key / sum),
  * after clearing that component with {@link clearAggregate} — a changed definition
  * invalidates the stored tree.
+ *
+ * ⚠️ **ALWAYS {@link clearAggregate} first when RE-PROVISIONING a component that existed
+ * before.** A Convex component keeps its stored data across being removed from
+ * `convex.config.ts` and added back, so a backfill onto a resurrected tree ADDS to whatever
+ * was already in it and every count reads high. This bit `aggregateBookings` on dev
+ * (2026-07-31): it shipped early, was removed unused, and when re-added for the admin
+ * dashboard the rows that existed in its first life were counted twice — the dashboard
+ * reported 2 pending requests against 1 real one. The backfill itself is genuinely
+ * idempotent (verified: re-running it changes nothing); the duplication comes from the
+ * pre-existing tree, which only `clearAggregate` removes.
  */
 export const backfillAggregates = internalMutation({
 	args: {
-		table: v.union(v.literal('reports'), v.literal('apartments'), v.literal('bookingEarnings')),
+		table: v.union(
+			v.literal('reports'),
+			v.literal('apartments'),
+			v.literal('bookingEarnings'),
+			v.literal('bookings')
+		),
 		cursor: v.optional(v.union(v.string(), v.null()))
 	},
 	handler: async (ctx, args) => {
@@ -122,6 +155,9 @@ export const backfillAggregates = internalMutation({
 					break;
 				case 'bookingEarnings':
 					await aggregateHostEarnings.insertIfDoesNotExist(ctx, doc as Doc<'bookingEarnings'>);
+					break;
+				case 'bookings':
+					await aggregateBookings.insertIfDoesNotExist(ctx, doc as Doc<'bookings'>);
 					break;
 			}
 		}
@@ -153,7 +189,12 @@ export const backfillAggregates = internalMutation({
  */
 export const clearAggregate = internalMutation({
 	args: {
-		table: v.union(v.literal('reports'), v.literal('apartments'), v.literal('bookingEarnings'))
+		table: v.union(
+			v.literal('reports'),
+			v.literal('apartments'),
+			v.literal('bookingEarnings'),
+			v.literal('bookings')
+		)
 	},
 	handler: async (ctx, args) => {
 		switch (args.table) {
@@ -165,6 +206,9 @@ export const clearAggregate = internalMutation({
 				break;
 			case 'bookingEarnings':
 				await aggregateHostEarnings.clearAll(ctx);
+				break;
+			case 'bookings':
+				await aggregateBookings.clearAll(ctx);
 				break;
 		}
 	}

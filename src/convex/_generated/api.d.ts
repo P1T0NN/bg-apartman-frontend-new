@@ -26,6 +26,7 @@ import type * as convexRateLimiter from "../convexRateLimiter.js";
 import type * as crons from "../crons.js";
 import type * as dev_inspectAnalytics from "../dev/inspectAnalytics.js";
 import type * as dev_seedMockBookings from "../dev/seedMockBookings.js";
+import type * as dev_seedMonetization from "../dev/seedMonetization.js";
 import type * as email_resend from "../email/resend.js";
 import type * as email_sendAccommodationPublishedEmail from "../email/sendAccommodationPublishedEmail.js";
 import type * as email_sendAccommodationSuspendedEmail from "../email/sendAccommodationSuspendedEmail.js";
@@ -70,6 +71,8 @@ import type * as helpers_fetchOptimized from "../helpers/fetchOptimized.js";
 import type * as helpers_paginationHelpers from "../helpers/paginationHelpers.js";
 import type * as http from "../http.js";
 import type * as i18n_index from "../i18n/index.js";
+import type * as pages_admin_dashboard_queries_fetchAdminDashboardPageSafe from "../pages/admin/dashboard/queries/fetchAdminDashboardPageSafe.js";
+import type * as pages_admin_dashboard_types_adminDashboardTypes from "../pages/admin/dashboard/types/adminDashboardTypes.js";
 import type * as pages_admin_queries_fetchAdminSidebarBadgesSafe from "../pages/admin/queries/fetchAdminSidebarBadgesSafe.js";
 import type * as pages_guest_dashboard_queries_fetchGuestDashboardPageSafe from "../pages/guest/dashboard/queries/fetchGuestDashboardPageSafe.js";
 import type * as pages_guest_dashboard_types_guestDashboardTypes from "../pages/guest/dashboard/types/guestDashboardTypes.js";
@@ -108,6 +111,7 @@ import type * as tables_accommodations_helpers_resolveFavoriteAccommodations fro
 import type * as tables_accommodations_mutations_createAccommodation from "../tables/accommodations/mutations/createAccommodation.js";
 import type * as tables_accommodations_mutations_deleteAccommodation from "../tables/accommodations/mutations/deleteAccommodation.js";
 import type * as tables_accommodations_mutations_setApartmentFeatured from "../tables/accommodations/mutations/setApartmentFeatured.js";
+import type * as tables_accommodations_mutations_switchListingMonetization from "../tables/accommodations/mutations/switchListingMonetization.js";
 import type * as tables_accommodations_mutations_updateAccommodation from "../tables/accommodations/mutations/updateAccommodation.js";
 import type * as tables_accommodations_queries_fetchAccommodationById from "../tables/accommodations/queries/fetchAccommodationById.js";
 import type * as tables_accommodations_queries_fetchAccommodationBySlugForBookSafe from "../tables/accommodations/queries/fetchAccommodationBySlugForBookSafe.js";
@@ -194,6 +198,7 @@ declare const fullApi: ApiFromModules<{
   crons: typeof crons;
   "dev/inspectAnalytics": typeof dev_inspectAnalytics;
   "dev/seedMockBookings": typeof dev_seedMockBookings;
+  "dev/seedMonetization": typeof dev_seedMonetization;
   "email/resend": typeof email_resend;
   "email/sendAccommodationPublishedEmail": typeof email_sendAccommodationPublishedEmail;
   "email/sendAccommodationSuspendedEmail": typeof email_sendAccommodationSuspendedEmail;
@@ -238,6 +243,8 @@ declare const fullApi: ApiFromModules<{
   "helpers/paginationHelpers": typeof helpers_paginationHelpers;
   http: typeof http;
   "i18n/index": typeof i18n_index;
+  "pages/admin/dashboard/queries/fetchAdminDashboardPageSafe": typeof pages_admin_dashboard_queries_fetchAdminDashboardPageSafe;
+  "pages/admin/dashboard/types/adminDashboardTypes": typeof pages_admin_dashboard_types_adminDashboardTypes;
   "pages/admin/queries/fetchAdminSidebarBadgesSafe": typeof pages_admin_queries_fetchAdminSidebarBadgesSafe;
   "pages/guest/dashboard/queries/fetchGuestDashboardPageSafe": typeof pages_guest_dashboard_queries_fetchGuestDashboardPageSafe;
   "pages/guest/dashboard/types/guestDashboardTypes": typeof pages_guest_dashboard_types_guestDashboardTypes;
@@ -276,6 +283,7 @@ declare const fullApi: ApiFromModules<{
   "tables/accommodations/mutations/createAccommodation": typeof tables_accommodations_mutations_createAccommodation;
   "tables/accommodations/mutations/deleteAccommodation": typeof tables_accommodations_mutations_deleteAccommodation;
   "tables/accommodations/mutations/setApartmentFeatured": typeof tables_accommodations_mutations_setApartmentFeatured;
+  "tables/accommodations/mutations/switchListingMonetization": typeof tables_accommodations_mutations_switchListingMonetization;
   "tables/accommodations/mutations/updateAccommodation": typeof tables_accommodations_mutations_updateAccommodation;
   "tables/accommodations/queries/fetchAccommodationById": typeof tables_accommodations_queries_fetchAccommodationById;
   "tables/accommodations/queries/fetchAccommodationBySlugForBookSafe": typeof tables_accommodations_queries_fetchAccommodationBySlugForBookSafe;
@@ -373,4 +381,5 @@ export declare const components: {
   aggregateReports: import("@convex-dev/aggregate/_generated/component.js").ComponentApi<"aggregateReports">;
   aggregateApartments: import("@convex-dev/aggregate/_generated/component.js").ComponentApi<"aggregateApartments">;
   aggregateHostEarnings: import("@convex-dev/aggregate/_generated/component.js").ComponentApi<"aggregateHostEarnings">;
+  aggregateBookings: import("@convex-dev/aggregate/_generated/component.js").ComponentApi<"aggregateBookings">;
 };

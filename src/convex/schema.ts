@@ -10,6 +10,7 @@ import {
 	apartmentType,
 	apartmentStatus,
 	apartmentExpiredReason,
+	apartmentMonetization,
 	paymentMethod,
 	apartmentPaymentMethod,
 	coordinates,
@@ -139,6 +140,13 @@ const schema = defineSchema({
 		expiredReason: v.optional(apartmentExpiredReason),
 
 		// === PAYMENT ===
+		/**
+		 * The host's monetization model, chosen at creation (ASD §8). Optional: rows from
+		 * before the per-listing revision store nothing until `backfillListingMonetization`
+		 * stamps them — readers branch on `MONETIZATION` first, then this field. The only
+		 * allowed change is the one-way `listing_fee` → `booking_fee` switch.
+		 */
+		monetization: v.optional(apartmentMonetization),
 		paidAt: v.optional(v.number()), // timestamp when payment was completed (undefined = unpaid)
 		paymentAmount: v.optional(v.number()), // amount paid (in euros)
 		paymentOrderId: v.optional(v.string()), // bank OrderID linking payment callback to apartment
@@ -169,7 +177,15 @@ const schema = defineSchema({
 		// the fill-to-page-size loop needs to examine.
 		.index('by_status_price', ['status', 'pricePerNight'])
 		// by_status_bedrooms: same idea for bedroom count filter
-		.index('by_status_bedrooms', ['status', 'bedrooms']),
+		.index('by_status_bedrooms', ['status', 'bedrooms'])
+		// Title search for the host's own list (`/host/my-accommodations`). A search INDEX,
+		// not a collect-and-filter: a sizeable minority of hosts own 100+ listings, which is
+		// exactly the case a post-scan filter degrades on. `filterFields` are the two facets
+		// the list already narrows by, so search composes with them inside the index.
+		.searchIndex('search_title', {
+			searchField: 'title',
+			filterFields: ['hostId', 'status']
+		}),
 
 	/** Marketing newsletter opt-ins. `_creationTime` is the subscribe timestamp. */
 	newsletter: defineTable({

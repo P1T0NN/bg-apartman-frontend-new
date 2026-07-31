@@ -120,7 +120,8 @@
 			yAxis: { ticks: 4 }
 		}}
 		yAxisFormat={formatYTick}
-		xAxisFormat={(v) => (v instanceof Date ? v.toLocaleDateString(locale, xAxisOptions) : String(v))}
+		xAxisFormat={(v) =>
+			v instanceof Date ? v.toLocaleDateString(locale, xAxisOptions) : String(v)}
 		tooltipLabelFormatter={(v) =>
 			v instanceof Date ? v.toLocaleDateString(locale, tooltipOptions) : String(v)}
 	/>

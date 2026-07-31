@@ -29,9 +29,11 @@
 		>
 			{tone.label}
 		</span>
+
 		<span class="text-xs text-muted-foreground tabular-nums">
 			{reportAgo(report._creationTime)}
 		</span>
+
 		{#if report.status === 'resolved'}
 			<span class="text-xs text-muted-foreground">· Resolved</span>
 		{/if}

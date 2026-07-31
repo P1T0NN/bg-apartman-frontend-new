@@ -392,18 +392,18 @@ the general rule's decision matrix — this document adds no exceptions to it.
 
 ## 10. Fees — deliberately not designed here
 
-Platform monetization (listing fee vs per-booking fee, amounts, who pays) is a **config
-seam, not a booking-system concern**. The booking system's only obligations, met by §7:
+Platform monetization (listing fee vs per-booking fee, amounts, who pays) is a **listing
+concern, not a booking-system concern** — since the 2026-07-31 revision each listing
+carries its host-chosen model. The booking system's only obligations, met by §7:
 
 - `platformFee` exists in the price snapshot (0 today) so historical bookings stay honest
   when fees switch on.
 - Price composition happens in one shared function (the existing `calculatePrice` seam), so
-  a fee line is one change in one place, toggled from `config.ts`.
+  the fee line is one change in one place, keyed off the listing's `monetization` field.
 
-Everything else — fee model choice, rates, collectability — is owned by
-`AccommodationsSystemDesign.md` §8 (`ACCOMMODATIONS_CONFIG.MONETIZATION`): the
-listing-fee/booking-fee switch, and the honest constraint that a booking fee is only
-collectable on online payments.
+Everything else — the per-listing model choice, rates, collectability — is owned by
+`AccommodationsSystemDesign.md` §8: `booking_fee` listings are online-only by construction
+(that is what makes the fee collectable), `listing_fee` listings carry no per-booking fee.
 
 ## 11. Considered and rejected (or deferred)
 

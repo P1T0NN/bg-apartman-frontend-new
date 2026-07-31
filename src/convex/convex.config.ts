@@ -19,5 +19,6 @@ app.use(resend);
 app.use(aggregate, { name: 'aggregateReports' });
 app.use(aggregate, { name: 'aggregateApartments' });
 app.use(aggregate, { name: 'aggregateHostEarnings' });
+app.use(aggregate, { name: 'aggregateBookings' });
 
 export default app;

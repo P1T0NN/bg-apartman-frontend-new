@@ -68,7 +68,9 @@
 
 	// Tab counts ride along in the list payload's `extra` — no second subscription.
 	let extra = $state<unknown>(undefined);
-	const counts = $derived((extra as typesUserBookingsPayload['extra'] | undefined)?.counts ?? EMPTY_COUNTS);
+	const counts = $derived(
+		(extra as typesUserBookingsPayload['extra'] | undefined)?.counts ?? EMPTY_COUNTS
+	);
 
 	// Search + sort round-trip to the server through ConvexDataTable's bindable state.
 	let search = $state('');
@@ -101,6 +103,7 @@
 		}}
 		bind:sortColumn
 		bind:sortDirection
+		controlsPlace="top"
 		searchable
 		bind:search
 		searchPlaceholder="Search guest, code or property…"

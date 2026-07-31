@@ -13,6 +13,10 @@ import { r2PublicUrl } from '@/convex/storage/r2/r2';
 import { validateImageCount } from '@/shared/features/accommodation/utils/validateImageCount';
 import { ensureHostPayoutAccount } from '@/convex/payments/onboarding';
 import { onlinePaymentsEnabled } from '@/convex/payments/adapter';
+import {
+	listingIsBookingFee,
+	listingFeeState
+} from '@/shared/features/accommodation/utils/listingFeeState';
 
 // HELPERS
 import { deleteApartmentImageKeys } from '../helpers/deleteApartmentImages';
@@ -63,6 +67,13 @@ export const updateApartment = authMutation('updateApartment')({
 		// §8) — the form hides those options, and this is the server-side truth behind it.
 		if (args.paymentMethod !== 'cash' && !onlinePaymentsEnabled()) {
 			return { success: false, message: { key: 'GenericMessages.ONLINE_PAYMENTS_UNAVAILABLE' } };
+		}
+
+		// `booking_fee` listings are online-only by construction (ASD §8) — an edit cannot
+		// reopen the cash door the model closed. The edit surface never accepts
+		// `monetization` itself (A3); this guards the coupled field.
+		if (listingIsBookingFee(apartment) && args.paymentMethod !== 'online') {
+			return { success: false, message: { key: 'GenericMessages.BOOKING_FEE_REQUIRES_ONLINE' } };
 		}
 
 		// Reconcile photos: keep the chosen existing images (in the requested order;
@@ -205,6 +216,13 @@ export const moderateApartmentStatus = zAdminMutation('moderateApartmentStatus')
 		}
 		if (args.status === 'suspended' && !args.reason) {
 			return { success: false, message: { key: 'GenericMessages.MODERATION_REASON_REQUIRED' } };
+		}
+
+		// The ONE publish precondition beyond content review (ASD §8): an unpaid
+		// `listing_fee` listing may not go live. The queue's payment chip explains this
+		// refusal before it happens; payment lands via `renewListing` or the admin stamp.
+		if (args.status === 'published' && listingFeeState(apartment).kind === 'unpaid') {
+			return { success: false, message: { key: 'GenericMessages.LISTING_FEE_UNPAID' } };
 		}
 
 		await ctx.db.patch(args.id, {

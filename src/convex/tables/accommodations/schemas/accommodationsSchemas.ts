@@ -38,6 +38,14 @@ export const apartmentStatus = v.union(
 /** Machine-readable cause stamped by the cron whenever it sets `expired`. */
 export const apartmentExpiredReason = v.literal('listing_fee_lapsed');
 
+/**
+ * The host's monetization model for one listing (AccommodationsSystemDesign.md §8):
+ * `listing_fee` = pay per period, keep 100%; `booking_fee` = free to list, guests pay the
+ * service fee, online-only by construction. Chosen at creation; the only allowed change is
+ * the one-way `listing_fee` → `booking_fee` switch.
+ */
+export const apartmentMonetization = v.union(v.literal('listing_fee'), v.literal('booking_fee'));
+
 /** What a guest actually chose for a booking. */
 export const paymentMethod = v.union(v.literal('cash'), v.literal('online'));
 

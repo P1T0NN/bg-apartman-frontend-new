@@ -1066,6 +1066,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
       >;
     };
     userQueries: {
+      countUsers: FunctionReference<"query", "internal", {}, any, Name>;
       listUserAccounts: FunctionReference<
         "query",
         "internal",

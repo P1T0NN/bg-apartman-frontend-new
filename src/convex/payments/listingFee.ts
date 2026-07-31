@@ -13,7 +13,8 @@ import { requireAuthUserId } from '@/convex/auth/helpers/requireAuthUserId';
 import { paymentsAdapter, onlinePaymentsEnabled } from '@/convex/payments/adapter';
 import { AUDIT_ACTIONS } from '@/convex/tables/auditLog/auditLogConfigs';
 import { nextSubscriptionExpiry } from '@/shared/features/accommodation/utils/nextSubscriptionExpiry';
-import { listingFeeModeActive } from '@/shared/features/accommodation/utils/listingFeeState';
+import { listingIsListingFee } from '@/shared/features/accommodation/utils/listingFeeState';
+import { analytics, ANALYTICS_EVENT } from '@/convex/analytics';
 
 // SCHEMAS
 import { mutationResult, type MutationResult } from '@/convex/schemas/schemas';
@@ -49,7 +50,11 @@ async function applyListingFeePayment(
 	payment: { amount: number; orderId: string }
 ): Promise<MutationResult> {
 	const apartment = await ctx.db.get(apartmentId);
-	if (!apartment) return { success: false, message: { key: 'GenericMessages.FORBIDDEN' } };
+	// Only a `listing_fee` listing has a fee to pay (ASD §8) — both entry points share
+	// this gate, so a stamp on a `booking_fee` row (or under `'none'`) cannot happen.
+	if (!apartment || !listingIsListingFee(apartment)) {
+		return { success: false, message: { key: 'GenericMessages.FORBIDDEN' } };
+	}
 
 	const now = Date.now();
 	const { PERIOD_DAYS, GRACE_DAYS } = ACCOMMODATIONS_CONFIG.LISTING_FEE;
@@ -74,16 +79,26 @@ async function applyListingFeePayment(
 		updatedAt: now
 	});
 
+	// Platform revenue, stream 1 of 2 (ASD §8 "platform-revenue events"): the listing fee
+	// became the platform's money the moment it landed. `/admin/dashboard` reads this.
+	await analytics.track(ctx, ANALYTICS_EVENT.INVOICE_PAID, {
+		properties: { amountCents: payment.amount * 100, currency: 'EUR', plan: 'listing_fee' }
+	});
+
 	return { success: true, message: { key: 'GenericMessages.LISTING_FEE_PAID' } };
 }
 
-/** Ownership gate for the host renewal action, which has no `ctx.db` of its own. */
+/**
+ * Ownership + model gate for the host renewal action, which has no `ctx.db` of its own:
+ * only the owner may pay, and only a `listing_fee` listing has anything to pay for
+ * (ASD §8 — `booking_fee` rows never see a fee surface).
+ */
 export const isListingOwnedBy = internalQuery({
 	args: { apartmentId: v.id('apartments'), hostId: v.string() },
 	returns: v.boolean(),
 	handler: async (ctx, args) => {
 		const apartment = await ctx.db.get(args.apartmentId);
-		return apartment?.hostId === args.hostId;
+		return apartment !== null && apartment.hostId === args.hostId && listingIsListingFee(apartment);
 	}
 });
 
@@ -115,10 +130,6 @@ export const renewListing = action({
 	args: { apartmentId: v.id('apartments') },
 	returns: mutationResult,
 	handler: async (ctx, args): Promise<MutationResult> => {
-		if (!listingFeeModeActive()) {
-			return { success: false, message: { key: 'GenericMessages.FORBIDDEN' } };
-		}
-
 		const hostId = await requireAuthUserId(ctx);
 		const owns = await ctx.runQuery(internal.payments.listingFee.isListingOwnedBy, {
 			apartmentId: args.apartmentId,

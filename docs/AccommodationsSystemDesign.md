@@ -7,9 +7,10 @@
 > `BookingSystemDesign.md` (the consumer of listings — cross-referenced where the two meet),
 > `AdminPagesSystemDesign.md` (the moderation UI surface).
 >
-> This document also owns **platform monetization** (§8) — the listing-fee vs booking-fee
-> switch — because a monetization mode is a property of how listings exist on the platform,
-> and the config seam lives here. `BookingSystemDesign.md` §10 defers to this section.
+> This document also owns **platform monetization** (§8) — the per-listing listing-fee vs
+> booking-fee choice — because a monetization model is a property of how a listing exists on
+> the platform, and the config seam lives here. `BookingSystemDesign.md` §10 defers to this
+> section.
 
 ## 0. Operating principles
 
@@ -23,9 +24,12 @@
    they need at creation (price, policy — `BookingSystemDesign.md` §7). Therefore listing
    edits are always safe for existing bookings, and the system never needs edit-locking,
    versioning, or "this listing changed since you booked" reconciliation.
-4. **Monetization is a mode, not a rewrite.** One config switch decides how the platform
-   earns (§8). Every mode's hooks exist in the schema permanently; flipping the switch
-   changes behavior, never structure.
+4. **Monetization is a per-listing choice under a platform switch, not a rewrite.** The
+   platform switch (`MONETIZATION: 'none' | 'per_listing'`) decides whether monetization
+   exists at all; when it does, **each listing carries its own model** — the host chose it
+   (§8). Every model's hooks exist in the schema permanently; flipping the switch changes
+   behavior, never structure. (Revised 2026-07-31 from the original one-global-mode design —
+   this is the "hybrid earns its own design revision" §12 used to promise.)
 
 ## 1. The state machine
 
@@ -44,7 +48,7 @@
               └─────┬─────┘ ◄───────────────────────────── └─────┬─────┘
                     │              admin re-publishes            │
      cron           │                                            │
- (listing-fee mode) ▼                                            │ host archives
+ (listing-fee listings) ▼                                        │ host archives
               ┌───────────┐        host renews (skips review)    │
               │  expired  │ ───────────────► published           │
               └─────┬─────┘                                      │
@@ -62,7 +66,7 @@ Five statuses: `pending_review`, `published`, `suspended`, `expired`, `archived`
 | `pending_review` | Born here; awaiting moderation          | ❌                           | `createAccommodation` (hardcoded); host resubmit |
 | `published`      | Live                                    | ✅ (the only one)            | Admin only (`moderateApartmentStatus`)           |
 | `suspended`      | Admin pulled it; reason required        | ❌                           | Admin only                                       |
-| `expired`        | Listing fee lapsed (`listing_fee` mode) | ❌                           | **Cron only** — never a human                    |
+| `expired`        | Listing fee lapsed (`listing_fee` listings) | ❌                       | **Cron only** — never a human                    |
 | `archived`       | Host shelved it                         | ❌                           | Host (own listing), admin                        |
 
 ### Transition rules (the complete set — anything not listed is forbidden)
@@ -74,8 +78,8 @@ Five statuses: `pending_review`, `published`, `suspended`, `expired`, `archived`
 - **Admin**: `pending_review` → `published` | `suspended`; `published` ⇄ `suspended`
   (suspension requires a reason — it reaches the host's email); anything → `archived`
   (tidy-up). Admin never sets `expired` and never edits content (§2).
-- **Cron**: `published` → `expired` in `listing_fee` mode only (§8). The only machine
-  transition in this system.
+- **Cron**: `published` → `expired` for `listing_fee` **listings** only (§8). The only
+  machine transition in this system.
 - **`suspended` is admin-owned in AND out.** A host cannot resubmit a suspended listing —
   suspension is a conversation with the platform, not a queue to re-enter. The host fixes
   the issue, replies to the suspension email, and the admin re-publishes. (Archiving it
@@ -115,7 +119,8 @@ Two hard exceptions, enforced in the update mutation:
 - **`slug` is immutable after creation.** URLs, bookmarks, emails, and bookings reference
   it (§4). A title edit does not regenerate the slug.
 - **`status`, moderation stamps, and monetization fields are not in the edit surface** —
-  the update mutation's arg validator simply doesn't accept them (A3).
+  the update mutation's arg validator simply doesn't accept them (A3). Changing the
+  monetization model has its own mutation with its own rules (§8 "Switching models").
 
 Admins do not edit listing content, ever — moderation and authorship stay separated
 (`AdminPagesSystemDesign.md` §2). The one narrow exception that exists today (admin editing
@@ -176,7 +181,7 @@ live in `BookingSystemDesign.md`; this section fixes what exists and its default
 | Field                                                                                  | Default                                         | Notes                                                                                                                                                          |
 | -------------------------------------------------------------------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `instantBooking: boolean`                                                              | `false`                                         | This IS `BookingSystemDesign.md` §1's mode flag — `false` = request-to-book, `true` = instant. One boolean, no enum rename.                                    |
-| `paymentMethod: 'cash'\|'online'\|'both'`                                              | `'cash'`                                        | `'online'`/`'both'` are selectable only when the payments adapter exists (`PaymentsSystemDesign.md` §8 — `PROVIDER` gate) — the form disables them until then. |
+| `paymentMethod: 'cash'\|'online'\|'both'`                                              | `'cash'`                                        | `'online'`/`'both'` are selectable only when the payments adapter exists (`PaymentsSystemDesign.md` §8 — `PROVIDER` gate) — the form disables them until then. A `booking_fee` listing is locked to `'online'` (§8). |
 | `minReservationDays` / `maxReservationDays`                                            | 1 / none                                        | Enforced in `createBooking`, displayed on the calendar.                                                                                                        |
 | `sameDayReservation`                                                                   | `false`                                         | May a stay start today.                                                                                                                                        |
 | `singleDayReservation`                                                                 | `false`                                         | Check-in and check-out on the same date.                                                                                                                       |
@@ -201,15 +206,21 @@ live in `BookingSystemDesign.md`; this section fixes what exists and its default
   (`AdminPagesSystemDesign.md` §2 scope note) — never a host-facing option, and never
   purchasable (that would be a monetization mode, §8, not a checkbox).
 
-## 8. Monetization — `ACCOMMODATIONS_CONFIG`
+## 8. Monetization — the per-listing choice (revised 2026-07-31)
 
-The platform earns in exactly one of three modes, chosen by config, changeable by deploy:
+> Revision note: the original design here was one platform-wide mode
+> (`'none' | 'listing_fee' | 'booking_fee'`). The business decided hosts choose **per
+> listing**: pay a flat listing fee up front and keep everything, or list free and give
+> the platform a cut of each booking. This section is that §12-promised design revision.
+> Both models' machinery already exists (steps 8–9 of the TODO built it under the global
+> mode); the revision re-keys the gates from a config constant to a listing field.
 
 ```ts
 // src/shared/config.ts
 export const ACCOMMODATIONS_CONFIG = {
-	/** How the platform earns. Exactly one mode is active; switching is a deploy. */
-	MONETIZATION: 'none' as 'none' | 'listing_fee' | 'booking_fee',
+	/** Whether monetization exists at all. 'per_listing' = each listing carries its
+	 *  host-chosen model. Flipping requires the §"switch honesty" backfill first. */
+	MONETIZATION: 'none' as 'none' | 'per_listing',
 
 	LISTING_FEE: {
 		/** Whole euros per period per listing. */
@@ -235,12 +246,57 @@ export const ACCOMMODATIONS_CONFIG = {
 } as const;
 ```
 
-### Mode `'none'` — today
+### The field
 
-Everything free. No cron, no fee lines, no payment surface. The schema hooks below exist
-and sit inert — flipping modes later is behavior, not migration (§0.4).
+`apartments.monetization?: 'listing_fee' | 'booking_fee'` — **the host's choice, made at
+creation** (the wizard step below). Optional in the schema so pre-revision rows stay
+valid; under `'per_listing'` the create mutation requires it, and the flip backfill stamps
+every existing row (see switch honesty). Like `status`, it is **not in the content-edit
+surface** (§2, A3) — changing it is its own explicit action with its own rules (see
+"Switching models").
 
-### Mode `'listing_fee'` — host pays to be listed
+### The choice, as the host sees it
+
+The **final step of the create wizard**, "Payments & plan", which pairs the plan choice
+with the **guest payment method** (revised 2026-07-31 from "right after Pricing"). The two
+belong in one step because they are one decision with two halves: the per-booking plan is
+online-only by construction, so choosing it sets the payment method, and a host reading
+either field needs the other in view. Last because it is the commitment — every earlier
+step describes the property, this one sets the deal, and the per-booking half cannot be
+undone once the listing exists.
+
+The payment method's own online options (`online`, `both`) follow the same rule as the
+per-booking card: **listed but disabled** while `PROVIDER: 'none'`, each carrying the same
+"available once online payments launch" sentence, so one step never explains one gate two
+ways. Hiding them taught hosts nothing about where the platform is going; the server-side
+rejection in create/update is unchanged either way (`PaymentsSystemDesign.md` §8).
+
+Two selectable plan cards, plain words, real numbers:
+
+- **Listing fee** — "€30 per 90 days, per listing. Keep 100% of every booking. Accept
+  cash or online payments. Your listing goes live after review **and payment**."
+- **Per-booking fee** — "Free to list. Guests pay a 10% service fee (min €2) on each
+  booking. **Online payments only. Permanent: this plan can't be changed later — to use
+  a listing fee instead, you'd create a new listing.**" Selectable only while online
+  payments exist (`PAYMENTS_CONFIG.PROVIDER` gate, `PaymentsSystemDesign.md` §8); until
+  then the card renders disabled with "available once online payments launch" — visible
+  so hosts know the model exists, disabled so nobody can pick what can't work. The
+  permanence sentence AND its escape hatch are on the card, not in a tooltip — an
+  irreversible choice is stated where it is made, together with the one road around it
+  ("Switching models" below).
+
+The `booking_fee` card's copy reappears in the "Change plan" dialog on `listing_fee` rows
+(below), so the model is described the same way wherever it is offered. **The edit form
+carries this step WITHOUT the plan field** — payment method stays editable, the plan never
+is (§2/A3): the update mutation doesn't accept it, so a picker there would offer a choice
+the server silently ignores. `booking_fee` rows have no
+"Change plan" action at all: the switch is one-way, and a control that only says "you
+can't" is noise. Instead, the row's billing column states the fact and the road in
+visible text, not a tooltip: **"Per-booking fee (10%) — permanent · new listing to
+change plan"** — so a host wondering "how do I switch?" reads the answer where they went
+looking for it (`HostSystemDesign.md` §5.2).
+
+### Model `'listing_fee'` — host pays to be listed
 
 The collectable model for a **cash-dominant platform**: the platform charges the host
 directly, so it works even though the platform never touches guest money.
@@ -253,55 +309,115 @@ directly, so it works even though the platform never touches guest money.
   in-grace payment buys exactly the coverage paid for, not the grace days as a bonus), and
   from `now` only when the period lapsed past grace (dead time isn't bought back) or no
   period exists yet. Same rule as §11's grace row — one function owns it
-  (`nextSubscriptionExpiry`, self-checked), shared by host renewal, the admin manual
-  stamp, and the mode-flip backfill.
-- **Lifecycle**: publish requires... nothing extra — moderation approves content; the fee
-  gates _staying_ listed. On `apartmentSubscriptionExpiryDate + GRACE_DAYS` the daily cron
-  flips `published` → `expired` (A2 evidence: a machine-readable
-  `expiredReason: 'listing_fee_lapsed'` stamp). Reminder email at
-  `REMINDER_DAYS_BEFORE`; lapse email at flip.
+  (`nextSubscriptionExpiry`, self-checked), shared by the first payment, host renewal, the
+  admin manual stamp, and the flip backfill.
+- **The first period gates going live**: `moderateApartmentStatus` **rejects
+  `published` for an unpaid `listing_fee` listing** (`LISTING_FEE_UNPAID` message key) —
+  the one publish precondition beyond content review. Payment and review are independent
+  and can land in either order; publish happens when both have. The admin listings table
+  shows an "Awaiting payment" chip on the status cell of any unpaid `listing_fee` row
+  (`AdminPagesSystemDesign.md` §2) so the admin never guesses why publish is refused. The host pays from `my-accommodations`
+  (adapter `charge()`, flow A — `PaymentsSystemDesign.md` §7) or, until a provider is
+  wired, by bank transfer that an admin records with `stampListingFeePayment`
+  (audit-logged). The period runs from payment (`nextSubscriptionExpiry`'s from-now
+  branch); the payment→publish gap burns a day or two of review time — accepted at this
+  platform's review speed, revisit to stamp-at-publish only if hosts actually complain.
+- **Staying listed**: on `apartmentSubscriptionExpiryDate + GRACE_DAYS` the daily cron
+  flips `published` → `expired` (A2 evidence: machine-readable
+  `expiredReason: 'listing_fee_lapsed'`). Reminder email at `REMINDER_DAYS_BEFORE`; lapse
+  email at flip. The sweep acts only on rows with `monetization === 'listing_fee'` AND a
+  stamped expiry date — `booking_fee` and legacy-unstamped rows are structurally out of
+  reach.
 - **Renewal**: host pays from `my-accommodations` → `expired` → `published` directly, no
-  re-review (§1). Payment runs through the SAME provider adapter as bookings
-  (`PaymentsSystemDesign.md` §7 — the `charge()` operation, flow A); until a
-  provider is wired, admins can stamp a manual payment (bank transfer) from the admin
-  side, audit-logged.
+  re-review (§1).
 - **Edge — expiry with bookings in flight**: existing `confirmed`/`checked_in` bookings
   live out normally (`expired` blocks _new_ bookings via A1, nothing else). Pending
   requests on a listing that expires die at confirm time (A1 re-check) — the host who
   wants to accept a request renews first, which is exactly the intended pressure.
-- **Mode-switch honesty**: turning `listing_fee` off strands no one (already-paid time
-  simply stops mattering); turning it ON gives every currently-published listing a free
-  period — the cron only acts on rows whose `apartmentSubscriptionExpiryDate` is set and
-  past, and unset rows get stamped `now + PERIOD_DAYS` by a one-time backfill named in
-  the flip's deploy notes. Nobody gets unpublished by a config flip alone.
 
-### Mode `'booking_fee'` — platform takes a cut per booking
+### Model `'booking_fee'` — platform takes a cut per booking
 
 - **Computation**: `platformFee = max(round(subtotal * PERCENT/100), MIN_EUROS)`, composed
-  by `calculatePrice` (§5), snapshotted into the booking's price block
-  (`BookingSystemDesign.md` §7 — the field already exists at 0), shown to the guest as a
-  line item before they commit. Fee follows the booking's refund fate: refunded when the
-  booking's policy refunds (`BookingSystemDesign.md` §4), kept when it doesn't.
-- **The honest constraint**: a booking fee is only _collectable_ where the platform sits
-  in the money flow — i.e. **online bookings, once the payments adapter exists** (capture
-  splits fee from host share via transfer-math; the full collection/payout design is
-  `PaymentsSystemDesign.md` §1/§5). On **cash** bookings the platform never touches the money, so a cash booking
-  fee is bookkeeping, not revenue — the system records it (honest stats) but nothing
-  collects it. Consequence, stated plainly: **while the platform is cash-dominant,
-  `listing_fee` is the only mode that actually earns.** `booking_fee` sits ready in config
-  for the day online payments land.
+  by `calculatePrice` (§5) **when the listing's `monetization` is `'booking_fee'`** (0
+  otherwise), snapshotted into the booking's price block (`BookingSystemDesign.md` §7),
+  shown to the guest as a line item before they commit. Fee follows the booking's refund
+  fate: refunded when the booking's policy refunds (`BookingSystemDesign.md` §4), kept
+  when it doesn't.
+- **Online-only, by construction**: a booking fee is only collectable where the platform
+  sits in the money flow, so **a `booking_fee` listing must have
+  `paymentMethod: 'online'`** — enforced in create/update (choosing the model locks the
+  payment method; the form says so on the card). This replaces the old design's
+  "recorded-but-uncollectable cash fee" bookkeeping: under per-listing choice that hole
+  would be the rational pick for every cash host, so it is closed structurally, not
+  documented around. Cash-friendly hosts have the listing-fee model — that pairing IS the
+  product: *commission = everything through the platform; flat fee = run it your way.*
+- Consequence, stated plainly: **while `PROVIDER: 'none'`, `booking_fee` is not
+  selectable, so every monetized listing is `listing_fee`** — which remains the only model
+  that actually earns on a cash-dominant platform. The choice becomes real the day online
+  payments land, with zero further schema work.
 - No fee on `withdrawn`/`declined`/`auto_declined` — the fee exists only where a stay was
   actually confirmed (it enters at capture/confirm, not at request).
 
-### Rules that hold across every mode
+### Switching models — `switchListingMonetization` (one-way, revised 2026-07-31)
 
-- **One mode at a time.** No stacking; a listing+booking hybrid is a pricing-strategy
-  decision that earns its own design revision if it's ever real.
+Its own mutation (audit-logged), reached from a "Change plan" action on the
+`my-accommodations` row — **never** part of the content-edit surface (A3). **The door
+swings one way: into `booking_fee`, never out of it.**
+
+- **`booking_fee` → `listing_fee`: FORBIDDEN** — rejected server-side, no UI offers it.
+  Why: a well-booked listing pays the platform far more under commission than under the
+  flat fee, so an open exit would let every host ride commission-free discovery and then
+  escape into the cheap model exactly when escaping costs the platform the most. The
+  creation choice is a commitment, and the `booking_fee` card SAYS so ("permanent for
+  this listing"). Known leak, accepted: a host can archive and recreate under
+  `listing_fee` — that costs them full re-review, a new slug, and detached booking
+  history; deterrence enough at this scale, and recreation-prevention machinery is not
+  worth building.
+- **`listing_fee` → `booking_fee`**: allowed; requires the `booking_fee` preconditions
+  (provider live, listing goes online-only). Immediate; **remaining paid days are
+  forfeited**, and — per the rule above — **there is no road back**. The dialog states
+  all three facts in plain words: "You have N paid days left; switching gives them up.
+  This cannot be reversed for this listing — going back to a listing fee would mean
+  creating a new listing. No refunds."
+- **In-flight bookings are untouched**: `platformFee` is a creation-time snapshot (§0.3)
+  — a booking priced under one model keeps that price and that fee through capture,
+  whatever the listing switched to meanwhile.
+
+### Platform-revenue events (consumed by `/admin/dashboard`)
+
+The platform's own revenue — as opposed to hosts' booking money (GMV) — is exactly two
+streams, and both track the existing `invoice.paid` analytics event at the moment money
+becomes the platform's:
+
+- **Listing-fee payment** (adapter `charge()` success, or `stampListingFeePayment`):
+  `invoice.paid { amountCents, currency: 'EUR', plan: 'listing_fee' }`.
+- **Booking fee at capture** (snapshot `platformFee > 0`):
+  `invoice.paid { amountCents: platformFee * 100, currency: 'EUR', plan: 'booking_fee' }`.
+  A refunded booking refunds the guest's total including the fee
+  (`PaymentsSystemDesign.md` §4), so the same mutation tracks
+  `refund.created { amountCents: platformFee * 100, plan: 'booking_fee' }` — platform
+  revenue is `revenue − refunds`, and the `plan` dimension splits the two streams for
+  free. The admin dashboard's revenue tile and chart read THESE metrics, never GMV
+  (`AdminDashboardPageSystemDesign.md` §3).
+
+### Switch honesty (`'none'` → `'per_listing'`)
+
+- The flip backfill stamps `monetization: 'listing_fee'` +
+  `apartmentSubscriptionExpiryDate: now + PERIOD_DAYS` (a free first period) on every
+  existing listing — they were created under free rules, and `booking_fee` isn't available
+  while the provider gate is closed. Reminder + lapse machinery then applies normally.
+  Nobody gets unpublished by a config flip alone; nobody pays for time they already had.
+- Flipping back to `'none'` strands no one: fee UI hides, the sweep no-ops, paid time
+  simply stops mattering. Field values stay put (behavior, not migration — §0.4).
+
+### Rules that hold across both models
+
+- **One model per listing at a time.** The field is a union, not a set — no stacking.
 - **Money facts are snapshots.** A paid period keeps its bought length; a booked fee keeps
-  its booked percent — config changes only affect future actions (same principle as
-  `BookingSystemDesign.md` §0.3).
-- **Reads branch on the mode constant, not on field presence.** `MONETIZATION === 'none'`
-  hides all fee UI even if legacy payment stamps exist on old rows.
+  its booked percent — config and model changes only affect future actions (same principle
+  as `BookingSystemDesign.md` §0.3).
+- **Reads branch on `MONETIZATION` first, then the listing field, never on payment-stamp
+  presence** — legacy rows carry payment stamps in `'none'` mode.
 
 ## 9. Data-loading verdicts (per `GeneralSystemDesignRule.md` — decided here)
 
@@ -349,7 +465,12 @@ says it loudly:
 | Missing `timeZone` (legacy rows / failed lookup)           | Readers fall back to `DEFAULT_TIME_ZONE` — never the viewer's zone.                                                                                               |
 | Superhost flag drift                                       | Bounded by re-stamp on writes (§7); accepted, documented on the field.                                                                                            |
 | Upload succeeds, save never happens                        | Orphan cron reaps the R2 object (§3).                                                                                                                             |
-| Config `MONETIZATION` flipped with live data               | Defined per mode in §8 ("mode-switch honesty") — no flip unpublishes anyone by itself.                                                                            |
+| Config `MONETIZATION` flipped with live data               | §8 "switch honesty": flip-on backfills `monetization: 'listing_fee'` + a free period on every row FIRST; flip-off strands no one.                                 |
+| Admin tries to publish an unpaid `listing_fee` listing     | Rejected (`LISTING_FEE_UNPAID`) — the queue's payment chip explains why; publish succeeds once payment is stamped (§8).                                           |
+| `listing_fee` listing paid, then suspended / never published | Fee is NOT auto-refunded — the period runs; suspension is a fixable conversation (§1). A truly dead paid listing is a human refund (provider dashboard / bank) + archive; volumes are human-scale. |
+| Host switches `listing_fee` → `booking_fee` mid-period     | Immediate; remaining paid days forfeited AND no road back — the dialog said both. No proration, no refund machinery (§8).                                         |
+| Host on `booking_fee` wants `listing_fee`                  | Forbidden (§8's one-way door). Their road is archive + recreate — full re-review, new slug, detached history; the friction is the point.                          |
+| Booking captured after the listing switched models         | Fee (or its absence) comes from the booking's creation-time snapshot, not the listing's current model (§0.3, §8).                                                 |
 | Renewal payment during `GRACE_DAYS`                        | Extends from expiry (not from now) — the host loses nothing by paying late within grace. Same rule §8 states; `nextSubscriptionExpiry` is the one implementation. |
 | `expired` listing whose content is now stale               | Renewal still skips review (§1) — staleness is a moderation concern only if reported; suspension remains available.                                               |
 
@@ -364,7 +485,12 @@ says it loudly:
 - **Listing content versioning / edit history** — rejected. Audit log captures moderation;
   content history is CMS machinery with no operator question behind it.
 - **Purchasable featuring / promoted listings** — rejected as a checkbox; it's a
-  monetization mode and would enter through §8 with its own design revision.
+  monetization model and would enter through §8 with its own design revision.
+- ~~**Listing+booking hybrid**~~ — the original rejection ("one mode at a time") was
+  revised 2026-07-31 into §8's per-listing choice. What stays rejected: **stacking both
+  models on one listing**, **proration/refunds on model switches**, and **the
+  `booking_fee` → `listing_fee` switch** (§8's one-way door — an open exit from
+  commission would be taken exactly when it costs the platform the most).
 - **iCal / channel-manager sync (Booking.com, Airbnb calendars)** — deferred. Real host
   value, real complexity (import/export, conflict policy vs §6 blocks); design when a host
   actually asks.
@@ -388,9 +514,9 @@ says it loudly:
 3. **Mutations**: enforce `MIN_IMAGES`/`MAX_IMAGES` server-side (§3); reject host
    resubmit from `suspended` (§1 — today `setApartmentStatus` accepts `pending_review`
    from any owned status); `deleteUser` admin flow surfaces the user's listings (§11).
-4. **Cron**: new daily `listingFeeSweep` — no-op unless `MONETIZATION === 'listing_fee'`
-   (reminder emails, grace, flip to `expired` with stamp). Registered now, inert in
-   `'none'`.
+4. **Cron**: new daily `listingFeeSweep` (reminder emails, grace, flip to `expired` with
+   stamp). Registered now, inert in `'none'`. (Built gated on the old global mode; the §8
+   revision re-keys it to `monetization === 'listing_fee'` rows — TODO 10d.)
 5. **Booking cross-check**: `confirmBooking` gains the `status === 'published'` listing
    re-check (A1) — implement together with `BookingSystemDesign.md` §12.4.
 6. **Emails**: add submitted-confirmation, fee-reminder, fee-lapsed templates (§10) to the
@@ -405,6 +531,11 @@ pass) → 4+6 (listing-fee machinery, still inert under `'none'`) → 7–8 (mod
 step shippable with `MONETIZATION: 'none'` — the switch flips when the business says so,
 not when the code lands.
 
+**Delta from the 2026-07-31 §8 revision** (per-listing choice — implementation checklist
+lives in `TODOSystemDesigns.md` step 10d): the `apartments.monetization` field + create-
+wizard step + publish gate + per-listing re-key of the sweep/`calculatePrice`/renewal
+surfaces + `switchListingMonetization` + the `invoice.paid` platform-revenue tracking.
+
 ## § FOR LLMs / AI ASSISTANTS — READ BEFORE TOUCHING LISTINGS CODE
 
 1. **`published` is the only bookable status** (A1). Never write a bookability check that
@@ -414,8 +545,10 @@ not when the code lands.
    enforcement — keep it that way.
 3. **`expired` is cron-only; `published` (from review) is admin-only; `suspended` exits
    only through an admin.** If a UI needs a button that breaks this, the UI is wrong.
-4. **Branch monetization behavior on `ACCOMMODATIONS_CONFIG.MONETIZATION`, never on field
-   presence** — legacy rows carry payment stamps in `'none'` mode.
+4. **Branch monetization behavior on `ACCOMMODATIONS_CONFIG.MONETIZATION` first, then the
+   LISTING's `monetization` field — never on payment-stamp presence** — legacy rows carry
+   payment stamps in `'none'` mode, and a global constant alone can't tell you a listing's
+   model anymore (§8).
 5. **Price math goes through `calculatePrice`** — a second composer (in a component, in a
    mutation) is the bug class this design exists to prevent.
 6. **Slug is immutable; images are limit-checked server-side; all writes through

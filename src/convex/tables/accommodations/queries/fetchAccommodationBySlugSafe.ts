@@ -75,6 +75,8 @@ export const fetchAccommodationBySlugSafe = query({
 			pricePerNight: apartment.pricePerNight,
 			discountAmount: apartment.discountAmount,
 			cleaningFee: apartment.cleaningFee,
+			// The listing's model — the book/detail quote composes platformFee from it (ASD §8).
+			monetization: apartment.monetization,
 			weekendPremium: apartment.weekendPremium,
 			weeklyDiscount: apartment.weeklyDiscount,
 			monthlyDiscount: apartment.monthlyDiscount,

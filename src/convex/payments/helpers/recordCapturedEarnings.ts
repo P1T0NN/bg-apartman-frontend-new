@@ -1,6 +1,7 @@
 // UTILS
 import { authComponent } from '@/convex/auth/auth';
 import { aggregateHostEarnings } from '@/convex/aggregates';
+import { analytics, ANALYTICS_EVENT } from '@/convex/analytics';
 import { sendHostEarningsHeldEmail } from '@/convex/email/sendHostEarningsHeldEmail';
 
 // TYPES
@@ -41,6 +42,19 @@ export async function recordCapturedEarnings(
 		net,
 		status: 'held'
 	});
+
+	// Platform revenue, stream 2 of 2 (ASD §8 "platform-revenue events"): the snapshot's
+	// fee became the platform's money at capture. Idempotent with the ledger row above —
+	// a duplicate capture webhook returns before reaching here.
+	if (booking.platformFee > 0) {
+		await analytics.track(ctx, ANALYTICS_EVENT.INVOICE_PAID, {
+			properties: {
+				amountCents: booking.platformFee * 100,
+				currency: booking.currency,
+				plan: 'booking_fee'
+			}
+		});
+	}
 
 	const account = await ctx.db
 		.query('hostPayoutAccounts')

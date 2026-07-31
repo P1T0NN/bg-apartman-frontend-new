@@ -7,7 +7,12 @@ import {
 	mutation as rawMutation,
 	internalMutation as rawInternalMutation
 } from '@/convex/_generated/server';
-import { aggregateReports, aggregateApartments, aggregateHostEarnings } from '@/convex/aggregates';
+import {
+	aggregateReports,
+	aggregateApartments,
+	aggregateHostEarnings,
+	aggregateBookings
+} from '@/convex/aggregates';
 
 // TYPES
 import type { DataModel } from '@/convex/_generated/dataModel';
@@ -29,6 +34,7 @@ const triggers = new Triggers<DataModel>();
 triggers.register('reports', aggregateReports.trigger());
 triggers.register('apartments', aggregateApartments.trigger());
 triggers.register('bookingEarnings', aggregateHostEarnings.trigger());
+triggers.register('bookings', aggregateBookings.trigger());
 
 export const mutation = customMutation(rawMutation, customCtx(triggers.wrapDB));
 export const internalMutation = customMutation(rawInternalMutation, customCtx(triggers.wrapDB));

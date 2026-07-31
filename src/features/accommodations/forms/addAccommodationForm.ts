@@ -2,6 +2,9 @@
 import { ACCOMMODATION_PAYMENT_METHOD_OPTIONS } from '@/features/bookings/data/paymentMethods';
 import { ACCOMMODATION_TYPES } from '@/shared/data/accommodationsData';
 
+// UTILS
+import { monetizationActive } from '@/shared/features/accommodation/utils/listingFeeState';
+
 // TYPES
 import type { MutationFormSection } from '@/components/ui/mutation-form/types';
 
@@ -21,6 +24,53 @@ import PawPrintIcon from '@lucide/svelte/icons/paw-print';
 import CigaretteIcon from '@lucide/svelte/icons/cigarette';
 import PartyPopperIcon from '@lucide/svelte/icons/party-popper';
 import ImagesIcon from '@lucide/svelte/icons/images';
+import WalletIcon from '@lucide/svelte/icons/wallet';
+
+/**
+ * The final step: how money moves for this listing — what guests may pay with, and which
+ * plan the listing runs on (ASD §8).
+ *
+ * The two live together because they are ONE decision with two halves: the per-booking
+ * plan is online-only by construction, so picking it sets the payment method, and a host
+ * reading either field needs the other in view. It is the LAST step because it is the
+ * commitment — everything before it describes the property, this decides the deal, and the
+ * per-booking half cannot be undone once the listing exists.
+ *
+ * `monetization` drops out entirely while `MONETIZATION: 'none'` (no plan to choose), and
+ * the edit form strips it too — the plan is not editable, only switchable one way through
+ * its own mutation (§2/A3, §8 "Switching models"). Payment method stays editable.
+ */
+export const PAYMENTS_SECTION_ID = 'payments-plan';
+
+const paymentsSection: MutationFormSection = {
+	id: PAYMENTS_SECTION_ID,
+	title: 'Payments & plan',
+	description: monetizationActive()
+		? 'How guests pay you, and how this listing pays for being on the platform. The per-booking plan is permanent for this listing — pick carefully.'
+		: 'How guests pay you for their stay.',
+	icon: WalletIcon,
+	fields: [
+		{
+			id: 'paymentMethod',
+			label: 'Guest payment method',
+			kind: 'radio',
+			options: ACCOMMODATION_PAYMENT_METHOD_OPTIONS,
+			description: 'Choose how guests pay for their stay.',
+			colSpan: 2
+		},
+		...(monetizationActive()
+			? [
+					{
+						id: 'monetization',
+						label: 'Your plan',
+						kind: 'input' as const,
+						required: true,
+						colSpan: 2 as const
+					}
+				]
+			: [])
+	]
+};
 
 // Check-in / check-out hour choices: 12:00 → 22:00.
 const HOUR_OPTIONS = Array.from({ length: 11 }, (_, i) => {
@@ -283,14 +333,8 @@ export const addAccommodationForm: MutationFormSection[] = [
 		description: 'How guests can book, and what’s allowed on the property.',
 		icon: ShieldCheckIcon,
 		fields: [
-			{
-				id: 'paymentMethod',
-				label: 'Guest payment method',
-				kind: 'radio',
-				options: ACCOMMODATION_PAYMENT_METHOD_OPTIONS,
-				description: 'Choose how guests pay for their stay.',
-				colSpan: 2
-			},
+			// `paymentMethod` moved to the final "Payments & plan" step — it belongs with the
+			// plan it is coupled to, not among the property's house rules.
 			{
 				id: 'instantBooking',
 				label: 'Instant booking',
@@ -379,5 +423,7 @@ export const addAccommodationForm: MutationFormSection[] = [
 				colSpan: 2
 			}
 		]
-	}
+	},
+	// Last on purpose — see `paymentsSection`: the property is described, now the deal is set.
+	paymentsSection
 ];

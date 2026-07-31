@@ -3,14 +3,14 @@ import { ACCOMMODATION_STATUS_CONFIG } from '@/features/accommodations/data/acco
 
 // UTILS
 import { formatDate } from '@/utils/formatters';
-import { listingFeeModeActive } from '@/shared/features/accommodation/utils/listingFeeState';
+import { monetizationActive } from '@/shared/features/accommodation/utils/listingFeeState';
 
 // TYPES
 import type { ColumnDef } from '@/components/ui/data-table/types.js';
 import type { typesAccommodation } from '@/shared/features/accommodation/types/accommodationTypes';
 
 /** Evaluated once — the mode is a deploy-time constant, not a runtime value. */
-const LISTING_FEE_MODE = listingFeeModeActive();
+const MONETIZATION_ON = monetizationActive();
 
 export const MY_ACCOMMODATIONS_TABLE_COLUMNS: ColumnDef<typesAccommodation>[] = [
 	{
@@ -25,16 +25,16 @@ export const MY_ACCOMMODATIONS_TABLE_COLUMNS: ColumnDef<typesAccommodation>[] = 
 		accessor: (row) => ACCOMMODATION_STATUS_CONFIG[row.status].label,
 		hideBelow: 'md'
 	},
-	// Billing is per listing, so renewal state lives on the row — never on the dashboard
-	// (HostSystemDesign.md §5.2). The whole column disappears outside `listing_fee` mode:
-	// legacy rows carry `paidAt` stamps from the old bank integration, and showing them a
-	// billing UI the platform isn't running would be a lie
+	// Billing is per listing, so plan/renewal state lives on the row — never on the
+	// dashboard (HostSystemDesign.md §5.2). The whole column disappears while
+	// `MONETIZATION: 'none'`: legacy rows carry `paidAt` stamps from the old bank
+	// integration, and showing them a billing UI the platform isn't running would be a lie
 	// (AccommodationsSystemDesign.md §8, § FOR LLMs 4).
-	...(LISTING_FEE_MODE
+	...(MONETIZATION_ON
 		? ([
 				{
 					id: 'listingFee',
-					header: 'Listing',
+					header: 'Plan',
 					accessor: (row) => row.apartmentSubscriptionExpiryDate ?? 0,
 					hideBelow: 'lg'
 				}

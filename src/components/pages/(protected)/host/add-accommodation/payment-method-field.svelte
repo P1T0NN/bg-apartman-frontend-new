@@ -23,16 +23,21 @@
 <div class="grid gap-3">
 	{#each ACCOMMODATION_PAYMENT_METHOD_OPTIONS as option (option.value)}
 		{@const active = current === option.value}
+		<!-- Online options stay visible while the provider is dark, disabled with their own
+		     "coming soon" line — same treatment as the per-booking plan card beside them
+		     (PaymentsSystemDesign.md §8). -->
 		<button
 			type="button"
 			onclick={() => setValue(option.value)}
 			aria-pressed={active}
+			disabled={option.disabled}
 			class={cn(
 				'flex items-start gap-3 rounded-xl border p-4 text-left transition-colors',
 				'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',
+				option.disabled && 'cursor-not-allowed opacity-60',
 				active
 					? 'border-primary bg-primary/5'
-					: 'border-border hover:border-input hover:bg-muted/40'
+					: 'border-border enabled:hover:border-input enabled:hover:bg-muted/40'
 			)}
 		>
 			<span

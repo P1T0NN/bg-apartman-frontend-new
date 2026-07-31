@@ -35,7 +35,10 @@
 	 */
 	// `onCancel` is a prop because the dialog it opens lives in the table (one dialog, any row);
 	// clearing a flag opens nothing, so it stays here with the button that triggers it.
-	let { booking, onCancel }: {
+	let {
+		booking,
+		onCancel
+	}: {
 		booking: AdminBookingRow;
 		onCancel: (row: AdminBookingRow) => void;
 	} = $props();
@@ -67,9 +70,7 @@
 	{#if flagCopy}
 		<!-- The flag says only that reality and our record may have diverged; the payment
 		     state itself is still the last TRUE value (PaymentsSystemDesign.md §4). -->
-		<div
-			class="flex items-start gap-2.5 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3"
-		>
+		<div class="flex items-start gap-2.5 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3">
 			<TriangleAlertIcon
 				class="mt-0.5 size-4 shrink-0 text-amber-600 dark:text-amber-400"
 				aria-hidden="true"
@@ -78,9 +79,7 @@
 				<p class="font-medium">{flagCopy.title}</p>
 				<p class="text-xs text-muted-foreground">{flagCopy.body}</p>
 			</div>
-			<Button variant="outline" size="sm" class="shrink-0" onclick={clearFlag}>
-				Mark handled
-			</Button>
+			<Button variant="outline" size="sm" class="shrink-0" onclick={clearFlag}>Mark handled</Button>
 		</div>
 	{/if}
 
@@ -158,9 +157,7 @@
 
 	<div class="flex flex-wrap items-center gap-2 border-t pt-3">
 		<Button
-			href={appHref(
-				UNPROTECTED_PAGE_ENDPOINTS.RESERVATION.replace(':id', String(booking._id))
-			)}
+			href={appHref(UNPROTECTED_PAGE_ENDPOINTS.RESERVATION.replace(':id', String(booking._id)))}
 			target="_blank"
 			rel="noopener"
 			variant="outline"

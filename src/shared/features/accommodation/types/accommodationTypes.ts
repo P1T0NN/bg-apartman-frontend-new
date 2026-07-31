@@ -12,8 +12,10 @@ export type typesAccommodationType = Doc<'apartments'>['type'];
 
 /** Where one listing stands against its paid period — read via `listingFeeState`. */
 export type typesAccommodationFeeState =
-	/** Mode is off, or the row has no period yet — no billing surface at all. */
+	/** Monetization off, or this listing isn't on the listing-fee model — no billing surface. */
 	| { kind: 'inactive' }
+	/** `listing_fee` listing that never paid — publish is gated on this (ASD §8). */
+	| { kind: 'unpaid' }
 	/** Paid and comfortably live. */
 	| { kind: 'active'; expiresAt: number; daysLeft: number }
 	/** Inside the reminder window — the T−7 nudge has been (or is about to be) sent. */
@@ -183,6 +185,13 @@ export type typesAddAccommodationForm = {
 
 	amenities: string[];
 	houseRules: string;
+
+	/**
+	 * The per-listing plan (ASD §8) — collected by the "Your plan" wizard step, which only
+	 * exists under `MONETIZATION: 'per_listing'`. `undefined` until picked; deliberately
+	 * absent from the edit form (the one-way switch is its own mutation).
+	 */
+	monetization?: 'listing_fee' | 'booking_fee';
 
 	/** Selected photo files; uploaded to R2 on submit and stored as `images`. */
 	photos: File[];

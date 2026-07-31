@@ -83,8 +83,13 @@ export const FEATURES = {
  * payment stamps even in `'none'` mode.
  */
 export const ACCOMMODATIONS_CONFIG = {
-	/** How the platform earns. Exactly one mode is active; switching is a deploy. */
-	MONETIZATION: 'none' as 'none' | 'listing_fee' | 'booking_fee',
+	/**
+	 * Whether monetization exists at all. `'per_listing'` = each listing carries its
+	 * host-chosen model (`apartments.monetization`: listing fee vs per-booking fee —
+	 * AccommodationsSystemDesign.md §8). Flipping to `'per_listing'` requires the
+	 * `backfillListingMonetization` run FIRST (§8 switch honesty).
+	 */
+	MONETIZATION: 'per_listing' as 'none' | 'per_listing',
 
 	LISTING_FEE: {
 		/** Whole euros per period per listing. */

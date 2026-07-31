@@ -8,6 +8,8 @@ export type typesPricingInput = {
 	pricePerNight: number;
 	discountAmount?: number;
 	cleaningFee?: number;
+	/** The listing's model (ASD §8) — the fee applies only on `booking_fee` listings. */
+	monetization?: 'listing_fee' | 'booking_fee';
 };
 
 /** Resolved price breakdown for a stay of `nights` nights. */

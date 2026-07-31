@@ -96,5 +96,20 @@ export async function settleBookingPayment(
 		properties: { amountCents: booking.total * 100, currency: booking.currency }
 	});
 
+	// Platform-revenue reversal (ASD §8 "platform-revenue events"): the refunded total
+	// includes the fee — the platform never keeps fees on unstayed stays (§4) — so the fee
+	// portion gets its OWN refund event, tagged `plan: 'booking_fee'`. The dashboard's
+	// platform revenue subtracts exactly this slice; the untagged full-total event above
+	// stays what it always was: the money-ops record of guest money returned.
+	if (booking.platformFee > 0) {
+		await analytics.track(ctx, ANALYTICS_EVENT.REFUND_CREATED, {
+			properties: {
+				amountCents: booking.platformFee * 100,
+				currency: booking.currency,
+				plan: 'booking_fee'
+			}
+		});
+	}
+
 	return { paymentStatus: 'refunded' };
 }

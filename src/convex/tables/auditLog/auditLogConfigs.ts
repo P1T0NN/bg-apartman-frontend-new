@@ -32,6 +32,8 @@ export const AUDIT_ACTIONS = {
 
 	// Money recorded by a human — the audit entry IS the trail (AccommodationsSystemDesign.md §8).
 	APARTMENT_FEE_STAMP: 'apartment.fee.stamp',
+	// The one-way listing_fee → booking_fee switch (ASD §8) — irreversible, so it leaves a trail.
+	APARTMENT_MONETIZATION_SWITCH: 'apartment.monetization.switch',
 
 	// Files
 	FILE_UPLOAD: 'file.upload',

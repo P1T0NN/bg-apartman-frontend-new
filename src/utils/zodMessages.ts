@@ -47,6 +47,8 @@ import { MIN_ACCOMMODATION_AMENITIES } from '@/shared/features/accommodation/sch
 const BY_ISSUE_KEY: Record<string, string> = {
 	[ACCOMMODATION_ISSUE.BEDROOMS_REQUIRED]: 'At least one bedroom (studios can have none).',
 	[ACCOMMODATION_ISSUE.PHOTOS_MIN_TOTAL]: `Keep or add at least ${ACCOMMODATIONS_CONFIG.MIN_IMAGES} photos in total.`,
+	[ACCOMMODATION_ISSUE.MONETIZATION_REQUIRED]:
+		'Pick a plan for this listing — listing fee or per-booking fee.',
 	// Marks a field invalid for styling without printing a second sentence.
 	[ACCOMMODATION_ISSUE.SILENT]: '',
 	[BOOKING_ISSUE.MIN_ONE_NIGHT]: 'Your stay must be at least one night.',

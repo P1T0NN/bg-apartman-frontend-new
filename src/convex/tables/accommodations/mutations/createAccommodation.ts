@@ -10,6 +10,7 @@ import { r2PublicUrl } from '@/convex/storage/r2/r2';
 import { validateImageCount } from '@/shared/features/accommodation/utils/validateImageCount';
 import { ensureHostPayoutAccount } from '@/convex/payments/onboarding';
 import { onlinePaymentsEnabled } from '@/convex/payments/adapter';
+import { monetizationActive } from '@/shared/features/accommodation/utils/listingFeeState';
 
 // SCHEMAS
 import {
@@ -31,6 +32,29 @@ import type { Doc } from '@/convex/_generated/dataModel';
  * validation rules. `optStr` is storage normalization, not validation: an optional text
  * column should hold `undefined`, never `''`.
  */
+/**
+ * The per-listing monetization rules a create must satisfy (ASD §8), config-dependent so
+ * they live here beside the image-count rule, not in the schema:
+ *  - under `'per_listing'` the choice is REQUIRED — a new listing without a model would be
+ *    invisible to every fee surface;
+ *  - `booking_fee` listings are online-only by construction (that is what makes the fee
+ *    collectable at all).
+ * Returns null when fine, a MutationResult error otherwise.
+ */
+function validateMonetizationChoice(args: {
+	monetization?: 'listing_fee' | 'booking_fee';
+	paymentMethod: 'cash' | 'online' | 'both';
+}): MutationResult | null {
+	if (!monetizationActive()) return null;
+	if (!args.monetization) {
+		return { success: false, message: { key: 'GenericMessages.MONETIZATION_CHOICE_REQUIRED' } };
+	}
+	if (args.monetization === 'booking_fee' && args.paymentMethod !== 'online') {
+		return { success: false, message: { key: 'GenericMessages.BOOKING_FEE_REQUIRES_ONLINE' } };
+	}
+	return null;
+}
+
 function buildApartmentDoc(
 	args: CreateAccommodationWireInput,
 	owner: { hostId: string; isSuperhost: boolean },
@@ -105,6 +129,10 @@ function buildApartmentDoc(
 
 		houseRules: optStr(args.houseRules),
 
+		// Stored only while monetization exists — rows created under `'none'` stay
+		// unstamped so the flip backfill owns them (ASD §8 switch honesty).
+		monetization: monetizationActive() ? args.monetization : undefined,
+
 		status,
 		isFeatured: false,
 		updatedAt: Date.now()
@@ -146,6 +174,9 @@ export const createApartment = authMutation('createApartment')({
 		if (args.paymentMethod !== 'cash' && !onlinePaymentsEnabled()) {
 			return { success: false, message: { key: 'GenericMessages.ONLINE_PAYMENTS_UNAVAILABLE' } };
 		}
+
+		const monetizationError = validateMonetizationChoice(args);
+		if (monetizationError) return monetizationError;
 
 		const host = await authComponent.getAuthUser(ctx);
 
@@ -202,10 +233,21 @@ export const createApartmentAdmin = adminMutation('createApartmentAdmin')({
 			return { success: false, message: { key: 'GenericMessages.ONLINE_PAYMENTS_UNAVAILABLE' } };
 		}
 
+		const monetizationError = validateMonetizationChoice(args);
+		if (monetizationError) return monetizationError;
+
 		const owner = await authComponent.getAnyUserById(ctx, args.hostId);
 		if (!owner) {
 			return { success: false, message: { key: 'GenericMessages.USER_NOT_FOUND' } };
 		}
+
+		// Straight-to-published is the admin privilege — but an unpaid `listing_fee`
+		// listing may not be live (ASD §8's publish gate applies to admins too). It lands
+		// in review; the admin stamps the payment, then publishes.
+		const status =
+			monetizationActive() && args.monetization === 'listing_fee'
+				? ('pending_review' as const)
+				: ('published' as const);
 
 		const doc = buildApartmentDoc(
 			args,
@@ -213,7 +255,7 @@ export const createApartmentAdmin = adminMutation('createApartmentAdmin')({
 				hostId: args.hostId,
 				isSuperhost: (owner as { isSuperhost?: boolean | null }).isSuperhost ?? false
 			},
-			'published'
+			status
 		);
 		const apartmentId = await ctx.db.insert('apartments', doc);
 
@@ -221,7 +263,7 @@ export const createApartmentAdmin = adminMutation('createApartmentAdmin')({
 
 		ctx.audit('apartment.create', {
 			resource: { table: 'apartments', id: apartmentId },
-			metadata: { onBehalfOf: args.hostId, status: 'published' }
+			metadata: { onBehalfOf: args.hostId, status }
 		});
 
 		const ownerEmail = owner.email?.trim();
@@ -233,7 +275,7 @@ export const createApartmentAdmin = adminMutation('createApartmentAdmin')({
 				hostEmail: ownerEmail,
 				apartmentTitle: doc.title,
 				city: doc.city,
-				live: true
+				live: status === 'published'
 			});
 		}
 

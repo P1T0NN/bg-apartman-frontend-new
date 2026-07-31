@@ -39,11 +39,7 @@
 	async function startOnboarding() {
 		isPending = true;
 		try {
-			const result = await safeAction(
-				convex,
-				api.payments.onboarding.startPayoutOnboarding,
-				{}
-			);
+			const result = await safeAction(convex, api.payments.onboarding.startPayoutOnboarding, {});
 			if (!toastResult(result)) return;
 			// The provider owns the flow end to end; we hand the host over and get them back
 			// via its return link.
