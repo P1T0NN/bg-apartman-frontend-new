@@ -4,6 +4,20 @@ import { v } from 'convex/values';
 // UTILS
 import { internalMutation } from '@/convex/_generated/server';
 import { components } from '@/convex/_generated/api';
+import { MS_PER_DAY } from '@/shared/config';
+import { AUDIT_RETENTION_DAYS, AUDIT_RETENTION_DEFAULT_DAYS } from '../auditLogConfigs';
+
+/**
+ * Resolve an action's retention into an absolute purge deadline. `undefined` for
+ * `Infinity` retention — an absent deadline is what the sweep reads as "keep forever".
+ */
+function retentionUntilFor(action: string): number | undefined {
+	const days =
+		AUDIT_RETENTION_DAYS[action as keyof typeof AUDIT_RETENTION_DAYS] ??
+		AUDIT_RETENTION_DEFAULT_DAYS;
+
+	return Number.isFinite(days) ? Date.now() + days * MS_PER_DAY : undefined;
+}
 
 /**
  * The actual audit-log writer. Always called via the scheduler from
@@ -74,7 +88,12 @@ export const writeAuditLog = internalMutation({
 				}
 			}
 
-			await ctx.db.insert('auditLogs', { ...args, ip, userAgent });
+			await ctx.db.insert('auditLogs', {
+				...args,
+				ip,
+				userAgent,
+				retentionUntil: retentionUntilFor(args.action)
+			});
 		} catch (err) {
 			// Audit must never cascade into user-visible failure. Log and move on.
 			console.error('[auditLog] write failed', { action: args.action, err });

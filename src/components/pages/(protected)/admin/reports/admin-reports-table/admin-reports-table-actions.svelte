@@ -9,7 +9,7 @@
 
 	// UTILS
 	import { safeMutation } from '@/utils/convexHelpers';
-	import { translateFromBackend } from '@/utils/translateFromBackend';
+	import { translateFromBackend } from '@/features/validations/utils/translateFromBackend';
 
 	// TYPES
 	import type { Id } from '@/convex/_generated/dataModel';

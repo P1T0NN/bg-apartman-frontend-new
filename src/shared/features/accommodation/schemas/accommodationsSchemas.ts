@@ -17,7 +17,7 @@ import { ACCOMMODATIONS_CONFIG } from '@/shared/config';
  * into Convex, so any message string here would drag display copy — and eventually an i18n
  * runtime — into a backend that never renders a word. Zod already separates *what is
  * invalid* from *how you say so*: the rule lives here, the sentence lives in the client-only
- * error map (`src/utils/zodMessages.ts`). The two `.superRefine` calls below are
+ * error map (`shared/features/validations/data/backendMessages.ts`). The two `.superRefine` calls below are
  * the one exception, and they pass a KEY that the error map recognises.
  *
  * Framework-free by contract: plain TS + zod only — no `$app`/`$env`, no browser globals,
@@ -34,11 +34,11 @@ import { ACCOMMODATIONS_CONFIG } from '@/shared/config';
  * global error map entirely, which would leak the raw key into the UI.
  */
 export const ACCOMMODATION_ISSUE = {
-	BEDROOMS_REQUIRED: 'accommodation.bedroomsRequired',
-	PHOTOS_MIN_TOTAL: 'accommodation.photosMinTotal',
-	MONETIZATION_REQUIRED: 'accommodation.monetizationRequired',
+	BEDROOMS_REQUIRED: 'ValidationMessages.Accommodation.bedroomsRequired',
+	PHOTOS_MIN_TOTAL: 'ValidationMessages.Accommodation.photosMinTotal',
+	MONETIZATION_REQUIRED: 'ValidationMessages.Accommodation.monetizationRequired',
 	/** Marks a field invalid for styling without printing a second sentence. */
-	SILENT: 'silent'
+	SILENT: 'ValidationMessages.Accommodation.silent'
 } as const;
 
 // ─── Shared field rules ───────────────────────────────────────────────────────
@@ -53,7 +53,7 @@ const optionalNonNegative = z.preprocess(
 export const MIN_ACCOMMODATION_PHOTOS = 3;
 
 /** Minimum amenities a host must select. */
-export const MIN_ACCOMMODATION_AMENITIES = 5;
+export const MIN_ACCOMMODATION_AMENITIES = ACCOMMODATIONS_CONFIG.MIN_AMENITIES;
 
 export const ACCOMMODATION_TYPE_VALUES = [
 	'apartment',
@@ -242,7 +242,7 @@ export const editAccommodationSchema = z
 			ctx.addIssue({
 				code: 'custom',
 				path: ['photos'],
-				params: { key: ACCOMMODATION_ISSUE.PHOTOS_MIN_TOTAL }
+				params: { key: ACCOMMODATION_ISSUE.PHOTOS_MIN_TOTAL, min: ACCOMMODATIONS_CONFIG.MIN_IMAGES }
 			});
 			// Mirror the failure onto the existing-photos field so its grid is outlined
 			// too. The SILENT key keeps the visible text to a single copy (under the

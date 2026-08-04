@@ -2,10 +2,10 @@
 import { toast } from 'svelte-sonner';
 
 // UTILS
-import { translateFromBackend } from '@/utils/translateFromBackend';
+import { translateFromBackend } from '@/features/validations/utils/translateFromBackend';
 
 // TYPES
-import type { TranslatableMessage } from '@/shared/types/types';
+import type { TranslatableMessage } from '@/shared/features/validations/types/validationsTypes';
 
 /**
  * Dispatch a `ConvexMutationResult`-shaped envelope to a toast and signal

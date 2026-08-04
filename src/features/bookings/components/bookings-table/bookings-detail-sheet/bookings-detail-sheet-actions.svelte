@@ -39,7 +39,7 @@
 	const cancelWindowClosed = $derived(
 		Boolean(onAction && booking.status === 'confirmed' && actions.length === 0)
 	);
-	
+
 	const stayStartsToday = $derived(
 		daysUntilCheckIn(booking.checkInDate, todayInPropertyZone()) <= 0
 	);

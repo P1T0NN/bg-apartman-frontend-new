@@ -10,7 +10,7 @@
 
 <section class="flex gap-2.5 rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm">
 	<BanIcon class="mt-0.5 size-4 shrink-0 text-destructive" aria-hidden="true" />
-	
+
 	<div class="space-y-0.5">
 		<p class="font-medium text-destructive">
 			{#if booking.status === 'declined'}

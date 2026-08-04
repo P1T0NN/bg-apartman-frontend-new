@@ -24,7 +24,9 @@
 	<div class="rounded-lg border p-3 text-sm">
 		<div class="flex items-center justify-between py-1 text-muted-foreground">
 			<span>
-				{formatCurrency(booking.subtotal / booking.numberOfNights)} × {formatNights(booking.numberOfNights)}
+				{formatCurrency(booking.subtotal / booking.numberOfNights)} × {formatNights(
+					booking.numberOfNights
+				)}
 			</span>
 
 			<span class="text-foreground tabular-nums">{formatCurrency(booking.subtotal)}</span>
@@ -34,7 +36,7 @@
 			<span>Cleaning fee</span>
 			<span class="text-foreground tabular-nums">{formatCurrency(booking.cleaningFee)}</span>
 		</div>
-		
+
 		<!-- From the booking's own price SNAPSHOT, never live config — a later fee
 		     change can't reprice a stay that already happened
 		     (AccommodationsSystemDesign.md §8's "money facts are snapshots"). -->

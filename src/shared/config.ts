@@ -31,8 +31,66 @@ export const PAGINATION_DATA = {
 	/** Page size for infinite scroll. */
 	INFINITE_SCROLL_PAGE_SIZE: 12,
 	/** Default for `DataTable` `optimizationStrategy` (see `DataTableOptimizationStrategy` in data-table `types.ts`). */
-	DEFAULT_OPTIMIZATION_STRATEGY: 'cursor' as const
-};
+	DEFAULT_OPTIMIZATION_STRATEGY: 'cursor' as const,
+	/**
+	 * Most rows an `offset`-strategy query will read to produce an exact `totalCount`.
+	 *
+	 * Offset pagination has to materialize the whole matched set to count and slice it, so its
+	 * cost is O(matching rows). Unbounded, that walks straight into Convex's hard per-query
+	 * limits (16,384 documents / 8 MiB) and the endpoint starts throwing — a feature that
+	 * worked yesterday returns a 500 today, with no degradation in between.
+	 *
+	 * With this cap the query reads at most `OFFSET_SCAN_LIMIT + 1` rows instead. Past the cap
+	 * it stops counting and reports `totalCount: null`, which every consumer already understands
+	 * as "unknown" (it is what cursor mode returns): page numbers disappear, prev/next keeps
+	 * working, nothing throws. Kept well under the platform limit so `enrich` and joins still
+	 * have read budget left.
+	 */
+	OFFSET_SCAN_LIMIT: 10_000,
+	/**
+	 * How many cursors the URL carries for backward navigation (`?cs=`). Cursors are opaque and
+	 * long (~200 chars each), so the stack is what bounds URL length: 10 keeps the worst case
+	 * near 2 KB, comfortably inside every server's header limit. Past this the oldest entry is
+	 * dropped and "previous" stops short of the true first page.
+	 */
+	MAX_CURSOR_STACK: 10,
+	/**
+	 * Absolute per-request ceiling on `paginationOpts.numItems`, enforced server-side by
+	 * `resolvePaginationOpts` in every paginated endpoint. Convex endpoints are a public
+	 * API — any caller can hand-craft a request — so without this a single call could demand
+	 * a 50,000-row page and read straight into the platform limits. Per-REQUEST only: every
+	 * row stays reachable across pages; this just guarantees a page is a page.
+	 *
+	 * Distinct from `MAX_PAGE_SIZE` (25), the tighter default cap for search-suggestion
+	 * endpoints: a table may legitimately want up to this many rows per page.
+	 */
+	HARD_MAX_PAGE_SIZE: 100
+} as const;
+
+/**
+ * Auth shape constants shared by the schemas, the forms, and the emails. Both values used
+ * to be restated per form and per schema — the OTP length in two forms and two regexes.
+ */
+export const AUTH_DATA = {
+	/** Digits in the emailed OTP. Drives both the input's `maxlength` and the schema regex. */
+	OTP_LENGTH: 8,
+	/** Minimum password length enforced by the auth schemas. */
+	PASSWORD_MIN_LENGTH: 8
+} as const;
+
+/**
+ * Search-input tuning shared by the Convex search factory and the SvelteKit remote bridge.
+ * One place, so a "why did my 1-char query do nothing" answer is never split across three
+ * files with three different local constants.
+ */
+export const SEARCH_DATA = {
+	/** Shorter queries return an empty page before touching the index or the rate limiter. */
+	MIN_QUERY_LENGTH: 2,
+	/** Cap for the SvelteKit remote search bridge (`createSearchInputRemote`). */
+	REMOTE_MAX_RESULTS: 25,
+	/** Debounce for the search input before a query is issued, in ms. */
+	INPUT_DEBOUNCE_MS: 300
+} as const;
 
 export const LOCAL_STORAGE_KEYS = {
 	GUEST_FAVORITES: 'bg-apartman:guest-favorites'
@@ -116,6 +174,8 @@ export const ACCOMMODATIONS_CONFIG = {
 	/** Server-enforced listing limits (AccommodationsSystemDesign.md §3) — not just UI. */
 	MIN_IMAGES: 3,
 	MAX_IMAGES: 20,
+	/** Amenities a listing must select before it can be submitted. */
+	MIN_AMENITIES: 5,
 
 	/**
 	 * Calendar blocks: nights one block/unblock action may cover. Sanity ceiling so a
@@ -164,22 +224,50 @@ export const OPERATIONAL_LIMITS = {
 	AUDIT_LOG_MAX_DELETES_PER_RUN: 5_000,
 	/** Aggregate backfill: rows per self-scheduling page. */
 	AGGREGATE_BACKFILL_BATCH: 100,
-	/** Orphan-file sweep: R2 metadata keys per page, and pages per run. */
-	ORPHAN_CLEANUP_PAGE_SIZE: 200,
-	ORPHAN_CLEANUP_MAX_PAGES: 25,
+	// Orphan-file sweeps now live in {@link STORAGE_CLEANUP_DATA}: they page one side and
+	// check the counterpart per item with an indexed point lookup, self-scheduling until
+	// done, so the old "read BOTH sides in full or skip" caps no longer exist.
 	/** `createDeleteMutation`: ids accepted per request unless a call site overrides it. */
 	DEFAULT_MAX_DELETE_BATCH: 200,
 	/**
 	 * Search: published rows pulled before in-memory filtering. A scan cap, not a page
 	 * size — see `fetchSearchAccommodationsSafe`.
 	 */
-	SEARCH_SCAN_LIMIT: 200
+	SEARCH_SCAN_LIMIT: 200,
+
+	/**
+	 * `/sitemap.xml`: published listings emitted. The sitemap protocol allows 50,000 URLs per
+	 * file; this sits well under it so one uncached crawl can't become an expensive read.
+	 * Past the cap newer listings go unlisted — split into a sitemap index before raising it.
+	 */
+	SITEMAP_MAX_URLS: 5_000,
+
+	/**
+	 * Admin list queries: rows pulled before in-memory filter/sort/slice.
+	 *
+	 * These tables paginate by OFFSET, which needs the matched set in memory to report an
+	 * exact `totalCount` — so the read cannot be a cursor page without changing what the
+	 * admin tables render. This cap is the honest middle: past it the view truncates and the
+	 * server logs it, instead of the query silently growing until it trips Convex's
+	 * per-query document ceiling and the admin page dies outright.
+	 *
+	 * The real fix is cursor pagination plus a search index, which costs the exact row count
+	 * and the numbered pager. Decide that deliberately; don't let this cap quietly become
+	 * the design.
+	 */
+	ADMIN_LIST_SCAN_LIMIT: 10_000
 } as const;
 
 /** Query tuning for the guest dashboard (`/guest/dashboard`). */
 export const GUEST_DASHBOARD = {
 	/** Hero + "more upcoming" rows — never return the whole upcoming list. */
 	UPCOMING_LIMIT: 4,
+
+	/**
+	 * Upcoming-trips count is a soft stat, same trade as {@link GUEST_DASHBOARD.CHECKED_OUT_COUNT_CAP}:
+	 * `.take(CAP + 1)` bounds the read and the tile shows "99+" past it.
+	 */
+	UPCOMING_COUNT_CAP: 99,
 
 	/**
 	 * Past-stays count is a soft stat: `.take(CAP + 1)` bounds the read, and the tile shows
@@ -203,9 +291,39 @@ export const HOST_DASHBOARD = {
 	QUEUE_COUNT_CAP: 50
 } as const;
 
-/** Upload ceilings enforced by BOTH storage backends (Convex storage and R2). */
+/**
+ * Upload ceilings enforced by BOTH storage backends (Convex storage and R2). Single source
+ * of truth — `storageMutations.ts` and `r2.ts` used to each carry their own copy of the
+ * MIME allow-list, which is exactly how two backends drift into accepting different files.
+ */
 export const UPLOAD_LIMITS = {
-	MAX_UPLOAD_BYTES: 10 * 1024 * 1024 // 10 MB
+	MAX_UPLOAD_BYTES: 10 * 1024 * 1024, // 10 MB
+	/** Allow-list of accepted MIME types. Add/remove per project needs. */
+	ALLOWED_CONTENT_TYPES: [
+		'image/jpeg',
+		'image/png',
+		'image/webp',
+		'image/gif',
+		'application/pdf'
+	] as readonly string[],
+	/** Target size the client-side image optimizer compresses down to, in MB. */
+	CLIENT_OPTIMIZE_TARGET_MB: 1
+} as const;
+
+/**
+ * Orphan-cleanup crons. Each sweep pages one side and checks the counterpart per item with
+ * an indexed point lookup, self-scheduling the next batch until done — works at any table
+ * size; these tune transaction size and safety, never a ceiling.
+ */
+export const STORAGE_CLEANUP_DATA = {
+	/** Rows/objects examined per cleanup transaction; a full batch self-schedules the next. */
+	BATCH: 500,
+	/**
+	 * Never delete a blob/object younger than this. Uploads write the blob FIRST and its
+	 * registry row a moment later — without a grace window the sweep could destroy an
+	 * in-flight upload that legitimately has no row yet.
+	 */
+	GRACE_MS: 60 * 60 * 1000 // 1 hour
 } as const;
 
 /** Free-text ceilings shared by Zod schemas and the mutations that trust them. */
@@ -221,7 +339,21 @@ export const PROJECT_SETTINGS = {
 	 * Booking statuses that count as money (revenue/GMV/occupancy aggregations) —
 	 * real stays only, never pending/declined/cancelled.
 	 */
-	BOOKING_EARNING_STATUSES: ['confirmed', 'checked_in', 'checked_out']
+	BOOKING_EARNING_STATUSES: ['confirmed', 'checked_in', 'checked_out'],
+
+	/**
+	 * Hard ceiling on one stay's length, in nights.
+	 *
+	 * This is a QUERY-BOUNDING invariant, not just a product rule. A stay can only overlap
+	 * a window if it STARTS within this many nights before it, which is what lets every
+	 * availability read be a fixed-width range scan instead of "every booking this listing
+	 * ever had" (`hasAvailabilityConflict`, the calendar reads, the block mutations).
+	 *
+	 * Enforced by `createBookingSchema`, so the bound is a guarantee rather than a guess —
+	 * raise them together or availability checks start missing long stays and double-book.
+	 * 365 matches the per-listing `maxReservationDays` ceiling in the accommodation schema.
+	 */
+	MAX_STAY_NIGHTS: 365
 } as const;
 
 const MS_PER_HOUR = 60 * 60 * 1000;

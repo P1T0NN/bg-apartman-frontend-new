@@ -36,7 +36,7 @@
 				<MailIcon class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
 				<span class="truncate">{booking.guestEmail}</span>
 			</a>
-			
+
 			<a
 				href={`tel:${booking.guestPhone.replace(/\s+/g, '')}`}
 				class="flex items-center gap-2.5 rounded-lg border px-3 py-2 text-sm transition-colors hover:bg-muted"

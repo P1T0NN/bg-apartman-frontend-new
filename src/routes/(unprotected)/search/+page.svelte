@@ -57,6 +57,9 @@
 			guests: params.guests
 		})
 	);
+	// `data` is undefined while the subscription loads — surface that as a loading state
+	// instead of collapsing it into "no results".
+	const searching = $derived(resultsQuery.isLoading);
 	const filtered = $derived(resultsQuery.data ?? []);
 </script>
 
@@ -73,6 +76,7 @@
 		{selectedId}
 		{location}
 		{mapHandle}
+		loading={searching}
 	/>
 
 	<SearchRightContent searchAccommodations={filtered} {mobileView} bind:selectedId bind:mapHandle />

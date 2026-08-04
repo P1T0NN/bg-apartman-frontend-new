@@ -129,5 +129,68 @@ export const BACKEND_MESSAGES: Record<string, string> = {
 	'GenericMessages.USER_NOT_FOUND': 'User not found.',
 	'GenericMessages.USER_ROLE_UPDATED': 'User role updated.',
 	'GenericMessages.USER_UNBANNED': 'User unbanned.',
-	'GenericMessages.YOU_NEED_TO_CORRECT_FORM_ERRORS': 'You need to correct form errors'
+	'GenericMessages.YOU_NEED_TO_CORRECT_FORM_ERRORS': 'You need to correct form errors',
+
+	// ── Default zod violations (emitted by `mapDefaultValidationErrors`) ────────
+	'ValidationMessages.Default.required': 'This field is required.',
+	'ValidationMessages.Default.invalidValue': 'Check this field.',
+	'ValidationMessages.Default.notANumber': 'Enter a number.',
+	'ValidationMessages.Default.invalidDate': 'Enter a valid date.',
+	'ValidationMessages.Default.invalidEmail': 'Enter a valid email.',
+	'ValidationMessages.Default.invalidUrl': 'Enter a valid link.',
+	'ValidationMessages.Default.invalidChoice': 'Select a valid option.',
+	'ValidationMessages.Default.textTooShort': 'Must be at least {min} characters.',
+	'ValidationMessages.Default.textTooLong': 'Keep this under {max} characters.',
+	'ValidationMessages.Default.tooFewItems': 'Add at least {min}.',
+	'ValidationMessages.Default.tooManyItems': 'Add at most {max}.',
+	'ValidationMessages.Default.numberNotNegative': "This can't be negative.",
+	'ValidationMessages.Default.numberTooSmall': 'Enter {min} or more.',
+	'ValidationMessages.Default.numberTooBig': 'Enter {max} or less.',
+
+	// ── Field-specific copy (`VALIDATION_FIELD_MESSAGE_KEYS`) ──────────────────
+	'ValidationMessages.Field.placeId': 'Select your city from the list (typing alone won’t set it).',
+	'ValidationMessages.Field.type': 'Choose a property type.',
+	'ValidationMessages.Field.description': 'Add a short description (at least 20 characters).',
+	'ValidationMessages.Field.amenities': 'Select at least {min} amenities.',
+	'ValidationMessages.Field.photos': 'Please upload at least {min} photos.',
+	'ValidationMessages.Field.pricePerNight': 'Set a nightly price.',
+	'ValidationMessages.Field.squareMeters': 'Enter the size in m².',
+	'ValidationMessages.Field.maxGuests': 'At least one guest.',
+	'ValidationMessages.Field.bathrooms': 'At least one bathroom.',
+	'ValidationMessages.Field.minReservationDays': 'Minimum 1 night.',
+	'ValidationMessages.Field.checkInTime': 'Set a check-in time.',
+	'ValidationMessages.Field.checkOutTime': 'Set a check-out time.',
+	'ValidationMessages.Field.hostId': 'Pick the owner of this accommodation.',
+	'ValidationMessages.Field.phone': 'Enter a valid phone number.',
+	'ValidationMessages.Field.stayDates': 'Select your dates.',
+	'ValidationMessages.Field.bookingCode': 'Enter the booking code from your confirmation email.',
+	'ValidationMessages.Field.reason': 'Please write at least 4 characters.',
+	'ValidationMessages.Field.confirmPassword': 'Confirm your password.',
+	'ValidationMessages.Field.code': 'Use the {length}-digit code from your email.',
+
+	// ── Bespoke schema rules the default map can't express (`*_ISSUE` keys) ────
+	'ValidationMessages.Accommodation.bedroomsRequired':
+		'At least one bedroom (studios can have none).',
+	'ValidationMessages.Accommodation.photosMinTotal': 'Keep or add at least {min} photos in total.',
+	'ValidationMessages.Accommodation.monetizationRequired':
+		'Pick a plan for this listing — listing fee or per-booking fee.',
+	/** Marks a field invalid for styling without printing a second sentence. */
+	'ValidationMessages.Accommodation.silent': '',
+	'ValidationMessages.Booking.minOneNight': 'Your stay must be at least one night.',
+	'ValidationMessages.Booking.maxStayNights': 'A single stay can be at most {max} nights.',
+	'ValidationMessages.Auth.codeFormat': 'Use the {length}-digit code from your email.',
+	'ValidationMessages.Auth.passwordTooCommon':
+		'That password is too common. Please choose a stronger one.',
+	'ValidationMessages.Auth.passwordsMustMatch': 'Passwords must match.'
 };
+
+/** Fill `{param}` placeholders. Unknown placeholders are left as-is (visible in dev). */
+export function formatMessage(
+	template: string,
+	params?: Record<string, string | number | boolean>
+): string {
+	if (!params) return template;
+	return template.replace(/\{(\w+)\}/g, (match, name: string) =>
+		name in params ? String(params[name]) : match
+	);
+}

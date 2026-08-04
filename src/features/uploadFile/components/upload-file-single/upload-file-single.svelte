@@ -41,7 +41,8 @@
 		setFiles: (v) => {
 			files = v;
 		},
-		getDisabled: () => disabled
+		getDisabled: () => disabled,
+		getAccept: () => accept
 	});
 </script>
 

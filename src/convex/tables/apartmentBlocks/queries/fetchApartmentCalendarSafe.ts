@@ -5,8 +5,13 @@ import { query } from '@/convex/_generated/server';
 // HELPERS
 import { getAuthUserId } from '@/convex/auth/helpers/getAuthUserId';
 
+// CONFIG
+import { PROJECT_SETTINGS } from '@/shared/config';
+
 // UTILS
 import { BLOCKING_BOOKING_STATUSES } from '@/shared/features/booking/data/bookingsData';
+import { todayInPropertyZone } from '@/shared/features/booking/utils/daysUntilCheckIn';
+import { shiftIsoDate } from '@/shared/utils/dateUtils';
 
 // TYPES
 import type { typesApartmentCalendar } from '@/shared/features/booking/types/bookingTypes';
@@ -47,14 +52,26 @@ export const fetchApartmentCalendarSafe = query({
 		const apartment = await ctx.db.get(args.apartmentId);
 		if (!apartment || apartment.hostId !== userId) return [];
 
+		// Windowed from a year back, forward without limit. Unbounded, these two reads pulled
+		// the listing's ENTIRE history on every re-run of a subscription that re-runs on every
+		// booking and block write — and blocks are one row per night, so a host who closes a
+		// month a year accumulates dead rows forever. A year of history covers every stay
+		// still in progress (MAX_STAY_NIGHTS) plus recent context; the forward side is open
+		// because a calendar's whole job is what's ahead.
+		const historyFloor = shiftIsoDate(todayInPropertyZone(), -PROJECT_SETTINGS.MAX_STAY_NIGHTS);
+
 		const [bookings, blocks] = await Promise.all([
 			ctx.db
 				.query('bookings')
-				.withIndex('by_apartment', (q) => q.eq('apartmentId', args.apartmentId))
+				.withIndex('by_apartment_dates', (q) =>
+					q.eq('apartmentId', args.apartmentId).gte('checkInDate', historyFloor)
+				)
 				.collect(),
 			ctx.db
 				.query('apartmentBlocks')
-				.withIndex('by_apartment', (q) => q.eq('apartmentId', args.apartmentId))
+				.withIndex('by_apartment', (q) =>
+					q.eq('apartmentId', args.apartmentId).gte('startDate', historyFloor)
+				)
 				.collect()
 		]);
 

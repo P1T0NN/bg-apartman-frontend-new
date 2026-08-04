@@ -37,9 +37,15 @@ export const advanceBookingLifecycle = internalMutation({
 		let reaped = 0;
 
 		// confirmed → checked_in / checked_out
+		//
+		// Bounded to rows whose check-in has actually arrived. Without the date bound this
+		// hourly sweep re-read the platform's entire forward book 24× a day to act on a
+		// handful of rows — and worse, `.take()` over a creation-ordered bucket meant that
+		// once live bookings passed the cap, the ones past it would never advance at all.
+		// Reading in check-in order makes the cap drain-order-correct: oldest due first.
 		const confirmed = await ctx.db
 			.query('bookings')
-			.withIndex('by_status', (q) => q.eq('status', 'confirmed'))
+			.withIndex('by_status_checkin', (q) => q.eq('status', 'confirmed').lte('checkInDate', today))
 			.take(OPERATIONAL_LIMITS.BOOKING_LIFECYCLE_MAX_PER_RUN);
 		for (const b of confirmed) {
 			if (today > b.checkOutDate) {
@@ -51,10 +57,11 @@ export const advanceBookingLifecycle = internalMutation({
 			}
 		}
 
-		// checked_in → checked_out
+		// checked_in → checked_out. A guest cannot be in-house before their own check-in
+		// date, so the same bound costs nothing and keeps the read date-ordered.
 		const checkedInRows = await ctx.db
 			.query('bookings')
-			.withIndex('by_status', (q) => q.eq('status', 'checked_in'))
+			.withIndex('by_status_checkin', (q) => q.eq('status', 'checked_in').lte('checkInDate', today))
 			.take(OPERATIONAL_LIMITS.BOOKING_LIFECYCLE_MAX_PER_RUN);
 		for (const b of checkedInRows) {
 			if (today > b.checkOutDate) {

@@ -12,6 +12,9 @@ const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
 
 export default defineConfig(
 	includeIgnoreFile(gitignorePath),
+	// Convex codegen — rewritten unformatted on every `convex dev` sync, and its blanket
+	// eslint-disable headers trip `reportUnusedDisableDirectives`. Not ours to lint.
+	{ ignores: ['src/convex/_generated/', 'src/convex/auth/component/_generated/'] },
 	js.configs.recommended,
 	...ts.configs.recommended,
 	...svelte.configs.recommended,
@@ -26,7 +29,18 @@ export default defineConfig(
 			'no-undef': 'off',
 			// Allow the `const { drop, ...rest } = obj` idiom used to omit keys (e.g. peeling
 			// server-only columns off a Doc before returning the client-safe shape).
-			'@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],
+			// `ignoreRestSiblings` allows the `const { drop, ...rest } = obj` omit idiom; the
+			// `^_` patterns allow a deliberately unused binding to say so in its name
+			// (exhaustiveness checks: `const _never: never = x`, unused catch params, …).
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{
+					ignoreRestSiblings: true,
+					argsIgnorePattern: '^_',
+					varsIgnorePattern: '^_',
+					caughtErrorsIgnorePattern: '^_'
+				}
+			],
 			'svelte/no-internal-route': 'off',
 			'svelte/no-navigation-without-resolve': 'off',
 			'svelte/require-each-key': 'off'

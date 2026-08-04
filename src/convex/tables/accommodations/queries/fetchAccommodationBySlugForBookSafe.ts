@@ -4,9 +4,14 @@ import { v } from 'convex/values';
 // SERVER
 import { query } from '@/convex/_generated/server';
 
+// CONFIG
+import { PROJECT_SETTINGS } from '@/shared/config';
+
 // UTILS
 import { authComponent } from '@/convex/auth/auth';
 import { BLOCKING_BOOKING_STATUSES } from '@/shared/features/booking/data/bookingsData';
+import { todayInPropertyZone } from '@/shared/features/booking/utils/daysUntilCheckIn';
+import { shiftIsoDate } from '@/shared/utils/dateUtils';
 
 // TYPES
 import type { Doc, Id } from '@/convex/_generated/dataModel';
@@ -20,14 +25,26 @@ import type { QueryCtx } from '@/convex/_generated/server';
  * for (BookingSystemDesign.md §6).
  */
 async function fetchBookedRanges(ctx: QueryCtx, apartmentId: Id<'apartments'>) {
+	// A checkout calendar only ever greys out nights a guest could still pick, so nothing
+	// that ended before today matters. The floor is today minus MAX_STAY_NIGHTS rather than
+	// today, because a stay that STARTED earlier can still be occupying nights right now —
+	// tighten it and you would let a guest book a bed someone is currently sleeping in.
+	// Unbounded, this read pulled the listing's whole booking history on every page view of
+	// a public, subscribed page.
+	const historyFloor = shiftIsoDate(todayInPropertyZone(), -PROJECT_SETTINGS.MAX_STAY_NIGHTS);
+
 	const [bookings, blocks] = await Promise.all([
 		ctx.db
 			.query('bookings')
-			.withIndex('by_apartment', (q) => q.eq('apartmentId', apartmentId))
+			.withIndex('by_apartment_dates', (q) =>
+				q.eq('apartmentId', apartmentId).gte('checkInDate', historyFloor)
+			)
 			.collect(),
 		ctx.db
 			.query('apartmentBlocks')
-			.withIndex('by_apartment', (q) => q.eq('apartmentId', apartmentId))
+			.withIndex('by_apartment', (q) =>
+				q.eq('apartmentId', apartmentId).gte('startDate', historyFloor)
+			)
 			.collect()
 	]);
 

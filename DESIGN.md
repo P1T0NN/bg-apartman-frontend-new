@@ -124,7 +124,7 @@ Warm throughout. Every neutral carries 0.005–0.02 chroma at hue 60–85, so th
 
 ### Primary
 
-- **Belgrade Amber** (light `oklch(0.7 0.18 65)`, dark `oklch(0.78 0.16 70)`): The single interactive accent. Primary buttons, focus rings, active navigation, selected calendar dates, chart series one. It is always a *background* for dark text; it is never used for body copy on a light surface. On inverted bands it becomes the eyebrow label and the numeral color, which is the only place it appears as text at size.
+- **Belgrade Amber** (light `oklch(0.7 0.18 65)`, dark `oklch(0.78 0.16 70)`): The single interactive accent. Primary buttons, focus rings, active navigation, selected calendar dates, chart series one. It is always a _background_ for dark text; it is never used for body copy on a light surface. On inverted bands it becomes the eyebrow label and the numeral color, which is the only place it appears as text at size.
 - **Ember Accent** (`oklch(0.72 0.16 55)`): One step redder than the primary. Reserved for hover-adjacent states and secondary emphasis where two warm tones must be distinguishable — scrollbar thumb hover, chart series two. Never used as a second call to action.
 
 ### Neutral
@@ -174,7 +174,7 @@ Warm throughout. Every neutral carries 0.005–0.02 chroma at hue 60–85, so th
 
 ## 4. Elevation
 
-This system is **flat by default and tonal by construction**. Depth comes from three things, in order: a hairline border, a surface lightness shift, and only then a shadow. The card component carries `shadow-sm` and that is the ceiling — there is no `shadow-lg` and no `shadow-xl` in the vocabulary. In dark mode, shadows are effectively invisible against Night Clay, so the 0.14 → 0.18 lightness step between page and card *is* the elevation. Any design that depends on a shadow to be legible will break in dark mode.
+This system is **flat by default and tonal by construction**. Depth comes from three things, in order: a hairline border, a surface lightness shift, and only then a shadow. The card component carries `shadow-sm` and that is the ceiling — there is no `shadow-lg` and no `shadow-xl` in the vocabulary. In dark mode, shadows are effectively invisible against Night Clay, so the 0.14 → 0.18 lightness step between page and card _is_ the elevation. Any design that depends on a shadow to be legible will break in dark mode.
 
 Overlays are the exception and follow one rule: popovers, dropdowns, sheets, and dialogs get a solid `popover` surface plus a border. They never use backdrop blur.
 

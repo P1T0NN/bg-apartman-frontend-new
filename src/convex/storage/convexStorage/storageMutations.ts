@@ -22,13 +22,7 @@ const TABLE = 'uploadedFiles' as const;
  * boundary: client checks are advisory only.
  */
 /** Allow-list of accepted MIME types. Add/remove per project needs. */
-const ALLOWED_CONTENT_TYPES = new Set<string>([
-	'image/jpeg',
-	'image/png',
-	'image/webp',
-	'image/gif',
-	'application/pdf'
-]);
+const ALLOWED_CONTENT_TYPES = new Set<string>(UPLOAD_LIMITS.ALLOWED_CONTENT_TYPES);
 
 /**
  * Short-lived POST URL; response JSON includes `storageId`.

@@ -45,10 +45,10 @@
 ## 1. The three money flows
 
 | Flow | Who pays whom                 | Gate (listing's `monetization`, under `MONETIZATION: 'per_listing'`) | Mechanism                                                                                                                                                                                                                                                    |
-| ---- | ----------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| A    | Host → platform (listing fee) | `listing_fee` listings                           | Plain one-time charge (§7 `charge()`) — no Connect, no payout machinery. First payment gates publish; renewal lifecycle: `AccommodationsSystemDesign.md` §8.                                                                                                 |
-| B    | Guest → platform (booking)    | any listing with online payments enabled         | Checkout with **manual capture**: authorize at booking, capture at confirm (§3, §4). Platform is merchant of record.                                                                                                                                         |
-| C    | Platform → host (payout)      | follows B                                        | **Separate charges and transfers**: platform holds funds, transfers the host's net share when the booking is terminal-with-money-owed AND the host is payable (§5). Platform fee = transfer-math (transfer less than gross), never a provider fee parameter. |
+| ---- | ----------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| A    | Host → platform (listing fee) | `listing_fee` listings                                               | Plain one-time charge (§7 `charge()`) — no Connect, no payout machinery. First payment gates publish; renewal lifecycle: `AccommodationsSystemDesign.md` §8.                                                                                                 |
+| B    | Guest → platform (booking)    | any listing with online payments enabled                             | Checkout with **manual capture**: authorize at booking, capture at confirm (§3, §4). Platform is merchant of record.                                                                                                                                         |
+| C    | Platform → host (payout)      | follows B                                                            | **Separate charges and transfers**: platform holds funds, transfers the host's net share when the booking is terminal-with-money-owed AND the host is payable (§5). Platform fee = transfer-math (transfer less than gross), never a provider fee parameter. |
 
 Why separate charges & transfers and not destination charges (the other marketplace
 pattern): destination charges push funds toward the host at payment time — the provider
@@ -340,15 +340,15 @@ released | refunded` (amends `BookingSystemDesign.md` §5 — `awaiting` added);
 
 ## 10. Cross-document consistency map
 
-| Decision consumed / amended                | Where                              | Effect here                                                                                                                        |
-| ------------------------------------------ | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Payment states + provider seam sketch      | `BookingSystemDesign.md` §5        | **Amended**: `awaiting` added; seam ownership moved here (pointer edited there).                                                   |
-| Cancellation windows / who-may-cancel      | `BookingSystemDesign.md` §4        | §4 matrix is its money mirror — row-for-row.                                                                                       |
-| 48h host window vs card-hold validity      | `BookingSystemDesign.md` §1        | §3 starts the clock at authorization; the ~7-day hold constraint stands.                                                           |
+| Decision consumed / amended                | Where                              | Effect here                                                                                                                                          |
+| ------------------------------------------ | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Payment states + provider seam sketch      | `BookingSystemDesign.md` §5        | **Amended**: `awaiting` added; seam ownership moved here (pointer edited there).                                                                     |
+| Cancellation windows / who-may-cancel      | `BookingSystemDesign.md` §4        | §4 matrix is its money mirror — row-for-row.                                                                                                         |
+| 48h host window vs card-hold validity      | `BookingSystemDesign.md` §1        | §3 starts the clock at authorization; the ~7-day hold constraint stands.                                                                             |
 | Per-listing monetization & fee amounts     | `AccommodationsSystemDesign.md` §8 | Flow A implements `listing_fee` listings' payments; flow B/C implement `booking_fee` listings' collection (pointer there cites §5 here for payouts). |
-| `published`-only bookability (A1)          | `AccommodationsSystemDesign.md` §1 | Re-checked in the §3 webhook before any capture.                                                                                   |
-| Reservation page is live; guest vocabulary | `GuestSystemDesign.md` §3          | §3's dumb redirect page depends on it; `awaiting` renders as "finalizing…".                                                        |
-| Admin flagged-rows surface                 | `AdminPagesSystemDesign.md` §3     | §4/§5 failure flags land in `/admin/bookings` filters.                                                                             |
+| `published`-only bookability (A1)          | `AccommodationsSystemDesign.md` §1 | Re-checked in the §3 webhook before any capture.                                                                                                     |
+| Reservation page is live; guest vocabulary | `GuestSystemDesign.md` §3          | §3's dumb redirect page depends on it; `awaiting` renders as "finalizing…".                                                                          |
+| Admin flagged-rows surface                 | `AdminPagesSystemDesign.md` §3     | §4/§5 failure flags land in `/admin/bookings` filters.                                                                                               |
 
 ## 11. Defined behaviors (the no-surprises ledger)
 

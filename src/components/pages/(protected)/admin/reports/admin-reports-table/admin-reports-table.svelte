@@ -40,7 +40,9 @@
 
 <!-- Offset query (slices by `page`, returns an exact `totalCount`) — the cursor default
      would re-serve the first slice on every page and never end. -->
+<!-- realtime: users file reports while staff are on this screen, and status is set from it. -->
 <ConvexDataTable
+	realtime
 	caption="Reports"
 	query={api.tables.reports.queries.listReportsSafe.listReportsSafe}
 	optimizationStrategy="offset"

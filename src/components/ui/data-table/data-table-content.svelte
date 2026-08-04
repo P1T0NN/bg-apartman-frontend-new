@@ -50,6 +50,12 @@
 		/** Click handler for sortable headers. Called with the column id; parent owns the cycle. */
 		onSort?: (columnId: string) => void;
 		/**
+		 * URL mode: given a column id, the address representing the next state of its sort cycle.
+		 * Renders the header as a real link instead of a button, so sort is bookmarkable and
+		 * works without JavaScript. Takes precedence over `onSort` when both are supplied.
+		 */
+		sortHref?: (columnId: string) => string;
+		/**
 		 * When `true`, sort affordances are suppressed: headers render as plain text and
 		 * no chevrons are shown. Use when the server's current access pattern overrides
 		 * any client sort — typically when a full-text search is active and Convex returns
@@ -83,6 +89,7 @@
 		sortColumn,
 		sortDirection,
 		onSort,
+		sortHref,
 		isSearching = false,
 		borderless = false,
 		expandedContent,
@@ -166,15 +173,12 @@
 									col.headerClass
 								)}
 							>
-								{#if sortAffordance && onSort}
-									<button
-										type="button"
-										class={cn(
-											'flex items-center gap-1.5 text-inherit transition-colors hover:text-foreground',
-											isActive && 'text-foreground'
-										)}
-										onclick={() => onSort(col.id)}
-									>
+								{#if sortAffordance && (sortHref || onSort)}
+									{@const controlClass = cn(
+										'flex items-center gap-1.5 text-inherit transition-colors hover:text-foreground',
+										isActive && 'text-foreground'
+									)}
+									{#snippet sortLabel()}
 										<span>{col.header}</span>
 										{#if isActive && sortDirection === 'asc'}
 											<ChevronUpIcon class="size-3.5" aria-hidden="true" />
@@ -183,7 +187,15 @@
 										{:else}
 											<ChevronsUpDownIcon class="size-3.5 opacity-50" aria-hidden="true" />
 										{/if}
-									</button>
+									{/snippet}
+
+									{#if sortHref}
+										<a href={sortHref(col.id)} class={controlClass}>{@render sortLabel()}</a>
+									{:else if onSort}
+										<button type="button" class={controlClass} onclick={() => onSort(col.id)}>
+											{@render sortLabel()}
+										</button>
+									{/if}
 								{:else}
 									{col.header}
 								{/if}

@@ -2,7 +2,7 @@
 import { query } from '@/convex/_generated/server';
 
 // CONFIG
-import { MS_PER_DAY, HOST_DASHBOARD } from '@/shared/config';
+import { MS_PER_DAY, HOST_DASHBOARD, PROJECT_SETTINGS } from '@/shared/config';
 
 // HELPERS
 import { requireAuthUserId } from '@/convex/auth/helpers/requireAuthUserId';
@@ -13,7 +13,7 @@ import { analytics, hostAnalyticsScopeInput } from '@/convex/analytics';
 import { aggregateApartments, aggregateHostEarnings } from '@/convex/aggregates';
 import { APARTMENT_STATUSES } from '@/convex/tables/accommodations/schemas/accommodationsSchemas';
 import { todayInPropertyZone } from '@/shared/features/booking/utils/daysUntilCheckIn';
-import { monthStartUtc } from '@/shared/utils/dateUtils';
+import { monthStartUtc, shiftIsoDate } from '@/shared/utils/dateUtils';
 
 // TYPES
 import type { Doc } from '@/convex/_generated/dataModel';
@@ -164,10 +164,18 @@ export const fetchHostDashboardStats = query({
 					q.eq('hostId', hostId).eq('status', 'confirmed').eq('checkInDate', today)
 				)
 				.collect(),
+			// Everyone currently in-house. Bounded on both ends: a guest cannot be in-house
+			// having checked in after today, nor longer ago than a stay can last. Without
+			// those, this collects every row ever stuck in `checked_in` — a set with no
+			// ceiling of its own, since it depends on the lifecycle cron having drained it.
 			ctx.db
 				.query('bookings')
 				.withIndex('by_host_status_checkin', (q) =>
-					q.eq('hostId', hostId).eq('status', 'checked_in')
+					q
+						.eq('hostId', hostId)
+						.eq('status', 'checked_in')
+						.gte('checkInDate', shiftIsoDate(today, -PROJECT_SETTINGS.MAX_STAY_NIGHTS))
+						.lte('checkInDate', today)
 				)
 				.collect(),
 			ctx.db

@@ -7,11 +7,11 @@ import {
 	optionalOneBasedPageArg,
 	paginatedQueryArgs,
 	toPaginatedListPayload
-} from '@/convex/helpers/paginationHelpers';
+} from '@/convex/pagination/paginationHelpers';
 import { resolveFavoriteAccommodations } from '../helpers/resolveFavoriteAccommodations';
 
 // TYPES
-import type { PaginatedListPayload } from '@/components/ui/data-table/types';
+import type { PaginatedListPayload } from '@/shared/features/pagination/types/paginationTypes';
 import type { SearchAccommodation } from '@/shared/features/accommodation/types/accommodationTypes';
 
 /**

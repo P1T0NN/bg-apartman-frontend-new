@@ -7,13 +7,13 @@ import { PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 // UTILS
 import { authClient } from '@/features/auth/lib/auth-client';
 import { loginFormSchema } from '@/shared/features/auth/schemas/authSchemas';
-import { zodIssuesToFieldErrors } from '@/shared/utils/zodFieldErrors';
-import { rateLimitMessage } from '@/utils/rateLimitMessages';
+import { zodIssuesToFieldErrors } from '@/features/validations/utils/fieldErrors';
+import { rateLimitMessage } from '@/features/validations/utils/translateFromBackend';
 import { appGoto } from '@/utils/app-navigation';
 
 // TYPES
 import type { LoginFormStep, LoginField } from './loginFormTypes.js';
-import type { FieldErrors } from '@/shared/types/types';
+import type { FieldErrors } from '@/shared/features/validations/types/validationsTypes';
 
 export type LoginFormCopy = {
 	signInFailed: () => string;

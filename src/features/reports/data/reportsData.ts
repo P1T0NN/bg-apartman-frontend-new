@@ -8,10 +8,7 @@ import type { ReportCategory } from '@/shared/features/report/schemas/reportsSch
  * `Record` keyed by the category union makes it exhaustive: a new category fails to
  * compile until it is given a presentation.
  */
-export const REPORT_CATEGORY_TONE: Record<
-	ReportCategory,
-	{ label: string; badgeClass: string }
-> = {
+export const REPORT_CATEGORY_TONE: Record<ReportCategory, { label: string; badgeClass: string }> = {
 	bug: {
 		label: 'Bug',
 		badgeClass: 'bg-destructive/10 text-destructive ring-destructive/20'

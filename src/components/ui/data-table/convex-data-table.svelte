@@ -8,10 +8,12 @@
 
 	// COMPONENTS
 	import DataTable from './data-table.svelte';
+	import { ErrorComponent } from '@/components/ui/error-component/index.js';
 
 	// UTILS
 	import { safeMutation } from '@/utils/convexHelpers';
-	import { translateFromBackend } from '@/utils/translateFromBackend';
+	import { convexOneShotQuery } from '@/utils/convexOneShot.svelte.js';
+	import { translateFromBackend } from '@/features/validations/utils/translateFromBackend';
 
 	// TYPES
 	import type { Snippet } from 'svelte';
@@ -64,7 +66,9 @@
 		expandedContent,
 		getRowLabel,
 		emptyTitle,
-		emptyDescription
+		emptyDescription,
+		onReady,
+		realtime = false
 	}: {
 		class?: string;
 		caption?: string;
@@ -110,7 +114,10 @@
 		filters?: Snippet;
 		/** Remove the table's card border & shadow for a cleaner, embedded look. */
 		borderless?: boolean;
-		/** Rendered instead of the table when the query errors before any data arrived. */
+		/**
+		 * Override the failure UI. Defaults to a shared `ErrorComponent` — a failed query must
+		 * never fall through to the empty state, which reports a broken read as "no results".
+		 */
 		errorContent?: Snippet;
 		/** Bindable: the payload's optional `extra` side data (filter counts, aggregates). */
 		extra?: unknown;
@@ -121,6 +128,21 @@
 		/** Empty-state copy. Worth setting where "nothing here" is itself the answer. */
 		emptyTitle?: string;
 		emptyDescription?: string;
+		/**
+		 * Handed back a `refetch()` for THIS list. Call it after a mutation made from a row or
+		 * a dialog on the same screen, so a one-shot list shows your own write immediately.
+		 * The built-in `deleteMutation` already calls it. No-op when `realtime`.
+		 */
+		onReady?: (controls: { refetch: () => void }) => void;
+		/**
+		 * Hold a live subscription instead of fetching once per args change. OFF by default
+		 * (`docs/GeneralSystemDesignRule.md`): a subscription is a standing per-viewer cost
+		 * that re-executes on every overlapping write. Turn it on only when rows change under
+		 * the viewer WITHOUT them acting — another user writes them, or a cron/webhook does.
+		 * Seeing your OWN write is not a reason; that is what `onReady`'s `refetch` is for.
+		 * Read once at mount; do not toggle at runtime.
+		 */
+		realtime?: boolean;
 	} = $props();
 
 	const convex = useConvexClient();
@@ -149,33 +171,43 @@
 		page = 1;
 	});
 
-	// svelte-ignore state_referenced_locally
-	const listQuery = useQuery(
-		query,
-		() => {
-			const extra = mergedQueryArgs;
-			switch (optimizationStrategy) {
-				case 'cursor': {
-					const cursor = cursorByPage[page - 1] ?? null;
-					return {
-						...extra,
-						paginationOpts: { numItems: pageSize, cursor }
-					};
-				}
-				case 'offset':
-					return {
-						...extra,
-						page,
-						paginationOpts: { numItems: pageSize, cursor: null }
-					};
-				default: {
-					const _never: never = optimizationStrategy;
-					return _never;
-				}
+	function currentArgs(): Record<string, unknown> {
+		const extra = mergedQueryArgs;
+		switch (optimizationStrategy) {
+			case 'cursor': {
+				const cursor = cursorByPage[page - 1] ?? null;
+				return {
+					...extra,
+					paginationOpts: { numItems: pageSize, cursor }
+				};
 			}
-		},
-		{ keepPreviousData: true }
-	);
+			case 'offset':
+				return {
+					...extra,
+					page,
+					paginationOpts: { numItems: pageSize, cursor: null }
+				};
+			default: {
+				const _never: never = optimizationStrategy;
+				return _never;
+			}
+		}
+	}
+
+	// Both return the same `{ data, error, isLoading }` surface, so nothing downstream branches
+	// on which one is in play. `realtime` is read once here on purpose — swapping a subscription
+	// for a one-shot mid-life would strand the open channel.
+	// svelte-ignore state_referenced_locally
+	const listQuery = realtime
+		? useQuery(query, currentArgs, { keepPreviousData: true })
+		: convexOneShotQuery(query, currentArgs, { keepPreviousData: true });
+
+	// `useQuery` re-runs itself on every relevant write, so its refetch is a no-op; the
+	// one-shot path needs a real one to show a mutation made from this very screen.
+	const refetch = () => {
+		if (!realtime) (listQuery as { refetch: () => void }).refetch();
+	};
+	$effect(() => onReady?.({ refetch }));
 
 	const listPayload = $derived(listQuery.data as PaginatedListPayload<T> | undefined);
 
@@ -239,44 +271,63 @@
 
 		const result = await safeMutation(convex, deleteMutation, { ids });
 		if (!result) return false;
-		if (!hasMutationEnvelope(result)) return true;
+		if (!hasMutationEnvelope(result)) {
+			refetch();
+			return true;
+		}
 
 		toast[result.success ? 'success' : 'info'](translateFromBackend(result.message));
+		// A one-shot list would otherwise keep showing the rows it just deleted: the args did
+		// not change, so nothing re-runs. No-op under `realtime`.
+		if (result.success) refetch();
 		return result.success;
 	}
 </script>
 
-{#if errorContent && listQuery.error !== undefined && listPayload === undefined}
-	{@render errorContent()}
-{:else}
-	<DataTable
-		class={className}
-		{caption}
-		data={rows}
-		{columns}
-		{getRowId}
-		{customCells}
-		{controlsPlace}
-		{selectable}
-		bind:selectedIds
-		bind:sortColumn
-		bind:sortDirection
-		{searchable}
-		bind:search
-		{searchPlaceholder}
-		{searchDebounceMs}
-		{filters}
-		bind:page
-		{totalPages}
-		{canGoNext}
-		isLoading={tablePending}
-		queryLoading={queryLoadingForPagination}
-		hasResult={listPayload !== undefined}
-		onDeleteSelected={deleteMutation ? deleteSelected : undefined}
-		{borderless}
-		{expandedContent}
-		{getRowLabel}
-		{emptyTitle}
-		{emptyDescription}
+<DataTable
+	class={className}
+	{caption}
+	data={rows}
+	{columns}
+	{getRowId}
+	{customCells}
+	{controlsPlace}
+	{selectable}
+	bind:selectedIds
+	bind:sortColumn
+	bind:sortDirection
+	{searchable}
+	bind:search
+	{searchPlaceholder}
+	{searchDebounceMs}
+	{filters}
+	bind:page
+	{totalPages}
+	{canGoNext}
+	isLoading={tablePending}
+	queryLoading={queryLoadingForPagination}
+	hasResult={listPayload !== undefined}
+	hasError={Boolean(listQuery.error)}
+	error={errorContent ?? defaultError}
+	onDeleteSelected={deleteMutation ? deleteSelected : undefined}
+	{borderless}
+	{expandedContent}
+	{getRowLabel}
+	{emptyTitle}
+	{emptyDescription}
+/>
+
+<!--
+  Default failure UI, overridable via the `errorContent` snippet. `onRetry` reloads instead
+  of the button's `invalidateAll()` default: this is a Convex `useQuery`, which only
+  re-subscribes when its args change or the component remounts.
+-->
+{#snippet defaultError()}
+	<ErrorComponent
+		variant="plain"
+		title="Couldn't load data"
+		description="Something went wrong while loading this list. Please try again."
+		retryLabel="Retry"
+		onRetry={() => location.reload()}
 	/>
-{/if}
+{/snippet}

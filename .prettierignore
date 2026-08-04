@@ -12,3 +12,11 @@ bun.lockb
 # so format-checking them just fights the watcher.
 /src/convex/_generated/
 /src/convex/auth/component/_generated/
+
+# Notes files carrying pseudo-code snippets (`api.<your>.getCurrentUser`) that Prettier's
+# babel parser rejects outright — they document a pattern, they are not runnable code.
+FixAuth.md
+PRODUCT.md
+
+# Tool-managed, rewritten by Claude Code — not ours to format.
+.claude/

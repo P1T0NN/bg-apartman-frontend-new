@@ -52,6 +52,6 @@
 	{#if pending}
 		<Spinner />
 	{/if}
-	
+
 	Confirm booking
 </Button>

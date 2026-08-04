@@ -1,5 +1,9 @@
-// LIBRARIES
-import { MINUTE } from '@convex-dev/rate-limiter';
+// Rate-limit bucket DATA — names, presets, per-function assignments. Dual-runtime (the
+// Convex limiter enforces these; trusted SvelteKit server routes reference the names), so
+// this file stays dependency-free. Enforcement lives in `src/convex/rateLimits/` and
+// `convexRateLimiter.ts`; the name union is derived in `../types/rateLimitsTypes.ts`.
+
+const MINUTE = 60 * 1000;
 
 /**
  * Reusable token-bucket shapes. Pick a preset when registering a function, or
@@ -174,6 +178,3 @@ export const convexRateLimitRegistry = {
 	resetPasswordByEmail: limitPresets.authPasswordReset,
 	signInSocial: limitPresets.authOAuth
 } as const;
-
-/** Names of all configured rate-limit buckets (= Convex export names). */
-export type ConvexRateLimitName = keyof typeof convexRateLimitRegistry;

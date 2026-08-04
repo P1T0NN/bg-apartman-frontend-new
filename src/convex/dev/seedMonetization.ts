@@ -262,7 +262,7 @@ export const clearSeedMonetization = internalMutation({
 			// reference it, so clear them with `clearMockBookings` (or by hand) first.
 			const booking = await ctx.db
 				.query('bookings')
-				.withIndex('by_apartment', (q) => q.eq('apartmentId', row._id))
+				.withIndex('by_apartment_dates', (q) => q.eq('apartmentId', row._id))
 				.first();
 			if (booking) {
 				throw new Error(

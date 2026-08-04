@@ -1,5 +1,5 @@
 // CONFIG
-import { ACCOMMODATIONS_CONFIG } from '@/shared/config';
+import { ACCOMMODATIONS_CONFIG, PROJECT_SETTINGS } from '@/shared/config';
 
 // LIBRARIES
 import { v } from 'convex/values';
@@ -10,6 +10,7 @@ import { BLOCKING_BOOKING_STATUSES } from '@/shared/features/booking/data/bookin
 import { nightRangesOverlap } from '@/shared/features/booking/utils/nightRangesOverlap';
 import { nightsInRange } from '@/shared/features/booking/utils/nightsInRange';
 import { todayInPropertyZone } from '@/shared/features/booking/utils/daysUntilCheckIn';
+import { shiftIsoDate } from '@/shared/utils/dateUtils';
 
 // SCHEMAS
 import { mutationResult, type MutationResult } from '@/convex/schemas/schemas';
@@ -66,10 +67,17 @@ export const blockApartmentDates = authMutation('blockApartmentDates')({
 
 		// Blocking never cancels: a night already sold stays sold, and the host is told to
 		// use the booking's own cancel flow instead.
+		//
+		// Bounded on both ends for the same reason as `hasAvailabilityConflict`: only a stay
+		// starting within MAX_STAY_NIGHTS of this range can reach into it, and that ceiling
+		// is enforced at booking creation.
 		const bookings = await ctx.db
 			.query('bookings')
 			.withIndex('by_apartment_dates', (q) =>
-				q.eq('apartmentId', args.apartmentId).lt('checkInDate', args.endDate)
+				q
+					.eq('apartmentId', args.apartmentId)
+					.gte('checkInDate', shiftIsoDate(args.startDate, -PROJECT_SETTINGS.MAX_STAY_NIGHTS))
+					.lt('checkInDate', args.endDate)
 			)
 			.collect();
 
@@ -83,11 +91,15 @@ export const blockApartmentDates = authMutation('blockApartmentDates')({
 		}
 
 		// Re-blocking an already-blocked night is a no-op, not an error — the host asked for
-		// the range to end up blocked, and it does.
+		// the range to end up blocked, and it does. Only nights INSIDE the requested range
+		// are ever consulted, so the read is bounded to exactly those.
 		const existing = await ctx.db
 			.query('apartmentBlocks')
 			.withIndex('by_apartment', (q) =>
-				q.eq('apartmentId', args.apartmentId).lt('startDate', args.endDate)
+				q
+					.eq('apartmentId', args.apartmentId)
+					.gte('startDate', args.startDate)
+					.lt('startDate', args.endDate)
 			)
 			.collect();
 		const alreadyBlocked = new Set(existing.map((block) => block.startDate));
@@ -117,17 +129,20 @@ export const unblockApartmentDates = authMutation('unblockApartmentDates')({
 			return { success: false, message: { key: 'GenericMessages.INVALID_BOOKING_DATES' } };
 		}
 
+		// Blocks are single-night, so every row in this range is one the host asked to reopen —
+		// the range bound IS the overlap test, no in-memory filter needed.
 		const blocks = await ctx.db
 			.query('apartmentBlocks')
 			.withIndex('by_apartment', (q) =>
-				q.eq('apartmentId', args.apartmentId).lt('startDate', args.endDate)
+				q
+					.eq('apartmentId', args.apartmentId)
+					.gte('startDate', args.startDate)
+					.lt('startDate', args.endDate)
 			)
 			.collect();
 
 		for (const block of blocks) {
-			if (nightRangesOverlap(args.startDate, args.endDate, block.startDate, block.endDate)) {
-				await ctx.db.delete(block._id);
-			}
+			await ctx.db.delete(block._id);
 		}
 
 		return { success: true, message: { key: 'GenericMessages.CALENDAR_UPDATED' } };

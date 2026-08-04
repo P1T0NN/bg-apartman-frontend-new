@@ -3,7 +3,7 @@ import { ConvexError, v } from 'convex/values';
 
 // HELPERS
 import { getAuthUserId } from '@/convex/auth/helpers/getAuthUserId';
-import { fetchOptimized } from '@/convex/helpers/fetchOptimized';
+import { fetchOptimized } from '@/convex/pagination/fetchOptimized/fetchOptimized';
 
 // SCHEMAS
 import { apartmentStatus } from '../schemas/accommodationsSchemas';

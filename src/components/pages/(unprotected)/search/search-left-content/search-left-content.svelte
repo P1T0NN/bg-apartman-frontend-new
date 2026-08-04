@@ -6,6 +6,7 @@
 	import AccommodationCard from '@/features/accommodations/components/accommodation-card/accommodation-card.svelte';
 	import SearchLeftContentHeader from './search-left-content-header.svelte';
 	import SearchFiltersEmpty from '../empty/search-filters-empty.svelte';
+	import SearchResultsLoading from '../loading/search-results-loading.svelte';
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
@@ -23,7 +24,8 @@
 		mobileView,
 		selectedId,
 		mapHandle,
-		location
+		location,
+		loading = false
 	}: {
 		searchAccommodations: SearchAccommodation[];
 		search: SearchState;
@@ -31,13 +33,14 @@
 		selectedId: Id<'apartments'> | null;
 		mapHandle?: GoogleMapHandle;
 		location: string;
+		loading?: boolean;
 	} = $props();
 
 	// The map shows every result; the list pages in as you scroll. Clicking a pin
 	// or hovering a card links the two without the user having to think about it.
 	const PAGE_SIZE = PAGINATION_DATA.INFINITE_SCROLL_PAGE_SIZE;
 
-	let visibleCount = $state(PAGE_SIZE);
+	let visibleCount = $state<number>(PAGE_SIZE);
 
 	// New filtered set (identity change) → restart pagination at page 1.
 	$effect(() => {
@@ -62,9 +65,11 @@
 		mobileView === 'map' && 'hidden lg:block'
 	)}
 >
-	<SearchLeftContentHeader count={searchAccommodations.length} {location} {search} />
+	<SearchLeftContentHeader count={searchAccommodations.length} {location} {search} {loading} />
 
-	{#if searchAccommodations.length === 0}
+	{#if loading}
+		<SearchResultsLoading />
+	{:else if searchAccommodations.length === 0}
 		<SearchFiltersEmpty {search} {location} />
 	{:else}
 		<div class="grid grid-cols-1 gap-x-5 gap-y-7 sm:grid-cols-2 xl:grid-cols-3">

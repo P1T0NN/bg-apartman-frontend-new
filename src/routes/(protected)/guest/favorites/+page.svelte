@@ -47,6 +47,7 @@
 	</header>
 
 	{#if hasSavedIds}
+		<!-- one-shot: unfavouriting changes `favoriteIds`, and an args change already refetches. -->
 		<ConvexDataList
 			query={api.tables.accommodations.queries.fetchFavoriteAccommodationsSafe
 				.fetchFavoriteAccommodationsSafe}

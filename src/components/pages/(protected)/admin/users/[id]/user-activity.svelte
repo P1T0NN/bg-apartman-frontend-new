@@ -66,7 +66,9 @@
 		</p>
 	</header>
 
+	<!-- realtime: the danger-zone actions on this very page write the audit rows below. -->
 	<ConvexDataTable
+		realtime
 		caption="Activity"
 		query={api.tables.auditLog.queries.auditLogQueries.listAuditLogs}
 		{queryArgs}

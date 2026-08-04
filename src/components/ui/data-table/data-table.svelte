@@ -47,12 +47,16 @@
 		isLoading = false,
 		queryLoading = false,
 		hasResult = true,
+		hasError = false,
+		error,
 		onDeleteSelected,
 		borderless = false,
 		expandedContent,
 		getRowLabel,
 		emptyTitle,
-		emptyDescription
+		emptyDescription,
+		pageHref,
+		sortHref
 	}: {
 		class?: string;
 		caption?: string;
@@ -95,6 +99,14 @@
 		queryLoading?: boolean;
 		/** Whether the paginator currently has a resolved result. */
 		hasResult?: boolean;
+		/**
+		 * The query failed. Renders {@link error} in place of the rows and paginator — never
+		 * the empty state, which would tell the user "no results" for what is actually a
+		 * broken read.
+		 */
+		hasError?: boolean;
+		/** What to render when {@link hasError}. `ConvexDataTable` supplies a default. */
+		error?: Snippet;
 		/** Optional bulk-delete handler. Return `false` to keep the current selection. */
 		onDeleteSelected?: DeleteSelectedHandler;
 		/** Remove the table's card border & shadow for a cleaner, embedded look. */
@@ -106,6 +118,19 @@
 		/** Empty-state copy. Worth setting where "nothing here" is itself the answer. */
 		emptyTitle?: string;
 		emptyDescription?: string;
+		/**
+		 * URL-driven pagination for server-rendered routes: `(p) => listHref(url, { page: p })`.
+		 * Renders crawlable `<a href>` links and leaves `page` read-only — the route loader owns
+		 * it. Omit on client-owned tables to keep the button paginator.
+		 */
+		pageHref?: (page: number) => string;
+		/**
+		 * URL-driven sorting for server-rendered routes: `(id) => sortHref(url, id, activeSort)`.
+		 * Sortable headers become real links, so the sort is bookmarkable and survives a reload.
+		 * Without it, `sortColumn` / `sortDirection` are component state and vanish on refresh —
+		 * fine for a live table, wrong for anything URL-driven.
+		 */
+		sortHref?: (columnId: string) => string;
 	} = $props();
 
 	let searchDraft = $state(search);
@@ -255,7 +280,7 @@
 						class="w-full pl-8"
 						ariaLabel="Sort by"
 						options={[
-							{ value: '', label: `$Sort by: $Default order` },
+							{ value: '', label: 'Default order' },
 							...sortableColumns.flatMap((col) => [
 								{ value: `${col.id}:desc`, label: `${col.header} ↓` },
 								{ value: `${col.id}:asc`, label: `${col.header} ↑` }
@@ -267,47 +292,75 @@
 		</div>
 	{/if}
 
-	{#if showPagination && controlsPlace === 'top'}
-		<PaginatedData bind:page {totalPages} {canGoNext} {isLoading} {queryLoading} {hasResult} />
-	{/if}
+	<!--
+	  A failed query renders the error in place of rows + paginator. Falling through to the
+	  table body would show the empty state ("No results"), which reports a broken read as an
+	  empty dataset. The toolbar above stays mounted so filters/search remain adjustable.
+	-->
+	{#if hasError}
+		{#if error}
+			{@render error()}
+		{/if}
+	{:else}
+		{#if showPagination && controlsPlace === 'top'}
+			<PaginatedData
+				bind:page
+				{totalPages}
+				{canGoNext}
+				{isLoading}
+				{queryLoading}
+				{hasResult}
+				href={pageHref}
+			/>
+		{/if}
 
-	{#if selectable && selectedIds.length > 0}
-		<DataTableSelectedItemsStatus
-			count={selectedIds.length}
-			onClear={() => {
-				selectedIds = [];
-			}}
-			withActionButtons={onDeleteSelected !== undefined}
-			deleteFunction={onDeleteSelected ? runDelete : undefined}
-			{isDeleting}
+		{#if selectable && selectedIds.length > 0}
+			<DataTableSelectedItemsStatus
+				count={selectedIds.length}
+				onClear={() => {
+					selectedIds = [];
+				}}
+				withActionButtons={onDeleteSelected !== undefined}
+				deleteFunction={onDeleteSelected ? runDelete : undefined}
+				{isDeleting}
+			/>
+		{/if}
+
+		<DataTableContent
+			class={className}
+			{caption}
+			{data}
+			{columns}
+			{getRowId}
+			{isLoading}
+			customCells={customCells ?? {}}
+			{selectable}
+			{selectedSet}
+			{headerSelectionState}
+			onToggleRow={toggleRow}
+			onToggleAllOnPage={toggleAllOnPage}
+			{sortColumn}
+			{sortDirection}
+			onSort={onHeaderSort}
+			{sortHref}
+			{isSearching}
+			{borderless}
+			{expandedContent}
+			{getRowLabel}
+			{emptyTitle}
+			{emptyDescription}
 		/>
-	{/if}
 
-	<DataTableContent
-		class={className}
-		{caption}
-		{data}
-		{columns}
-		{getRowId}
-		{isLoading}
-		customCells={customCells ?? {}}
-		{selectable}
-		{selectedSet}
-		{headerSelectionState}
-		onToggleRow={toggleRow}
-		onToggleAllOnPage={toggleAllOnPage}
-		{sortColumn}
-		{sortDirection}
-		onSort={onHeaderSort}
-		{isSearching}
-		{borderless}
-		{expandedContent}
-		{getRowLabel}
-		{emptyTitle}
-		{emptyDescription}
-	/>
-
-	{#if showPagination && controlsPlace === 'bottom'}
-		<PaginatedData bind:page {totalPages} {canGoNext} {isLoading} {queryLoading} {hasResult} />
+		{#if showPagination && controlsPlace === 'bottom'}
+			<PaginatedData
+				bind:page
+				{totalPages}
+				{canGoNext}
+				{isLoading}
+				{queryLoading}
+				{hasResult}
+				href={pageHref}
+			/>
+		{/if}
 	{/if}
 </div>

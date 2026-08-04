@@ -37,9 +37,51 @@ export const paginatedQueryArgs = {
 	paginationOpts: v.optional(paginationOptsValidator)
 } as const;
 
-/** Use before `.paginate(...)` when `paginationOpts` is optional in args. */
+/**
+ * Use before `.paginate(...)` when `paginationOpts` is optional in args.
+ *
+ * Also the server-side trust boundary for page size: `numItems` is clamped to
+ * `[1, PAGINATION_DATA.HARD_MAX_PAGE_SIZE]`. The UI always requests small pages, but Convex
+ * endpoints are a public API — without this, any hand-crafted call could demand a
+ * 50,000-row page. Per-request only; every row stays reachable across pages.
+ */
 export function resolvePaginationOpts(opts: PaginationOptions | undefined): PaginationOptions {
-	return opts ?? defaultPaginationOpts;
+	if (!opts) return defaultPaginationOpts;
+	const numItems = Math.min(
+		Math.max(1, Math.floor(opts.numItems)),
+		PAGINATION_DATA.HARD_MAX_PAGE_SIZE
+	);
+	return numItems === opts.numItems ? opts : { ...opts, numItems };
+}
+
+/**
+ * Offset-mode accounting over an already-materialized (bounded!) row set: 1-based page
+ * clamp, slice, exact `totalCount`, `isDone`. The single source of truth used by
+ * `fetchOptimized`'s offset/resolve modes — also exported for fully bespoke endpoints so
+ * hand-rolled queries can't drift from the `DataTable` payload contract.
+ * `continueCursor` is the empty string by the offset-mode contract.
+ */
+export function offsetPayload<Row>(
+	all: Row[],
+	page: number | undefined,
+	numItems: number,
+	/**
+	 * `all` was cut short by the scan cap, so more matching rows exist beyond it. The count
+	 * becomes unknowable (`totalCount: null`) rather than a floor presented as a total — a
+	 * truncated count rendered as "of 47 pages" is a wrong answer delivered confidently.
+	 */
+	truncated = false
+): { page: Row[]; isDone: boolean; continueCursor: string; totalCount: number | null } {
+	const oneBasedPage = normalizeOneBasedPage(page);
+	const start = Math.max(0, (oneBasedPage - 1) * numItems);
+	const slice = all.slice(start, start + numItems);
+	return {
+		page: slice,
+		// Truncated means we know there is more, even though we don't know how much.
+		isDone: !truncated && start + slice.length >= all.length,
+		continueCursor: '',
+		totalCount: truncated ? null : all.length
+	};
 }
 
 /**

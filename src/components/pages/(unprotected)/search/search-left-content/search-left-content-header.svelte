@@ -3,6 +3,7 @@
 	import SearchFilters from './search-filters.svelte';
 	import SearchFiltersClearButton from './search-filters-clear-button.svelte';
 	import SearchFiltersBadge from './search-filters-badge.svelte';
+	import Spinner from '@/components/ui/spinner/spinner.svelte';
 
 	// UTILS
 	import { activeFilters } from '../search-state';
@@ -13,11 +14,13 @@
 	let {
 		count,
 		location,
-		search
+		search,
+		loading = false
 	}: {
 		count: number;
 		location: string;
 		search: SearchState;
+		loading?: boolean;
 	} = $props();
 
 	const chips = $derived(activeFilters(search));
@@ -27,7 +30,11 @@
 	<div class="flex items-start justify-between gap-3">
 		<div>
 			<h1 class="text-lg font-semibold tracking-tight">
-				{count} stays in {location}
+				{#if loading}
+					<Spinner /> Searching stays in {location}
+				{:else}
+					{count} stays in {location}
+				{/if}
 			</h1>
 			<p class="text-sm text-muted-foreground">Prices include all fees</p>
 		</div>

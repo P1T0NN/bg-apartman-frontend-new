@@ -40,7 +40,9 @@
 	const listArgs = $derived(status === undefined ? {} : { status });
 </script>
 
+<!-- realtime: admin moderation and the listing-fee cron flip a listing's status under its host. -->
 <ConvexDataTable
+	realtime
 	query={api.tables.accommodations.queries.fetchMyAccommodations.fetchMyAccommodations}
 	queryArgs={listArgs}
 	columns={MY_ACCOMMODATIONS_TABLE_COLUMNS}

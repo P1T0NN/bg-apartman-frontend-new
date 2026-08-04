@@ -14,6 +14,7 @@ import { todayInPropertyZone } from '@/shared/features/booking/utils/daysUntilCh
 import { nightsWithinWindow } from '@/shared/features/booking/utils/nightsWithinWindow';
 
 // TYPES
+import type { Doc, Id } from '@/convex/_generated/dataModel';
 import type {
 	HostAnalyticsData,
 	HostAccommodationRow
@@ -21,6 +22,9 @@ import type {
 
 /** Host-scoped rollup metrics behind the trend chart, in destructuring order. */
 const SERIES_METRICS = ['gmv', 'gmvCancelled', 'bookingsConfirmed'] as const;
+
+/** Statuses that can still be somebody's next arrival — a finished stay never is. */
+const UPCOMING_STAY_STATUSES = ['confirmed', 'checked_in'] as const;
 
 /** Above this, daily points are noise and the chart switches to month buckets. */
 const DAY_BUCKET_MAX_DAYS = 92;
@@ -51,7 +55,7 @@ function bucketStarts(from: number, to: number, unit: 'day' | 'month'): number[]
 	}
 
 	const first = new Date(from);
-	let year = first.getUTCFullYear();
+	const year = first.getUTCFullYear();
 	let month = first.getUTCMonth();
 	for (let ms = Date.UTC(year, month, 1); ms <= to; ms = Date.UTC(year, month, 1)) {
 		starts.push(ms);
@@ -73,12 +77,19 @@ function bucketStarts(from: number, to: number, unit: 'day' | 'month'): number[]
  * window don't visibly move while a host looks at them — the page refetches on every
  * window change, which is always fresh enough.
  *
- * Cost shape:
+ * Cost shape — nothing here may grow with the host's booking VOLUME, because this query
+ * refires on every click of the period picker:
  *   - the series reads the analytics component's PRE-AGGREGATED rollups (host-scoped),
  *     never the bookings table — same cost at ten bookings or ten thousand;
- *   - the table reads index-bounded `by_host_status_checkin` slices starting a lookback
- *     before the window (a stay straddling the window edge contributes its clipped nights
- *     via `nightsWithinWindow`, not zero).
+ *   - the table's booking read is bounded on BOTH sides of the window. The lookback below
+ *     `from` is what lets a stay straddling the window edge contribute its clipped nights
+ *     via `nightsWithinWindow` instead of vanishing; the bound above `to` is what stops a
+ *     7-day window from dragging in the host's entire forward booking book;
+ *   - "next check-in" is the one genuinely window-independent column, so it is NOT taken
+ *     from that read. It is one indexed `.first()` per listing per upcoming status —
+ *     O(listings · log n), flat in booking volume;
+ *   - listings are read published-only off `by_host_status`, and bucketed into a Map once,
+ *     so the table is O(listings + bookings) rather than O(listings · bookings).
  */
 export const fetchHostAnalyticsSafe = query({
 	args: {
@@ -117,17 +128,26 @@ export const fetchHostAnalyticsSafe = query({
 			).then((list) =>
 				list.map((s) => new Map(s.data.map((p) => [p.date, p[s.meta.metric] ?? 0])))
 			),
+			// Published only, straight off the index — the table renders no other status, and
+			// an unfiltered `by_host` collect pulls every draft's photos, amenities and
+			// description along with it. Some hosts here own 100+ listings.
 			ctx.db
 				.query('apartments')
-				.withIndex('by_host', (q) => q.eq('hostId', hostId))
+				.withIndex('by_host_status', (q) => q.eq('hostId', hostId).eq('status', 'published'))
 				.collect(),
-			// Earning statuses only — the same set every stat treats as "money".
+			// Earning statuses only — the same set every stat treats as "money" — and clamped
+			// to the window at both ends. Rows checking in after `to` contribute nothing to
+			// either revenue or clipped nights, so reading them was pure waste.
 			Promise.all(
 				PROJECT_SETTINGS.BOOKING_EARNING_STATUSES.map((status) =>
 					ctx.db
 						.query('bookings')
 						.withIndex('by_host_status_checkin', (q) =>
-							q.eq('hostId', hostId).eq('status', status).gte('checkInDate', readFromIso)
+							q
+								.eq('hostId', hostId)
+								.eq('status', status)
+								.gte('checkInDate', readFromIso)
+								.lte('checkInDate', toIso)
 						)
 						.collect()
 				)
@@ -135,7 +155,40 @@ export const fetchHostAnalyticsSafe = query({
 		]);
 
 		const [gmvByBucket, gmvCancelledByBucket, confirmedByBucket] = metricMaps;
-		const earning = earningRows.flat();
+
+		// Bucket the window's bookings by listing in ONE pass. Re-filtering the flat array
+		// inside the per-listing map below is what made this table O(listings · bookings).
+		const earningByApartment = new Map<Id<'apartments'>, Doc<'bookings'>[]>();
+		for (const booking of earningRows.flat()) {
+			const bucket = earningByApartment.get(booking.apartmentId);
+			if (bucket) bucket.push(booking);
+			else earningByApartment.set(booking.apartmentId, [booking]);
+		}
+
+		// The next arrival per listing, asked of the index directly. It is deliberately NOT
+		// derived from the window read above: "next check-in" looks forward from today with no
+		// upper bound, and serving it from that read is what forced the read to be unbounded.
+		const nextCheckIns = await Promise.all(
+			apartments.map(async (apartment) => {
+				const soonest = await Promise.all(
+					UPCOMING_STAY_STATUSES.map((status) =>
+						ctx.db
+							.query('bookings')
+							.withIndex('by_apartment_status_checkin', (q) =>
+								q.eq('apartmentId', apartment._id).eq('status', status).gte('checkInDate', today)
+							)
+							.first()
+					)
+				);
+
+				const dates = soonest
+					.map((booking) => booking?.checkInDate)
+					.filter((date): date is string => date !== undefined)
+					.sort();
+
+				return dates[0] ?? null;
+			})
+		);
 
 		// Zero-filled: rollups only return non-empty buckets, but the chart needs every slot
 		// or the x-axis lies.
@@ -152,33 +205,29 @@ export const fetchHostAnalyticsSafe = query({
 		}));
 
 		// Every published listing — no "at least two" gate: on a page a host opened to study
-		// performance, one row is still the answer.
+		// performance, one row is still the answer. `nextCheckIns` is index-aligned with
+		// `apartments`, so it is read before the sort reorders anything.
 		const perAccommodation: HostAccommodationRow[] = apartments
-			.filter((a) => a.status === 'published')
-			.map((a) => {
-				const mine = earning.filter((b) => b.apartmentId === a._id);
-				const revenue = mine
-					.filter((b) => b.checkInDate >= fromIso && b.checkInDate <= toIso)
-					.reduce((sum, b) => sum + b.total, 0);
-				const bookedNights = mine.reduce(
-					(sum, b) => sum + nightsWithinWindow(b.checkInDate, b.checkOutDate, from, to),
-					0
-				);
-				const nextCheckIn = mine
-					.filter(
-						(b) => (b.status === 'confirmed' || b.status === 'checked_in') && b.checkInDate >= today
-					)
-					.map((b) => b.checkInDate)
-					.sort()[0];
+			.map((apartment, index) => {
+				const mine = earningByApartment.get(apartment._id) ?? [];
+
+				let revenue = 0;
+				let bookedNights = 0;
+				for (const booking of mine) {
+					// Revenue counts a stay in the window it STARTS in; nights are clipped to the
+					// window, which is what lets a straddling stay count its inside half.
+					if (booking.checkInDate >= fromIso) revenue += booking.total;
+					bookedNights += nightsWithinWindow(booking.checkInDate, booking.checkOutDate, from, to);
+				}
 
 				return {
-					apartmentId: a._id,
-					title: a.title,
-					imageUrl: a.images[0]?.url ?? '',
-					status: a.status,
+					apartmentId: apartment._id,
+					title: apartment.title,
+					imageUrl: apartment.images[0]?.url ?? '',
+					status: apartment.status,
 					occupancyPct: Math.min(100, (bookedNights / windowDays) * 100),
 					revenue,
-					nextCheckIn: nextCheckIn ?? null
+					nextCheckIn: nextCheckIns[index]
 				};
 			})
 			// Best performers first — the question is "which of my places is carrying me".

@@ -17,9 +17,6 @@
 	// CLASSES
 	import { authClass, type CurrentUser } from '@/features/auth/classes/authClass.svelte';
 
-	// UTILS
-	import { installZodMessages } from '@/utils/zodMessages';
-
 	// COMPONENTS
 	import { Toaster } from '@/components/ui/sonner';
 	import NormalHeader from '@/components/ui/header/normal-header/normal-header.svelte';
@@ -27,11 +24,6 @@
 	import AuthErrorBanner from '@/features/auth/components/auth-error-banner/auth-error-banner.svelte';
 
 	let { children, data } = $props();
-
-	// The shared zod schemas carry NO messages — they are bundled into Convex, which must
-	// never hold display copy. This installs the sentences, client-side only, once at boot.
-	// Idempotent, so HMR re-running the module is harmless.
-	installZodMessages();
 
 	const isAuthShellPage = $derived(
 		page.route.id === '/(unprotected)/login' || page.route.id === '/(unprotected)/signup'
@@ -70,7 +62,7 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	{#if dev}
+	{#if !dev}
 		<script
 			defer
 			src="https://umami-sable-iota.vercel.app/script.js"

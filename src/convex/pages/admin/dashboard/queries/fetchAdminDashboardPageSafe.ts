@@ -37,7 +37,13 @@ const REPORTS_QUEUE_LIMIT = 5;
  *     analytics component's pre-aggregated rollups, global scope — every tracked event
  *     rolls up globally regardless of its host resource scope;
  *   - the only table reads are two `.take(5)` slices of the reports queue and the
- *     component-side user count.
+ *     component-side user count, which is itself `.take()`-bounded.
+ *
+ * That last one is why "cheap by construction" has to be enforced, not assumed: this
+ * subscription's read set spans the platform, so it re-runs on every rollup write anywhere,
+ * not once per page view. Anything unbounded added here is multiplied by the platform's
+ * whole event rate. Keep every read in this handler either an aggregate, a rollup, or
+ * explicitly capped.
  */
 export const fetchAdminDashboardPageSafe = query({
 	args: {},
@@ -175,7 +181,8 @@ async function readAdminDashboardPage(ctx: QueryCtx): Promise<AdminDashboardPage
 			reportsQueue: { items, total: newReportsTotal },
 			today: { signups, bookingsCreated, checkIns, pendingOpen },
 			platform: {
-				usersTotal,
+				usersTotal: usersTotal.total,
+				usersTotalCapped: usersTotal.capped,
 				publishedListings,
 				bookingsThisMonth: currentMonth.bookings,
 				revenueThisMonth: currentMonth.revenue,

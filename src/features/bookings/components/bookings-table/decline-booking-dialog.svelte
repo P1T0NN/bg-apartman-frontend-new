@@ -67,7 +67,9 @@
 	<div class="alert-dialog__header">
 		<h2 class="text-destructive">Decline this reservation request?</h2>
 		<p>
-			This declines {booking ? `${booking.guestFirstName} ${booking.guestLastName}` : ''}s request and emails them your reason. It can't be undone, so please explain your decision briefly and courteously.
+			This declines {booking ? `${booking.guestFirstName} ${booking.guestLastName}` : ''}s request
+			and emails them your reason. It can't be undone, so please explain your decision briefly and
+			courteously.
 		</p>
 	</div>
 
@@ -122,7 +124,7 @@
 		<Button type="button" variant="outline" onclick={() => (open = false)} disabled={busy}>
 			Keep request
 		</Button>
-		
+
 		<!-- Never disabled on validity: clicking must SAY what's wrong (the form's own
 		     field errors + toast), not silently refuse. -->
 		<Button type="submit" variant="destructive" disabled={busy}>

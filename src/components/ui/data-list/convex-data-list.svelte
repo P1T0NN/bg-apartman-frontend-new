@@ -7,16 +7,17 @@
 
 	// COMPONENTS
 	import DataList from './data-list.svelte';
+	import { ErrorComponent } from '@/components/ui/error-component/index.js';
+
+	// UTILS
+	import { convexOneShotQuery } from '@/utils/convexOneShot.svelte.js';
 
 	// TYPES
 	import type { Snippet } from 'svelte';
 	import type { FunctionReference } from 'convex/server';
-	import type {
-		DataListControlsPlace,
-		DataListItemSnippetProps,
-		DataTableOptimizationStrategy,
-		PaginatedListPayload
-	} from './types.js';
+	import type { DataListControlsPlace, DataListItemSnippetProps } from './types.js';
+	import type { DataTableOptimizationStrategy } from '../data-table/types.js';
+	import type { PaginatedListPayload } from '@/shared/features/pagination/types/paginationTypes';
 
 	type ConvexPaginatedListQuery<T extends Record<string, unknown>> = FunctionReference<
 		'query',
@@ -46,7 +47,9 @@
 		item: itemSnippet,
 		empty,
 		error,
-		loading
+		loading,
+		onReady,
+		realtime = false
 	}: {
 		class?: string;
 		listClass?: string;
@@ -64,7 +67,23 @@
 		summaryLoading?: boolean;
 		hasError?: boolean;
 		item: Snippet<[DataListItemSnippetProps<T>]>;
+		/**
+		 * Handed back a `refetch()` for THIS list. Call it after a mutation made from an item
+		 * or a dialog on the same screen, so a one-shot list shows your own write. No-op when
+		 * `realtime`.
+		 */
+		onReady?: (controls: { refetch: () => void }) => void;
+		/**
+		 * Hold a live subscription instead of fetching once per args change. OFF by default
+		 * (`docs/GeneralSystemDesignRule.md`) — see `ConvexDataTable.realtime` for the full
+		 * rationale. Read once at mount; do not toggle at runtime.
+		 */
+		realtime?: boolean;
 		empty?: Snippet;
+		/**
+		 * Override the failure UI. Defaults to a shared `ErrorComponent` — a failed query must
+		 * never fall through to the empty state, which reports a broken read as "nothing here".
+		 */
 		error?: Snippet;
 		loading?: Snippet;
 	} = $props();
@@ -83,33 +102,43 @@
 		page = 1;
 	});
 
-	// svelte-ignore state_referenced_locally
-	const listQuery = useQuery(
-		query,
-		() => {
-			const extra = mergedQueryArgs;
-			switch (optimizationStrategy) {
-				case 'cursor': {
-					const cursor = cursorByPage[page - 1] ?? null;
-					return {
-						...extra,
-						paginationOpts: { numItems: pageSize, cursor }
-					};
-				}
-				case 'offset':
-					return {
-						...extra,
-						page,
-						paginationOpts: { numItems: pageSize, cursor: null }
-					};
-				default: {
-					const _never: never = optimizationStrategy;
-					return _never;
-				}
+	function currentArgs(): Record<string, unknown> {
+		const extra = mergedQueryArgs;
+		switch (optimizationStrategy) {
+			case 'cursor': {
+				const cursor = cursorByPage[page - 1] ?? null;
+				return {
+					...extra,
+					paginationOpts: { numItems: pageSize, cursor }
+				};
 			}
-		},
-		{ keepPreviousData: true }
-	);
+			case 'offset':
+				return {
+					...extra,
+					page,
+					paginationOpts: { numItems: pageSize, cursor: null }
+				};
+			default: {
+				const _never: never = optimizationStrategy;
+				return _never;
+			}
+		}
+	}
+
+	// Both return the same `{ data, error, isLoading }` surface, so nothing downstream branches
+	// on which one is in play. `realtime` is read once here on purpose — swapping a subscription
+	// for a one-shot mid-life would strand the open channel.
+	// svelte-ignore state_referenced_locally
+	const listQuery = realtime
+		? useQuery(query, currentArgs, { keepPreviousData: true })
+		: convexOneShotQuery(query, currentArgs, { keepPreviousData: true });
+
+	// `useQuery` re-runs itself on every relevant write, so its refetch is a no-op; the
+	// one-shot path needs a real one to show a mutation made from this very screen.
+	const refetch = () => {
+		if (!realtime) (listQuery as { refetch: () => void }).refetch();
+	};
+	$effect(() => onReady?.({ refetch }));
 
 	const listPayload = $derived(listQuery.data as PaginatedListPayload<T> | undefined);
 
@@ -181,7 +210,7 @@
 	{isEmpty}
 	item={itemSnippet}
 	{empty}
-	{error}
+	error={error ?? defaultError}
 	{loading}
 	bind:page
 	{totalPages}
@@ -192,3 +221,18 @@
 	{showPagination}
 	{controlsPlace}
 />
+
+<!--
+  Default failure UI, overridable via the `error` snippet. `onRetry` reloads instead of the
+  button's `invalidateAll()` default: this is a Convex `useQuery`, which only re-subscribes
+  when its args change or the component remounts.
+-->
+{#snippet defaultError()}
+	<ErrorComponent
+		variant="plain"
+		title="Couldn't load data"
+		description="Something went wrong while loading this list. Please try again."
+		retryLabel="Retry"
+		onRetry={() => location.reload()}
+	/>
+{/snippet}

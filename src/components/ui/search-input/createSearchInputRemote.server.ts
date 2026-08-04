@@ -11,6 +11,9 @@ import { api } from '@/convex/_generated/api';
 // UTILS
 import { resolveClientAddress } from '@/utils/clientAddress.js';
 
+// CONFIG
+import { SEARCH_DATA } from '@/shared/config.js';
+
 // SCHEMAS
 import type { SearchInputRemoteSchemaInput } from './searchInputSchemas.js';
 
@@ -22,12 +25,16 @@ import type {
 	FunctionReference,
 	FunctionReturnType
 } from 'convex/server';
-import type { ConvexRateLimitName } from '@/convex/rateLimits/registry.js';
+import type { ConvexRateLimitName } from '@/shared/features/rateLimits/types/rateLimitsTypes';
 import type { SearchInputItem, SearchInputRemoteCommandResult } from './types.js';
 
 const DEFAULT_SEARCH_LIMIT_SECRET_ENV = 'SEARCH_INPUT_RATE_LIMIT_SECRET';
 const DEFAULT_REMOTE_SEARCH_RESULTS = 5;
-const DEFAULT_REMOTE_SEARCH_MAX_RESULTS = 25;
+const DEFAULT_REMOTE_SEARCH_MAX_RESULTS = SEARCH_DATA.REMOTE_MAX_RESULTS;
+/**
+ * 1, not `SEARCH_DATA.MIN_QUERY_LENGTH` — the remote bridge is a passthrough and lets each
+ * source declare its own floor; the Convex search factory enforces the real one.
+ */
 const DEFAULT_REMOTE_MIN_QUERY_LENGTH = 1;
 
 export type SearchInputRemoteQuery<Row = unknown> = FunctionReference<

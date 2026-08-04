@@ -28,12 +28,12 @@
 	 *
 	 * Opened from the reservations page when the detail sheet fires the `cancel` action.
 	 */
-	let { 
-		booking, 
-		open = $bindable(false) 
-	}: { 
-		booking: typesBookingSafe | null; 
-		open?: boolean 
+	let {
+		booking,
+		open = $bindable(false)
+	}: {
+		booking: typesBookingSafe | null;
+		open?: boolean;
 	} = $props();
 
 	// The form validates the whole `cancelBookingOwnerSchema` client-side — the exact schema
@@ -45,7 +45,9 @@
 		locale: 'en'
 	});
 
-	const guestName = $derived(booking ? `${booking.guestFirstName} ${booking.guestLastName}` : 'The guest');
+	const guestName = $derived(
+		booking ? `${booking.guestFirstName} ${booking.guestLastName}` : 'The guest'
+	);
 
 	const reasonLength = $derived(values.cancelReason.trim().length);
 

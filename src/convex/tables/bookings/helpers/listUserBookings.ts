@@ -9,7 +9,7 @@ import {
 	normalizeOneBasedPage,
 	paginatedQueryArgs,
 	resolvePaginationOpts
-} from '@/convex/helpers/paginationHelpers';
+} from '@/convex/pagination/paginationHelpers';
 
 // UTILS
 import { bookingToBookingSafe } from '@/convex/tables/bookings/utils/bookingToBookingSafe';

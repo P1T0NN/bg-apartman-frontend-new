@@ -12,7 +12,7 @@
 
 	// UTILS
 	import { safeMutation, uploadFileToConvexStorage, uploadFileToR2 } from '@/utils/convexHelpers';
-	import { translateFromBackend } from '@/utils/translateFromBackend';
+	import { translateFromBackend } from '@/features/validations/utils/translateFromBackend';
 	import { processUploadFields } from './utils.js';
 
 	// TYPES

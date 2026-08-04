@@ -7,25 +7,9 @@ export type typesApiResult<TData = unknown> = {
 	data?: TData;
 };
 
-/** One inline validation message per field key. */
-export type FieldErrors<T extends string = string> = Partial<Record<T, string>>;
-
-/**
- * Locale-agnostic message descriptor: a message key + its interpolation params.
- * The backend emits these; the frontend resolves them in whatever locale the user is in.
- *
- * `params` must be JSON-serialisable (it crosses the wire). Use only `string | number | boolean`.
- *
- * @example
- * // Backend:
- * return { success: true, message: { key: 'GenericMessages.DATA_TABLE_DELETED_ALL', params: { count: 3 } } };
- * // Frontend (see `translateFromBackend`):
- * toast.success(translateFromBackend(result.message));
- */
-export type TranslatableMessage = {
-	key: string;
-	params?: Record<string, string | number | boolean>;
-};
+// TYPES — `FieldErrors` / `TranslatableMessage` / `ZodIssueLike` are owned by the
+// validations feature; import them from there, never through this module.
+import type { TranslatableMessage } from '@/shared/features/validations/types/validationsTypes';
 
 /**
  * Shared return envelope for mutations/actions across the Convex backend.

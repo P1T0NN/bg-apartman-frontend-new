@@ -1,3 +1,7 @@
+// SvelteKit half of the client-IP story — needs a `RequestEvent`, so it can never live in
+// `src/shared/` (Convex imports that folder). The pure half (`CLIENT_IP_HEADER`,
+// `resolveAuthClientIp`) is in `@/shared/utils/clientAddress`.
+
 // TYPES
 import type { RequestEvent } from '@sveltejs/kit';
 

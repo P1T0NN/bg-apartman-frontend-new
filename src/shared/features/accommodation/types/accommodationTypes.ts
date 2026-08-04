@@ -36,6 +36,16 @@ export type typesAccommodationFeeState =
  * renders "New" when they're absent. `isSuperhost` stays `false` until a host-reputation
  * concept exists.
  */
+/**
+ * One `<url>` entry in `/sitemap.xml`. Deliberately the two fields the protocol actually
+ * uses — a sitemap is a URL list, not a content payload.
+ */
+export type SitemapAccommodation = {
+	slug: string;
+	/** Epoch ms, rendered as `<lastmod>`. */
+	updatedAt: number;
+};
+
 export type SearchAccommodation = Pick<
 	Doc<'apartments'>,
 	'slug' | 'title' | 'type' | 'city' | 'bedrooms' | 'bathrooms' | 'maxGuests'

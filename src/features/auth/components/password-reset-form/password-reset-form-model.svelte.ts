@@ -10,13 +10,13 @@ import {
 	passwordResetRequestFormSchema,
 	passwordResetVerifyFormSchema
 } from '@/shared/features/auth/schemas/authSchemas';
-import { zodIssuesToFieldErrors } from '@/shared/utils/zodFieldErrors';
-import { rateLimitMessage } from '@/utils/rateLimitMessages';
+import { zodIssuesToFieldErrors } from '@/features/validations/utils/fieldErrors';
+import { rateLimitMessage } from '@/features/validations/utils/translateFromBackend';
 import { appGoto } from '@/utils/app-navigation';
 
 // TYPES
 import type { PasswordResetFormStep, PasswordResetField } from './passwordResetFormTypes.js';
-import type { FieldErrors } from '@/shared/types/types';
+import type { FieldErrors } from '@/shared/features/validations/types/validationsTypes';
 
 export function createPasswordResetForm() {
 	let step = $state<PasswordResetFormStep>('forgot');
@@ -75,20 +75,15 @@ export function createPasswordResetForm() {
 		const p = passwordResetVerifyFormSchema.safeParse({
 			code: String(formData.get('code') ?? '').trim(),
 			newPassword: submittedNewPassword,
+			// The match rule lives in the schema, so `confirmPassword` has to be parsed with
+			// the rest — it is bound state here, not a form field.
+			confirmPassword,
 			email: step.email,
 			flow: String(formData.get('flow') ?? '')
 		});
 
 		if (!p.success) {
 			fieldErrors = zodIssuesToFieldErrors<PasswordResetField>(p.error.issues);
-			errorMessage = null;
-			return;
-		}
-
-		if (submittedNewPassword !== confirmPassword) {
-			fieldErrors = {
-				confirmPassword: 'Passwords must match.'
-			};
 			errorMessage = null;
 			return;
 		}

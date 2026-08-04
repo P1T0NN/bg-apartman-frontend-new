@@ -38,6 +38,8 @@ export type AdminDashboardPage = {
 	};
 	platform: {
 		usersTotal: number;
+		/** True once `usersTotal` hit its read cap — render it as "N+", not an exact figure. */
+		usersTotalCapped: boolean;
 		publishedListings: number;
 		bookingsThisMonth: number;
 		/**

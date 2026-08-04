@@ -35,7 +35,9 @@
 		bodyDescription,
 		variant = 'card',
 		showRetry = true,
+		// Fallback only — callers pass a localized label (see the `[id]` page).
 		retryLabel = 'Try again',
+		onRetry,
 		message,
 		class: className,
 		children
@@ -48,6 +50,12 @@
 		variant?: ErrorComponentVariant;
 		showRetry?: boolean;
 		retryLabel?: string;
+		/**
+		 * What the retry button does; see {@link TryAgainErrorButton}. Defaults to
+		 * `invalidateAll()` (right for loader-backed pages). Convex `useQuery` errors need a
+		 * real retry passed here — `invalidateAll()` does not re-subscribe a live query.
+		 */
+		onRetry?: () => void;
 		message?: string;
 		class?: string;
 		children?: Snippet;
@@ -81,7 +89,7 @@
 		</div>
 
 		{#if showRetry}
-			<TryAgainErrorButton label={retryLabel} />
+			<TryAgainErrorButton label={retryLabel} {onRetry} />
 		{/if}
 
 		{#if children}
@@ -119,7 +127,7 @@
 		</div>
 
 		{#if showRetry}
-			<TryAgainErrorButton label={retryLabel} />
+			<TryAgainErrorButton label={retryLabel} {onRetry} />
 		{/if}
 
 		{#if children}
@@ -135,7 +143,7 @@
 		<p class="mt-2 text-sm text-muted-foreground">{message ?? description}</p>
 		{#if showRetry}
 			<div class="mt-4 flex justify-center">
-				<TryAgainErrorButton label={retryLabel} />
+				<TryAgainErrorButton label={retryLabel} {onRetry} />
 			</div>
 		{/if}
 		{#if children}
@@ -183,7 +191,7 @@
 				{/if}
 
 				{#if showRetry}
-					<TryAgainErrorButton label={retryLabel} />
+					<TryAgainErrorButton label={retryLabel} {onRetry} />
 				{/if}
 
 				{#if children}

@@ -29,9 +29,15 @@ export const fetchGuestDashboardPageSafe = query({
 		if (!userId) return null;
 
 		// Each read is scoped to one status slice via `by_guest_status_checkin` — not the whole
-		// booking history. `upcoming` is naturally small (future trips only): we slice it for the
-		// hero + "more" and reuse its length as the exact count, so it's read just once.
-		const upcoming = await getUpcomingBookingForCurrentUser(ctx);
+		// booking history. `upcoming` is sliced for the hero + "more" and its length reused as
+		// the count, so it's read once. Capped like its `checkedOut` twin below: "future trips
+		// only" is small for a normal guest but has no ceiling of its own, and this is a live
+		// subscription — a guest holding a year of weekend bookings would re-read all of them
+		// on every write, to render four.
+		const upcoming = await getUpcomingBookingForCurrentUser(
+			ctx,
+			GUEST_DASHBOARD.UPCOMING_COUNT_CAP + 1
+		);
 
 		const checkedOut = await ctx.db
 			.query('bookings')

@@ -117,11 +117,9 @@
 		};
 
 		if (checkoutRequired) {
-			const result = await safeAction(
-				convex,
-				api.payments.checkout.createCheckoutSession,
-				{ bookingId: bookingId as Id<'bookings'> }
-			);
+			const result = await safeAction(convex, api.payments.checkout.createCheckoutSession, {
+				bookingId: bookingId as Id<'bookings'>
+			});
 			if (result?.success && result.data?.checkoutUrl) {
 				window.location.href = result.data.checkoutUrl;
 				return;

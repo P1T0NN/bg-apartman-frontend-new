@@ -106,7 +106,7 @@
 				Not sure the guest is coming? Ask for a one-click confirmation — they get an email, and
 				you'll see the answer here.
 			</p>
-			
+
 			<Button variant="outline" size="sm" class="shrink-0" onclick={request} disabled={isPending}>
 				{#if isPending}
 					<Loader class="h-3 w-3 animate-spin" />

@@ -1,5 +1,9 @@
+// Pure half of the client-IP story — dual-runtime (Convex imports this), so nothing here
+// may reference `@sveltejs/kit`, Svelte, or the DOM. The SvelteKit half
+// (`resolveClientAddress`, which needs a `RequestEvent`) lives in `@/utils/clientAddress`.
+
 /**
- * Custom header stamped by {@link ../routes/api/auth/[...all]/+server.ts} with the
+ * Custom header stamped by `src/routes/api/auth/[...all]/+server.ts` with the
  * real client IP. Must stay aligned with `advanced.ipAddress.ipAddressHeaders` in
  * `src/convex/auth/auth.ts`.
  */

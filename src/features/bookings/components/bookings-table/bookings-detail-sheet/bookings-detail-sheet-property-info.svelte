@@ -27,7 +27,7 @@
 
 		<div class="min-w-0">
 			<p class="truncate text-sm font-medium">{apartment.title}</p>
-            
+
 			<p class="flex items-center gap-1 truncate text-xs text-muted-foreground">
 				<MapPinIcon class="size-3 shrink-0" aria-hidden="true" />
 				{apartment.city}

@@ -1,5 +1,8 @@
 // DATA
-import { BOOKING_STATUS_CONFIG, PAYMENT_STATUS_CONFIG } from '@/features/bookings/data/bookingsData';
+import {
+	BOOKING_STATUS_CONFIG,
+	PAYMENT_STATUS_CONFIG
+} from '@/features/bookings/data/bookingsData';
 
 // TYPES
 import type { ColumnDef } from '@/components/ui/data-table/types.js';

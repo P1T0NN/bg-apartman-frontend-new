@@ -47,8 +47,20 @@ export const auditLogTable = defineTable({
 	ip: v.optional(v.string()),
 	userAgent: v.optional(v.string()),
 	status: v.union(v.literal('success'), v.literal('failure')),
-	errorMessage: v.optional(v.string())
+	errorMessage: v.optional(v.string()),
+	/**
+	 * When this row becomes purgeable, stamped at write time from the action's retention.
+	 * `undefined` means keep forever — which is also what legacy rows written before this
+	 * column read as, so they are never purged rather than wrongly purged.
+	 *
+	 * Retention is per-action, so "is this row expired?" is not a function of age alone.
+	 * Resolving it at write time is what lets the sweep read ONLY expired rows instead of
+	 * walking the table to ask each one.
+	 */
+	retentionUntil: v.optional(v.number())
 })
 	.index('by_user', ['userId'])
 	.index('by_action', ['action'])
-	.index('by_resource', ['resource.table', 'resource.id']);
+	.index('by_resource', ['resource.table', 'resource.id'])
+	// The retention sweep's only read: `lte(now)` IS the set of expired rows.
+	.index('by_retention_until', ['retentionUntil']);

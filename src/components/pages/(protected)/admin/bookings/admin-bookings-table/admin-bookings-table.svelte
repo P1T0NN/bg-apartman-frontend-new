@@ -105,7 +105,9 @@
 <!-- `listBookingsAdmin` slices by `page` and returns an exact `totalCount` — it must be
      driven in OFFSET mode. Left on the cursor default it never receives `page` (so every
      page returns the first slice) and `isDone` never lands, so Next stays enabled forever. -->
+<!-- realtime: guests create bookings and the lifecycle cron advances statuses under the admin. -->
 <ConvexDataTable
+	realtime
 	caption="Bookings"
 	query={api.tables.bookings.queries.listBookingsAdmin.listBookingsAdmin}
 	optimizationStrategy="offset"

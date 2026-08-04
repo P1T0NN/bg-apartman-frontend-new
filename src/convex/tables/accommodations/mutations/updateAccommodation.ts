@@ -11,6 +11,7 @@ import { sendAccommodationSuspendedEmail } from '@/convex/email/sendAccommodatio
 import { optStr } from '@/shared/utils/validationUtils';
 import { r2PublicUrl } from '@/convex/storage/r2/r2';
 import { validateImageCount } from '@/shared/features/accommodation/utils/validateImageCount';
+import { splitRegionPlaceId } from '@/shared/features/accommodation/utils/splitRegionPlaceId';
 import { ensureHostPayoutAccount } from '@/convex/payments/onboarding';
 import { onlinePaymentsEnabled } from '@/convex/payments/adapter';
 import {
@@ -119,6 +120,8 @@ export const updateApartment = authMutation('updateApartment')({
 			city: args.city,
 			country: optStr(args.country),
 			placeId: optStr(args.placeId),
+			// Derived here, never accepted from the client — one source of truth for the split.
+			...splitRegionPlaceId(optStr(args.placeId)),
 			coordinates: args.coordinates,
 			timeZone: optStr(args.timeZone),
 

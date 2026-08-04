@@ -2,6 +2,9 @@
 import { v } from 'convex/values';
 import { query } from '@/convex/_generated/server';
 
+// CONFIG
+import { OPERATIONAL_LIMITS } from '@/shared/config';
+
 // UTILS
 import { authComponent } from '@/convex/auth/auth';
 import { requireAdmin } from '@/convex/auth/middleware/authMiddleware';
@@ -9,14 +12,14 @@ import {
 	paginatedQueryArgs,
 	normalizeOneBasedPage,
 	resolvePaginationOpts
-} from '@/convex/helpers/paginationHelpers';
+} from '@/convex/pagination/paginationHelpers';
 
 // SCHEMAS
 import { apartmentStatus, apartmentType } from '../schemas/accommodationsSchemas';
 
 // TYPES
 import type { Doc } from '@/convex/_generated/dataModel';
-import type { PaginatedListPayload } from '@/components/ui/data-table/types';
+import type { PaginatedListPayload } from '@/shared/features/pagination/types/paginationTypes';
 
 /** Lean row for the `/admin/accommodations` DataTable (and the user-detail Accommodations tab). */
 export type AdminAccommodationRow = Pick<
@@ -88,8 +91,22 @@ export const listAccommodationsAdmin = query({
 			indexed = ctx.db.query('apartments');
 		}
 
+		// Capped. `published` is a permanent state and the no-filter branch is unindexed, so
+		// both grow with the catalogue forever — and apartment documents are fat (images,
+		// amenities, description), so this trips Convex's per-query ceiling sooner than a
+		// row count suggests. Type and title filters below are in-memory, so they narrow the
+		// RESULT, never the read.
 		const needle = args.search?.trim().toLowerCase();
-		const all = (await indexed.order(order).collect()).filter((a) => {
+		const scanned = await indexed.order(order).take(OPERATIONAL_LIMITS.ADMIN_LIST_SCAN_LIMIT);
+
+		if (scanned.length >= OPERATIONAL_LIMITS.ADMIN_LIST_SCAN_LIMIT) {
+			console.warn(
+				'[listAccommodationsAdmin] scan cap reached — view truncated, totalCount is a floor',
+				{ cap: OPERATIONAL_LIMITS.ADMIN_LIST_SCAN_LIMIT, status: args.status }
+			);
+		}
+
+		const all = scanned.filter((a) => {
 			if (args.hostId !== undefined && args.status !== undefined && a.status !== args.status)
 				return false;
 			if (args.type !== undefined && a.type !== args.type) return false;

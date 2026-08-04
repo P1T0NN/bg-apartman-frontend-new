@@ -1,6 +1,10 @@
+// CONFIG
+import { PROJECT_SETTINGS } from '@/shared/config';
+
 // UTILS
 import { BLOCKING_BOOKING_STATUSES } from '@/shared/features/booking/data/bookingsData';
 import { nightRangesOverlap } from '@/shared/features/booking/utils/nightRangesOverlap';
+import { shiftIsoDate } from '@/shared/utils/dateUtils';
 
 // TYPES
 import type { Id } from '@/convex/_generated/dataModel';
@@ -19,9 +23,18 @@ import type { QueryCtx } from '@/convex/_generated/server';
  * Convex mutations are serializable, so the re-check + patch is atomic — two hosts
  * confirming overlapping requests cannot both win.
  *
- * Performance: the `by_apartment_dates` index pre-trims bookings to those starting before
- * this stay ends; blocks are read per-apartment, ordered by start date. The overlap test
- * then runs in memory over a small per-apartment slice.
+ * **Cost.** This is the hottest read in the app: the public `/search` subscription fans it
+ * out over up to `SEARCH_SCAN_LIMIT` apartments per dated query, and it re-runs on every
+ * booking write anywhere. So both reads are bounded on BOTH ends and the width is fixed —
+ * independent of how long a listing has been on the platform:
+ *
+ *   - bookings: a stay can only overlap this window if it starts within
+ *     `MAX_STAY_NIGHTS` before it. That ceiling is enforced by `createBookingSchema`, which
+ *     is what makes the lower bound safe rather than a guess — raise one and you must raise
+ *     the other, or long stays stop being seen and their nights become double-bookable.
+ *   - blocks: exact, no assumption needed. Blocks are always single-night
+ *     (`endDate = startDate + 1`, see `blockApartmentDates`), so a block overlaps this
+ *     window iff its `startDate` falls inside it.
  */
 export async function hasAvailabilityConflict(
 	ctx: QueryCtx,
@@ -29,10 +42,15 @@ export async function hasAvailabilityConflict(
 	checkInDate: string,
 	checkOutDate: string
 ): Promise<boolean> {
+	const earliestOverlappingCheckIn = shiftIsoDate(checkInDate, -PROJECT_SETTINGS.MAX_STAY_NIGHTS);
+
 	const bookingsStartingBefore = await ctx.db
 		.query('bookings')
 		.withIndex('by_apartment_dates', (q) =>
-			q.eq('apartmentId', apartmentId).lt('checkInDate', checkOutDate)
+			q
+				.eq('apartmentId', apartmentId)
+				.gte('checkInDate', earliestOverlappingCheckIn)
+				.lt('checkInDate', checkOutDate)
 		)
 		.collect();
 
@@ -43,14 +61,12 @@ export async function hasAvailabilityConflict(
 	);
 	if (bookingConflict) return true;
 
-	const blocksStartingBefore = await ctx.db
+	const overlappingBlocks = await ctx.db
 		.query('apartmentBlocks')
 		.withIndex('by_apartment', (q) =>
-			q.eq('apartmentId', apartmentId).lt('startDate', checkOutDate)
+			q.eq('apartmentId', apartmentId).gte('startDate', checkInDate).lt('startDate', checkOutDate)
 		)
 		.collect();
 
-	return blocksStartingBefore.some((block) =>
-		nightRangesOverlap(checkInDate, checkOutDate, block.startDate, block.endDate)
-	);
+	return overlappingBlocks.length > 0;
 }

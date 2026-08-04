@@ -30,12 +30,12 @@ import type { Id } from '@/convex/_generated/dataModel';
 export const findTransferableEarnings = internalQuery({
 	args: {},
 	handler: async (ctx) => {
-		// ponytail: unindexed scan of `hostPayoutAccounts` — one row per host who ever
-		// enabled online payments, so it's small by construction. Add a `by_transfers_active`
-		// index if the host count ever makes this a real read.
+		// Indexed, not `.filter()`ed: a filter runs AFTER the fetch, so it would scan every
+		// host who ever started onboarding to find the payable minority — and most sit at
+		// `transfersActive: false` (stage 2), so almost all of that read is waste.
 		const payableHosts = await ctx.db
 			.query('hostPayoutAccounts')
-			.filter((q) => q.eq(q.field('transfersActive'), true))
+			.withIndex('by_transfers_active', (q) => q.eq('transfersActive', true))
 			.take(OPERATIONAL_LIMITS.BOOKING_LIFECYCLE_MAX_PER_RUN);
 
 		const eligible: {

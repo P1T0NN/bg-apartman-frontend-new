@@ -63,9 +63,27 @@ export const listingFeeSweep = internalMutation({
 
 		// Only `published` rows can be reminded or expired: a suspended/archived listing has
 		// no live period to defend, and re-publishing it is an admin decision, not a billing one.
+		//
+		// Read in EXPIRY order, bounded to periods already inside the reminder window. Two
+		// things this buys, both load-bearing:
+		//   - cost stops scaling with catalogue size. `published` is a permanent state, so
+		//     the old prefix-only read got more expensive every day to find the same handful
+		//     of due rows;
+		//   - the per-run cap stops starving. Creation order meant that past the cap the
+		//     NEWEST listings were never swept — free listings forever, silently. Expiry
+		//     order makes the cap a drain queue: most-overdue first, rest next run.
+		// The `.gte(0)` end excludes rows with no period stamped — rule 2 above, enforced at
+		// the index instead of skipped in the loop.
+		const dueThreshold =
+			now + (ACCOMMODATIONS_CONFIG.LISTING_FEE.REMINDER_DAYS_BEFORE + 1) * MS_PER_DAY;
 		const published = await ctx.db
 			.query('apartments')
-			.withIndex('by_status', (q) => q.eq('status', 'published'))
+			.withIndex('by_status_expiry', (q) =>
+				q
+					.eq('status', 'published')
+					.gte('apartmentSubscriptionExpiryDate', 0)
+					.lte('apartmentSubscriptionExpiryDate', dueThreshold)
+			)
 			.take(OPERATIONAL_LIMITS.LISTING_FEE_SWEEP_MAX_PER_RUN);
 
 		for (const apartment of published) {

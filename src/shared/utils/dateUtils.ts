@@ -16,6 +16,17 @@ export function monthStartUtc(now: number, offset: number): number {
 	return Date.UTC(d.getUTCFullYear(), d.getUTCMonth() - offset, 1);
 }
 
+/**
+ * ISO date `days` before/after `isoDate` (negative shifts back). Used to turn a stay-length
+ * ceiling into an index lower bound — see `PROJECT_SETTINGS.MAX_STAY_NIGHTS`.
+ */
+export function shiftIsoDate(isoDate: string, days: number): string {
+	const ms = Date.parse(`${isoDate}T00:00:00Z`);
+	if (Number.isNaN(ms)) return isoDate;
+
+	return new Date(ms + days * 86_400_000).toISOString().slice(0, 10);
+}
+
 /** Whole nights between two ISO dates (check-out exclusive). 0 when either is missing. */
 export function nightsBetween(startISO?: string | null, endISO?: string | null): number {
 	if (!startISO || !endISO) return 0;

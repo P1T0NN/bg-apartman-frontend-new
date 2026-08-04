@@ -1,5 +1,9 @@
+// CONFIG
+import { PROJECT_SETTINGS } from '@/shared/config';
+
 // UTILS
 import { nightRangesOverlap } from '@/shared/features/booking/utils/nightRangesOverlap';
+import { shiftIsoDate } from '@/shared/utils/dateUtils';
 
 // TYPES
 import type { Doc, Id } from '@/convex/_generated/dataModel';
@@ -25,17 +29,24 @@ export async function findOverlappingPendingBookings(
 	checkOutDate: string,
 	excludeBookingId: Id<'bookings'>
 ): Promise<Doc<'bookings'>[]> {
-	const startingBefore = await ctx.db
+	// Reads ONLY pending rows in the overlap window. The status column keeps every terminal
+	// row out of the read entirely, and the lower bound keeps it a fixed-width scan: a stay
+	// can reach into this window only if it starts within MAX_STAY_NIGHTS of it, a ceiling
+	// `createBookingSchema` enforces.
+	const overlapping = await ctx.db
 		.query('bookings')
-		.withIndex('by_apartment_dates', (q) =>
-			q.eq('apartmentId', apartmentId).lt('checkInDate', checkOutDate)
+		.withIndex('by_apartment_status_checkin', (q) =>
+			q
+				.eq('apartmentId', apartmentId)
+				.eq('status', 'pending')
+				.gte('checkInDate', shiftIsoDate(checkInDate, -PROJECT_SETTINGS.MAX_STAY_NIGHTS))
+				.lt('checkInDate', checkOutDate)
 		)
 		.collect();
 
-	return startingBefore.filter(
+	return overlapping.filter(
 		(booking) =>
 			booking._id !== excludeBookingId &&
-			booking.status === 'pending' &&
 			booking.paymentStatus !== 'awaiting' &&
 			nightRangesOverlap(checkInDate, checkOutDate, booking.checkInDate, booking.checkOutDate)
 	);

@@ -5,13 +5,13 @@
 
 	// COMPONENTS
 	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
-	import { Card } from '@/components/ui/card/index.js';
-	import { Skeleton } from '@/components/ui/skeleton/index.js';
-	import HostAnalyticsPeriodPicker, {
-		type AnalyticsWindow
-	} from '@/components/pages/(protected)/host/analytics/host-analytics-period-picker.svelte';
+	import ErrorComponent from '@/components/ui/error-component/error-component.svelte';
+	import { type AnalyticsWindow } from '@/components/pages/(protected)/host/analytics/host-analytics-period-picker.svelte';
+	import HostAnalyticsHeader from '@/components/pages/(protected)/host/analytics/host-analytics-header.svelte';
 	import HostAnalyticsRevenueChart from '@/components/pages/(protected)/host/analytics/host-analytics-revenue-chart.svelte';
 	import HostAnalyticsPerAccommodationTable from '@/components/pages/(protected)/host/analytics/host-analytics-per-accommodation-table.svelte';
+	import HostAnalyticsLoading from '@/components/pages/(protected)/host/analytics/loading/host-analytics-loading.svelte';
+	import HostAnalyticsEmpty from '@/components/pages/(protected)/host/analytics/empty/host-analytics-empty.svelte';
 
 	// UTILS
 	import { safeQuery } from '@/utils/convexHelpers';
@@ -74,33 +74,19 @@
 <SvelteHead title="Analytics" description="How your accommodations are performing." noIndex />
 
 <section class="flex w-full flex-col gap-6 p-4 md:p-6">
-	<header class="flex flex-wrap items-start justify-between gap-4">
-		<div class="flex flex-col gap-1">
-			<h1 class="text-2xl font-semibold tracking-tight">Analytics</h1>
-			<p class="text-sm text-muted-foreground">
-				How your accommodations are performing — trend and per-listing.
-			</p>
-		</div>
-
-		<HostAnalyticsPeriodPicker bind:analyticsWindow />
-	</header>
+	<HostAnalyticsHeader bind:analyticsWindow />
 
 	{#if failed}
-		<Card class="p-8 text-center">
-			<p class="text-sm text-muted-foreground">
-				Could not load analytics. Try refreshing the page.
-			</p>
-		</Card>
+		<ErrorComponent
+			variant="plain"
+			title="Could not load analytics"
+			description="Try refreshing the page."
+			showRetry={false}
+		/>
 	{:else if data === undefined}
-		<Skeleton class="h-72 w-full rounded-xl" />
-		<Skeleton class="h-48 w-full rounded-xl" />
+		<HostAnalyticsLoading />
 	{:else if !hasAnything}
-		<Card class="p-8 text-center">
-			<p class="text-sm text-muted-foreground">
-				Nothing here for this period — try a longer range, or numbers appear with your first
-				confirmed booking.
-			</p>
-		</Card>
+		<HostAnalyticsEmpty />
 	{:else}
 		<HostAnalyticsRevenueChart series={data.series} bucketUnit={data.bucketUnit} />
 		<HostAnalyticsPerAccommodationTable rows={data.perAccommodation} />

@@ -2,8 +2,12 @@
 import { z } from 'zod';
 import { zid } from 'convex-helpers/server/zod4';
 
+// CONFIG
+import { PROJECT_SETTINGS } from '@/shared/config';
+
 // UTILS
 import { nightsBetween } from '@/shared/utils/dateUtils';
+import { withinMaxStay } from '@/shared/features/booking/utils/withinMaxStay';
 
 /**
  * Booking schemas — the single source of truth, shared by BOTH sides.
@@ -16,7 +20,7 @@ import { nightsBetween } from '@/shared/utils/dateUtils';
  * **No error messages anywhere in this file, deliberately.** These schemas are bundled into
  * Convex, so a message string here would drag display copy into a backend that never
  * renders a word. The rule lives here; the sentence lives in the client-only error map
- * (`src/utils/zodMessages.ts`). The one `.refine` below passes a KEY the map
+ * (`shared/features/validations/data/backendMessages.ts`). The one `.refine` below passes a KEY the map
  * recognises, not a sentence.
  *
  * Framework-free by contract: plain TS + zod only — no `$app`/`$env`, no browser globals.
@@ -24,7 +28,8 @@ import { nightsBetween } from '@/shared/utils/dateUtils';
 
 /** Cross-field rules carry a stable KEY that `zodMessages` maps to copy. */
 export const BOOKING_ISSUE = {
-	MIN_ONE_NIGHT: 'booking.minOneNight'
+	MIN_ONE_NIGHT: 'ValidationMessages.Booking.minOneNight',
+	MAX_STAY_NIGHTS: 'ValidationMessages.Booking.maxStayNights'
 } as const;
 
 // ─── Guest-facing forms ───────────────────────────────────────────────────────
@@ -54,6 +59,10 @@ export const createBookingFormSchema = z
 	// Cross-field rule: needs both dates, so it lives on the object via `.refine`, not a field.
 	.refine((data) => nightsBetween(data.checkIn, data.checkOut) >= 1, {
 		params: { key: BOOKING_ISSUE.MIN_ONE_NIGHT },
+		path: ['checkOut']
+	})
+	.refine((data) => withinMaxStay(data.checkIn, data.checkOut), {
+		params: { key: BOOKING_ISSUE.MAX_STAY_NIGHTS, max: PROJECT_SETTINGS.MAX_STAY_NIGHTS },
 		path: ['checkOut']
 	});
 
@@ -89,6 +98,10 @@ export const createBookingSchema = z
 	})
 	.refine((data) => nightsBetween(data.checkInDate, data.checkOutDate) >= 1, {
 		params: { key: BOOKING_ISSUE.MIN_ONE_NIGHT },
+		path: ['checkOutDate']
+	})
+	.refine((data) => withinMaxStay(data.checkInDate, data.checkOutDate), {
+		params: { key: BOOKING_ISSUE.MAX_STAY_NIGHTS, max: PROJECT_SETTINGS.MAX_STAY_NIGHTS },
 		path: ['checkOutDate']
 	});
 

@@ -9,7 +9,7 @@
 	<h3 class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
 		Special requests
 	</h3>
-	
+
 	<div class="flex gap-2.5 rounded-lg border border-dashed bg-muted/20 p-3 text-sm">
 		<SparklesIcon class="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
 		<p class="leading-relaxed text-foreground/90">{text}</p>

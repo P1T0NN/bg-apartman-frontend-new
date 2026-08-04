@@ -2,7 +2,7 @@
 import { ACCOMMODATIONS_CONFIG } from '@/shared/config';
 
 // TYPES
-import type { TranslatableMessage } from '@/shared/types/types';
+import type { TranslatableMessage } from '@/shared/features/validations/types/validationsTypes';
 
 /**
  * Server-side photo-count gate (AccommodationsSystemDesign.md §3) — enforced in the

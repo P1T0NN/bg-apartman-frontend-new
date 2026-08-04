@@ -15,8 +15,9 @@ import { logAudit } from '../tables/auditLog/helpers/logAudit';
 // TYPES
 import type { MutationCtx } from '../_generated/server';
 import type { Doc, TableNames } from '../_generated/dataModel';
-import type { ConvexRateLimitName } from '../rateLimits/registry.js';
-import type { ConvexMutationResult, TranslatableMessage } from '@/shared/types/types.js';
+import type { ConvexRateLimitName } from '@/shared/features/rateLimits/types/rateLimitsTypes';
+import type { ConvexMutationResult } from '@/shared/types/types.js';
+import type { TranslatableMessage } from '@/shared/features/validations/types/validationsTypes';
 import type { AuditAction } from '../tables/auditLog/auditLogConfigs';
 
 // ─── Config types ────────────────────────────────────────────────────────────

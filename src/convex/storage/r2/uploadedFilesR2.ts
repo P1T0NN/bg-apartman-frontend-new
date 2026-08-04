@@ -3,7 +3,7 @@ import { v } from 'convex/values';
 
 // HELPERS
 import { createDeleteMutation } from '../../helpers/createDeleteMutation.js';
-import { fetchOptimized } from '../../helpers/fetchOptimized.js';
+import { fetchOptimized } from '../../pagination/fetchOptimized/fetchOptimized.js';
 
 // R2
 import { r2 } from './r2.js';

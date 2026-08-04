@@ -6,7 +6,7 @@ import { z } from 'zod';
  * `subscribeToNewsletters`.
  *
  * **No error messages here, deliberately** — the rule lives in the schema, the sentence in
- * the client-only error map (`src/utils/zodMessages.ts`).
+ * the client-only error map (`shared/features/validations/data/backendMessages.ts`).
  */
 
 export const newsletterSchema = z.object({

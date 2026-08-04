@@ -10,7 +10,7 @@ import { CONTENT_LIMITS } from '@/shared/config';
  * `/report` form validates against the same object.
  *
  * **No error messages here, deliberately** — the rule lives in the schema, the sentence in
- * the client-only error map (`src/utils/zodMessages.ts`).
+ * the client-only error map (`shared/features/validations/data/backendMessages.ts`).
  */
 
 export const REPORT_CATEGORIES = ['bug', 'idea', 'other'] as const;

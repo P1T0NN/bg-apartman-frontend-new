@@ -35,7 +35,7 @@
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
-	import { zodIssuesToFieldErrors } from '@/shared/utils/zodFieldErrors';
+	import { zodIssuesToFieldErrors } from '@/features/validations/utils/fieldErrors';
 	import { focusFirstError } from '@/utils/focusFirstError.js';
 	import { useProgress } from '@/features/uploadFile/utils/useProgress.svelte';
 	import { Progress } from '@/components/ui/progress/index.js';

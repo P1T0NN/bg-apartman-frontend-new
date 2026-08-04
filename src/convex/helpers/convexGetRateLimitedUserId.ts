@@ -7,7 +7,7 @@ import { convexRateLimiter } from '@/convex/convexRateLimiter';
 
 // TYPES
 import type { ActionCtx, MutationCtx } from '@/convex/_generated/server';
-import type { ConvexRateLimitName } from '@/convex/rateLimits/registry';
+import type { ConvexRateLimitName } from '@/shared/features/rateLimits/types/rateLimitsTypes';
 import type { ConvexErrorPayload } from '@/shared/types/types';
 
 /**

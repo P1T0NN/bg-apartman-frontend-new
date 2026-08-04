@@ -14,8 +14,8 @@
 	// UTILS
 	import { emailVerificationFormSchema } from '@/shared/features/auth/schemas/authSchemas';
 	import { cn, type WithElementRef } from '@/utils/utils.js';
-	import { zodIssuesToFieldErrors } from '@/shared/utils/zodFieldErrors';
-	import { rateLimitMessage } from '@/utils/rateLimitMessages';
+	import { zodIssuesToFieldErrors } from '@/features/validations/utils/fieldErrors';
+	import { rateLimitMessage } from '@/features/validations/utils/translateFromBackend';
 
 	// TYPES
 	import type { HTMLFormAttributes } from 'svelte/elements';
@@ -23,7 +23,7 @@
 		EmailVerificationField,
 		EmailVerificationResendConfig
 	} from './emailVerificationFormTypes.js';
-	import type { FieldErrors } from '@/shared/types/types';
+	import type { FieldErrors } from '@/shared/features/validations/types/validationsTypes';
 
 	const id = $props.id();
 

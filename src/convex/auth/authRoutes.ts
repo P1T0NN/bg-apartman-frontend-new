@@ -1,5 +1,5 @@
 // TYPES
-import type { ConvexRateLimitName } from '../rateLimits/registry';
+import type { ConvexRateLimitName } from '@/shared/features/rateLimits/types/rateLimitsTypes';
 
 /**
  * Better Auth route path → rate-limit bucket(s).

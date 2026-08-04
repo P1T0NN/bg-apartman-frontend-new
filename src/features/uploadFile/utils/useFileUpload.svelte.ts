@@ -1,5 +1,6 @@
 // LIBRARIES
 import { SvelteSet } from 'svelte/reactivity';
+import { toast } from 'svelte-sonner';
 
 // TYPES
 import type { UploadFileRow } from '../types/uploadFileTypes';
@@ -13,7 +14,35 @@ export type UseFileUploadArgs = {
 	getFiles: () => File[];
 	setFiles: (f: File[]) => void;
 	getDisabled: () => boolean;
+	/** The field's `accept` pattern, used to reject a wrong-type file AT PICK TIME. */
+	getAccept?: () => string | undefined;
 };
+
+/**
+ * Does `file` satisfy an `accept` attribute? Supports the three forms we use:
+ * `image/*`, an exact type (`image/png`), and an extension (`.png`).
+ *
+ * The browser's file picker already filters by `accept`, but a DRAG-AND-DROP (or a picker set
+ * to "all files") does not — those arrive unfiltered, which is how a `.txt` used to land in
+ * the form and get dropped later with no message at all.
+ */
+function matchesAccept(file: File, accept: string): boolean {
+	const patterns = accept
+		.split(',')
+		.map((p) => p.trim().toLowerCase())
+		.filter(Boolean);
+	if (patterns.length === 0) return true;
+
+	const type = file.type.toLowerCase();
+	const name = file.name.toLowerCase();
+	return patterns.some((p) =>
+		p.endsWith('/*')
+			? type.startsWith(p.slice(0, -1))
+			: p.startsWith('.')
+				? name.endsWith(p)
+				: type === p
+	);
+}
 
 /**
  * Stable key for a File, used for dedup and preview map lookups.
@@ -37,7 +66,7 @@ export function previewKey(f: File, index: number): string {
  * Use from `.svelte` / `.svelte.ts` with runes.
  */
 export function useFileUpload(args: UseFileUploadArgs) {
-	const { mode, getFile, setFile, getFiles, setFiles, getDisabled } = args;
+	const { mode, getFile, setFile, getFiles, setFiles, getDisabled, getAccept } = args;
 
 	let inputRef = $state<HTMLInputElement | null>(null);
 	let dragOver = $state(false);
@@ -87,15 +116,33 @@ export function useFileUpload(args: UseFileUploadArgs) {
 	function applyPickedList(list: FileList | null) {
 		if (!list?.length) return;
 
+		// Reject wrong-TYPE files here, where we can name the file and say why. Size is not
+		// checked at this point on purpose: a large photo is usually compressed under the cap by
+		// `optimizeImages`, so it is judged on its final size at upload time instead.
+		const accept = getAccept?.();
+		const picked: File[] = [];
+		for (const f of Array.from(list)) {
+			if (accept && !matchesAccept(f, accept)) {
+				toast.error(`"${f.name}" is not an accepted format. Accepted: ${accept}.`);
+				continue;
+			}
+			picked.push(f);
+		}
+
+		// Reset before the early return, so re-picking the SAME rejected file still fires
+		// `change` and shows the message again.
+		if (inputRef) inputRef.value = '';
+		if (picked.length === 0) return;
+
 		if (mode === 'single') {
-			setFile(list[0]);
+			setFile(picked[0]);
 			setFiles([]);
 		} else {
 			const existing = getFiles();
 			const seen = new SvelteSet(existing.map(fileKey));
 			const next = [...existing];
 
-			for (const f of Array.from(list)) {
+			for (const f of picked) {
 				const k = fileKey(f);
 				if (seen.has(k)) continue;
 				seen.add(k);
@@ -105,8 +152,6 @@ export function useFileUpload(args: UseFileUploadArgs) {
 			setFiles(next);
 			setFile(null);
 		}
-
-		if (inputRef) inputRef.value = '';
 	}
 
 	// --- handlers ----------------------------------------------------------

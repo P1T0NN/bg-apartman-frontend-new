@@ -57,7 +57,9 @@
 
 <!-- Offset query (slices by `page`, returns an exact `totalCount`) — the cursor default
      would re-serve the first slice on every page and never end. -->
+<!-- realtime: hosts submit and edit listings while an admin watches the moderation queue. -->
 <ConvexDataTable
+	realtime
 	caption="All listings"
 	query={api.tables.accommodations.queries.listAccommodationsAdmin.listAccommodationsAdmin}
 	optimizationStrategy="offset"

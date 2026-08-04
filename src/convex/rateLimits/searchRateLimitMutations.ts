@@ -7,11 +7,11 @@ import { convexRateLimiter } from '../convexRateLimiter';
 import { getAuthUserId } from '../auth/helpers/getAuthUserId';
 
 // CONFIG
-import { convexRateLimitRegistry } from './registry';
+import { convexRateLimitRegistry } from '@/shared/features/rateLimits/data/rateLimitsRegistry';
 
 // TYPES
 import type { ConvexErrorPayload } from '@/shared/types/types';
-import type { ConvexRateLimitName } from './registry';
+import type { ConvexRateLimitName } from '@/shared/features/rateLimits/types/rateLimitsTypes';
 
 const SEARCH_LIMIT_SECRET_ENV = 'SEARCH_INPUT_RATE_LIMIT_SECRET';
 type AuthenticatedKeyMode = 'user' | 'fallback' | 'userAndFallback';

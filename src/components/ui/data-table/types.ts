@@ -11,22 +11,10 @@ import type { Snippet } from 'svelte';
 export type DataTableOptimizationStrategy = 'cursor' | 'offset';
 
 /**
- * Shape returned by paginated list adapters. `totalCount` is `null` in cursor mode
- * and a finite number in offset mode. `continueCursor` is opaque in cursor mode
- * and the empty string in offset mode.
+ * The paginated-list wire contract. Defined in `shared/` (this file imports `Snippet` from
+ * `svelte`, so Convex must not reach it) and surfaced here for component consumers.
  */
-export type PaginatedListPayload<T = unknown> = {
-	page: T[];
-	isDone: boolean;
-	continueCursor: string;
-	totalCount: number | null;
-	/**
-	 * Optional query-specific side payload (filter counts, aggregates) computed in the same
-	 * query so consumers don't need a second subscription. Surfaced by `ConvexDataTable`
-	 * via `bind:extra`; the consumer narrows the type.
-	 */
-	extra?: unknown;
-};
+export type { PaginatedListPayload } from '@/shared/features/pagination/types/paginationTypes';
 
 /** Minimum breakpoint at which the column becomes visible in the table layout. */
 export type ColumnHideBelow = 'sm' | 'md' | 'lg';

@@ -7,8 +7,15 @@ import { deleteApartmentImageKeys } from '../helpers/deleteApartmentImages';
 import { getAuthUserId } from '@/convex/auth/helpers/getAuthUserId';
 import { authComponent } from '@/convex/auth/auth';
 
+// CONFIG
+import { PROJECT_SETTINGS } from '@/shared/config';
+
 // DATA
 import { ACTIVE_BOOKING_STATUSES } from '@/shared/features/booking/data/bookingsData';
+
+// UTILS
+import { todayInPropertyZone } from '@/shared/features/booking/utils/daysUntilCheckIn';
+import { shiftIsoDate } from '@/shared/utils/dateUtils';
 
 /**
  * Admin-OR-owner delete for an apartment accommodation (the factory's documented OR
@@ -42,7 +49,17 @@ export const deleteApartment = createDeleteMutation('deleteApartment', {
 		//    message instead of a generic FORBIDDEN. `safeMutation` toasts it and aborts.
 		const bookings = await ctx.db
 			.query('bookings')
-			.withIndex('by_apartment', (q) => q.eq('apartmentId', doc._id))
+			// Only stays that could still be active: a booking whose check-in is older than
+			// the longest possible stay has necessarily ended. Unbounded, this read the
+			// listing's entire history to answer one boolean.
+			.withIndex('by_apartment_dates', (q) =>
+				q
+					.eq('apartmentId', doc._id)
+					.gte(
+						'checkInDate',
+						shiftIsoDate(todayInPropertyZone(), -PROJECT_SETTINGS.MAX_STAY_NIGHTS)
+					)
+			)
 			.collect();
 		if (bookings.some((booking) => ACTIVE_BOOKING_STATUSES.has(booking.status))) {
 			throw new ConvexError({

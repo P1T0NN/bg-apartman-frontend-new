@@ -139,18 +139,18 @@ Split per `GeneralSystemDesignRule.md` § table counts: **NOW-questions** (curre
 come from the `@convex-dev/aggregate` instances in `src/convex/aggregates.ts`;
 **HAPPENED-questions** (events, revenue, series) come from `@piton-/analytics-convex`.
 
-| Value                                                      | Engine           | Read                                                                                                     |
-| ---------------------------------------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------- |
-| `reportsQueue.items`                                       | table read       | `reports.order('desc').take(5)` — the rows themselves, not a count                                       |
-| `reportsQueue.total`                                       | **aggregate**    | `aggregateReports.count(ctx)` (client caps the display)                                                  |
-| `today.signups`                                            | **analytics**    | `user.signed_up` count for today — happened-question                                                     |
-| `today.bookingsCreated`                                    | **analytics**    | `booking.created` count for today — stays 5 even if 2 cancel later                                       |
-| `today.checkIns`                                           | **aggregate** ⚠️ | `aggregateBookings.count(ns 'confirmed', bounds checkInDate = today)` — see note below                   |
-| `today.pendingOpen`                                        | **aggregate** ⚠️ | `aggregateBookings.count(ns 'pending')` — see note below                                                 |
-| `platform.usersTotal`                                      | **analytics**    | `user.signed_up` all-time — BA component table can't be aggregated (triggers don't see component writes) |
-| `platform.publishedListings`                               | **aggregate**    | `aggregateApartments.count(ns 'published')`                                                              |
-| `platform.bookingsThisMonth`, `series.bookings`            | **analytics**    | `bookingsConfirmed` monthly buckets — same mechanism as the host analytics 12-month read                 |
-| `platform.revenueThisMonth`, `series.revenue`              | **analytics** ⚠️ | `revenue − refunds` monthly buckets (`invoice.paid` / `refund.created`, global scope) — see note below   |
+| Value                                           | Engine           | Read                                                                                                     |
+| ----------------------------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------- |
+| `reportsQueue.items`                            | table read       | `reports.order('desc').take(5)` — the rows themselves, not a count                                       |
+| `reportsQueue.total`                            | **aggregate**    | `aggregateReports.count(ctx)` (client caps the display)                                                  |
+| `today.signups`                                 | **analytics**    | `user.signed_up` count for today — happened-question                                                     |
+| `today.bookingsCreated`                         | **analytics**    | `booking.created` count for today — stays 5 even if 2 cancel later                                       |
+| `today.checkIns`                                | **aggregate** ⚠️ | `aggregateBookings.count(ns 'confirmed', bounds checkInDate = today)` — see note below                   |
+| `today.pendingOpen`                             | **aggregate** ⚠️ | `aggregateBookings.count(ns 'pending')` — see note below                                                 |
+| `platform.usersTotal`                           | **analytics**    | `user.signed_up` all-time — BA component table can't be aggregated (triggers don't see component writes) |
+| `platform.publishedListings`                    | **aggregate**    | `aggregateApartments.count(ns 'published')`                                                              |
+| `platform.bookingsThisMonth`, `series.bookings` | **analytics**    | `bookingsConfirmed` monthly buckets — same mechanism as the host analytics 12-month read                 |
+| `platform.revenueThisMonth`, `series.revenue`   | **analytics** ⚠️ | `revenue − refunds` monthly buckets (`invoice.paid` / `refund.created`, global scope) — see note below   |
 
 > ⚠️ **Platform revenue depends on the `invoice.paid` / `refund.created` tracking calls**
 > defined in `AccommodationsSystemDesign.md` §8 "platform-revenue events" (listing-fee

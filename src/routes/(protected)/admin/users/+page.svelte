@@ -84,6 +84,7 @@
 		<p class="text-sm text-muted-foreground">Search, filter, and manage user accounts.</p>
 	</header>
 
+	<!-- one-shot: every user mutation lives on the [id] detail page, so nothing moves here. -->
 	<ConvexDataTable
 		caption="Users"
 		query={api.tables.users.userQueries.listUsers}

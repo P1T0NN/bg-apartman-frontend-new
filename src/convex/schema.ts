@@ -82,6 +82,20 @@ const schema = defineSchema({
 		// "Belgrade" share a place id). Search matches when the picked place id is one of the parts,
 		// so a accommodation surfaces for a city search AND a country search.
 		placeId: v.optional(v.string()),
+		/**
+		 * The two halves of `placeId`, derived server-side on every write via
+		 * `splitRegionPlaceId` — never sent by the client, so they cannot drift from it.
+		 *
+		 * They exist because the merged form is not indexable: matching it needed an
+		 * in-memory parts test, which forced search to read a capped sample of the table and
+		 * filter afterwards. Any listing outside that sample was invisible to every search.
+		 * As their own columns, a city search is an exact index range over that city alone.
+		 *
+		 * Optional only so the column could be added to a table that already had rows;
+		 * `backfillRegionPlaceIds` fills them, and both write paths set them from then on.
+		 */
+		cityPlaceId: v.optional(v.string()),
+		countryPlaceId: v.optional(v.string()),
 		coordinates: v.optional(coordinates),
 		// IANA zone resolved from the pin (e.g. 'Europe/Belgrade'). The availability
 		// calendar runs in this zone, not the viewer's. Optional for rows created before
@@ -166,8 +180,20 @@ const schema = defineSchema({
 		// Host dashboard: `.first()` on (host, 'published') resolves the deep-link slug without
 		// reading the host's whole portfolio — some hosts own 100+ listings.
 		.index('by_host_status', ['hostId', 'status'])
+		// The listing-fee sweep's read. `published` is a permanent state that only grows, so
+		// scanning it daily costs more every day to find the handful of rows near expiry —
+		// and silently starves the newest listings once the bucket passes the per-run cap.
+		// Ordering by expiry means the sweep reads only rows that could need action.
+		.index('by_status_expiry', ['status', 'apartmentSubscriptionExpiryDate'])
 		.index('by_slug', ['slug'])
 		.index('by_status', ['status'])
+		// Public search's real access pattern: published listings in ONE region. A region
+		// search now reads only that region's rows, so every listing is reachable regardless
+		// of catalogue size — the previous `by_status` + `.take()` + in-memory match made
+		// anything outside the first N rows permanently unsearchable.
+		// Two indexes because the searcher picks EITHER a city or a country from the same box.
+		.index('by_status_city', ['status', 'cityPlaceId'])
+		.index('by_status_country', ['status', 'countryPlaceId'])
 		.index('by_type', ['type'])
 		.index('by_price', ['pricePerNight'])
 		.index('by_featured', ['isFeatured', 'status'])
@@ -286,7 +312,9 @@ const schema = defineSchema({
 		archivedAt: v.optional(v.number())
 	})
 		.index('by_booking_code', ['bookingCode'])
-		.index('by_apartment', ['apartmentId'])
+		// No bare `by_apartment`: index ranges match on a PREFIX, so `by_apartment_dates`
+		// already answers "this apartment's bookings" — a second index would only add a
+		// write per booking mutation to buy back `_creationTime` ordering nobody asks for.
 		.index('by_host', ['hostId'])
 		.index('by_guest_email', ['guestEmail'])
 		// Guest-scoped reads. `by_guest` = a user's whole booking list (the "my bookings" page,
@@ -300,7 +328,15 @@ const schema = defineSchema({
 		// trailing-12-months stats read (eq host+status, range checkInDate) without table scans.
 		.index('by_host_status_checkin', ['hostId', 'status', 'checkInDate'])
 		.index('by_status', ['status'])
+		// The lifecycle cron's read. `by_status` alone makes an hourly sweep re-read every
+		// future booking forever AND starves past its per-run cap; with the date column it
+		// reads only rows whose check-in has actually arrived.
+		.index('by_status_checkin', ['status', 'checkInDate'])
 		.index('by_apartment_dates', ['apartmentId', 'checkInDate', 'checkOutDate'])
+		// Per-LISTING twin of `by_host_status_checkin`. `/host/analytics` needs each listing's
+		// next arrival; without the status column that answer costs a scan of the host's whole
+		// forward book, with it, one `.first()` per listing that never grows with booking volume.
+		.index('by_apartment_status_checkin', ['apartmentId', 'status', 'checkInDate'])
 		// Webhook handlers key on the provider's object ref, never on event sequence, so
 		// duplicate and out-of-order deliveries resolve to the same row
 		// (PaymentsSystemDesign.md §6).
@@ -372,6 +408,10 @@ const schema = defineSchema({
 	})
 		.index('by_host', ['hostId'])
 		.index('by_provider_account', ['providerAccountId'])
+		// The payout sweep's read. A `.filter()` on this field would scan the whole table —
+		// Convex filters AFTER fetching — and most hosts sit at `false` (stage 2), so the
+		// scan would grow with every host who ever started onboarding.
+		.index('by_transfers_active', ['transfersActive'])
 });
 
 export default schema;

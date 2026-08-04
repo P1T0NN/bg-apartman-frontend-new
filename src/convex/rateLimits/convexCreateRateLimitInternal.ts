@@ -4,7 +4,7 @@ import { internalMutation } from '../_generated/server';
 import { convexRateLimiter } from '../convexRateLimiter';
 
 // TYPES
-import type { ConvexRateLimitName } from './registry';
+import type { ConvexRateLimitName } from '@/shared/features/rateLimits/types/rateLimitsTypes';
 
 /** Internal enforcement for {@link convexCreateRateLimit} (no mutation ctx on BA hooks). */
 export const convexCreateRateLimitInternal = internalMutation({

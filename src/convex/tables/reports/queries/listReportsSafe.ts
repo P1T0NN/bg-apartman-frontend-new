@@ -2,20 +2,23 @@
 import { v } from 'convex/values';
 import { query } from '@/convex/_generated/server';
 
+// CONFIG
+import { OPERATIONAL_LIMITS } from '@/shared/config';
+
 // UTILS
 import { requireAdmin } from '@/convex/auth/middleware/authMiddleware';
 import {
 	paginatedQueryArgs,
 	normalizeOneBasedPage,
 	resolvePaginationOpts
-} from '@/convex/helpers/paginationHelpers';
+} from '@/convex/pagination/paginationHelpers';
 
 // SCHEMAS
 import { reportCategory, reportStatus } from '../schemas/reportsSchemas';
 
 // TYPES
 import type { Doc } from '@/convex/_generated/dataModel';
-import type { PaginatedListPayload } from '@/components/ui/data-table/types';
+import type { PaginatedListPayload } from '@/shared/features/pagination/types/paginationTypes';
 
 /** One inbox row. `status` is normalized, so the UI never repeats the `?? 'new'` dance. */
 export type AdminReportRow = Omit<Doc<'reports'>, 'status'> & {
@@ -44,6 +47,11 @@ export const listReportsSafe = query({
 	handler: async (ctx, args): Promise<PaginatedListPayload<AdminReportRow>> => {
 		await requireAdmin(ctx);
 
+		// Every branch is capped. `reports` is written by a PUBLIC unauthenticated mutation,
+		// so its growth rate is set by the internet rather than by business volume — it is the
+		// fastest-growing table here and the least safe to `.collect()` whole.
+		const cap = OPERATIONAL_LIMITS.ADMIN_LIST_SCAN_LIMIT;
+
 		let rows: Doc<'reports'>[];
 		if (args.status === 'new') {
 			const [stamped, legacy] = await Promise.all([
@@ -51,12 +59,12 @@ export const listReportsSafe = query({
 					.query('reports')
 					.withIndex('by_status', (q) => q.eq('status', 'new'))
 					.order('desc')
-					.collect(),
+					.take(cap),
 				ctx.db
 					.query('reports')
 					.withIndex('by_status', (q) => q.eq('status', undefined))
 					.order('desc')
-					.collect()
+					.take(cap)
 			]);
 			// Both slices are newest-first; merge and re-sort so the union is too.
 			rows = [...stamped, ...legacy].sort((a, b) => b._creationTime - a._creationTime);
@@ -66,9 +74,16 @@ export const listReportsSafe = query({
 				.query('reports')
 				.withIndex('by_status', (q) => q.eq('status', status))
 				.order('desc')
-				.collect();
+				.take(cap);
 		} else {
-			rows = await ctx.db.query('reports').order('desc').collect();
+			rows = await ctx.db.query('reports').order('desc').take(cap);
+		}
+
+		if (rows.length >= cap) {
+			console.warn('[listReportsSafe] scan cap reached — view truncated, totalCount is a floor', {
+				cap,
+				status: args.status
+			});
 		}
 
 		const all = rows.filter((r) => args.category === undefined || r.category === args.category);

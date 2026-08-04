@@ -26,7 +26,11 @@
 	]);
 
 	const platform = $derived<LedgerRow[]>([
-		{ label: 'Users', value: String(data.usersTotal), lead: true },
+		{
+			label: 'Users',
+			value: data.usersTotalCapped ? `${data.usersTotal}+` : String(data.usersTotal),
+			lead: true
+		},
 		{ label: 'Published listings', value: String(data.publishedListings) }
 	]);
 </script>

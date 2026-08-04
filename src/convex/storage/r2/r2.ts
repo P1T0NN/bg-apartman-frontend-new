@@ -40,13 +40,7 @@ export function r2PublicUrl(key: string): string {
  * Mirrors the Convex-storage path in `storageMutations.ts` — keep the limits in lockstep
  * so swapping backends doesn't change UX or the trust boundary.
  */
-const ALLOWED_CONTENT_TYPES = new Set<string>([
-	'image/jpeg',
-	'image/png',
-	'image/webp',
-	'image/gif',
-	'application/pdf'
-]);
+const ALLOWED_CONTENT_TYPES = new Set<string>(UPLOAD_LIMITS.ALLOWED_CONTENT_TYPES);
 
 /**
  * Custom upload-URL minter. We DO NOT export the package's built-in `generateUploadUrl`

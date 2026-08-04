@@ -7,13 +7,13 @@ import { PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 // UTILS
 import { authClient } from '@/features/auth/lib/auth-client';
 import { signUpFormSchema } from '@/shared/features/auth/schemas/authSchemas';
-import { zodIssuesToFieldErrors } from '@/shared/utils/zodFieldErrors';
-import { rateLimitMessage } from '@/utils/rateLimitMessages';
+import { zodIssuesToFieldErrors } from '@/features/validations/utils/fieldErrors';
+import { rateLimitMessage } from '@/features/validations/utils/translateFromBackend';
 import { appGoto } from '@/utils/app-navigation';
 
 // TYPES
 import type { SignUpFormStep, SignUpField } from './signUpFormTypes.js';
-import type { FieldErrors } from '@/shared/types/types';
+import type { FieldErrors } from '@/shared/features/validations/types/validationsTypes';
 
 export type SignUpFormCopy = {
 	signUpFailed: () => string;
@@ -50,14 +50,8 @@ export function createSignUpForm(copy: SignUpFormCopy) {
 			return;
 		}
 
-		if (p.data.password !== p.data.confirmPassword) {
-			fieldErrors = {
-				confirmPassword: 'Passwords must match.'
-			};
-			errorMessage = null;
-			return;
-		}
-
+		// No manual password-match check: the rule lives in `signUpFormSchema` as a `.refine`
+		// on `confirmPassword`, so the parse above already reported it.
 		fieldErrors = {};
 		busy = true;
 		errorMessage = null;

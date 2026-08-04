@@ -61,13 +61,13 @@
 
 Five statuses: `pending_review`, `published`, `suspended`, `expired`, `archived`.
 
-| Status           | Meaning                                 | Visible in search / bookable | Who sets it                                      |
-| ---------------- | --------------------------------------- | ---------------------------- | ------------------------------------------------ |
-| `pending_review` | Born here; awaiting moderation          | ❌                           | `createAccommodation` (hardcoded); host resubmit |
-| `published`      | Live                                    | ✅ (the only one)            | Admin only (`moderateApartmentStatus`)           |
-| `suspended`      | Admin pulled it; reason required        | ❌                           | Admin only                                       |
-| `expired`        | Listing fee lapsed (`listing_fee` listings) | ❌                       | **Cron only** — never a human                    |
-| `archived`       | Host shelved it                         | ❌                           | Host (own listing), admin                        |
+| Status           | Meaning                                     | Visible in search / bookable | Who sets it                                      |
+| ---------------- | ------------------------------------------- | ---------------------------- | ------------------------------------------------ |
+| `pending_review` | Born here; awaiting moderation              | ❌                           | `createAccommodation` (hardcoded); host resubmit |
+| `published`      | Live                                        | ✅ (the only one)            | Admin only (`moderateApartmentStatus`)           |
+| `suspended`      | Admin pulled it; reason required            | ❌                           | Admin only                                       |
+| `expired`        | Listing fee lapsed (`listing_fee` listings) | ❌                           | **Cron only** — never a human                    |
+| `archived`       | Host shelved it                             | ❌                           | Host (own listing), admin                        |
 
 ### Transition rules (the complete set — anything not listed is forbidden)
 
@@ -178,16 +178,16 @@ total` at creation (§0.3). A pending request is priced at request time and that
 The listing carries every knob the booking flow reads. Decisions about what the knobs _do_
 live in `BookingSystemDesign.md`; this section fixes what exists and its defaults:
 
-| Field                                                                                  | Default                                         | Notes                                                                                                                                                          |
-| -------------------------------------------------------------------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `instantBooking: boolean`                                                              | `false`                                         | This IS `BookingSystemDesign.md` §1's mode flag — `false` = request-to-book, `true` = instant. One boolean, no enum rename.                                    |
+| Field                                                                                  | Default                                         | Notes                                                                                                                                                                                                                |
+| -------------------------------------------------------------------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `instantBooking: boolean`                                                              | `false`                                         | This IS `BookingSystemDesign.md` §1's mode flag — `false` = request-to-book, `true` = instant. One boolean, no enum rename.                                                                                          |
 | `paymentMethod: 'cash'\|'online'\|'both'`                                              | `'cash'`                                        | `'online'`/`'both'` are selectable only when the payments adapter exists (`PaymentsSystemDesign.md` §8 — `PROVIDER` gate) — the form disables them until then. A `booking_fee` listing is locked to `'online'` (§8). |
-| `minReservationDays` / `maxReservationDays`                                            | 1 / none                                        | Enforced in `createBooking`, displayed on the calendar.                                                                                                        |
-| `sameDayReservation`                                                                   | `false`                                         | May a stay start today.                                                                                                                                        |
-| `singleDayReservation`                                                                 | `false`                                         | Check-in and check-out on the same date.                                                                                                                       |
-| `checkInTime` / `checkOutTime`                                                         | 14:00 / 10:00                                   | Display copy only — never state (`BookingSystemDesign.md` §3).                                                                                                 |
-| `quietHoursStart/End`, `petsAllowed`, `smokingAllowed`, `partiesAllowed`, `houseRules` | —                                               | Policy display; no enforcement machinery.                                                                                                                      |
-| `timeZone`                                                                             | resolved from pin; fallback `DEFAULT_TIME_ZONE` | The availability calendar runs in the listing's zone, not the viewer's.                                                                                        |
+| `minReservationDays` / `maxReservationDays`                                            | 1 / none                                        | Enforced in `createBooking`, displayed on the calendar.                                                                                                                                                              |
+| `sameDayReservation`                                                                   | `false`                                         | May a stay start today.                                                                                                                                                                                              |
+| `singleDayReservation`                                                                 | `false`                                         | Check-in and check-out on the same date.                                                                                                                                                                             |
+| `checkInTime` / `checkOutTime`                                                         | 14:00 / 10:00                                   | Display copy only — never state (`BookingSystemDesign.md` §3).                                                                                                                                                       |
+| `quietHoursStart/End`, `petsAllowed`, `smokingAllowed`, `partiesAllowed`, `houseRules` | —                                               | Policy display; no enforcement machinery.                                                                                                                                                                            |
+| `timeZone`                                                                             | resolved from pin; fallback `DEFAULT_TIME_ZONE` | The availability calendar runs in the listing's zone, not the viewer's.                                                                                                                                              |
 
 ## 7. Search & discovery
 
@@ -350,7 +350,7 @@ directly, so it works even though the platform never touches guest money.
   "recorded-but-uncollectable cash fee" bookkeeping: under per-listing choice that hole
   would be the rational pick for every cash host, so it is closed structurally, not
   documented around. Cash-friendly hosts have the listing-fee model — that pairing IS the
-  product: *commission = everything through the platform; flat fee = run it your way.*
+  product: _commission = everything through the platform; flat fee = run it your way._
 - Consequence, stated plainly: **while `PROVIDER: 'none'`, `booking_fee` is not
   selectable, so every monetized listing is `listing_fee`** — which remains the only model
   that actually earns on a cash-dominant platform. The choice becomes real the day online
@@ -452,27 +452,27 @@ that request's auto-decline, not as listing news).
 The compact "don't be surprised" table — behavior is defined here even when no code path
 says it loudly:
 
-| Edge                                                       | Behavior                                                                                                                                                          |
-| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Listing suspended/expired with future `confirmed` bookings | Bookings live out normally — only NEW bookings are blocked (A1). Cancelling them is a separate human decision (host or admin, per `BookingSystemDesign.md` §4).   |
-| Listing suspended/expired with `pending` requests          | Requests die at confirm (A1 re-check) or expire naturally; guests get the standard auto-decline email.                                                            |
-| Host edits price while a request is pending                | Request keeps its requested price (snapshot, §5). Confirm = accepting that price.                                                                                 |
-| Host archives with active bookings                         | Allowed — archive is visibility, not cancellation. Bookings live out (same as suspension row above).                                                              |
-| Host deletes with only terminal bookings                   | Allowed; history renders from booking-stored data with slug fallback, link dead (§4).                                                                             |
-| Host deletes with any active booking                       | Blocked (`ACCOMMODATION_HAS_ACTIVE_BOOKINGS`).                                                                                                                    |
-| Host account deleted (admin action)                        | Listings are orphaned assets → admin archives them in the same workflow; `deleteUser` flow lists them first.                                                      |
-| Slug collision at create                                   | Deterministic suffix; slug never changes after (§4).                                                                                                              |
-| Missing `timeZone` (legacy rows / failed lookup)           | Readers fall back to `DEFAULT_TIME_ZONE` — never the viewer's zone.                                                                                               |
-| Superhost flag drift                                       | Bounded by re-stamp on writes (§7); accepted, documented on the field.                                                                                            |
-| Upload succeeds, save never happens                        | Orphan cron reaps the R2 object (§3).                                                                                                                             |
-| Config `MONETIZATION` flipped with live data               | §8 "switch honesty": flip-on backfills `monetization: 'listing_fee'` + a free period on every row FIRST; flip-off strands no one.                                 |
-| Admin tries to publish an unpaid `listing_fee` listing     | Rejected (`LISTING_FEE_UNPAID`) — the queue's payment chip explains why; publish succeeds once payment is stamped (§8).                                           |
+| Edge                                                         | Behavior                                                                                                                                                                                           |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Listing suspended/expired with future `confirmed` bookings   | Bookings live out normally — only NEW bookings are blocked (A1). Cancelling them is a separate human decision (host or admin, per `BookingSystemDesign.md` §4).                                    |
+| Listing suspended/expired with `pending` requests            | Requests die at confirm (A1 re-check) or expire naturally; guests get the standard auto-decline email.                                                                                             |
+| Host edits price while a request is pending                  | Request keeps its requested price (snapshot, §5). Confirm = accepting that price.                                                                                                                  |
+| Host archives with active bookings                           | Allowed — archive is visibility, not cancellation. Bookings live out (same as suspension row above).                                                                                               |
+| Host deletes with only terminal bookings                     | Allowed; history renders from booking-stored data with slug fallback, link dead (§4).                                                                                                              |
+| Host deletes with any active booking                         | Blocked (`ACCOMMODATION_HAS_ACTIVE_BOOKINGS`).                                                                                                                                                     |
+| Host account deleted (admin action)                          | Listings are orphaned assets → admin archives them in the same workflow; `deleteUser` flow lists them first.                                                                                       |
+| Slug collision at create                                     | Deterministic suffix; slug never changes after (§4).                                                                                                                                               |
+| Missing `timeZone` (legacy rows / failed lookup)             | Readers fall back to `DEFAULT_TIME_ZONE` — never the viewer's zone.                                                                                                                                |
+| Superhost flag drift                                         | Bounded by re-stamp on writes (§7); accepted, documented on the field.                                                                                                                             |
+| Upload succeeds, save never happens                          | Orphan cron reaps the R2 object (§3).                                                                                                                                                              |
+| Config `MONETIZATION` flipped with live data                 | §8 "switch honesty": flip-on backfills `monetization: 'listing_fee'` + a free period on every row FIRST; flip-off strands no one.                                                                  |
+| Admin tries to publish an unpaid `listing_fee` listing       | Rejected (`LISTING_FEE_UNPAID`) — the queue's payment chip explains why; publish succeeds once payment is stamped (§8).                                                                            |
 | `listing_fee` listing paid, then suspended / never published | Fee is NOT auto-refunded — the period runs; suspension is a fixable conversation (§1). A truly dead paid listing is a human refund (provider dashboard / bank) + archive; volumes are human-scale. |
-| Host switches `listing_fee` → `booking_fee` mid-period     | Immediate; remaining paid days forfeited AND no road back — the dialog said both. No proration, no refund machinery (§8).                                         |
-| Host on `booking_fee` wants `listing_fee`                  | Forbidden (§8's one-way door). Their road is archive + recreate — full re-review, new slug, detached history; the friction is the point.                          |
-| Booking captured after the listing switched models         | Fee (or its absence) comes from the booking's creation-time snapshot, not the listing's current model (§0.3, §8).                                                 |
-| Renewal payment during `GRACE_DAYS`                        | Extends from expiry (not from now) — the host loses nothing by paying late within grace. Same rule §8 states; `nextSubscriptionExpiry` is the one implementation. |
-| `expired` listing whose content is now stale               | Renewal still skips review (§1) — staleness is a moderation concern only if reported; suspension remains available.                                               |
+| Host switches `listing_fee` → `booking_fee` mid-period       | Immediate; remaining paid days forfeited AND no road back — the dialog said both. No proration, no refund machinery (§8).                                                                          |
+| Host on `booking_fee` wants `listing_fee`                    | Forbidden (§8's one-way door). Their road is archive + recreate — full re-review, new slug, detached history; the friction is the point.                                                           |
+| Booking captured after the listing switched models           | Fee (or its absence) comes from the booking's creation-time snapshot, not the listing's current model (§0.3, §8).                                                                                  |
+| Renewal payment during `GRACE_DAYS`                          | Extends from expiry (not from now) — the host loses nothing by paying late within grace. Same rule §8 states; `nextSubscriptionExpiry` is the one implementation.                                  |
+| `expired` listing whose content is now stale                 | Renewal still skips review (§1) — staleness is a moderation concern only if reported; suspension remains available.                                                                                |
 
 ## 12. Considered and rejected (or deferred)
 
