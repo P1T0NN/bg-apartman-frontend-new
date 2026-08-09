@@ -78,8 +78,8 @@ tiles. Bands 1–2 are the job; 3–4 are the weather.
 **Dashboard reads must not scale with portfolio size.** Hosts here are not one-apartment
 individuals — a sizeable minority own 100+ listings, and the dashboard is the page they land
 on, so it is the one surface where a per-listing cost is unaffordable. `fetchHostDashboardStats`
-is therefore built entirely from O(log n) reads: listing counts from `aggregateApartments`
-bounded to the host, held earnings from `aggregateHostEarnings`, and revenue AND occupancy
+is therefore built entirely from O(log n) reads: listing counts from `counters.apartments`
+bounded to the host, held earnings from `counters.hostEarnings`, and revenue AND occupancy
 from two months of host-scoped rollups. The only table read left is a seven-day forward slice
 for upcoming check-ins, plus the today strip (capped at one day). Occupancy specifically is an
 event ledger — `booking.nights_booked` minus `booking.nights_released`, pre-split per calendar

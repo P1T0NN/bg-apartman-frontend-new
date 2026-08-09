@@ -8,6 +8,10 @@ export type typesPricingInput = {
 	pricePerNight: number;
 	discountAmount?: number;
 	cleaningFee?: number;
+	/** Fri/Sat nightly override (ASD §5) — nights starting on Friday or Saturday charge this. */
+	weekendPremium?: number;
+	/** Percent off the nights total for a 7+ night stay (e.g. 10 = 10% off). */
+	weeklyDiscount?: number;
 	/** The listing's model (ASD §8) — the fee applies only on `booking_fee` listings. */
 	monetization?: 'listing_fee' | 'booking_fee';
 };
@@ -16,6 +20,14 @@ export type typesPricingInput = {
 export type typesCalculatedPrice = {
 	nightly: number;
 	nights: number;
+	/** Nights starting on Friday/Saturday, which charged `weekendPremium` (0 = none). */
+	weekendNights: number;
+	/** The weekend override actually applied — present only when `weekendNights` > 0. */
+	weekendPremium?: number;
+	/** Applied stay-length percent — 0 when the stay is under 7 nights. */
+	lengthDiscountPercent: number;
+	/** Whole-euro amount the stay-length discount removes from the nights total. */
+	lengthDiscount: number;
 	accommodationTotal: number;
 	cleaningFee: number;
 	/**

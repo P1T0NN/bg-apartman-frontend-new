@@ -7,7 +7,7 @@ import { components } from '@/convex/_generated/api';
 // UTILS
 import { requireAdmin } from '@/convex/auth/middleware/authMiddleware';
 import { analytics } from '@/convex/analytics';
-import { aggregateApartments, aggregateBookings, aggregateReports } from '@/convex/aggregates';
+import { counters } from '@/convex/functions';
 import { todayInPropertyZone } from '@/shared/features/booking/utils/daysUntilCheckIn';
 import { monthStartUtc } from '@/shared/utils/dateUtils';
 
@@ -31,7 +31,7 @@ const REPORTS_QUEUE_LIMIT = 5;
  * Realtime verdict: **subscription** — reports, bookings and signups arrive from other
  * people while the admin watches (GeneralSystemDesignRule.md's admin-orders example).
  * The read is cheap by construction, so re-runs on writes are affordable:
- *   - NOW-questions (queue count, check-ins, pending, published) are aggregate counts,
+ *   - NOW-questions (queue count, check-ins, pending, published) are counter reads,
  *     O(log n), never a scan;
  *   - HAPPENED-questions (signups, bookings created, the 12-month series) are the
  *     analytics component's pre-aggregated rollups, global scope — every tracked event
@@ -42,7 +42,7 @@ const REPORTS_QUEUE_LIMIT = 5;
  * That last one is why "cheap by construction" has to be enforced, not assumed: this
  * subscription's read set spans the platform, so it re-runs on every rollup write anywhere,
  * not once per page view. Anything unbounded added here is multiplied by the platform's
- * whole event rate. Keep every read in this handler either an aggregate, a rollup, or
+ * whole event rate. Keep every read in this handler either a counter, a rollup, or
  * explicitly capped.
  */
 export const fetchAdminDashboardPageSafe = query({
@@ -66,7 +66,7 @@ async function readAdminDashboardPage(ctx: QueryCtx): Promise<AdminDashboardPage
 		const dayStartMs = Date.parse(todayIso);
 		const seriesFrom = monthStartUtc(now, 11);
 
-		// checkInDate is the aggregate's sort key, so "today's check-ins" is an exact-key bound.
+		// checkInDate is the counter's sort key, so "today's check-ins" is an exact-key bound.
 		const todayBounds = {
 			lower: { key: todayIso, inclusive: true },
 			upper: { key: todayIso, inclusive: true }
@@ -97,7 +97,7 @@ async function readAdminDashboardPage(ctx: QueryCtx): Promise<AdminDashboardPage
 				.order('desc')
 				.take(REPORTS_QUEUE_LIMIT),
 			// The aggregate's namespace already normalizes `undefined → 'new'`.
-			aggregateReports.count(ctx, { namespace: 'new', bounds: {} }),
+			counters.reports.count(ctx, 'new'),
 			analytics
 				.fetchSummary(ctx, { metric: 'newUsers', from: dayStartMs, to: now })
 				.then((s) => s.value),
@@ -105,12 +105,12 @@ async function readAdminDashboardPage(ctx: QueryCtx): Promise<AdminDashboardPage
 			analytics
 				.fetchSummary(ctx, { metric: 'bookings', from: dayStartMs, to: now })
 				.then((s) => s.value),
-			aggregateBookings.count(ctx, { namespace: 'confirmed', bounds: todayBounds }),
-			aggregateBookings.count(ctx, { namespace: 'pending', bounds: {} }),
-			// BA `user` table is component-local — the app's aggregate triggers can't see it,
+			counters.bookings.aggregate.count(ctx, { namespace: 'confirmed', bounds: todayBounds }),
+			counters.bookings.count(ctx, 'pending'),
+			// BA `user` table is component-local — the app's counter triggers can't see it,
 			// so the count lives beside the data (see `countUsers` for its stated ceiling).
 			ctx.runQuery(components.betterAuth.userQueries.countUsers, {}),
-			aggregateApartments.count(ctx, { namespace: 'published', bounds: {} }),
+			counters.apartments.count(ctx, 'published'),
 			// One Map per metric: UTC month start → value. Global scope (no `scope` arg).
 			// `refunds` is grouped by `plan` so ONLY the fee-portion reversals (tagged
 			// `booking_fee`, ASD §8) subtract from platform revenue — the untagged

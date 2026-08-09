@@ -102,7 +102,6 @@ function buildApartmentDoc(
 		discountAmount: args.discountAmount,
 		cleaningFee: args.cleaningFee,
 		weekendPremium: args.weekendPremium,
-		monthlyDiscount: args.monthlyDiscount,
 		weeklyDiscount: args.weeklyDiscount,
 		currency: 'EUR',
 

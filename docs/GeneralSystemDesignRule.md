@@ -350,7 +350,8 @@ So the choice is never "server vs client filtering". It is three independent axe
 
 | Mechanism              | Component                                    | State     | Transport                | Mode              | Use for                                                                    |
 | ---------------------- | -------------------------------------------- | --------- | ------------------------ | ----------------- | -------------------------------------------------------------------------- |
-| **URL-driven list**    | `DataList`/`DataTable` + `pageHref` + loader | URL       | one-shot (loader)        | `offset`          | Public/SEO listings — `/search`; any view worth linking, sharing, crawling |
+| **URL-driven list**    | `DataList`/`DataTable` + `pageHref` + loader | URL       | one-shot (loader)        | `offset`          | Public/SEO listings with page numbers; any view worth linking, sharing, crawling |
+| **URL-driven scroll**  | `convexOneShotPaginatedQuery` + `infiniteScroll` | URL (filters) | one-shot (per page) | `cursor`      | `/search` — filters are linkable, results are endless and unbounded (`AccommodationsSystemDesign.md` §9.1) |
 | **State-driven table** | `ConvexDataTable`                            | component | one-shot _or_ subscribed | `cursor`/`offset` | Admin, host and guest tables                                               |
 | **State-driven list**  | `ConvexDataList`                             | component | one-shot _or_ subscribed | `cursor`/`offset` | Non-tabular collections (saved places)                                     |
 | **Presentational**     | `DataTable` / `DataList` / `PaginatedData`   | caller's  | none — renders props     | caller's          | You already have the rows and only need the chrome                         |
@@ -427,6 +428,7 @@ Current verdicts in this project, each justified in a comment at the call site:
 | Bookings table (host/guest)  | **realtime** | The other party acts, and the lifecycle cron advances the stay  |
 | `/admin/users`               | one-shot     | Every user mutation lives on the `[id]` detail page             |
 | `/guest/favorites`           | one-shot     | Unfavouriting changes `favoriteIds`; an args change refetches   |
+| Saved-listing id set         | one-shot     | Ids only, once per session; own writes return their own truth    |
 
 **Seeing your own writes does not require a subscription.** A one-shot list would otherwise sit
 on stale rows after a mutation made from its own screen (the args did not change, so nothing
@@ -449,7 +451,7 @@ These are ceilings, not bugs. Each one will eventually surface in a real project
    page is what loses its numbers first.
    _When a surface genuinely needs exact totals + page jumps at unbounded scale:_ use
    `fetchOptimized`'s **`aggregate` mode** (`@convex-dev/aggregate`; see
-   `pagination/fetchOptimized/README § Aggregate mode` and `convex/aggregates.ts`) — exact
+   `pagination/fetchOptimized/README § Aggregate mode` and `convex/functions.ts`) — exact
    `totalCount` and O(log n) jumps to any page, at the cost of one counter per surface kept in
    sync by the write-path triggers (`convex/functions.ts`). Check the cheaper rungs first: add
    a filter, or accept cursor mode.
@@ -549,7 +551,7 @@ In this codebase — and any project citing this document — that default is **
    `offset` (page numbers + totals), state in a comment either why the matched set stays
    bounded (the scan form reads every matching row and degrades past the 10k cap) or that the
    surface has an `aggregate` wired (unbounded-safe; requires the counter + triggers + backfill
-   from `convex/aggregates.ts`).
+   from `convex/functions.ts`).
 
 8. **NEVER write `.filter()` / `.filterWith()` against an unbounded table** — not in
    `fetchOptimized` (it won't let you), and not in bespoke queries either. Lists go through
@@ -741,30 +743,38 @@ The two answer different questions and fail in each other's territory:
 
 ### How it's wired in this project
 
-- Aggregates live in `src/convex/aggregates.ts`: `aggregateReports` (plain count),
-  `aggregateApartments` (namespace = status, key = `hostId`), `aggregateHostEarnings`
-  (namespace = `hostId`, key = earning status, sums `net`). One component instance per
-  table in `convex.config.ts`.
-- **The key is how one tree serves two scopes.** `aggregateApartments` answers the admin's
+- Counters live in `src/convex/functions.ts`, declared in one `defineCounters()` call from
+  `@piton-/analytics-convex/counters` (the library owns `@convex-dev/aggregate` as an
+  optional peer, so this app doesn't depend on it directly): `counters.reports` (plain
+  count), `counters.apartments` (namespace = status, key = `hostId`), `counters.hostEarnings`
+  (namespace = `hostId`, key = earning status, sums `net`), `counters.bookings` (namespace =
+  status, key = `checkInDate`). One component instance per table in `convex.config.ts`.
+- Reads: `counters.x.count(ctx, namespace)` / `.sum(ctx, namespace)` for a whole namespace;
+  a bounded read (key range inside one namespace) drops to `counters.x.aggregate.count(ctx,
+{ namespace, bounds })`, which is the raw `TableAggregate`.
+- **The key is how one tree serves two scopes.** `counters.apartments` answers the admin's
   platform-wide `count(ns 'pending_review', bounds {})` AND the host dashboard's
   `count(ns 'published', bounds [hostId, hostId])` — no second component, no doubled write
   cost. Reach for a `hostId`/`ownerId` sort key before provisioning a per-owner aggregate.
-- **A `bookings` aggregate is deliberately NOT provisioned.** It existed, was read by
-  nothing, and cost a tree write on every booking mutation (create, confirm, check-in,
-  check-out, cancel, cron expiry — bookings are the hottest table here). Its only designed
-  consumer is the admin dashboard (`AdminDashboardPageSystemDesign.md` §today), which is
-  still an empty stub. Re-provision it **with** that page, not before: component instance +
-  `TableAggregate` + `triggers.register` + one backfill run.
+- **`counters.bookings` is provisioned, and its history is the rule.** It shipped once, was
+  read by nothing, and cost a tree write on every booking mutation (create, confirm,
+  check-in, check-out, cancel, cron expiry — bookings are the hottest table here), so it was
+  removed. It came back on 2026-07-31 **with** its consumer, the admin dashboard's pulse row
+  (`AdminDashboardPageSystemDesign.md` §3). Provision a counter with the page that reads it,
+  never before: component instance + one `counter(...)` entry + one backfill run — and read
+  the re-provisioning warning on `backfillCounters`, because a component keeps its data
+  across removal and re-adding.
 - **Sync is automatic via triggers — with one obligation:** `src/convex/functions.ts` exports
   trigger-wrapped `mutation` / `internalMutation`. Every write to an aggregated table MUST use
   those constructors, never the raw ones from `_generated/server`. The auth wrappers
   (`authMutation`, `zAuthMutation`, `adminMutation`, …) already build on them, so most
   endpoints are covered for free; the rule bites on raw `mutation(...)` / `internalMutation(...)`
   call sites (public forms, crons).
-- Backfill for pre-existing rows: `aggregates:backfillAggregates` (idempotent, paginated,
+- Backfill for pre-existing rows: `functions:backfillCounters` (idempotent, paginated,
   run once per table — already run on dev).
-- Aggregating a **new** table = component instance in `convex.config.ts` + `TableAggregate`
-  in `aggregates.ts` + `triggers.register(...)` in `functions.ts` + one backfill run.
+- Counting a **new** table = component instance in `convex.config.ts` + one `counter(...)`
+  entry in the `defineCounters()` call in `functions.ts` (which registers the trigger for
+  you) + one backfill run.
 
 ### When a NOW-question has to become a HAPPENED-question
 

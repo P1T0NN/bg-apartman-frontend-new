@@ -9,10 +9,8 @@ import { trackBookingNights } from '@/convex/tables/bookings/helpers/trackBookin
 import { sendBookingCancelledEmail } from '@/convex/email/sendBookingCancelledEmail';
 import { sendBookingCancelledHostEmail } from '@/convex/email/sendBookingCancelledHostEmail';
 import { applyGuestAction } from '@/shared/features/booking/utils/applyGuestAction';
-import {
-	settleBookingPayment,
-	paymentNoteFrom
-} from '@/convex/payments/helpers/settleBookingPayment';
+import { settleBookingPayment } from '@/convex/payments/helpers/settleBookingPayment';
+import { paymentNoteFrom } from '@/convex/payments/utils/paymentNoteFrom';
 
 // SCHEMAS
 import { mutationResult, type MutationResult } from '@/convex/schemas/schemas';

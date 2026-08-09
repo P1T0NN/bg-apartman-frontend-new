@@ -3,7 +3,7 @@ import { ACCOMMODATION_STATUS_CONFIG } from '@/features/accommodations/data/acco
 
 // TYPES
 import type { ColumnDef } from '@/components/ui/data-table/types.js';
-import type { AdminAccommodationRow } from '@/convex/tables/accommodations/queries/listAccommodationsAdmin';
+import type { AdminAccommodationRow } from '@/shared/features/accommodation/types/accommodationTypes';
 
 /**
  * Columns for the `/admin/accommodations` listings table (AdminPagesSystemDesign.md §2).

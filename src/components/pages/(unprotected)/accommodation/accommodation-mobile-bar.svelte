@@ -6,6 +6,7 @@
 	import { Button } from '@/components/ui/button/index.js';
 
 	// UTILS
+	import { hasNightlyDiscount } from '@/features/accommodations/utils/accommodationPresentation';
 	import { effectiveNightlyPrice } from '@/shared/features/pricing/utils/calculatePrice';
 	import { formatCurrency } from '@/utils/formatters';
 
@@ -15,6 +16,7 @@
 	let { accommodation }: { accommodation: typesAccommodationEnriched } = $props();
 
 	const nightly = $derived(effectiveNightlyPrice(accommodation));
+	const discounted = $derived(hasNightlyDiscount(accommodation));
 	const bookHref = $derived(
 		UNPROTECTED_PAGE_ENDPOINTS.BOOK_ACCOMMODATION.replace(':slug', accommodation.slug)
 	);
@@ -25,7 +27,9 @@
 >
 	<p class="text-sm">
 		<span class="text-muted-foreground">from</span>
-		<span class="font-semibold">{formatCurrency(nightly)}</span>
+		<span class="font-semibold {discounted ? 'text-emerald-700 dark:text-emerald-300' : ''}"
+			>{formatCurrency(nightly)}</span
+		>
 		<span class="text-muted-foreground">night</span>
 	</p>
 

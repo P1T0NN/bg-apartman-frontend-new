@@ -29,7 +29,10 @@ const UPCOMING_STAY_STATUSES = ['confirmed', 'checked_in'] as const;
 /** Above this, daily points are noise and the chart switches to month buckets. */
 const DAY_BUCKET_MAX_DAYS = 92;
 
-/** The analytics component refuses ranges beyond a year (`maxQueryRangeDays`). */
+/**
+ * The analytics component refuses ranges beyond a year. 366 is a HARD ceiling in 2.0 —
+ * `maxQueryRangeDays` can no longer be raised past it by settings.
+ */
 const MAX_WINDOW_DAYS = 366;
 
 /**
@@ -103,7 +106,11 @@ export const fetchHostAnalyticsSafe = query({
 
 		const { from, to } = args;
 		if (!(from < to)) throw new Error('[fetchHostAnalyticsSafe] `from` must precede `to`.');
-		if (to - from > MAX_WINDOW_DAYS * MS_PER_DAY) {
+		// Counted the way the component counts: INCLUSIVE UTC days, not an ms span. A raw
+		// `to - from <= 366 days` check passes a window covering 367 UTC day buckets, which
+		// the library then rejects itself with an untranslated BAD_REQUEST.
+		const rangeDays = Math.floor((dayStartUtc(to) - dayStartUtc(from)) / MS_PER_DAY) + 1;
+		if (rangeDays > MAX_WINDOW_DAYS) {
 			throw new Error(`[fetchHostAnalyticsSafe] Window exceeds ${MAX_WINDOW_DAYS} days.`);
 		}
 

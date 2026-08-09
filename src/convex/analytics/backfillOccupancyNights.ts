@@ -23,7 +23,7 @@ import { trackBookingNights } from '@/convex/tables/bookings/helpers/trackBookin
  *
  * Idempotent: `trackBookingNights` stamps a `forever`-unique key per (direction, booking,
  * month), so re-running double-counts nothing and a booking the live path already recorded
- * is skipped. Paginated and self-scheduling, like `aggregates:backfillAggregates`.
+ * is skipped. Paginated and self-scheduling, like `functions:backfillCounters`.
  *
  * ```bash
  * bunx convex run analytics/backfillOccupancyNights:backfillOccupancyNights

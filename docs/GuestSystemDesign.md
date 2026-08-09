@@ -170,16 +170,43 @@ Page for admins).
 | -------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/guest/dashboard`   | "What's my travel situation?"   | Next trip card (countdown, address, host), pending requests strip, recent stays, shortcuts. Empty state = friendly push to browse — a new guest's dashboard sells the search page. |
 | `/guest/my-bookings` | "All my trips, past and future" | Status-filterable list, every row → its reservation page. Actions inline via the same shared guards (§4) — the list is a launcher, the reservation page is the actor.              |
-| `/guest/favorites`   | "Places I'm considering"        | Resolves the local ids (below) to listing cards; unpublished ones drop out silently at resolve time (a saved listing that got suspended simply isn't shown — never an error).      |
+| `/guest/favorites`   | "Places I'm considering"        | Resolves the saved ids (below) to listing cards; unpublished ones drop out silently at resolve time (a saved listing that got suspended simply isn't shown — never an error).      |
 
-### Favorites — device-local by design
+### Favorites — account-synced, with the anonymous path intact (revised 2026-08-09)
 
-Favorites stay **localStorage-only** (existing `favoritesClass`): no backend table, no
-account requirement, works signed out — a saved-places list is a browsing scratchpad, not
-a record. Accepted consequence, stated so nobody "fixes" it: favorites don't follow the
-guest across devices. Account-synced favorites are deferred until guests actually ask
-(§10) — the upgrade path is a small table + one merge-on-login, nothing about today's
-design blocks it.
+The deferred upgrade below was taken: favorites are a `favorites` table (`userId` +
+`apartmentId`, nothing else), and they follow the guest across devices.
+
+What did NOT change is the reason favorites were local in the first place — saving must
+work **before** you have an account. So there are two backings behind one API:
+
+| Visitor    | Backing                            | Notes                                                              |
+| ---------- | ---------------------------------- | ------------------------------------------------------------------ |
+| Signed out | `localStorage`, exactly as before  | No account requirement, no query, no row.                          |
+| Signed in  | `favorites` table                  | ONE fetch per session, held in `favoritesClass`. No subscription.  |
+
+Rules that make it cheap and honest:
+
+- **One fetch, not one query per card — and not a subscription either.** `fetchMyFavoriteIdsSafe`
+  returns ids only and is read ONCE by the root layout when a session appears; every heart reads
+  the shared reactive set. A search page with 30 cards costs zero further queries. There is
+  nothing to subscribe to: the set changes only by this user's own clicks, and `toggleFavorite`
+  returns the resulting state, so the class stays authoritative without asking again
+  (`GeneralSystemDesignRule.md` § seeing your own writes). `getCurrentUser` stays the layout's
+  only live channel. Accepted consequence: a save in another tab or on another device shows up
+  on the next load — the same trade `/guest/favorites` already makes.
+- **The read is the cap.** It `.take(FAVORITES_DATA.MAX_PER_USER)`, so the hot-path payload
+  is bounded no matter how many rows a user accumulates — `toggleFavorite` deliberately does
+  NOT count the set first (that would be a 200-row read per heart click).
+- **Writes are optimistic.** The heart flips immediately and `toggle()` returns that state
+  synchronously; the mutation settles behind it and its return value is applied as the truth
+  (including `saved: false` on a save — how a listing deleted under the card reports itself).
+  A failed call undoes the flip.
+- **Signing in merges the device's saves** (`mergeFavorites`, bounded to
+  `FAVORITES_DATA.MAX_MERGE`), then clears `localStorage` so it can't be re-merged into a
+  different account later. Same shape as `claimMyBookings` for anonymous bookings.
+- **Cascades:** deleting a listing removes its favorite rows in the same transaction, and
+  deleting a user removes theirs.
 
 ## 7. Data-loading verdicts (per `GeneralSystemDesignRule.md` — decided here)
 
@@ -190,10 +217,13 @@ design blocks it.
 | `/reservations` (recovery) | No load — it's a form         | Resolves on submit; nothing to fetch first.                                                                                                                                                                 |
 | `/guest/dashboard`         | One-shot, streamed `+page.ts` | Changes arrive by email first; remount refetch is fresh enough. One composed page query (existing `fetchGuestDashboardPageSafe`), status-sliced via `by_guest_status_checkin` — never a whole-history scan. |
 | `/guest/my-bookings`       | One-shot, streamed, paginated | Same; pager controls visible (rule §3 — never page 1 as the full set).                                                                                                                                      |
-| `/guest/favorites`         | One-shot, streamed            | Local ids → one whole-set resolve query (bounded by the saved-list size).                                                                                                                                   |
+| `/guest/favorites`         | One-shot, streamed            | Saved ids (from the layout's one-shot) → one whole-set resolve query, bounded by `FAVORITES_DATA.MAX_PER_USER`.                                                                                              |
 
-Guest surfaces never lift fetches into the layout (rule: fetch where used); the only
-layout-level data remains auth/session.
+Guest surfaces never lift fetches into the layout (rule: fetch where used), with ONE stated
+exception besides auth/session: the saved-listing id set (§6). It is lifted precisely because
+it is not "used" in one place — a heart can mount 30 times on one page, and "fetch where used"
+would mean 30 reads for one boolean each. One id-only fetch replaces all of them, and it is a
+one-shot: the layout keeps exactly one subscription (`getCurrentUser`).
 
 ## 8. Cross-document consistency map
 
@@ -225,7 +255,7 @@ What this document consumes, so a change THERE is checked HERE:
 | Host tries to cancel an online booking inside 7 days            | Impossible — the paid stay is ironclad (`BookingSystemDesign.md` §4); only the guest or the admin brake can end it.                   |
 | Guest cancels on the free/late boundary day                     | The booking's policy **snapshot** decides, computed in the property timezone — never live config (`BookingSystemDesign.md` §0.3, §3). |
 | Signed-in guest books with a DIFFERENT email than their account | `guestId` stamps anyway (they were signed in); the email on the booking gets the notifications. Both views work.                      |
-| Favorites on a new device                                       | Empty — device-local by design (§6). Not a bug report.                                                                                |
+| Favorites on a new device                                       | Present once signed in (§6). Empty only while signed out — that device's hearts are local until the next sign-in merges them.          |
 | Saved listing becomes unavailable                               | Drops out of the favorites resolve silently (§6).                                                                                     |
 | Guest with zero bookings opens `/guest/**`                      | Designed empty states that route to search — never a blank table.                                                                     |
 
@@ -239,7 +269,7 @@ What this document consumes, so a change THERE is checked HERE:
 - **In-app guest↔host messaging** — rejected for now. Email + phone (shown post-confirm)
   is the channel both sides already use; a message center is an inbox to moderate and a
   realtime cost (`GeneralSystemDesignRule.md` § cost model) for a duplicate of it.
-- **Backend-synced favorites** — deferred (§6), upgrade path preserved.
+- ~~**Backend-synced favorites**~~ — shipped 2026-08-09 (§6).
 - **Reviews & ratings** — deferred; sits with the reputation cluster
   (`BookingSystemDesign.md` §11), entering guest UX only when that exists.
 - **Trip extras (itineraries, multi-listing carts, group booking)** — rejected; this is a
@@ -263,7 +293,7 @@ What this document consumes, so a change THERE is checked HERE:
    `BookingSystemDesign.md` §12.3's window change; ship together.
 6. **My-bookings inline actions through shared guards** (§4) — verify no inline `{#if}`
    duplicates a guard; wire the same components the reservation page uses.
-7. Nothing changes for: favorites (stays localStorage), guest dashboard query shape,
+7. Nothing changes for: guest dashboard query shape,
    capability access model, sidebar structure.
 
 Order: 3 (server guard, standalone) → 1 (claim) → 2 (recovery page) → 4–6 (ship with the
@@ -283,8 +313,10 @@ booking-system re-implementation pass, same PR window). Each independently shipp
 5. **Status coverage is closed**: every guest display must handle all eight statuses (§3
    table). A new status upstream (there shouldn't be one — `BookingSystemDesign.md` §7)
    fails loudly here, by design.
-6. **Data loading per §7** — the reservation page is the ONLY guest subscription. Do not
-   add live channels to dashboard/lists without the general rule's written justification.
-7. **When uncertain, say so in your summary** with the section, e.g. "kept favorites
-   device-local per GuestSystemDesign.md §6; say the word if cross-device sync got
-   prioritized."
+6. **Data loading per §7** — the reservation page is the only guest subscription, and
+   `getCurrentUser` the only layout-level one. The saved-listing id set is a LAYOUT-LEVEL
+   ONE-SHOT (§6, §7's stated exception), not a second channel. Do not add live channels to
+   dashboard/lists without the general rule's written justification.
+7. **Favorites have two backings, one API** (§6). Read `favoritesClass.ids` /
+   `isFavorite()` and call `toggle()` — never query the `favorites` table from a component,
+   and never assume a signed-out visitor has no favorites.

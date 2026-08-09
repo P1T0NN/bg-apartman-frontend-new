@@ -70,6 +70,16 @@ export const deleteApartment = createDeleteMutation('deleteApartment', {
 
 		return true;
 	},
+	// Cascade: saved-listing rows pointing at this listing. Same transaction as the delete, so
+	// there is no window where a favorite references a row that is gone — and no dangling row
+	// eating a slot in some guest's capped set forever.
+	onDelete: async (ctx, doc) => {
+		const favorites = await ctx.db
+			.query('favorites')
+			.withIndex('by_apartment', (q) => q.eq('apartmentId', doc._id))
+			.collect();
+		for (const favorite of favorites) await ctx.db.delete(favorite._id);
+	},
 	runStorageDelete: (ctx, docs) =>
 		deleteApartmentImageKeys(
 			ctx,

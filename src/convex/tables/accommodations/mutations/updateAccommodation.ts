@@ -134,7 +134,6 @@ export const updateApartment = authMutation('updateApartment')({
 			discountAmount: args.discountAmount,
 			cleaningFee: args.cleaningFee,
 			weekendPremium: args.weekendPremium,
-			monthlyDiscount: args.monthlyDiscount,
 			weeklyDiscount: args.weeklyDiscount,
 
 			instantBooking: args.instantBooking,

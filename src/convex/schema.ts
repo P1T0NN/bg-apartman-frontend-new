@@ -113,7 +113,6 @@ const schema = defineSchema({
 		discountAmount: v.optional(v.number()), // discounted price per night (e.g. 70 = €70); when > 0 the UI crosses out pricePerNight
 		cleaningFee: v.optional(v.number()),
 		weekendPremium: v.optional(v.number()), // price per night on Fri-Sat (e.g. 140 = €140)
-		monthlyDiscount: v.optional(v.number()),
 		weeklyDiscount: v.optional(v.number()),
 		currency: v.literal('EUR'),
 
@@ -361,6 +360,29 @@ const schema = defineSchema({
 		// Ordered by start date so an overlap read can bound the range instead of scanning
 		// a host's whole block history.
 		.index('by_apartment', ['apartmentId', 'startDate']),
+
+	/**
+	 * Saved listings — one row per (guest, listing). `_creationTime` is when it was saved.
+	 *
+	 * Deliberately the thinnest possible row: the ONLY read that runs on every page load is
+	 * "which listing ids has this user saved?", answered by `by_user` returning documents
+	 * with nothing in them but the id. Anything else a favorites view needs (title, price,
+	 * photo) is a point-read of the listing itself, which the favorites page already does.
+	 *
+	 * Signed-out visitors keep their hearts in `localStorage`; signing in folds them in via
+	 * `mergeFavorites` (same shape as `claimMyBookings` for anonymous bookings).
+	 */
+	favorites: defineTable({
+		userId: v.string(),
+		apartmentId: v.id('apartments')
+	})
+		// The whole-set read, and the only one on the hot path.
+		.index('by_user', ['userId'])
+		// Toggle's existence check — a point lookup, never a scan of the user's set.
+		.index('by_user_apartment', ['userId', 'apartmentId'])
+		// Cascade when a listing is deleted. Without it, dangling rows would sit inside every
+		// affected user's capped set forever, silently costing them a slot.
+		.index('by_apartment', ['apartmentId']),
 
 	/**
 	 * One row per captured booking — what the platform holds and owes the host

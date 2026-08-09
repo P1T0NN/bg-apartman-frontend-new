@@ -46,6 +46,23 @@ export type SitemapAccommodation = {
 	updatedAt: number;
 };
 
+/**
+ * One `/search` map pin. The smallest shape that can be placed, priced and clicked — which is
+ * what lets EVERY matching listing get a marker (`fetchSearchMapMarkersSafe` streams them) while
+ * the cards paginate. `id`/`lat`/`lng` also satisfy `GoogleMapMarkerData`.
+ *
+ * The full card behind a pin is fetched on click (`fetchSearchAccommodationCardSafe`), so nothing
+ * here needs to grow: a field added to this type is a field multiplied by every listing in the
+ * region.
+ */
+export type SearchMarker = {
+	id: Id<'apartments'>;
+	lat: number;
+	lng: number;
+	/** Effective nightly price — the number printed on the pin. */
+	pricePerNight: number;
+};
+
 export type SearchAccommodation = Pick<
 	Doc<'apartments'>,
 	'slug' | 'title' | 'type' | 'city' | 'bedrooms' | 'bathrooms' | 'maxGuests'
@@ -60,6 +77,29 @@ export type SearchAccommodation = Pick<
 	reviewCount?: number;
 	isSuperhost: boolean;
 	image: Doc<'apartments'>['images'][number]; // cover
+};
+
+/**
+ * The subset of an `apartments` row `matchesSearchFilters` decides on — everything the `/search`
+ * count filters test without touching another table. Structurally typed (not `Doc<'apartments'>`)
+ * so the rule that decides what a searcher sees can be asserted directly.
+ *
+ * `coordinates` and at least one photo are hard requirements rather than filters: without them
+ * there is no pin to place and no card to draw.
+ */
+export type SearchFilterableAccommodation = {
+	coordinates?: { lat: number; lng: number };
+	images: readonly unknown[];
+	bedrooms: number;
+	bathrooms: number;
+	maxGuests: number;
+};
+
+/** The `/search` count filters — MINIMUMS ("2+ bedrooms"), what the UI's `4+` option means. */
+export type SearchCountFilters = {
+	bedrooms?: number;
+	bathrooms?: number;
+	guests?: number;
 };
 
 // ─── Single-accommodation shapes ──────────────────────────────────────────────
@@ -140,6 +180,30 @@ export type typesAccommodationForViewer = typesAccommodationEnriched & {
 	adminMeta?: typesAccommodationAdminMeta;
 };
 
+// ─── Admin accommodations list ────────────────────────────────────────────────
+
+/** Lean row for the `/admin/accommodations` DataTable (and the user-detail Accommodations tab). */
+export type AdminAccommodationRow = Pick<
+	Doc<'apartments'>,
+	| '_id'
+	| '_creationTime'
+	| 'title'
+	| 'slug'
+	| 'city'
+	| 'type'
+	| 'pricePerNight'
+	| 'status'
+	| 'isFeatured'
+> & {
+	imageUrl: string;
+	hostId: string;
+	hostName: string;
+	/** The listing's model (ASD §8) — drives the queue's payment chip and the fee action. */
+	monetization?: Doc<'apartments'>['monetization'];
+	/** `listing_fee` listings only — drives the renewal state shown next to the fee action. */
+	apartmentSubscriptionExpiryDate?: number;
+};
+
 // ─── Add / edit accommodation forms ───────────────────────────────────────────
 
 /**
@@ -176,7 +240,6 @@ export type typesAddAccommodationForm = {
 	weekendPremium: string;
 	discountAmount: string;
 	weeklyDiscount: string;
-	monthlyDiscount: string;
 
 	minReservationDays: string;
 	maxReservationDays: string;

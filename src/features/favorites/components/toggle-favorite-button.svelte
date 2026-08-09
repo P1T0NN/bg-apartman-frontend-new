@@ -29,8 +29,9 @@
 		class?: string;
 	} = $props();
 
-	// Load persisted favorites from localStorage the first time any heart mounts. Idempotent
-	// + client-only, so each card/detail button can own the check without layout coupling.
+	// Anonymous visitors only: loads their localStorage hearts the first time one mounts.
+	// Idempotent, and a no-op for signed-in users — the root layout's single subscription is
+	// what fills the set there, so mounting 30 of these still costs zero queries.
 	onMount(() => {
 		favoritesClass.hydrate();
 	});

@@ -6,6 +6,7 @@
 	import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar/index.js';
 	import { Button } from '@/components/ui/button/index.js';
 	import CopyButton from '@/components/ui/copy-button/copy-button.svelte';
+	import SuperhostButton from './superhost-button.svelte';
 
 	// UTILS
 	import { capitalizeFirst } from '@/shared/utils/stringUtils';
@@ -41,6 +42,9 @@
 	const banExpiresAt = $derived(
 		user.banExpires ? new Date(user.banExpires).toLocaleString() : null
 	);
+
+	// Stored optional (and better-auth may write `null`), so undefined/null both mean "no".
+	const isSuperhost = $derived(user.isSuperhost === true);
 </script>
 
 {#snippet field(label: string, value: string)}
@@ -95,6 +99,18 @@
 		{/if}
 		{@render field('Created', createdAt)}
 		{@render field('Updated', updatedAt)}
+	</div>
+
+	<div class="flex flex-col gap-2">
+		<span class="text-xs tracking-wide text-muted-foreground uppercase">Reputation</span>
+		<div class="flex flex-wrap items-center justify-between gap-3">
+			<p class="text-sm text-muted-foreground">
+				{isSuperhost
+					? 'Superhost — the badge shows on every listing they own.'
+					: 'Not a superhost. Granting it shows the badge on all of their listings.'}
+			</p>
+			<SuperhostButton userId={user._id} userEmail={user.email} {isSuperhost} />
+		</div>
 	</div>
 
 	<div class="flex flex-col gap-2">

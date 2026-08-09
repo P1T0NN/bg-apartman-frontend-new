@@ -10,10 +10,8 @@ import { sendBookingCancelledEmail } from '@/convex/email/sendBookingCancelledEm
 import { sendBookingCancelledHostEmail } from '@/convex/email/sendBookingCancelledHostEmail';
 import { AUDIT_ACTIONS } from '@/convex/tables/auditLog/auditLogConfigs';
 import { isTerminalBookingStatus } from '@/shared/features/booking/utils/isTerminalBookingStatus';
-import {
-	settleBookingPayment,
-	paymentNoteFrom
-} from '@/convex/payments/helpers/settleBookingPayment';
+import { settleBookingPayment } from '@/convex/payments/helpers/settleBookingPayment';
+import { paymentNoteFrom } from '@/convex/payments/utils/paymentNoteFrom';
 
 // SCHEMAS
 import { cancelBookingAdminSchema } from '@/shared/features/booking/schemas/bookingsSchemas';

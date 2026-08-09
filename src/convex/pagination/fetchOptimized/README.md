@@ -372,7 +372,7 @@ offset/limit sources (REST upstreams, better-auth admin API) to the same payload
 ### `aggregate` — offset pagination at any scale
 
 The scalable form of `'offset'`, backed by `@convex-dev/aggregate`. A B-tree counter
-(defined in `convex/aggregates.ts`, kept in sync by write-path triggers via
+(defined in `convex/functions.ts`, kept in sync by write-path triggers via
 `convex/functions.ts`) answers both halves of the offset problem in O(log n): the exact
 `totalCount`, and a direct jump to any page's rows — no scan, no cap, page 1 and page
 500,000 cost the same. This is what "exact totals + `?page=N` forever" costs: one counter

@@ -128,6 +128,7 @@ export const BACKEND_MESSAGES: Record<string, string> = {
 	'GenericMessages.USER_DELETED': 'User deleted.',
 	'GenericMessages.USER_NOT_FOUND': 'User not found.',
 	'GenericMessages.USER_ROLE_UPDATED': 'User role updated.',
+	'GenericMessages.USER_SUPERHOST_UPDATED': 'Superhost status updated.',
 	'GenericMessages.USER_UNBANNED': 'User unbanned.',
 	'GenericMessages.YOU_NEED_TO_CORRECT_FORM_ERRORS': 'You need to correct form errors',
 

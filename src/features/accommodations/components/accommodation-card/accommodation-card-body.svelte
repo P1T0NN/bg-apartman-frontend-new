@@ -58,12 +58,16 @@
 		<div class="mt-auto flex items-end justify-between gap-2 pt-2">
 			<p class="text-sm">
 				{#if accommodation.originalPrice}
-					<span class="text-muted-foreground line-through"
+					<span class="text-destructive line-through"
 						>{formatCurrency(accommodation.originalPrice)}</span
 					>
 				{/if}
 
-				<span class="font-semibold">{formatCurrency(accommodation.pricePerNight)}</span>
+				<span
+					class="font-semibold {accommodation.originalPrice
+						? 'text-emerald-700 dark:text-emerald-300'
+						: ''}">{formatCurrency(accommodation.pricePerNight)}</span
+				>
 				<span class="text-muted-foreground">/ night</span>
 			</p>
 
@@ -72,12 +76,16 @@
 	{:else}
 		<p class="pt-0.5 text-sm">
 			{#if accommodation.originalPrice}
-				<span class="text-muted-foreground line-through"
+				<span class="text-destructive line-through"
 					>{formatCurrency(accommodation.originalPrice)}</span
 				>
 			{/if}
 
-			<span class="font-semibold">{formatCurrency(accommodation.pricePerNight)}</span>
+			<span
+				class="font-semibold {accommodation.originalPrice
+					? 'text-emerald-700 dark:text-emerald-300'
+					: ''}">{formatCurrency(accommodation.pricePerNight)}</span
+			>
 			<span class="text-muted-foreground">/ night</span>
 		</p>
 	{/if}

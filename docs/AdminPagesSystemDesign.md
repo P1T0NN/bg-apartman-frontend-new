@@ -45,8 +45,8 @@ Users              Users
 - **Badges are the wayfinding system.** A non-developer admin should never have to open a
   page to learn whether it needs them. Exactly two badges: listings awaiting review, unread
   reports. Both are NOW-questions → `@convex-dev/aggregate` counts (per
-  `GeneralSystemDesignRule.md` § table counts): `aggregateApartments.count(ns
-'pending_review')` and `aggregateReports.count(ns 'new')` (reports namespace: see §4).
+  `GeneralSystemDesignRule.md` § table counts): `counters.apartments.count(ns
+'pending_review')` and `counters.reports.count(ns 'new')` (reports namespace: see §4).
 - One combined query `fetchAdminSidebarBadgesSafe` returning both counts, subscribed via
   `useQuery` **in the admin layout**. Realtime verdict: **subscription** — hosts submit
   listings and the public files reports while the admin works; the badge must move. This does
@@ -204,10 +204,10 @@ the only new page that needs schema work.
    index match is EXACT, so `eq('status', 'new')` cannot see legacy rows that stored
    nothing: the `'new'` read is two slices (`'new'` + `undefined`) merged, which is the
    query-layer twin of the aggregate's `?? 'new'`. New rows stamp the field explicitly.
-2. **`aggregateReports` gains a namespace**: `(doc) => doc.status ?? 'new'`. ⚠️ Changing an
+2. **`counters.reports` gains a namespace**: `(doc) => doc.status ?? 'new'`. ⚠️ Changing an
    aggregate's namespace invalidates its stored tree, so after deploying run the ritual —
-   `aggregates:clearAggregate {table:'reports'}` then
-   `aggregates:backfillAggregates {table:'reports'}`. The dashboard's "needs attention"
+   `functions:clearCounter {counter:'reports'}` then
+   `functions:backfillCounters {counter:'reports'}`. The dashboard's "needs attention"
    count and the sidebar badge then read `count(ns 'new')`.
 3. **`listReportsSafe`** (new, `requireAdmin`): paginated, filter by status + category,
    newest first.

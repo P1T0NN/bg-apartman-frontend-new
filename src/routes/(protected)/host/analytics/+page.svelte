@@ -32,9 +32,9 @@
 	 * Zero-listing visitors never get here — the host layout swaps in the become-host state
 	 * for the whole area (HostSystemDesign.md §1).
 	 *
-	 * Want plausible numbers on a fresh dev account? `dev/seedMockBookings` seeds a year of
-	 * bookings AND their rollup events through the real pipeline, so this page renders
-	 * exactly what production would — chart and table from the same rows.
+	 * A fresh account sees an empty chart and an empty table — that IS the correct render for
+	 * a host with no history. (The dev seeder that used to fill this page was deleted before
+	 * launch; real bookings are the only source of numbers now.)
 	 */
 	const convex = useConvexClient();
 

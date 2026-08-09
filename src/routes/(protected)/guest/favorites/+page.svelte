@@ -22,8 +22,9 @@
 	import type { Id } from '@/convex/_generated/dataModel';
 	import type { SearchAccommodation } from '@/shared/features/accommodation/types/accommodationTypes';
 
-	// This page reads the favorites set directly (no heart mounts first), so hydrate here too.
-	// Idempotent + client-only — a no-op if a card already triggered it.
+	// The set is filled by the root layout's subscription for signed-in users; this covers the
+	// one case that isn't (a device with anonymous hearts landing here before any card mounts).
+	// Idempotent + client-only, and a no-op once the server backing is live.
 	$effect(() => {
 		favoritesClass.hydrate();
 	});

@@ -11,15 +11,19 @@
 
 	// Accommodation page shows a starting nightly price; the real total is on the book page.
 	const nightly = $derived(effectiveNightlyPrice(accommodation));
+	// Discounted price reads as the deal: current in green, the old price struck in destructive.
+	const discounted = $derived(hasNightlyDiscount(accommodation));
 </script>
 
 <div class="flex items-baseline gap-1.5">
 	<span class="text-sm text-muted-foreground">from</span>
-	<span class="text-2xl font-semibold">{formatCurrency(nightly)}</span>
+	<span class="text-2xl font-semibold {discounted ? 'text-emerald-700 dark:text-emerald-300' : ''}"
+		>{formatCurrency(nightly)}</span
+	>
 	<span class="text-muted-foreground">night</span>
 
-	{#if hasNightlyDiscount(accommodation)}
-		<span class="text-sm text-muted-foreground line-through">
+	{#if discounted}
+		<span class="text-sm text-destructive line-through">
 			{formatCurrency(accommodation.pricePerNight)}
 		</span>
 	{/if}

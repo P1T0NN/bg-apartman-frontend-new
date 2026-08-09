@@ -9,7 +9,7 @@
 	import { listingIsListingFee } from '@/shared/features/accommodation/utils/listingFeeState';
 
 	// TYPES
-	import type { AdminAccommodationRow } from '@/convex/tables/accommodations/queries/listAccommodationsAdmin';
+	import type { AdminAccommodationRow } from '@/shared/features/accommodation/types/accommodationTypes';
 
 	/**
 	 * A listing's moderation status, plus the one billing fact that changes what an admin

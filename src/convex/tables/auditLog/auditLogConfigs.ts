@@ -16,6 +16,7 @@ export const AUDIT_ACTIONS = {
 	USER_UPDATE: 'user.update',
 	USER_DELETE: 'user.delete',
 	USER_ROLE_UPDATE: 'user.role.update',
+	USER_SUPERHOST_UPDATE: 'user.superhost.update',
 	USER_BAN: 'user.ban',
 	USER_UNBAN: 'user.unban',
 	USER_SESSION_REVOKE: 'user.session.revoke',

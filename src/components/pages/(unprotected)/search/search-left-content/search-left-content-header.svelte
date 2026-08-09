@@ -13,11 +13,17 @@
 
 	let {
 		count,
+		counting = false,
 		location,
 		search,
 		loading = false
 	}: {
 		count: number;
+		/**
+		 * The count is still a lower bound — the marker stream that produces it hasn't reached
+		 * the end of the set yet. Rendered as "120+" rather than a number that will change.
+		 */
+		counting?: boolean;
 		location: string;
 		search: SearchState;
 		loading?: boolean;
@@ -33,7 +39,7 @@
 				{#if loading}
 					<Spinner /> Searching stays in {location}
 				{:else}
-					{count} stays in {location}
+					{count}{counting ? '+' : ''} stays in {location}
 				{/if}
 			</h1>
 			<p class="text-sm text-muted-foreground">Prices include all fees</p>

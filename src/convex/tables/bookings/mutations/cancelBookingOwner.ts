@@ -7,10 +7,8 @@ import { sendBookingCancelledEmail } from '@/convex/email/sendBookingCancelledEm
 import { sendBookingCancelledHostEmail } from '@/convex/email/sendBookingCancelledHostEmail';
 import { applyHostAction } from '@/shared/features/booking/utils/applyHostAction';
 import { hostMayPerform } from '@/shared/features/booking/utils/hostMayPerform';
-import {
-	settleBookingPayment,
-	paymentNoteFrom
-} from '@/convex/payments/helpers/settleBookingPayment';
+import { settleBookingPayment } from '@/convex/payments/helpers/settleBookingPayment';
+import { paymentNoteFrom } from '@/convex/payments/utils/paymentNoteFrom';
 
 // SCHEMAS
 import { cancelBookingOwnerSchema } from '@/shared/features/booking/schemas/bookingsSchemas';

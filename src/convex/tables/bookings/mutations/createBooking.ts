@@ -10,6 +10,7 @@ import { PAYMENTS_CONFIG } from '@/shared/config';
 import { authComponent } from '@/convex/auth/auth';
 import { onlinePaymentsEnabled } from '@/convex/payments/adapter';
 import { getAuthUserId } from '@/convex/auth/helpers/getAuthUserId';
+import { convexRateLimiter } from '@/convex/convexRateLimiter';
 import { analytics, ANALYTICS_EVENT, hostAnalyticsScope } from '@/convex/analytics';
 import { trackBookingNights } from '@/convex/tables/bookings/helpers/trackBookingNights';
 import { sendCreateBookingEmail } from '@/convex/email/sendCreateBookingEmail';
@@ -66,6 +67,14 @@ export const createBooking = mutation({
 		}
 		// Trimmed + coerced by the schema, so the handler never re-cleans a field.
 		const args = parsed.data;
+
+		// Public endpoint (guests book without an account), and the most expensive one on the
+		// platform: every request mails the host and lands in their queue. Two buckets, charged
+		// before ANY read or write so a refused call costs nothing — per guest email against a
+		// loop, plus one platform-wide floor for an attacker rotating addresses.
+		const rateLimitKey = args.guestEmail.toLowerCase();
+		await convexRateLimiter.limit(ctx, 'createBooking', { key: rateLimitKey, throws: true });
+		await convexRateLimiter.limit(ctx, 'createBookingFloor', { throws: true });
 
 		const numberOfNights = nightsBetween(args.checkInDate, args.checkOutDate);
 
@@ -133,9 +142,10 @@ export const createBooking = mutation({
 		}
 
 		// Price is derived from the accommodation server-side — never trusted from the client. The
-		// apartment doc carries the `pricePerNight` / `discountAmount` / `cleaningFee` shape
-		// `calculatePrice` expects.
-		const quote = calculatePrice(apartment, numberOfNights);
+		// apartment doc carries the `pricePerNight` / `discountAmount` / `cleaningFee` /
+		// `weekendPremium` shape `calculatePrice` expects; dates are passed so the Fri/Sat
+		// override lands on the exact nights it owns.
+		const quote = calculatePrice(apartment, args.checkInDate, args.checkOutDate);
 
 		const bookingCode = makeBookingCode();
 		const now = Date.now();

@@ -3,6 +3,7 @@ import { v, type Infer } from 'convex/values';
 
 // UTILS
 import { authComponent, createAuth } from '@/convex/auth/auth';
+import { internal } from '@/convex/_generated/api';
 import { adminMutation } from '@/convex/auth/middleware/authMiddleware';
 import { AUDIT_ACTIONS } from '@/convex/tables/auditLog/auditLogConfigs';
 
@@ -59,6 +60,65 @@ export const setUserRole = adminMutation('setUserRole')({
 		});
 
 		return { success: true, message: { key: 'GenericMessages.USER_ROLE_UPDATED' } };
+	}
+});
+
+/**
+ * Grant or revoke a host's superhost badge. Admin-only, audited, and the ONLY writer of this
+ * flag — there is no automatic rule, by design: "superhost" here is a judgement about a host,
+ * not a formula over their numbers.
+ *
+ * Two writes, because the flag is stored twice on purpose:
+ *  1. the better-auth user row — the source of truth, read by `createAccommodation` so any
+ *     listing the host adds later is stamped correctly;
+ *  2. every existing `apartments` row of theirs — the denormalized copy the badge actually
+ *     renders from (search and list reads can't afford a per-row user lookup).
+ *
+ * The fan-out is SCHEDULED rather than awaited (see `syncHostSuperhost`): the user row is the
+ * truth, so the listings converging a moment later is the correct trade for a click that
+ * returns immediately even for a host with hundreds of listings.
+ *
+ * `adminUpdateUser` (not `updateUser`) because the field is declared `input: false` in
+ * `createAuthOptions` — clients can never set it, only trusted server code through the admin
+ * plugin's endpoint.
+ */
+export const setUserSuperhost = adminMutation('setUserSuperhost')({
+	args: {
+		userId: v.string(),
+		isSuperhost: v.boolean()
+	},
+	returns: adminResult,
+	handler: async (ctx, args): Promise<AdminResult> => {
+		const before = await authComponent.getAnyUserById(ctx, args.userId);
+		if (!before) {
+			ctx.audit(AUDIT_ACTIONS.USER_SUPERHOST_UPDATE, {
+				resource: { table: 'user', id: args.userId },
+				status: 'failure',
+				errorMessage: 'USER_NOT_FOUND'
+			});
+			return { success: false, message: { key: 'GenericMessages.USER_NOT_FOUND' } };
+		}
+
+		const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
+
+		await auth.api.adminUpdateUser({
+			body: { userId: args.userId, data: { isSuperhost: args.isSuperhost } },
+			headers
+		});
+
+		await ctx.scheduler.runAfter(
+			0,
+			internal.tables.accommodations.mutations.syncHostSuperhost.syncHostSuperhost,
+			{ hostId: args.userId, isSuperhost: args.isSuperhost }
+		);
+
+		ctx.audit(AUDIT_ACTIONS.USER_SUPERHOST_UPDATE, {
+			resource: { table: 'user', id: args.userId },
+			before: { isSuperhost: (before as { isSuperhost?: boolean | null }).isSuperhost ?? false },
+			after: { isSuperhost: args.isSuperhost }
+		});
+
+		return { success: true, message: { key: 'GenericMessages.USER_SUPERHOST_UPDATED' } };
 	}
 });
 
@@ -216,13 +276,17 @@ export const deleteUser = adminMutation('deleteUser')({
 
 		// 3. CASCADE — delete project-owned rows that reference this user.
 		//    Add one block per such table. Convex has no FK enforcement, so
-		//    anything you skip here becomes orphaned data. Example shape:
+		//    anything you skip here becomes orphaned data.
 		//
-		//      const posts = await ctx.db
-		//          .query('posts')
-		//          .withIndex('byUserId', (q) => q.eq('userId', args.userId))
-		//          .collect();
-		//      for (const row of posts) await ctx.db.delete(row._id);
+		//    Saved listings: private to this user and meaningless without them. Their
+		//    bookings and listings are deliberately NOT cascaded — those are records other
+		//    parties (hosts, the platform's books) still need, and every reader null-checks
+		//    the user.
+		const favorites = await ctx.db
+			.query('favorites')
+			.withIndex('by_user', (q) => q.eq('userId', args.userId))
+			.collect();
+		for (const favorite of favorites) await ctx.db.delete(favorite._id);
 
 		// 4. Remove the auth record. BA-specific — internally cascades to BA's
 		//    own session/account/verification tables. In a non-BA project this

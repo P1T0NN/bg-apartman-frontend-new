@@ -4,6 +4,7 @@
 // `convexRateLimiter.ts`; the name union is derived in `../types/rateLimitsTypes.ts`.
 
 const MINUTE = 60 * 1000;
+const HOUR = 60 * MINUTE;
 
 /**
  * Reusable token-bucket shapes. Pick a preset when registering a function, or
@@ -47,6 +48,35 @@ export const limitPresets = {
 		rate: 60,
 		period: MINUTE,
 		capacity: 30
+	},
+	/**
+	 * PUBLIC, UNAUTHENTICATED writes (booking request, report, newsletter, contact form).
+	 *
+	 * Every other bucket here is charged per signed-in user or, for the auth routes, per IP
+	 * by the Better Auth hook. These four have no session to key on, so they key on the
+	 * submitted email — the only stable identity the payload carries — and are deliberately
+	 * hourly, not per-minute: a human fills one of these forms a handful of times a day.
+	 *
+	 * Burst 6 rather than 2–3 because a guest shopping around genuinely fires several booking
+	 * requests in one sitting; the sustained 10/h is what a loop runs into.
+	 */
+	publicWrite: {
+		kind: 'token bucket' as const,
+		rate: 10,
+		period: HOUR,
+		capacity: 6
+	},
+	/**
+	 * Platform-wide floor for the one public write that costs money and attention (a booking
+	 * request mails the host and lands in their queue). An attacker rotating email addresses
+	 * slips past {@link publicWrite} entirely — this is the bucket they still hit. Sized so a
+	 * genuinely busy day never touches it: 120 straight through, then 10/min sustained.
+	 */
+	publicWriteFloor: {
+		kind: 'token bucket' as const,
+		rate: 600,
+		period: HOUR,
+		capacity: 120
 	},
 	/** Better Auth — credential sign-in. 5/min per IP. */
 	authSignIn: {
@@ -111,6 +141,7 @@ export const limitPresets = {
 export const convexRateLimitRegistry = {
 	// Admin user management
 	setUserRole: limitPresets.interactiveWrite,
+	setUserSuperhost: limitPresets.interactiveWrite,
 	banUser: limitPresets.interactiveWrite,
 	unbanUser: limitPresets.interactiveWrite,
 	revokeSession: limitPresets.interactiveWrite,
@@ -142,6 +173,10 @@ export const convexRateLimitRegistry = {
 	deleteUploadedFile: limitPresets.bulkDelete,
 	deleteUploadedFileR2: limitPresets.bulkDelete,
 
+	// Favorites
+	toggleFavorite: limitPresets.interactiveWrite,
+	mergeFavorites: limitPresets.interactiveWrite,
+
 	// Bookings
 	confirmBooking: limitPresets.interactiveWrite,
 	declineBooking: limitPresets.interactiveWrite,
@@ -158,11 +193,22 @@ export const convexRateLimitRegistry = {
 		capacity: 5
 	},
 
+	// Public, unauthenticated writes — see `limitPresets.publicWrite` for the keying rule.
+	/** Keyed by guest email. */
+	createBooking: limitPresets.publicWrite,
+	/** One global bucket — the floor an attacker rotating emails still hits. */
+	createBookingFloor: limitPresets.publicWriteFloor,
+	/** Keyed by reporter email, or one shared `anon` bucket when they left it blank. */
+	createReport: limitPresets.publicWrite,
+	/** Keyed by the submitted email. */
+	subscribeToNewsletter: limitPresets.publicWrite,
+	/** Keyed by client IP — the contact form is a SvelteKit remote, so it has one. */
+	contactForm: limitPresets.publicWrite,
+
 	// Reports
 	setReportStatus: limitPresets.interactiveWrite,
 
 	// Search / expensive reads
-	fetchTestRows: limitPresets.searchQuery,
 	publicSearchInput: limitPresets.searchQuery,
 
 	// Better Auth HTTP routes (enforced in hooks.before — see auth/authRoutes.ts)

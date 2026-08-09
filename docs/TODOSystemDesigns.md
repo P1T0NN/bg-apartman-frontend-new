@@ -136,11 +136,11 @@ code was brought up to the unified text:
 ## 10. Admin pages completion — APSD §8 (independent — can interleave any time after step 1)
 
 > **Order note**: shipped reports' schema FIRST, not last as §8 lists it — the sidebar badge
-> reads `aggregateReports.count(ns 'new')`, so the namespace has to exist before step 1 can
+> reads `counters.reports.count(ns 'new')`, so the namespace has to exist before step 1 can
 > work. Everything else followed §8's order.
 
-- [x] Reports schema: `status` (optional, `undefined` = `'new'`) + `by_status` index + `aggregateReports` namespace `?? 'new'`; `createReport` now stamps it. **Ritual run on dev** (`clearAggregate` → `backfillAggregates`) (APSD §4)
-- [x] `clearAggregate` internal mutation added — the re-backfill ritual was documented in three places but nothing could actually perform the "clear the component" half (GSDR § table counts)
+- [x] Reports schema: `status` (optional, `undefined` = `'new'`) + `by_status` index + `counters.reports` namespace `?? 'new'`; `createReport` now stamps it. **Ritual run on dev** (`clearCounter` → `backfillCounters`) (APSD §4)
+- [x] `clearCounter` internal mutation added — the re-backfill ritual was documented in three places but nothing could actually perform the "clear the component" half (GSDR § table counts)
 - [x] Sidebar badges: `fetchAdminSidebarBadgesSafe` (two aggregate counts, one subscription in the admin layout), `99+` cap, hidden at zero. `countPendingReviewSafe` and its capped `.take(51)` **deleted** (APSD §1)
 - [x] `/admin/accommodations`: listings table + publish/suspend/archive dialogs + feature toggle + fee-stamp dialog (`listing_fee` listings only) (APSD §2). The separate review queue that shipped here was **removed 2026-07-31** — the sidebar badge already says work exists and the status filter shows it, so the queue was a duplicate subscription doing the table's job; its "Awaiting payment" chip moved onto the status cell
 - [x] `/admin/bookings`: support lookup + filters incl. **flagged** + row expansion + admin cancel + clear-flag. Row expansion added to the shared `DataTable` (`expandedContent` snippet, real `aria-expanded` disclosure, desktop detail row + mobile inline) — reusable, and what §3 asks for instead of a detail route (APSD §3)
@@ -173,7 +173,7 @@ construction — the old "recorded-but-uncollectable cash fee" hole is closed st
 revenue definition: **platform revenue** (`invoice.paid − refund.created`), never GMV.
 
 - [x] `/admin/dashboard` built per ADPSD: three bands, one `fetchAdminDashboardPageSafe`
-      subscription, `aggregateBookings` re-provisioned + backfilled on dev, `countUsers`
+      subscription, `counters.bookings` re-provisioned + backfilled on dev, `countUsers`
       component query (revenue tile still GMV-wired — corrected below)
 - [x] Schema + config: `apartments.monetization?: 'listing_fee' | 'booking_fee'`;
       `MONETIZATION: 'none' | 'per_listing'`; create mutation requires the choice under
@@ -213,6 +213,43 @@ revenue definition: **platform revenue** (`invoice.paid − refund.created`), ne
       flipping `MONETIZATION: 'per_listing'` (ASD §8 "switch honesty"; supersedes
       `backfillListingFeePeriods` as the pre-flip step)
 
+## 10e. Pre-launch audit fixes (2026-08-09)
+
+A production-readiness audit of the whole app (everything above was already closed) found
+four gaps. Three are fixed here; the fourth is listed under the launch checklist.
+
+- [x] **Rate limits on every PUBLIC, unauthenticated write.** The registry covered every
+      authenticated write and all the Better Auth routes, but nothing keyed the four
+      endpoints an anonymous browser can call: `createBooking` (mails the host, fills their
+      queue), `createReport`, `subscribeToNewsletter`, and the `sendContactFormEmail` remote
+      (Resend straight into the company inbox — BotID-gated, never rate-limited). All four
+      now charge a bucket: keyed by submitted email (`limitPresets.publicWrite`), by IP for
+      the remote, plus one platform-wide `createBookingFloor` for the email-rotation case.
+      The contact form reuses the trusted `consumeSearchRateLimit` bridge.
+- [x] **`isSuperhost` got its writer** (`setUserSuperhost`, admin-only, audited as
+      `user.superhost.update`) plus the toggle on `/admin/users/[id]` → Overview →
+      Reputation. Two writes, because the flag is stored twice on purpose: the better-auth
+      user row (source of truth, read by `createAccommodation`) and the denormalized
+      `apartments.isSuperhost` copy the badge renders from — the latter via the scheduled,
+      self-paginating `syncHostSuperhost`, so a host with hundreds of listings doesn't make
+      the admin's click wait. There is deliberately no automatic rule: superhost is a
+      judgement, not a formula.
+- [x] **Dev seeds deleted** — see the launch checklist's first item.
+- [x] **Favorites are account-synced** (GuestSystemDesign.md §6, rewritten): new `favorites`
+      table, `toggleFavorite` / `mergeFavorites` / `fetchMyFavoriteIdsSafe`. ONE layout-level
+      ONE-SHOT returning ids only feeds `favoritesClass` (not a subscription — `getCurrentUser`
+      stays the layout's only live channel; the set changes only by this user's clicks and
+      `toggleFavorite` returns the resulting state, so nothing needs to push). 30 hearts on a
+      search page cost zero further queries; the read's `.take(MAX_PER_USER)` bounds the hot
+      path with no per-click count; writes are optimistic and settle on the mutation's answer;
+      signing in merges the device's anonymous saves, and signed-out visitors keep working
+      exactly as before. Cascades on listing- and user-delete.
+
+> **Still open from the same audit** (not code — decisions):
+> **no Terms of Service / Privacy Policy pages** (the footer's "Terms of service" links to
+> `/`, and Stripe onboarding in step 11 will ask for both URLs), and **no reviews system** —
+> `rating`/`reviewCount` are permanently `undefined`, so every card reads "New" forever.
+
 ## 11. Go live with Stripe — PSD §13.7 (LAST — gated on business decision)
 
 - [ ] **Business gate**: verify provider support for platform entity jurisdiction + host payout country (PSD §7) — decides whether flow B/C proceed or only flow A via bank API
@@ -227,16 +264,19 @@ revenue definition: **platform revenue** (`invoice.paid − refund.created`), ne
 Not a build step: these are the things that are correct in development and wrong in
 production. Run them in this order on the production deployment.
 
-- [ ] **Remove the dev seed.** `bunx convex run dev/seedMockBookings:clearMockBookings`
-      (deletes only rows carrying the two seed marks — a real listing the seed borrowed
-      stays put), then delete `src/convex/dev/seedMockBookings.ts`. Left in place it also
-      leaves a **`published`** listing (`seed-mock-apartment`) that guests can genuinely book.
-- [ ] **Run the aggregate backfills on production.** They have only ever run on dev:
-      `bunx convex run aggregates:backfillAggregates "{table:'reports'}"` and the same for
-      `apartments`, `bookingEarnings` and `bookings` (the last powers the admin
+- [x] **`src/convex/dev/` is gone entirely (2026-08-09).** No seeds, no wipe tool, no
+      analytics inspector — nothing under `dev/` ships. The seed `clear*` functions were run
+      on dev before deletion (0 rows either side, nothing stranded); remaining rows are being
+      cleared by hand from the dashboard. The dead `fetchTestRows` rate-limit bucket went with
+      them. **There is no longer any function that can bulk-delete app data** — that is
+      deliberate. If a reset is ever needed again, do it from the Convex dashboard, or write
+      the tool for that one job and delete it again after.
+- [ ] **Run the counter backfills on production.** They have only ever run on dev:
+      `bunx convex run functions:backfillCounters "{counter:'reports'}"` and the same for
+      `apartments`, `hostEarnings` and `bookings` (the last powers the admin
       dashboard's pulse row). Counts read zero until this happens — badges, dashboard
       tiles and the held-earnings balance all silently under-report.
-      ⚠️ **Run `aggregates:clearAggregate "{table:'X'}"` FIRST for any component that has
+      ⚠️ **Run `functions:clearCounter "{counter:'X'}"` FIRST for any component that has
       existed before** (notably `bookings`, which shipped once and was removed). A Convex
       component keeps its data across removal + re-adding, so backfilling onto the old tree
       double-counts. Observed on dev 2026-07-31: the dashboard read 2 pending requests
@@ -245,8 +285,8 @@ production. Run them in this order on the production deployment.
 - [ ] **Re-backfill `apartments` on DEV too.** Its aggregate gained a `hostId` sort key (so
       one tree serves both the admin's platform-wide count and the host dashboard's per-host
       counts), and a changed DEFINITION invalidates the stored tree. Dev has stale entries
-      until: `bunx convex run aggregates:clearAggregate "{table:'apartments'}"` then
-      `bunx convex run aggregates:backfillAggregates "{table:'apartments'}"`. Skipping it
+      until: `bunx convex run functions:clearCounter "{counter:'apartments'}"` then
+      `bunx convex run functions:backfillCounters "{counter:'apartments'}"`. Skipping it
       makes every host's listing tiles read 0.
 - [ ] **Backfill the occupancy ledger** (dev AND production):
       `bunx convex run analytics/backfillOccupancyNights:backfillOccupancyNights`.
@@ -256,6 +296,21 @@ production. Run them in this order on the production deployment.
       host's occupancy tile reads 0% until this runs. Idempotent — the events carry a
       `forever`-unique key per (direction, booking, month), so re-running double-counts
       nothing.
+- [ ] **Analytics 2.0 sanity pass on production** (after the first deploy on `@piton-/analytics-convex` 2.0): 1. `bunx convex run analytics/analytics:writeConfiguration --prod` — registers the
+      config so dashboards can read metrics before the first tracked event does it lazily.
+      `predev` runs this on dev automatically; production has no equivalent hook. 2. `bunx convex run analytics/analytics:dataAudit --prod` — expect
+      `orphanedMetrics: []`, `orphanedJourneys: []`. Anything listed is rollup data for a
+      metric that no longer exists (a rename is a delete plus an add, so renames leave
+      ghosts); delete it with
+      `bunx convex run analytics/analytics:pruneData "{metrics:['<name>']}" --prod`, which
+      refuses any name still in the config. Re-run the audit to confirm. 3. `bunx convex run analytics/analytics:ingestionHealth --prod` — expect
+      `pendingAtLeast: 0`, `backlogExceedsCycle: false`. It stays flat zero while every
+      metric is `mediumVolume`; it only becomes a number worth watching once some metric
+      gets `.trafficMode('highVolume')`.
+      No month-actor-claim backfill is needed: this config defines no `distinctActors`
+      metric, and the component only writes those claim rows for that aggregation.
+      No cron changes to make by hand — `compactAnalyticsRollups` is registered by
+      `analytics.registerCrons`, which now schedules four jobs instead of three.
 - [ ] **Set `SITE_URL`** on the production deployment — every email link is built from it
       (`src/convex/email/resend.ts`); unset, links point nowhere.
 - [ ] **Verify `FEATURES` / mode constants** read the way production wants them:

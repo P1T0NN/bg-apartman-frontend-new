@@ -1,126 +1,59 @@
+// PAGINATION
+import { fetchOptimized } from '@/convex/pagination/fetchOptimized';
+
 // CONFIG
-import { OPERATIONAL_LIMITS } from '@/shared/config';
-
-// LIBRARIES
-import { v } from 'convex/values';
-
-// SERVER
-import { query } from '@/convex/_generated/server';
+import { SEARCH_DATA } from '@/shared/config';
 
 // UTILS
 import { apartmentToSearchAccommodation } from '../utils/apartmentToSearchAccommodation';
-import { hasAvailabilityConflict } from '@/convex/tables/bookings/helpers/hasAvailabilityConflict';
+import {
+	searchAccommodationsArgs,
+	searchAccommodationsStream
+} from '../helpers/searchAccommodationsStream';
 
 // TYPES
-import type { Doc } from '@/convex/_generated/dataModel';
 import type { SearchAccommodation } from '@/shared/features/accommodation/types/accommodationTypes';
 
 /**
- * Public search over published apartments for the results page (list + map).
+ * The `/search` results LIST — one cursor page of cards at a time.
  *
- * "Safe": returns a sanitized {@link SearchAccommodation} projection (no `hostId` or other
- * internal fields), not raw apartment rows. Convex reads whole documents — the trim happens
- * in `apartmentToSearchAccommodation` before anything leaves the server.
+ * "Safe": `enrich` projects each row to the sanitized {@link SearchAccommodation} card shape (no
+ * `hostId`, no internal fields) before anything leaves the server. Convex reads whole documents;
+ * the trim happens here.
  *
- * **Region matching is indexed, and that is a correctness property, not an optimization.**
- * The picked region is a Google place id, so it is language-independent — searching "Beograd"
- * and searching "Belgrade" resolve to the same id and return the same listings. A listing
- * stores its city and country ids in their own columns (`splitRegionPlaceId`, written by the
- * create/update mutations), so a region search is an exact index range: it reads that region's
- * published listings and nothing else. Two indexes because the search box offers cities AND
- * countries, and the caller doesn't tell us which kind it picked — we ask both and union.
+ * **This is real server-side pagination.** The page is `numItems` cards, and the request reads
+ * only the rows needed to fill it. It used to return the entire matching set so the list could
+ * `.slice(0, 12)` it client-side — which meant a 1,000-listing region shipped 1,000 cards to
+ * render 12, and the map's marker requirement was the excuse. Markers now have their own lean
+ * endpoint (`fetchSearchMapMarkersSafe`), so nothing forces this one to be whole-set anymore.
  *
- * The previous version read the first `SEARCH_SCAN_LIMIT` published rows in creation order and
- * matched the region in memory. That is why this had to change: past that many listings, the
- * newest were never in the sample, so they were invisible to EVERY search — and a city whose
- * listings all fell outside the sample returned nothing at all while matching listings existed.
+ * `resolve` rather than `where`/`union` because the count minimums and date availability cannot
+ * be index ranges (Convex allows one range field per index) and `fetchOptimized`'s indexed modes
+ * deliberately refuse post-scan filters. The factory still owns everything that must not drift —
+ * args validators, the page-size clamp, the payload envelope, `enrich` — and the middle is a
+ * stream that paginates honestly. See `searchAccommodationsStream` for why nothing truncates.
  *
- * Count minimums stay in memory on purpose: Convex allows one range field per index, so
- * `bedrooms >= a AND bathrooms >= b AND guests >= c` cannot be an index range at any field
- * ordering. They are cheap here because they now narrow ONE region's rows, not a truncated
- * slice of the whole table.
- *
- * Returns the full matching set (not a page) because the map needs every marker — both panes
- * consume this array, and the list's infinite scroll paginates it client-side.
- *
- * Only rows with coordinates AND at least one photo are returned: both are required to render
- * a map marker and a card.
- *
- * `checkIn`/`checkOut`: when a valid range is chosen, apartments with an active overlapping
- * booking are excluded via {@link hasAvailabilityConflict} (indexed per-apartment reads).
+ * `totalCount` is `null`, as in every cursor surface. The exact count comes from the marker
+ * stream, which the map drains anyway — so the header gets a real number without a second scan.
  */
-export const fetchSearchAccommodationsSafe = query({
-	args: {
-		placeId: v.optional(v.string()),
-		checkIn: v.optional(v.string()),
-		checkOut: v.optional(v.string()),
-		bedrooms: v.optional(v.number()),
-		bathrooms: v.optional(v.number()),
-		guests: v.optional(v.number())
+export const fetchSearchAccommodationsSafe = fetchOptimized({
+	table: 'apartments',
+	args: searchAccommodationsArgs,
+	strategy: 'cursor',
+	order: 'desc',
+	resolve: async (ctx, args, { numItems, cursor }) => {
+		const result = await searchAccommodationsStream(ctx, args).paginate({
+			numItems,
+			cursor,
+			maximumRowsRead: SEARCH_DATA.SEARCH_PAGE_MAX_ROWS_READ,
+			maximumBytesRead: SEARCH_DATA.SEARCH_PAGE_MAX_BYTES_READ
+		});
+
+		return {
+			page: result.page,
+			isDone: result.isDone,
+			continueCursor: result.continueCursor
+		};
 	},
-	handler: async (ctx, args): Promise<SearchAccommodation[]> => {
-		const { placeId } = args;
-
-		let candidates: Doc<'apartments'>[];
-
-		if (placeId === undefined) {
-			// No region picked — an unscoped browse. There is no index to bound this to, so it
-			// keeps a cap. Acceptable because it answers "show me anything", not "show me X":
-			// every listing is still reachable by searching its region, which is the path that
-			// had to stop truncating.
-			candidates = await ctx.db
-				.query('apartments')
-				.withIndex('by_status', (q) => q.eq('status', 'published'))
-				.take(OPERATIONAL_LIMITS.SEARCH_SCAN_LIMIT);
-
-			if (candidates.length >= OPERATIONAL_LIMITS.SEARCH_SCAN_LIMIT) {
-				console.warn('[fetchSearchAccommodationsSafe] unscoped browse hit its cap', {
-					cap: OPERATIONAL_LIMITS.SEARCH_SCAN_LIMIT
-				});
-			}
-		} else {
-			// A city id matches `cityPlaceId`, a country id matches `countryPlaceId`. Both reads
-			// are exact index ranges, so each costs only the rows it returns.
-			const [byCity, byCountry] = await Promise.all([
-				ctx.db
-					.query('apartments')
-					.withIndex('by_status_city', (q) =>
-						q.eq('status', 'published').eq('cityPlaceId', placeId)
-					)
-					.collect(),
-				ctx.db
-					.query('apartments')
-					.withIndex('by_status_country', (q) =>
-						q.eq('status', 'published').eq('countryPlaceId', placeId)
-					)
-					.collect()
-			]);
-
-			// A listing whose city and country ids are equal (the unsplit-fallback case) lands
-			// in both reads — dedupe so it renders one card and one marker.
-			candidates = [...new Map([...byCity, ...byCountry].map((a) => [a._id, a])).values()];
-		}
-
-		const matching = candidates.filter(
-			(a) =>
-				a.coordinates !== undefined &&
-				a.images.length > 0 &&
-				(args.bedrooms === undefined || a.bedrooms >= args.bedrooms) &&
-				(args.bathrooms === undefined || a.bathrooms >= args.bathrooms) &&
-				(args.guests === undefined || a.maxGuests >= args.guests)
-		);
-
-		// Date availability: with a valid range chosen, drop apartments that have an active
-		// booking overlapping it. One index slice per candidate, each bounded to a fixed-width
-		// date window by `MAX_STAY_NIGHTS` — see `hasAvailabilityConflict`.
-		const { checkIn, checkOut } = args;
-		if (checkIn && checkOut && checkIn < checkOut) {
-			const availability = await Promise.all(
-				matching.map((a) => hasAvailabilityConflict(ctx, a._id, checkIn, checkOut))
-			);
-			return matching.filter((_, i) => !availability[i]).map(apartmentToSearchAccommodation);
-		}
-
-		return matching.map(apartmentToSearchAccommodation);
-	}
+	enrich: (_ctx, page): SearchAccommodation[] => page.map(apartmentToSearchAccommodation)
 });

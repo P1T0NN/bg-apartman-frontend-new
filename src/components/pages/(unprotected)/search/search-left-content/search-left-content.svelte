@@ -1,12 +1,10 @@
 <script lang="ts">
-	// CONFIG
-	import { PAGINATION_DATA } from '@/shared/config.js';
-
 	// COMPONENTS
 	import AccommodationCard from '@/features/accommodations/components/accommodation-card/accommodation-card.svelte';
 	import SearchLeftContentHeader from './search-left-content-header.svelte';
 	import SearchFiltersEmpty from '../empty/search-filters-empty.svelte';
 	import SearchResultsLoading from '../loading/search-results-loading.svelte';
+	import Spinner from '@/components/ui/spinner/spinner.svelte';
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
@@ -18,8 +16,19 @@
 	import type { SearchAccommodation } from '@/shared/features/accommodation/types/accommodationTypes';
 	import type { SearchState } from '../types';
 
+	/**
+	 * The results list. `searchAccommodations` is the pages loaded SO FAR, not the whole matching
+	 * set — the sentinel asks the server for the next page, which is the difference between this
+	 * and the previous version (it received everything and sliced it locally).
+	 */
 	let {
 		searchAccommodations,
+		hasMore,
+		loadingMore,
+		onLoadMore,
+		total,
+		counting,
+		isEmpty,
 		search,
 		mobileView,
 		selectedId,
@@ -28,6 +37,15 @@
 		loading = false
 	}: {
 		searchAccommodations: SearchAccommodation[];
+		/** More pages exist on the server. */
+		hasMore: boolean;
+		/** A page request is in flight — blocks a double-fire and shows the tail spinner. */
+		loadingMore: boolean;
+		onLoadMore: () => void;
+		/** Exact result count once `counting` is false; a lower bound while it is true. */
+		total: number;
+		counting: boolean;
+		isEmpty: boolean;
 		search: SearchState;
 		mobileView: 'list' | 'map';
 		selectedId: Id<'apartments'> | null;
@@ -36,26 +54,9 @@
 		loading?: boolean;
 	} = $props();
 
-	// The map shows every result; the list pages in as you scroll. Clicking a pin
-	// or hovering a card links the two without the user having to think about it.
-	const PAGE_SIZE = PAGINATION_DATA.INFINITE_SCROLL_PAGE_SIZE;
-
-	let visibleCount = $state<number>(PAGE_SIZE);
-
-	// New filtered set (identity change) → restart pagination at page 1.
-	$effect(() => {
-		if (searchAccommodations) visibleCount = PAGE_SIZE;
-	});
-
-	const visible = $derived(searchAccommodations.slice(0, visibleCount));
-	const hasMore = $derived(visibleCount < searchAccommodations.length);
-
 	function handleAccommodationHover(id: string | null) {
 		mapHandle?.setFocus(id);
 	}
-
-	const loadMore = () =>
-		(visibleCount = Math.min(visibleCount + PAGE_SIZE, searchAccommodations.length));
 </script>
 
 <!-- LEFT: results list -->
@@ -65,15 +66,15 @@
 		mobileView === 'map' && 'hidden lg:block'
 	)}
 >
-	<SearchLeftContentHeader count={searchAccommodations.length} {location} {search} {loading} />
+	<SearchLeftContentHeader count={total} {counting} {location} {search} {loading} />
 
 	{#if loading}
 		<SearchResultsLoading />
-	{:else if searchAccommodations.length === 0}
+	{:else if isEmpty}
 		<SearchFiltersEmpty {search} {location} />
 	{:else}
 		<div class="grid grid-cols-1 gap-x-5 gap-y-7 sm:grid-cols-2 xl:grid-cols-3">
-			{#each visible as accommodation (accommodation.id)}
+			{#each searchAccommodations as accommodation (accommodation.id)}
 				<AccommodationCard
 					{accommodation}
 					selected={accommodation.id === selectedId}
@@ -82,11 +83,23 @@
 			{/each}
 		</div>
 
-		<!-- Sentinel. Keyed on count so a short first page re-observes and keeps
-	        filling until the viewport is covered, then waits for real scrolling. -->
 		{#if hasMore}
-			{#key visibleCount}
-				<div class="h-10" {@attach infiniteScroll(() => ({ onLoadMore: loadMore, hasMore }))}></div>
+			<!-- Sentinel. Keyed on the loaded count so a page that lands short — a read guard
+			     tripped, or the date filter rejected most of what it walked — re-observes and
+			     keeps filling until the viewport is covered, then waits for real scrolling. -->
+			{#key searchAccommodations.length}
+				<div
+					class="flex h-12 items-center justify-center"
+					{@attach infiniteScroll(() => ({
+						onLoadMore,
+						hasMore,
+						loading: loadingMore
+					}))}
+				>
+					{#if loadingMore}
+						<Spinner />
+					{/if}
+				</div>
 			{/key}
 		{/if}
 	{/if}

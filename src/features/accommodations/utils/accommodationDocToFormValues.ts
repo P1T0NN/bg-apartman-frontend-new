@@ -37,7 +37,6 @@ export function accommodationDocToFormValues(doc: Doc<'apartments'>): typesEditA
 		weekendPremium: optNumStr(doc.weekendPremium),
 		discountAmount: optNumStr(doc.discountAmount),
 		weeklyDiscount: optNumStr(doc.weeklyDiscount),
-		monthlyDiscount: optNumStr(doc.monthlyDiscount),
 
 		minReservationDays: String(doc.minReservationDays),
 		maxReservationDays: optNumStr(doc.maxReservationDays),

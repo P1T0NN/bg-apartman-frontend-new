@@ -23,10 +23,12 @@ import type { QueryCtx } from '@/convex/_generated/server';
  * Convex mutations are serializable, so the re-check + patch is atomic — two hosts
  * confirming overlapping requests cannot both win.
  *
- * **Cost.** This is the hottest read in the app: the public `/search` subscription fans it
- * out over up to `SEARCH_SCAN_LIMIT` apartments per dated query, and it re-runs on every
- * booking write anywhere. So both reads are bounded on BOTH ends and the width is fixed —
- * independent of how long a listing has been on the platform:
+ * **Cost.** This is the hottest read in the app: `/search` calls it once per candidate a dated
+ * query examines. That fan-out is now bounded by the PAGE — the search stream applies this
+ * filter lazily inside `.paginate()` (`searchAccommodationsStream`), so a dated search costs
+ * O(rows examined for this page), not O(every listing in the region) on every keystroke. Both
+ * reads below are still bounded on BOTH ends with a fixed width, independent of how long a
+ * listing has been on the platform:
  *
  *   - bookings: a stay can only overlap this window if it starts within
  *     `MAX_STAY_NIGHTS` before it. That ceiling is enforced by `createBookingSchema`, which

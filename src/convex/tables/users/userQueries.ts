@@ -1,5 +1,6 @@
 // LIBRARIES
 import { v } from 'convex/values';
+import { paginationOptsValidator } from 'convex/server';
 import { components } from '@/convex/_generated/api';
 import { query } from '@/convex/_generated/server';
 import { authComponent } from '@/convex/auth/auth';
@@ -60,6 +61,55 @@ export const listUsers = query({
 			// Cursor mode — counting the full user table on every page would be O(rows).
 			totalCount: null
 		};
+	}
+});
+
+/**
+ * Typeahead for the admin add-accommodation owner picker. Searches BOTH name and email
+ * token-prefix (two `listUsersPaginated` index reads merged and deduped by user id), so
+ * typing "tapu" finds both "Tapusković" and "tapuskovic@…". Returns dropdown-ready rows
+ * (`SearchInputItem` shape); capped server-side so a typed prefix can never overflow the
+ * dropdown's page size.
+ */
+export const searchUsers = query({
+	args: {
+		search: v.string(),
+		paginationOpts: paginationOptsValidator
+	},
+	handler: async (ctx, args) => {
+		await requireAdmin(ctx);
+
+		const needle = args.search.trim();
+		if (needle.length < 2) return [];
+		const numItems = Math.min(Math.max(1, Math.floor(args.paginationOpts.numItems)), 10);
+
+		const [byName, byEmail] = await Promise.all([
+			ctx.runQuery(components.betterAuth.userQueries.listUsersPaginated, {
+				paginationOpts: { cursor: null, numItems },
+				search: needle,
+				searchField: 'name'
+			}),
+			ctx.runQuery(components.betterAuth.userQueries.listUsersPaginated, {
+				paginationOpts: { cursor: null, numItems },
+				search: needle,
+				searchField: 'email'
+			})
+		]);
+
+		const seen = new Set<string>();
+		const items: { id: string; title: string; description?: string }[] = [];
+		for (const row of [...byName.page, ...byEmail.page]) {
+			const id = row._id;
+			if (seen.has(id)) continue;
+			seen.add(id);
+			items.push({
+				id,
+				title: row.name || row.email,
+				...(row.email && { description: row.email })
+			});
+		}
+
+		return items.slice(0, numItems);
 	}
 });
 

@@ -8,7 +8,6 @@
  * @module
  */
 
-import type * as aggregates from "../aggregates.js";
 import type * as analytics_analytics from "../analytics/analytics.js";
 import type * as analytics_backfillOccupancyNights from "../analytics/backfillOccupancyNights.js";
 import type * as analytics_index from "../analytics/index.js";
@@ -24,10 +23,6 @@ import type * as auth_queries_authQueries from "../auth/queries/authQueries.js";
 import type * as auth_utils_getEmailFromAuthBody from "../auth/utils/getEmailFromAuthBody.js";
 import type * as convexRateLimiter from "../convexRateLimiter.js";
 import type * as crons from "../crons.js";
-import type * as dev_inspectAnalytics from "../dev/inspectAnalytics.js";
-import type * as dev_seedMockBookings from "../dev/seedMockBookings.js";
-import type * as dev_seedMonetization from "../dev/seedMonetization.js";
-import type * as dev_wipeAppData from "../dev/wipeAppData.js";
 import type * as email_resend from "../email/resend.js";
 import type * as email_sendAccommodationPublishedEmail from "../email/sendAccommodationPublishedEmail.js";
 import type * as email_sendAccommodationSuspendedEmail from "../email/sendAccommodationSuspendedEmail.js";
@@ -96,6 +91,8 @@ import type * as payments_listingFee from "../payments/listingFee.js";
 import type * as payments_onboarding from "../payments/onboarding.js";
 import type * as payments_paymentsWebhook from "../payments/paymentsWebhook.js";
 import type * as payments_registerPaymentCrons from "../payments/registerPaymentCrons.js";
+import type * as payments_types_paymentsTypes from "../payments/types/paymentsTypes.js";
+import type * as payments_utils_paymentNoteFrom from "../payments/utils/paymentNoteFrom.js";
 import type * as payments_webhookMutations from "../payments/webhookMutations.js";
 import type * as rateLimits_convexCreateRateLimit from "../rateLimits/convexCreateRateLimit.js";
 import type * as rateLimits_convexCreateRateLimitInternal from "../rateLimits/convexCreateRateLimitInternal.js";
@@ -112,10 +109,12 @@ import type * as tables_accommodations_crons_backfillRegionPlaceIds from "../tab
 import type * as tables_accommodations_crons_listingFeeSweepCron from "../tables/accommodations/crons/listingFeeSweepCron.js";
 import type * as tables_accommodations_helpers_deleteApartmentImages from "../tables/accommodations/helpers/deleteApartmentImages.js";
 import type * as tables_accommodations_helpers_resolveFavoriteAccommodations from "../tables/accommodations/helpers/resolveFavoriteAccommodations.js";
+import type * as tables_accommodations_helpers_searchAccommodationsStream from "../tables/accommodations/helpers/searchAccommodationsStream.js";
 import type * as tables_accommodations_mutations_createAccommodation from "../tables/accommodations/mutations/createAccommodation.js";
 import type * as tables_accommodations_mutations_deleteAccommodation from "../tables/accommodations/mutations/deleteAccommodation.js";
 import type * as tables_accommodations_mutations_setApartmentFeatured from "../tables/accommodations/mutations/setApartmentFeatured.js";
 import type * as tables_accommodations_mutations_switchListingMonetization from "../tables/accommodations/mutations/switchListingMonetization.js";
+import type * as tables_accommodations_mutations_syncHostSuperhost from "../tables/accommodations/mutations/syncHostSuperhost.js";
 import type * as tables_accommodations_mutations_updateAccommodation from "../tables/accommodations/mutations/updateAccommodation.js";
 import type * as tables_accommodations_queries_fetchAccommodationById from "../tables/accommodations/queries/fetchAccommodationById.js";
 import type * as tables_accommodations_queries_fetchAccommodationBySlugForBookSafe from "../tables/accommodations/queries/fetchAccommodationBySlugForBookSafe.js";
@@ -123,7 +122,9 @@ import type * as tables_accommodations_queries_fetchAccommodationBySlugSafe from
 import type * as tables_accommodations_queries_fetchFavoriteAccommodationsSafe from "../tables/accommodations/queries/fetchFavoriteAccommodationsSafe.js";
 import type * as tables_accommodations_queries_fetchFeaturedAccommodations from "../tables/accommodations/queries/fetchFeaturedAccommodations.js";
 import type * as tables_accommodations_queries_fetchMyAccommodations from "../tables/accommodations/queries/fetchMyAccommodations.js";
+import type * as tables_accommodations_queries_fetchSearchAccommodationCardSafe from "../tables/accommodations/queries/fetchSearchAccommodationCardSafe.js";
 import type * as tables_accommodations_queries_fetchSearchAccommodationsSafe from "../tables/accommodations/queries/fetchSearchAccommodationsSafe.js";
+import type * as tables_accommodations_queries_fetchSearchMapMarkersSafe from "../tables/accommodations/queries/fetchSearchMapMarkersSafe.js";
 import type * as tables_accommodations_queries_fetchSitemapAccommodations from "../tables/accommodations/queries/fetchSitemapAccommodations.js";
 import type * as tables_accommodations_queries_listAccommodationsAdmin from "../tables/accommodations/queries/listAccommodationsAdmin.js";
 import type * as tables_accommodations_registerAccommodationCrons from "../tables/accommodations/registerAccommodationCrons.js";
@@ -170,6 +171,9 @@ import type * as tables_bookings_queries_listBookingsAdmin from "../tables/booki
 import type * as tables_bookings_registerBookingCrons from "../tables/bookings/registerBookingCrons.js";
 import type * as tables_bookings_schemas_bookingsSchemas from "../tables/bookings/schemas/bookingsSchemas.js";
 import type * as tables_bookings_utils_bookingToBookingSafe from "../tables/bookings/utils/bookingToBookingSafe.js";
+import type * as tables_favorites_mutations_mergeFavorites from "../tables/favorites/mutations/mergeFavorites.js";
+import type * as tables_favorites_mutations_toggleFavorite from "../tables/favorites/mutations/toggleFavorite.js";
+import type * as tables_favorites_queries_fetchMyFavoriteIdsSafe from "../tables/favorites/queries/fetchMyFavoriteIdsSafe.js";
 import type * as tables_newsletter_mutations_subscribeToNewsletters from "../tables/newsletter/mutations/subscribeToNewsletters.js";
 import type * as tables_reports_mutations_createReport from "../tables/reports/mutations/createReport.js";
 import type * as tables_reports_mutations_setReportStatus from "../tables/reports/mutations/setReportStatus.js";
@@ -185,7 +189,6 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  aggregates: typeof aggregates;
   "analytics/analytics": typeof analytics_analytics;
   "analytics/backfillOccupancyNights": typeof analytics_backfillOccupancyNights;
   "analytics/index": typeof analytics_index;
@@ -201,10 +204,6 @@ declare const fullApi: ApiFromModules<{
   "auth/utils/getEmailFromAuthBody": typeof auth_utils_getEmailFromAuthBody;
   convexRateLimiter: typeof convexRateLimiter;
   crons: typeof crons;
-  "dev/inspectAnalytics": typeof dev_inspectAnalytics;
-  "dev/seedMockBookings": typeof dev_seedMockBookings;
-  "dev/seedMonetization": typeof dev_seedMonetization;
-  "dev/wipeAppData": typeof dev_wipeAppData;
   "email/resend": typeof email_resend;
   "email/sendAccommodationPublishedEmail": typeof email_sendAccommodationPublishedEmail;
   "email/sendAccommodationSuspendedEmail": typeof email_sendAccommodationSuspendedEmail;
@@ -273,6 +272,8 @@ declare const fullApi: ApiFromModules<{
   "payments/onboarding": typeof payments_onboarding;
   "payments/paymentsWebhook": typeof payments_paymentsWebhook;
   "payments/registerPaymentCrons": typeof payments_registerPaymentCrons;
+  "payments/types/paymentsTypes": typeof payments_types_paymentsTypes;
+  "payments/utils/paymentNoteFrom": typeof payments_utils_paymentNoteFrom;
   "payments/webhookMutations": typeof payments_webhookMutations;
   "rateLimits/convexCreateRateLimit": typeof rateLimits_convexCreateRateLimit;
   "rateLimits/convexCreateRateLimitInternal": typeof rateLimits_convexCreateRateLimitInternal;
@@ -289,10 +290,12 @@ declare const fullApi: ApiFromModules<{
   "tables/accommodations/crons/listingFeeSweepCron": typeof tables_accommodations_crons_listingFeeSweepCron;
   "tables/accommodations/helpers/deleteApartmentImages": typeof tables_accommodations_helpers_deleteApartmentImages;
   "tables/accommodations/helpers/resolveFavoriteAccommodations": typeof tables_accommodations_helpers_resolveFavoriteAccommodations;
+  "tables/accommodations/helpers/searchAccommodationsStream": typeof tables_accommodations_helpers_searchAccommodationsStream;
   "tables/accommodations/mutations/createAccommodation": typeof tables_accommodations_mutations_createAccommodation;
   "tables/accommodations/mutations/deleteAccommodation": typeof tables_accommodations_mutations_deleteAccommodation;
   "tables/accommodations/mutations/setApartmentFeatured": typeof tables_accommodations_mutations_setApartmentFeatured;
   "tables/accommodations/mutations/switchListingMonetization": typeof tables_accommodations_mutations_switchListingMonetization;
+  "tables/accommodations/mutations/syncHostSuperhost": typeof tables_accommodations_mutations_syncHostSuperhost;
   "tables/accommodations/mutations/updateAccommodation": typeof tables_accommodations_mutations_updateAccommodation;
   "tables/accommodations/queries/fetchAccommodationById": typeof tables_accommodations_queries_fetchAccommodationById;
   "tables/accommodations/queries/fetchAccommodationBySlugForBookSafe": typeof tables_accommodations_queries_fetchAccommodationBySlugForBookSafe;
@@ -300,7 +303,9 @@ declare const fullApi: ApiFromModules<{
   "tables/accommodations/queries/fetchFavoriteAccommodationsSafe": typeof tables_accommodations_queries_fetchFavoriteAccommodationsSafe;
   "tables/accommodations/queries/fetchFeaturedAccommodations": typeof tables_accommodations_queries_fetchFeaturedAccommodations;
   "tables/accommodations/queries/fetchMyAccommodations": typeof tables_accommodations_queries_fetchMyAccommodations;
+  "tables/accommodations/queries/fetchSearchAccommodationCardSafe": typeof tables_accommodations_queries_fetchSearchAccommodationCardSafe;
   "tables/accommodations/queries/fetchSearchAccommodationsSafe": typeof tables_accommodations_queries_fetchSearchAccommodationsSafe;
+  "tables/accommodations/queries/fetchSearchMapMarkersSafe": typeof tables_accommodations_queries_fetchSearchMapMarkersSafe;
   "tables/accommodations/queries/fetchSitemapAccommodations": typeof tables_accommodations_queries_fetchSitemapAccommodations;
   "tables/accommodations/queries/listAccommodationsAdmin": typeof tables_accommodations_queries_listAccommodationsAdmin;
   "tables/accommodations/registerAccommodationCrons": typeof tables_accommodations_registerAccommodationCrons;
@@ -347,6 +352,9 @@ declare const fullApi: ApiFromModules<{
   "tables/bookings/registerBookingCrons": typeof tables_bookings_registerBookingCrons;
   "tables/bookings/schemas/bookingsSchemas": typeof tables_bookings_schemas_bookingsSchemas;
   "tables/bookings/utils/bookingToBookingSafe": typeof tables_bookings_utils_bookingToBookingSafe;
+  "tables/favorites/mutations/mergeFavorites": typeof tables_favorites_mutations_mergeFavorites;
+  "tables/favorites/mutations/toggleFavorite": typeof tables_favorites_mutations_toggleFavorite;
+  "tables/favorites/queries/fetchMyFavoriteIdsSafe": typeof tables_favorites_queries_fetchMyFavoriteIdsSafe;
   "tables/newsletter/mutations/subscribeToNewsletters": typeof tables_newsletter_mutations_subscribeToNewsletters;
   "tables/reports/mutations/createReport": typeof tables_reports_mutations_createReport;
   "tables/reports/mutations/setReportStatus": typeof tables_reports_mutations_setReportStatus;

@@ -12,6 +12,7 @@ import type { MutationFormSection } from '@/components/ui/mutation-form/types';
 import HouseIcon from '@lucide/svelte/icons/house';
 import MapPinIcon from '@lucide/svelte/icons/map-pin';
 import UsersIcon from '@lucide/svelte/icons/users';
+import UserIcon from '@lucide/svelte/icons/user';
 import BanknoteIcon from '@lucide/svelte/icons/banknote';
 import ClockIcon from '@lucide/svelte/icons/clock';
 import ShieldCheckIcon from '@lucide/svelte/icons/shield-check';
@@ -211,17 +212,25 @@ export const addAccommodationForm: MutationFormSection[] = [
 				placeholder: '80',
 				description: 'The standard rate a guest pays for one night.',
 				required: true,
-				colSpan: 2
+				colSpan: 1
 			},
 			{
-				id: 'cleaningFee',
-				label: 'Cleaning fee',
+				id: 'discountAmount',
+				label: 'Discount',
 				kind: 'input',
 				type: 'number',
 				placeholder: 'Leave empty for none',
 				description:
-					'A one-time fee added once per booking, on top of the nightly price. Leave empty if you don’t charge one.',
+					'A lower nightly price shown to guests, with the regular price crossed out beside it. Leave empty for no discount.',
 				colSpan: 1
+			},
+			{
+				// A hairline splits the two base-rate fields above from the optional
+				// adjustments below — same step, clearly separated (mutation-form divider).
+				id: 'pricingDivider',
+				kind: 'divider',
+				label: 'Optional',
+				colSpan: 2
 			},
 			{
 				id: 'weekendPremium',
@@ -231,16 +240,6 @@ export const addAccommodationForm: MutationFormSection[] = [
 				placeholder: 'Leave empty for none',
 				description:
 					'Charged instead of the nightly price on Friday & Saturday nights. Leave empty to keep one price all week.',
-				colSpan: 1
-			},
-			{
-				id: 'discountAmount',
-				label: 'Discounted nightly price',
-				kind: 'input',
-				type: 'number',
-				placeholder: 'Leave empty for none',
-				description:
-					'A lower nightly price shown to guests, with the regular price crossed out beside it. Leave empty for no discount.',
 				colSpan: 1
 			},
 			{
@@ -254,13 +253,13 @@ export const addAccommodationForm: MutationFormSection[] = [
 				colSpan: 1
 			},
 			{
-				id: 'monthlyDiscount',
-				label: 'Monthly discount (%)',
+				id: 'cleaningFee',
+				label: 'Cleaning fee',
 				kind: 'input',
 				type: 'number',
 				placeholder: 'Leave empty for none',
 				description:
-					'Percent off the total for stays of 28+ nights (e.g. 20 = 20% off). Leave empty for none.',
+					'A one-time fee added once per booking, on top of the nightly price. Leave empty if you don’t charge one.',
 				colSpan: 1
 			}
 		]
@@ -426,4 +425,31 @@ export const addAccommodationForm: MutationFormSection[] = [
 	},
 	// Last on purpose — see `paymentsSection`: the property is described, now the deal is set.
 	paymentsSection
+];
+
+/**
+ * The admin twin of {@link addAccommodationForm} — same steps, plus the admin-only first step:
+ * who the listing is created for. The owner field id is `hostId` on purpose — it is the exact
+ * key `adminAddAccommodationSchema` requires, so the wizard's per-step validation surfaces
+ * "pick an owner" on Continue. Deliberately NOT merged into `addAccommodationForm`: that array
+ * also feeds the host's own add-accommodation form, which must never see an owner step.
+ */
+export const adminAddAccommodationForm: MutationFormSection[] = [
+	{
+		id: 'owner',
+		title: 'Owner of apartment',
+		description: 'Create this listing on behalf of its owner.',
+		icon: UserIcon,
+		fields: [
+			{
+				id: 'hostId',
+				label: 'Owner',
+				kind: 'input',
+				description: 'Find the owner by name or email.',
+				required: true,
+				colSpan: 2
+			}
+		]
+	},
+	...addAccommodationForm
 ];

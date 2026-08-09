@@ -38,7 +38,16 @@
 	);
 
 	const navItems = $derived.by((): AppSidebarNavItems => {
+		// The primary host action is a pinned CTA, not a nav row — the same treatment the guest
+		// sidebar gives "Become a host" (guest/+layout.svelte). Outline-primary via `highlight`;
+		// nav-secondary.svelte renders it, nav-main never sees it.
 		const navSecondary = [
+			{
+				name: 'Add Accommodation',
+				url: PROTECTED_PAGE_ENDPOINTS.ADD_ACCOMMODATION,
+				icon: CirclePlusIcon,
+				highlight: true
+			},
 			{
 				name: 'Switch to traveling',
 				url: PROTECTED_PAGE_ENDPOINTS.GUEST_DASHBOARD,
@@ -79,11 +88,6 @@
 							name: 'My Accommodations',
 							url: PROTECTED_PAGE_ENDPOINTS.MY_ACCOMMODATIONS,
 							icon: BuildingIcon
-						},
-						{
-							name: 'Add Accommodation',
-							url: PROTECTED_PAGE_ENDPOINTS.ADD_ACCOMMODATION,
-							icon: CirclePlusIcon
 						}
 					]
 				},

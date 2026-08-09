@@ -220,7 +220,7 @@ function buildFetchOptimizedQuery<
 
 			// 1b. Aggregate mode — offset pagination that stays exact at ANY scale. The
 			//     aggregate B-tree (kept in sync by the write-path triggers, see
-			//     convex/aggregates.ts) answers both halves of the offset problem in
+			//     convex/functions.ts) answers both halves of the offset problem in
 			//     O(log n): the exact totalCount, and a direct jump to the page's rows —
 			//     no scan, no cap, page 1 and page 500,000 cost the same.
 			if (aggregateSpec) {

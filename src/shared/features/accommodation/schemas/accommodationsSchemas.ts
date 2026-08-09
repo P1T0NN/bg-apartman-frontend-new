@@ -43,10 +43,17 @@ export const ACCOMMODATION_ISSUE = {
 
 // ─── Shared field rules ───────────────────────────────────────────────────────
 
-/** Blank string → `undefined`, then a non-negative number; for optional money/count fields. */
-const optionalNonNegative = z.preprocess(
-	(value) => (value === '' || value == null ? undefined : value),
-	z.coerce.number().min(0).optional()
+/**
+ * Blank string → `undefined`, then a non-negative number. Inner `.optional()` accepts the
+ * preprocess's `undefined`; outer `z.optional()` is what `zodToConvexFields` sees, so the
+ * wire validator is `v.optional(...)`. A bare preprocess maps to a REQUIRED `v.any()`, which
+ * rejects a missing key (the form drops empties) before the mutation handler ever runs.
+ */
+const optionalNonNegative = z.optional(
+	z.preprocess(
+		(value) => (value === '' || value == null ? undefined : value),
+		z.coerce.number().min(0).optional()
+	)
 );
 
 /** Minimum photos a accommodation must have before it can be created or saved. */
@@ -108,12 +115,13 @@ export const accommodationFieldsShape = {
 	weekendPremium: optionalNonNegative,
 	discountAmount: optionalNonNegative,
 	weeklyDiscount: optionalNonNegative,
-	monthlyDiscount: optionalNonNegative,
 
 	minReservationDays: z.coerce.number().int().min(1).max(365),
-	maxReservationDays: z.preprocess(
-		(value) => (value === '' || value == null ? undefined : value),
-		z.coerce.number().int().min(1).max(365).optional()
+	maxReservationDays: z.optional(
+		z.preprocess(
+			(value) => (value === '' || value == null ? undefined : value),
+			z.coerce.number().int().min(1).max(365).optional()
+		)
 	),
 	checkInTime: z.string().min(1),
 	checkOutTime: z.string().min(1),

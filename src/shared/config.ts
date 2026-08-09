@@ -89,11 +89,53 @@ export const SEARCH_DATA = {
 	/** Cap for the SvelteKit remote search bridge (`createSearchInputRemote`). */
 	REMOTE_MAX_RESULTS: 25,
 	/** Debounce for the search input before a query is issued, in ms. */
-	INPUT_DEBOUNCE_MS: 300
+	INPUT_DEBOUNCE_MS: 300,
+	/**
+	 * `/search` map markers per request.
+	 *
+	 * NOT a limit on how many markers the map shows — the client walks the cursor until the
+	 * stream is exhausted, so every matching listing gets a pin. This is how big one bite is.
+	 * Bigger than a list page (12) because a marker is four numbers: the cost is the apartment
+	 * rows READ to produce them, which {@link SEARCH_PAGE_MAX_BYTES_READ} is what actually
+	 * bounds. 500 keeps a 10,000-listing region at 20 round trips instead of 100.
+	 */
+	MAP_MARKER_PAGE_SIZE: 500,
+	/**
+	 * Rows one `/search` page may READ before it stops early, hands back its cursor, and lets
+	 * the next request continue. Rows rejected by the count/availability filters count here —
+	 * this is the guard that keeps a filter matching 1-in-500 from walking a whole region
+	 * inside one request.
+	 *
+	 * Stopping early is not truncation: `isDone` stays false and the cursor is exact, so the
+	 * only consequence is a shorter page and one more request. Sized well under Convex's hard
+	 * 16,384-document ceiling so `enrich` and the availability joins keep read budget.
+	 */
+	SEARCH_PAGE_MAX_ROWS_READ: 2_000,
+	/**
+	 * The same guard measured in bytes, because apartment rows are fat (photo arrays,
+	 * description) and 2,000 of them can approach Convex's 8 MiB per-query ceiling long before
+	 * the row count does. Whichever guard trips first ends the page; both hand back a cursor.
+	 */
+	SEARCH_PAGE_MAX_BYTES_READ: 4_000_000
 } as const;
 
 export const LOCAL_STORAGE_KEYS = {
 	GUEST_FAVORITES: 'bg-apartman:guest-favorites'
+} as const;
+
+/** Saved listings. See the `favorites` table and `favoritesClass`. */
+export const FAVORITES_DATA = {
+	/**
+	 * Ceiling on one user's saved set, and therefore on the payload of the one favorites
+	 * query that runs on every page load. The read is what this bounds — it `.take()`s this
+	 * many — so no amount of client-side clicking can make that query expensive.
+	 */
+	MAX_PER_USER: 200,
+	/**
+	 * Ids accepted from `localStorage` in a single sign-in merge. A device that somehow holds
+	 * more than this loses the overflow, which beats letting one call do unbounded work.
+	 */
+	MAX_MERGE: 100
 } as const;
 
 /**
@@ -229,12 +271,6 @@ export const OPERATIONAL_LIMITS = {
 	// done, so the old "read BOTH sides in full or skip" caps no longer exist.
 	/** `createDeleteMutation`: ids accepted per request unless a call site overrides it. */
 	DEFAULT_MAX_DELETE_BATCH: 200,
-	/**
-	 * Search: published rows pulled before in-memory filtering. A scan cap, not a page
-	 * size — see `fetchSearchAccommodationsSafe`.
-	 */
-	SEARCH_SCAN_LIMIT: 200,
-
 	/**
 	 * `/sitemap.xml`: published listings emitted. The sitemap protocol allows 50,000 URLs per
 	 * file; this sits well under it so one uncached crawl can't become an expensive read.

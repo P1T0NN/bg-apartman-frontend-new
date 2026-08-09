@@ -62,7 +62,7 @@ noise. The "does anything need me?" answer is then the band's absence.
   truncated) + relative time + `mailto:` action when the reporter left an email.
 - Category badges are **color + text**, never color alone: `bug` = destructive tint, `idea` =
   info tint, `other` = muted. Same tinted-badge treatment as booking status badges.
-- Count chip in the band header: `{n} new` — exact count from `aggregateReports.count()`
+- Count chip in the band header: `{n} new` — exact count from `counters.reports.count()`
   (O(log n), no table read); the display may still abbreviate large values client-side.
 - No "mark as handled" mutation in v1 — reports have no `status` field. Out of scope (§8).
   When a `/admin/reports` page exists later, the band header links to it.
@@ -111,13 +111,13 @@ type AdminDashboardPage = {
 			email: string | null;
 			_creationTime: number;
 		}>; // ≤ 5, newest first
-		total: number; // exact, via aggregateReports.count()
+		total: number; // exact, via counters.reports.count()
 	};
 	today: {
 		signups: number;
 		bookingsCreated: number;
 		checkIns: number;
-		pendingOpen: number; // exact, via aggregateBookings.count()
+		pendingOpen: number; // exact, via counters.bookings.count()
 	};
 	platform: {
 		usersTotal: number;
@@ -136,19 +136,19 @@ and truncation. Errors travel as message keys through the existing `*Safe` Conve
 ### Where each number comes from (no unbounded scans)
 
 Split per `GeneralSystemDesignRule.md` § table counts: **NOW-questions** (current row state)
-come from the `@convex-dev/aggregate` instances in `src/convex/aggregates.ts`;
+come from the `@convex-dev/aggregate` instances in `src/convex/functions.ts`;
 **HAPPENED-questions** (events, revenue, series) come from `@piton-/analytics-convex`.
 
 | Value                                           | Engine           | Read                                                                                                     |
 | ----------------------------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------- |
 | `reportsQueue.items`                            | table read       | `reports.order('desc').take(5)` — the rows themselves, not a count                                       |
-| `reportsQueue.total`                            | **aggregate**    | `aggregateReports.count(ctx)` (client caps the display)                                                  |
+| `reportsQueue.total`                            | **aggregate**    | `counters.reports.count(ctx)` (client caps the display)                                                  |
 | `today.signups`                                 | **analytics**    | `user.signed_up` count for today — happened-question                                                     |
 | `today.bookingsCreated`                         | **analytics**    | `booking.created` count for today — stays 5 even if 2 cancel later                                       |
-| `today.checkIns`                                | **aggregate** ⚠️ | `aggregateBookings.count(ns 'confirmed', bounds checkInDate = today)` — see note below                   |
-| `today.pendingOpen`                             | **aggregate** ⚠️ | `aggregateBookings.count(ns 'pending')` — see note below                                                 |
+| `today.checkIns`                                | **aggregate** ⚠️ | `counters.bookings.count(ns 'confirmed', bounds checkInDate = today)` — see note below                   |
+| `today.pendingOpen`                             | **aggregate** ⚠️ | `counters.bookings.count(ns 'pending')` — see note below                                                 |
 | `platform.usersTotal`                           | **analytics**    | `user.signed_up` all-time — BA component table can't be aggregated (triggers don't see component writes) |
-| `platform.publishedListings`                    | **aggregate**    | `aggregateApartments.count(ns 'published')`                                                              |
+| `platform.publishedListings`                    | **aggregate**    | `counters.apartments.count(ns 'published')`                                                              |
 | `platform.bookingsThisMonth`, `series.bookings` | **analytics**    | `bookingsConfirmed` monthly buckets — same mechanism as the host analytics 12-month read                 |
 | `platform.revenueThisMonth`, `series.revenue`   | **analytics** ⚠️ | `revenue − refunds` monthly buckets (`invoice.paid` / `refund.created`, global scope) — see note below   |
 
@@ -159,9 +159,9 @@ come from the `@convex-dev/aggregate` instances in `src/convex/aggregates.ts`;
 > zero under `MONETIZATION: 'none'`, a bug after the flip. The first build wired this tile
 > to `gmv − gmvCancelled` (hosts' money) — that read is corrected by the same step.
 >
-> ✅ `aggregateBookings` was re-provisioned with the page build (2026-07-31): component
-> instance in `convex.config.ts` (namespace = status, key = `checkInDate`), trigger in
-> `functions.ts`, `backfillAggregates`/`clearAggregate` cases, backfilled on dev.
+> ✅ `counters.bookings` was re-provisioned with the page build (2026-07-31): component
+> instance in `convex.config.ts` (namespace = status, key = `checkInDate`), `counter(...)`
+> entry in `functions.ts`, backfilled on dev.
 > **Production still needs its one backfill run** (launch checklist).
 
 No schema changes needed: the aggregates replace the platform-wide status index this design

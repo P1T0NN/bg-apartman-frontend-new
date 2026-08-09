@@ -14,8 +14,10 @@ app.use(r2);
 app.use(analytics);
 app.use(resend);
 
-// Table-count aggregates — one component instance per aggregated table.
-// Counts ONLY (see GeneralSystemDesignRule.md § table counts); event analytics stay in @piton-/analytics-convex.
+// Table counters — one aggregate component instance per counted table, declared in
+// `functions.ts` via `defineCounters`. Counts ONLY (see GeneralSystemDesignRule.md § table
+// counts); event analytics stay in @piton-/analytics-convex metrics.
+// ⚠️ These names are the trees' identity — renaming one orphans its data.
 app.use(aggregate, { name: 'aggregateReports' });
 app.use(aggregate, { name: 'aggregateApartments' });
 app.use(aggregate, { name: 'aggregateHostEarnings' });

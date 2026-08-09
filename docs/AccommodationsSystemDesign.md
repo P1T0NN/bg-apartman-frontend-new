@@ -99,7 +99,7 @@ Five statuses: `pending_review`, `published`, `suspended`, `expired`, `archived`
 - **A3** — Status changes never touch content fields and content edits never touch status
   (one exception: resubmit, which is a status-only action the host triggers explicitly).
 - **A4** — All apartment writes go through `@/convex/functions` constructors
-  (`GeneralSystemDesignRule.md` § table counts — `aggregateApartments` namespace = status).
+  (`GeneralSystemDesignRule.md` § table counts — `counters.apartments` namespace = status).
 
 ## 2. Editing — and why edits don't re-trigger review
 
@@ -162,7 +162,7 @@ All amounts whole euros (`currency: 'EUR'` literal — multi-currency stays reje
 
 - Components on the listing: `pricePerNight` (base), `weekendPremium` (Fri/Sat nightly
   override), `discountAmount` (promotional nightly price — when set, UI crosses out base),
-  `weeklyDiscount` / `monthlyDiscount` (stay-length percentages), `cleaningFee` (per stay).
+  `weeklyDiscount` (7+ night percentage), `cleaningFee` (per stay).
 - **One composer.** The effective-price resolution (which nightly rate applies per night,
   then stay-length discount, then cleaning fee, then `platformFee` when §8 says so) lives
   in the shared `calculatePrice` seam — the SAME function quotes the UI and prices the
@@ -421,16 +421,52 @@ becomes the platform's:
 
 ## 9. Data-loading verdicts (per `GeneralSystemDesignRule.md` — decided here)
 
-| Surface                                        | Verdict                       | Justification                                                                                                             |
-| ---------------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Search page (`/`, `/search`)                   | One-shot, streamed `+page.ts` | Listings change by host/admin action elsewhere; remount is fresh enough.                                                  |
-| Accommodation detail (`/accommodation/[slug]`) | One-shot, streamed            | Same. The booking panel's availability truth is the mutation's re-check, not the page read.                               |
-| Host `my-accommodations`                       | **Subscription**              | Moves under the viewer without their action: admin moderates, the listing-fee cron expires — both while the host watches. |
-| Add / edit accommodation form                  | One-shot, **awaited** loader  | Single-entity edit form → Pattern B dirty-state (the rule's worked case).                                                 |
-| Favorites                                      | One-shot, streamed            | Changes only by this user's own actions elsewhere.                                                                        |
-| Admin `/admin/accommodations`                  | Subscription via DataTable    | Already decided — `AdminPagesSystemDesign.md` §2.                                                                         |
-| Counts (badges, dashboard tiles)               | `aggregateApartments`         | NOW-questions; namespace = status ⇒ **adding `expired` requires the re-backfill ritual**.                                 |
-| Created/published/expired trends               | analytics events              | HAPPENED-questions.                                                                                                       |
+| Surface                                        | Verdict                               | Justification                                                                                                                                  |
+| ---------------------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Search page (`/`, `/search`)                   | One-shot, **cursor-paginated** (§9.1) | Listings change by host/admin action elsewhere; remount is fresh enough. Two reads — cards page in, markers stream — never one whole-set read. |
+| Accommodation detail (`/accommodation/[slug]`) | One-shot, streamed                    | Same. The booking panel's availability truth is the mutation's re-check, not the page read.                                                    |
+| Host `my-accommodations`                       | **Subscription**                      | Moves under the viewer without their action: admin moderates, the listing-fee cron expires — both while the host watches.                      |
+| Add / edit accommodation form                  | One-shot, **awaited** loader          | Single-entity edit form → Pattern B dirty-state (the rule's worked case).                                                                      |
+| Favorites                                      | One-shot, streamed                    | Changes only by this user's own actions elsewhere.                                                                                             |
+| Admin `/admin/accommodations`                  | Subscription via DataTable            | Already decided — `AdminPagesSystemDesign.md` §2.                                                                                              |
+| Counts (badges, dashboard tiles)               | `counters.apartments`                 | NOW-questions; namespace = status ⇒ **adding `expired` requires the re-backfill ritual**.                                                      |
+| Created/published/expired trends               | analytics events                      | HAPPENED-questions.                                                                                                                            |
+
+### 9.1 `/search` reads (revised 2026-08-09)
+
+`/search` used to run ONE query returning the entire matching set, because both panes consumed
+the same array and the map needs a pin for every result. The list then `.slice(0, 12)`'d it, so a
+1,000-listing region shipped 1,000 cards to render 12, and a dated search fanned the availability
+join out over all of them — as a live subscription, re-running on every write in the region.
+
+It is now two reads over ONE shared, lazily-filtered stream (`searchAccommodationsStream`), which
+is the only thing both panes have in common — so they can never disagree about what matches:
+
+| Read                               | Shape                     | Pagination                                         |
+| ---------------------------------- | ------------------------- | -------------------------------------------------- |
+| `fetchSearchAccommodationsSafe`    | full card projection      | cursor, 12/page, driven by the infinite scroll     |
+| `fetchSearchMapMarkersSafe`        | `{ id, lat, lng, price }` | cursor, 500/page, drained by the client until done |
+| `fetchSearchAccommodationCardSafe` | one card                  | none — a point read for the clicked pin            |
+
+Rules this establishes, and why:
+
+- **No cap anywhere.** Per-request cost is bounded by page size plus read guards
+  (`SEARCH_DATA.SEARCH_PAGE_MAX_ROWS_READ` / `_BYTES_READ`); a page that stops early hands back
+  an exact cursor and `isDone: false`, so the only consequence is one more request. `100,000`
+  listings in a region is more requests, never a truncated answer.
+  (`OPERATIONAL_LIMITS.SEARCH_SCAN_LIMIT`, the old 200-row sample, is DELETED — it made the
+  newest listings invisible to every search once a catalogue outgrew it.)
+- **Marker payloads stay four fields.** Adding one is adding it once per listing in the region;
+  the card behind a pin is fetched on click instead.
+- **The count is exact, for free.** The marker stream walks the whole set, so its length IS the
+  result count once drained — no aggregate, no second scan. The header shows `120+` while that is
+  still a lower bound.
+- **Both are one-shot.** Search results do not move under the viewer, and a subscription over a
+  region's listings would re-run on every unrelated write in it.
+- **Ceiling, named:** progressive markers are right into the tens of thousands. Past that the
+  answer is server-side cluster COUNTS (a geo-cell column + one aggregate namespaced by cell,
+  individual pins only at high zoom), not more pins. Not built — the marker endpoint is the shape
+  it would replace.
 
 ## 10. Notifications
 
@@ -507,7 +543,7 @@ says it loudly:
 
 1. **Schema**: add `expired` to `apartmentStatus` (+ `expiredReason?` stamp); everything
    else already exists — including the legacy listing-fee fields (§8) and
-   `instantBooking`. Then the `aggregateApartments` re-backfill ritual
+   `instantBooking`. Then the `counters.apartments` re-backfill ritual
    (`GeneralSystemDesignRule.md` § table counts).
 2. **Config**: add `ACCOMMODATIONS_CONFIG` to `src/shared/config.ts` (§8), `MONETIZATION:
 'none'` initially. Move nothing existing.

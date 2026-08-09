@@ -1,5 +1,5 @@
 // LIBRARIES
-import { ConvexError } from 'convex/values';
+import { ConvexError, v } from 'convex/values';
 import {
 	createAnalyticsResourceScope,
 	createAnalyticsResourceScopeInput,
@@ -10,7 +10,7 @@ import {
 
 // CONFIG
 import { components } from '@/convex/_generated/api';
-import { internalMutation } from '@/convex/_generated/server';
+import { internalMutation, internalQuery } from '@/convex/_generated/server';
 import { authComponent } from '@/convex/auth/auth';
 import { requireAdmin } from '@/convex/auth/middleware/authMiddleware';
 
@@ -267,6 +267,14 @@ export const analytics = defineAnalytics(components.analytics, {
 			.by('provider', 'mimeType'),
 		featureUsage: count('Feature usage').from('feature.used').by('feature', 'surface').adminOnly()
 	}),
+	/**
+	 * No `distinctActors` metric is defined, and the component only writes actor-claim rows
+	 * for that aggregation — so `analyticsDailyActorClaims` is empty by construction and the
+	 * 2.0 `backfillMonthActorClaims` upgrade step does not apply to this deployment. Adding a
+	 * `distinctActors` metric from here on needs no backfill either: month claims are written
+	 * automatically from 2.0 onward. (Not that it could run: the component mutation behind it
+	 * calls `.paginate()`, which Convex rejects inside a component — upstream bug in 2.0.0.)
+	 */
 	settings: {
 		trafficMode: 'mediumVolume',
 		mediumVolumeShardCount: 16,
@@ -275,10 +283,13 @@ export const analytics = defineAnalytics(components.analytics, {
 		highVolumeBatchIntervalMinutes: 1,
 		highVolumeMaxCatchupBatches: 20,
 		maxQueryRangeDays: 366,
-		maxRollupRowsPerQuery: 5_000,
 		maxBreakdownItems: 25,
-		rawEventRetentionDays: 90,
-		maxRawEventDeletesPerRun: 5_000
+		rawEventRetentionDays: 90
+		// `maxRollupRowsPerQuery` / `maxRawEventDeletesPerRun` are left at the library defaults
+		// on purpose. Since 2.0 the read budget is SHARED across every rollup read in one
+		// query, so the old 5,000 override would now be split between the dashboard's many
+		// metric reads instead of granted to each; and the delete cap is hard-limited to 4,096
+		// (a 5,000 override fails config validation outright).
 	},
 	/**
 	 * Runs only for the `analytics.client.*` wrappers the browser can call.
@@ -317,7 +328,10 @@ export const analytics = defineAnalytics(components.analytics, {
 export const {
 	processPendingHighVolumeAnalyticsEvents,
 	purgeStaleAnalyticsEvents,
-	purgeStaleAnalyticsRollups
+	purgeStaleAnalyticsRollups,
+	// 2.0: collapses shard rows on buckets older than ~2 days into one, so historical reads
+	// lose the 16x shard multiplier. `registerCrons` schedules it, so it MUST be exported.
+	compactAnalyticsRollups
 } = analytics.crons;
 
 /**
@@ -329,4 +343,64 @@ export const {
 export const writeConfiguration = internalMutation({
 	args: {},
 	handler: async (ctx) => await analytics.writeConfiguration(ctx)
+});
+
+/**
+ * Ghost-data audit (2.0). Reports rows still stored for metrics/journeys that no longer
+ * exist in the config above, plus how many stored config blobs are prunable.
+ *
+ * Rows for a deleted metric are invisible — no query names it, so it never shows up in a
+ * dashboard, it just bills storage forever. This is the only way to see them.
+ *
+ * ```bash
+ * bunx convex run analytics/analytics:dataAudit
+ * bunx convex run analytics/analytics:dataAudit --prod
+ * ```
+ *
+ * Anything in `orphanedMetrics` / `orphanedJourneys` is deleted with {@link pruneData}.
+ * Run this whenever a metric is renamed or removed — a rename is a delete plus an add, so
+ * the old name's rollups are left behind by definition.
+ */
+export const dataAudit = internalQuery({
+	args: {},
+	handler: async (ctx) => await analytics.fetchDataAudit(ctx)
+});
+
+/**
+ * Deletes the rows {@link dataAudit} found, in budgeted self-scheduling batches. Refuses
+ * any name still present in the config, so it cannot delete live data by typo.
+ *
+ * ```bash
+ * bunx convex run analytics/analytics:pruneData "{metrics:['oldMetricName']}"
+ * ```
+ *
+ * Returns `{ deleted, scheduledNextBatch }` — `scheduledNextBatch: true` means it chained
+ * another batch and is still running. Re-run {@link dataAudit} afterwards to confirm.
+ */
+export const pruneData = internalMutation({
+	args: {
+		metrics: v.optional(v.array(v.string())),
+		journeys: v.optional(v.array(v.string()))
+	},
+	handler: async (ctx, args) => await analytics.pruneData(ctx, args)
+});
+
+/**
+ * High-volume ingestion health (2.0): pending backlog, per-cycle drain capacity, and the
+ * oldest pending event's age. `backlogExceedsCycle: true` means the batch cron is losing
+ * ground and events are queueing faster than they aggregate.
+ *
+ * ```bash
+ * bunx convex run analytics/analytics:ingestionHealth --prod
+ * ```
+ *
+ * Today every metric runs at the global `mediumVolume` mode, which aggregates inline — so
+ * this reads a flat zero and there is nothing to alarm on. The moment ANY metric gets
+ * `.trafficMode('highVolume')`, its events go through the pending queue instead, and this
+ * becomes the number that tells you whether `highVolumeBatchSize` /
+ * `highVolumeBatchIntervalMinutes` keep up. Put it on a cron then, not before.
+ */
+export const ingestionHealth = internalQuery({
+	args: {},
+	handler: async (ctx) => await analytics.fetchIngestionHealth(ctx)
 });

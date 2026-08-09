@@ -135,11 +135,11 @@ export type FetchOptimizedAggregateHandle<T extends TableNames> = {
  * Aggregate-backed offset access — exact `totalCount` and O(log n) jump to ANY page at
  * any table size, no scan cap. The aggregate's `sortKey` replaces the index as the sort
  * order, so it must be the field the surface sorts by; write paths must keep the
- * aggregate in sync via the trigger-wrapped mutations (see `convex/aggregates.ts`).
+ * aggregate in sync via the trigger-wrapped mutations (see `convex/functions.ts`).
  * Requires `strategy: 'offset'`. README § Aggregate mode.
  */
 export type FetchOptimizedAggregate<T extends TableNames> = {
-	/** The `TableAggregate` instance from `convex/aggregates.ts`. */
+	/** The `TableAggregate` instance from `convex/functions.ts`. */
 	aggregate: FetchOptimizedAggregateHandle<T>;
 	/** Exact-match partition, for aggregates defined with a `namespace` (facet filters). */
 	namespace?: unknown;

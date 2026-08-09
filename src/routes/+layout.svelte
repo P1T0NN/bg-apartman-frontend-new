@@ -9,13 +9,14 @@
 	// LIBRARIES
 	import { createSvelteAuthClient } from '@mmailaender/convex-better-auth-svelte/svelte';
 	import { authClient } from '@/features/auth/lib/auth-client';
-	import { useQuery } from 'convex-svelte';
+	import { useQuery, useConvexClient } from 'convex-svelte';
 	import { api } from '@/convex/_generated/api';
 	import { useAuth } from '@mmailaender/convex-better-auth-svelte/svelte';
 	import { NuqsAdapter } from 'nuqs-svelte/adapters/svelte-kit';
 
 	// CLASSES
 	import { authClass, type CurrentUser } from '@/features/auth/classes/authClass.svelte';
+	import { favoritesClass } from '@/features/favorites/classes/favoritesClass.svelte';
 
 	// COMPONENTS
 	import { Toaster } from '@/components/ui/sonner';
@@ -57,6 +58,21 @@
 		}
 		const user = currentUserResponse.data as CurrentUser | null | undefined;
 		authClass.syncFromCurrentUserQuery(user, currentUserResponse.isLoading);
+	});
+
+	/**
+	 * Saved listings. NOT a subscription — `getCurrentUser` above is the only live channel the
+	 * layout is willing to pay for, and this set has nothing to subscribe to: it changes only
+	 * by this user's own clicks, and `toggleFavorite` returns the resulting state, so the class
+	 * is already authoritative after every write (GeneralSystemDesignRule.md § seeing your own
+	 * writes). So: one fetch when a session appears, then the class owns it.
+	 *
+	 * Signed out it needs no fetch at all — the class falls back to localStorage on its own.
+	 */
+	favoritesClass.connect(useConvexClient());
+
+	$effect(() => {
+		favoritesClass.syncAuth(auth.isAuthenticated);
 	});
 </script>
 

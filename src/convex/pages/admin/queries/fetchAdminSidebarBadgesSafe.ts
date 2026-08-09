@@ -3,7 +3,7 @@ import { query } from '@/convex/_generated/server';
 
 // UTILS
 import { requireAdmin } from '@/convex/auth/middleware/authMiddleware';
-import { aggregateApartments, aggregateReports } from '@/convex/aggregates';
+import { counters } from '@/convex/functions';
 
 /**
  * The two sidebar badges (AdminPagesSystemDesign.md §1) — listings awaiting review and
@@ -13,10 +13,9 @@ import { aggregateApartments, aggregateReports } from '@/convex/aggregates';
  * learn whether it needs them. Exactly two, because exactly two streams pile up work a
  * human must drain. Zero means done, and the UI hides the badge entirely.
  *
- * Both are NOW-questions about current rows, so both are `@convex-dev/aggregate` counts —
- * O(log n), never a scan (GeneralSystemDesignRule.md § table counts). This replaced
- * `countPendingReviewSafe`, which predated the aggregates and read up to 51 rows to report
- * a capped "50+".
+ * Both are NOW-questions about current rows, so both are counter reads — O(log n), never a
+ * scan (GeneralSystemDesignRule.md § table counts). This replaced `countPendingReviewSafe`,
+ * which predated the counters and read up to 51 rows to report a capped "50+".
  *
  * Realtime verdict: **subscription**, subscribed in the admin layout. Hosts submit
  * listings and the public files reports while the admin works — the badge must move
@@ -29,9 +28,9 @@ export const fetchAdminSidebarBadgesSafe = query({
 		await requireAdmin(ctx);
 
 		const [pendingReview, newReports] = await Promise.all([
-			aggregateApartments.count(ctx, { namespace: 'pending_review', bounds: {} }),
+			counters.apartments.count(ctx, 'pending_review'),
 			// Namespace normalizes `undefined → 'new'`, so legacy rows count correctly.
-			aggregateReports.count(ctx, { namespace: 'new', bounds: {} })
+			counters.reports.count(ctx, 'new')
 		]);
 
 		return { pendingReview, newReports };

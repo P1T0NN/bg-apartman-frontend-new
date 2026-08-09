@@ -79,7 +79,6 @@ export const fetchAccommodationBySlugSafe = query({
 			monetization: apartment.monetization,
 			weekendPremium: apartment.weekendPremium,
 			weeklyDiscount: apartment.weeklyDiscount,
-			monthlyDiscount: apartment.monthlyDiscount,
 			currency: apartment.currency,
 
 			instantBooking: apartment.instantBooking,

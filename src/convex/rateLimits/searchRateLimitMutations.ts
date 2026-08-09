@@ -17,7 +17,11 @@ const SEARCH_LIMIT_SECRET_ENV = 'SEARCH_INPUT_RATE_LIMIT_SECRET';
 type AuthenticatedKeyMode = 'user' | 'fallback' | 'userAndFallback';
 
 /**
- * Trusted server-side bridge for public search rate limits.
+ * Trusted server-side bridge for the rate limits of PUBLIC endpoints that live in SvelteKit
+ * rather than Convex — the search inputs it was written for, and the contact form
+ * (`features/contact/actions/contactActions.remote.ts`), which keys on IP with
+ * `authenticatedKey: 'fallback'`. The `search-` naming is historical; any bucket name in the
+ * registry is accepted.
  *
  * SvelteKit remote functions can resolve a trusted anonymous fallback key, but only
  * Convex can cheaply resolve the authenticated user id from the verified auth token.

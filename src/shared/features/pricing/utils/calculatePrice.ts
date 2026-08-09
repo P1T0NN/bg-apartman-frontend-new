@@ -10,13 +10,16 @@
 // CONFIG
 import { ACCOMMODATIONS_CONFIG } from '@/shared/config';
 
+// UTILS
+import { nightsBetween, shiftIsoDate } from '@/shared/utils/dateUtils';
+
 // TYPES
 import type {
 	typesPricingInput,
 	typesCalculatedPrice
 } from '@/shared/features/pricing/types/types';
 
-/** Nightly price actually charged (discounted price when one is set). */
+/** Nightly price actually charged on a non-weekend night (discounted price when one is set). */
 export function effectiveNightlyPrice(acc: typesPricingInput): number {
 	return acc.discountAmount && acc.discountAmount > 0 ? acc.discountAmount : acc.pricePerNight;
 }
@@ -40,16 +43,58 @@ export function platformFeeFor(
 	return Math.max(Math.round((subtotal * PERCENT) / 100), MIN_EUROS);
 }
 
-/** Single source of truth for the price breakdown shown on the accommodation and at checkout. */
-export function calculatePrice(acc: typesPricingInput, nights: number): typesCalculatedPrice {
+/** Night starting on Friday (5) or Saturday (6), charged `weekendPremium` instead of the base. */
+function isWeekendNight(isoDate: string): boolean {
+	const dow = new Date(`${isoDate}T00:00:00Z`).getUTCDay();
+	return dow === 5 || dow === 6;
+}
+
+/**
+ * Single source of truth for the price breakdown shown on the accommodation and at checkout.
+ *
+ * Pipeline (AccommodationsSystemDesign.md §5): which nightly rate applies PER NIGHT (a
+ * `weekendPremium` Fri/Sat override when the night owns one), then the stay-length discount
+ * (`weeklyDiscount` percent off at 7+ nights), then the cleaning fee, then `platformFee` when
+ * §8 says so. `nightly * nights` alone silently misses every one of these — the composer
+ * takes the stay's dates so it, not the caller, decides.
+ */
+export function calculatePrice(
+	acc: typesPricingInput,
+	checkInDate?: string | null,
+	checkOutDate?: string | null
+): typesCalculatedPrice {
+	const nights = nightsBetween(checkInDate, checkOutDate);
 	const nightly = effectiveNightlyPrice(acc);
+	const weekendPremium =
+		acc.weekendPremium && acc.weekendPremium > 0 ? acc.weekendPremium : undefined;
 	const cleaningFee = acc.cleaningFee ?? 0;
-	const accommodationTotal = nightly * nights;
+
+	// Per-night subtotal with the weekend override applied to exactly the nights it owns.
+	let weekendNights = 0;
+	let subtotal = 0;
+	if (checkInDate) {
+		for (let i = 0; i < nights; i++) {
+			const weekend = weekendPremium !== undefined && isWeekendNight(shiftIsoDate(checkInDate, i));
+			if (weekend) weekendNights++;
+			subtotal += weekend ? weekendPremium : nightly;
+		}
+	}
+
+	// Stay-length discount — percent off the nights total for stays of 7+ nights.
+	const lengthDiscountPercent =
+		nights >= 7 && acc.weeklyDiscount && acc.weeklyDiscount > 0 ? acc.weeklyDiscount : 0;
+	const lengthDiscount = Math.round((subtotal * lengthDiscountPercent) / 100);
+	const accommodationTotal = subtotal - lengthDiscount;
+
 	const platformFee = platformFeeFor(accommodationTotal, acc.monetization);
 
 	return {
 		nightly,
 		nights,
+		weekendNights,
+		...(weekendNights > 0 && { weekendPremium }),
+		lengthDiscountPercent,
+		lengthDiscount,
 		accommodationTotal,
 		cleaningFee,
 		platformFee,

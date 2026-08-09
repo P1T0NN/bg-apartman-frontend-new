@@ -2,6 +2,9 @@
 import { zodToConvexFields } from 'convex-helpers/server/zod4';
 import { mutation } from '@/convex/_generated/server';
 
+// UTILS
+import { convexRateLimiter } from '@/convex/convexRateLimiter';
+
 // SCHEMAS
 import { newsletterSchema } from '@/shared/features/newsletter/schemas/newsletterSchemas';
 import { mutationResult, type MutationResult } from '@/convex/schemas/schemas';
@@ -28,6 +31,11 @@ export const subscribeToNewsletter = mutation({
 
 		// The schema already trimmed; lowercase so `by_email` matches whatever casing was typed.
 		const email = parsed.data.email.toLowerCase();
+
+		// Public endpoint, no session to key on — the submitted email is the identity
+		// (`limitPresets.publicWrite`). Charged after normalizing so casing can't buy a
+		// fresh bucket, and before the insert so a refused call writes nothing.
+		await convexRateLimiter.limit(ctx, 'subscribeToNewsletter', { key: email, throws: true });
 
 		const existing = await ctx.db
 			.query('newsletter')

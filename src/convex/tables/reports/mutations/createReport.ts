@@ -2,6 +2,9 @@
 import { zodToConvexFields } from 'convex-helpers/server/zod4';
 import { mutation } from '@/convex/functions';
 
+// UTILS
+import { convexRateLimiter } from '@/convex/convexRateLimiter';
+
 // SCHEMAS
 import { createReportSchema } from '@/shared/features/report/schemas/reportsSchemas';
 import { mutationResult, type MutationResult } from '@/convex/schemas/schemas';
@@ -26,6 +29,14 @@ export const createReport = mutation({
 
 		// `message` is already trimmed by the schema; the email union allows '' for "left blank".
 		const { category, message } = parsed.data;
+
+		// Public endpoint, no session to key on. A reporter who gave an email gets their own
+		// bucket; everyone who left it blank shares one — which makes the anonymous path its
+		// own platform-wide floor for free (`limitPresets.publicWrite`).
+		await convexRateLimiter.limit(ctx, 'createReport', {
+			key: parsed.data.email?.toLowerCase() || 'anon',
+			throws: true
+		});
 
 		await ctx.db.insert('reports', {
 			category,

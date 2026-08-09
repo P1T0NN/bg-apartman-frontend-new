@@ -1,6 +1,9 @@
 import type { Component, Snippet } from 'svelte';
 import type { FullAutoFill, HTMLInputTypeAttribute } from 'svelte/elements';
 
+/** `divider` is a pure layout row: a hairline that splits a section's fields into groups,
+ * with the optional `label` rendered as a small muted tag on the line. It binds no value —
+ * the id is only a render key, and the field never appears in the submitted object. */
 export type MutationFormFieldKind =
 	| 'input'
 	| 'textarea'
@@ -11,7 +14,8 @@ export type MutationFormFieldKind =
 	| 'counter'
 	| 'time'
 	| 'upload-single'
-	| 'upload-multiple';
+	| 'upload-multiple'
+	| 'divider';
 
 export type MutationFormSelectOption = {
 	value: string;

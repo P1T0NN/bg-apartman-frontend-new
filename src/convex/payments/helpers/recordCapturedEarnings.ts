@@ -1,6 +1,6 @@
 // UTILS
 import { authComponent } from '@/convex/auth/auth';
-import { aggregateHostEarnings } from '@/convex/aggregates';
+import { counters } from '@/convex/functions';
 import { analytics, ANALYTICS_EVENT } from '@/convex/analytics';
 import { sendHostEarningsHeldEmail } from '@/convex/email/sendHostEarningsHeldEmail';
 
@@ -69,9 +69,9 @@ export async function recordCapturedEarnings(
 	if (!hostEmail) return;
 
 	// Held balance = sum of `net` over this host's `held` rows — a NOW-question, so the
-	// aggregate answers it (GeneralSystemDesignRule.md § table counts). The row above is
+	// counter answers it (GeneralSystemDesignRule.md § table counts). The row above is
 	// already in the tree: writes go through the trigger-wrapped constructors.
-	const heldEuros = await aggregateHostEarnings.sum(ctx, {
+	const heldEuros = await counters.hostEarnings.aggregate.sum(ctx, {
 		namespace: booking.hostId,
 		bounds: {
 			lower: { key: 'held', inclusive: true },

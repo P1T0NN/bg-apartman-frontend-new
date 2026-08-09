@@ -57,7 +57,6 @@
 		weekendPremium: '',
 		discountAmount: '',
 		weeklyDiscount: '',
-		monthlyDiscount: '',
 
 		minReservationDays: '1',
 		maxReservationDays: '',

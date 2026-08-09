@@ -19,7 +19,7 @@
 
 	// TYPES
 	import type { DataTableCellSnippetProps } from '@/components/ui/data-table/types.js';
-	import type { AdminAccommodationRow } from '@/convex/tables/accommodations/queries/listAccommodationsAdmin';
+	import type { AdminAccommodationRow } from '@/shared/features/accommodation/types/accommodationTypes';
 	import type {
 		typesAccommodationStatus,
 		typesAccommodationType

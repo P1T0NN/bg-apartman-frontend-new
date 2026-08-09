@@ -19,7 +19,7 @@
 
 	// TYPES
 	import type { Id } from '@/convex/_generated/dataModel';
-	import type { AdminAccommodationRow } from '@/convex/tables/accommodations/queries/listAccommodationsAdmin';
+	import type { AdminAccommodationRow } from '@/shared/features/accommodation/types/accommodationTypes';
 
 	// LUCIDE ICONS
 	import ExternalLinkIcon from '@lucide/svelte/icons/external-link';

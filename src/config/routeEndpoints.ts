@@ -21,6 +21,7 @@ export const PROTECTED_PAGE_ENDPOINTS = {
 export const ADMIN_PAGE_ENDPOINTS = {
 	DASHBOARD: resolve('/admin/dashboard'),
 	ACCOMMODATIONS: resolve('/admin/accommodations'),
+	ADD_ACCOMMODATION: resolve('/admin/add-accommodation'),
 	BOOKINGS: resolve('/admin/bookings'),
 	REPORTS: resolve('/admin/reports'),
 	USERS: resolve('/admin/users'),

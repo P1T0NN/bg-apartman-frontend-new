@@ -293,12 +293,25 @@
 	const showUploadProgress = $derived(hasUploadFields(resolvedSections));
 </script>
 
+{#snippet requiredMark(field: MutationFormFieldDef)}
+	{#if field.required}
+		<span class="ml-0.5 text-destructive" aria-hidden="true">*</span>
+	{/if}
+{/snippet}
+
 {#snippet renderField(field: MutationFormFieldDef)}
 	{@const inputId = `${field.id}-${id}`}
 	{@const err = fieldErrors[field.id as keyof T & string]}
 	{@const custom = customFields?.[field.id]}
 
-	{#if field.kind === 'checkbox' && !custom}
+	{#if field.kind === 'divider'}
+		<div class="flex items-center gap-3 py-1.5" role="presentation">
+			{#if field.label}
+				<span class="text-xs font-medium text-muted-foreground">{field.label}</span>
+			{/if}
+			<div class="h-px flex-1 bg-border" aria-hidden="true"></div>
+		</div>
+	{:else if field.kind === 'checkbox' && !custom}
 		<Field orientation="horizontal" class={field.fieldClass}>
 			<CheckboxField
 				{field}
@@ -307,7 +320,7 @@
 				setValue={(v) => setValue(field.id, v)}
 				invalid={!!err}
 			/>
-			<FieldLabel for={inputId}>{field.label}</FieldLabel>
+			<FieldLabel for={inputId}>{field.label}{@render requiredMark(field)}</FieldLabel>
 			{#if err}
 				<FieldError>{err}</FieldError>
 			{:else if field.description}
@@ -316,7 +329,7 @@
 		</Field>
 	{:else if field.kind === 'radio' && !custom}
 		<FieldSet class={field.fieldClass}>
-			<FieldLegend variant="label">{field.label}</FieldLegend>
+			<FieldLegend variant="label">{field.label}{@render requiredMark(field)}</FieldLegend>
 			<RadioGroupField
 				{field}
 				{inputId}
@@ -339,7 +352,7 @@
 		/>
 	{:else}
 		<Field class={field.fieldClass}>
-			<FieldLabel for={inputId}>{field.label}</FieldLabel>
+			<FieldLabel for={inputId}>{field.label}{@render requiredMark(field)}</FieldLabel>
 			{#if custom}
 				{@render custom({
 					field,

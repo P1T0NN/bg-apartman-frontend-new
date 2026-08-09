@@ -18,30 +18,8 @@ import {
 import { apartmentStatus, apartmentType } from '../schemas/accommodationsSchemas';
 
 // TYPES
-import type { Doc } from '@/convex/_generated/dataModel';
 import type { PaginatedListPayload } from '@/shared/features/pagination/types/paginationTypes';
-
-/** Lean row for the `/admin/accommodations` DataTable (and the user-detail Accommodations tab). */
-export type AdminAccommodationRow = Pick<
-	Doc<'apartments'>,
-	| '_id'
-	| '_creationTime'
-	| 'title'
-	| 'slug'
-	| 'city'
-	| 'type'
-	| 'pricePerNight'
-	| 'status'
-	| 'isFeatured'
-> & {
-	imageUrl: string;
-	hostId: string;
-	hostName: string;
-	/** The listing's model (ASD §8) — drives the queue's payment chip and the fee action. */
-	monetization?: Doc<'apartments'>['monetization'];
-	/** `listing_fee` listings only — drives the renewal state shown next to the fee action. */
-	apartmentSubscriptionExpiryDate?: number;
-};
+import type { AdminAccommodationRow } from '@/shared/features/accommodation/types/accommodationTypes';
 
 /**
  * Admin accommodation moderation table. Server-driven filters/sort/search for the

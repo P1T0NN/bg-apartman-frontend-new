@@ -10,7 +10,7 @@ import { resolveApartmentSummary } from '@/convex/tables/bookings/helpers/resolv
 
 // UTILS
 import { analytics, hostAnalyticsScopeInput } from '@/convex/analytics';
-import { aggregateApartments, aggregateHostEarnings } from '@/convex/aggregates';
+import { counters } from '@/convex/functions';
 import { APARTMENT_STATUSES } from '@/convex/tables/accommodations/schemas/accommodationsSchemas';
 import { todayInPropertyZone } from '@/shared/features/booking/utils/daysUntilCheckIn';
 import { monthStartUtc, shiftIsoDate } from '@/shared/utils/dateUtils';
@@ -137,7 +137,7 @@ export const fetchHostDashboardStats = query({
 			),
 			Promise.all(
 				APARTMENT_STATUSES.map((status) =>
-					aggregateApartments
+					counters.apartments.aggregate
 						.count(ctx, { namespace: status, bounds: hostBounds })
 						.then((count) => [status, count] as const)
 				)
@@ -182,9 +182,9 @@ export const fetchHostDashboardStats = query({
 				.query('hostPayoutAccounts')
 				.withIndex('by_host', (q) => q.eq('hostId', hostId))
 				.first(),
-			// A NOW-question about current rows, so the aggregate answers it in O(log n)
+			// A NOW-question about current rows, so the counter answers it in O(log n)
 			// (GeneralSystemDesignRule.md § table counts). Earnings HISTORY stays analytics.
-			aggregateHostEarnings.sum(ctx, {
+			counters.hostEarnings.aggregate.sum(ctx, {
 				namespace: hostId,
 				bounds: {
 					lower: { key: 'held', inclusive: true },
