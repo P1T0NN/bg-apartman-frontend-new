@@ -52,6 +52,9 @@
 				Overdue — renew now
 			{:else if fee.kind === 'expiring'}
 				{fee.daysLeft === 0 ? 'Expires today' : `Expires in ${fee.daysLeft} days`}
+			{:else if fee.daysLeft === null}
+				<!-- A "forever" grant: no countdown, and "Until 2100" would be noise. -->
+				Covered forever
 			{:else}
 				Until {formatDate(fee.expiresAt)}
 			{/if}

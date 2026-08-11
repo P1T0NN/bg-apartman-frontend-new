@@ -5,6 +5,7 @@
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 	import BookingPanelPrice from './booking-panel-price.svelte';
+	import BookingPanelFacts from './booking-panel-facts.svelte';
 	import BookingPanelFooter from './booking-panel-footer.svelte';
 
 	// TYPES
@@ -20,6 +21,8 @@
 
 <div class="space-y-4">
 	<BookingPanelPrice {accommodation} />
+
+	<BookingPanelFacts {accommodation} />
 
 	<Button href={bookHref} size="lg" class="h-11 w-full text-base">Check availability</Button>
 

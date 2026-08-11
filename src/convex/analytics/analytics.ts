@@ -210,7 +210,6 @@ export const analytics = defineAnalytics(components.analytics, {
 		})
 	},
 	metrics: ({ count, sum }) => ({
-		bookings: count('Bookings').from('booking.created').by('paymentMethod'),
 		// Count twins of the GMV sums — power the host dashboard's bookings series
 		// (net = confirmed − cancelled per bucket) and the booking-conversion funnel.
 		bookingsConfirmed: count('Bookings confirmed').from('booking.confirmed').by('paymentMethod'),
@@ -259,7 +258,6 @@ export const analytics = defineAnalytics(components.analytics, {
 		cancelledSubscriptions: count('Cancelled subscriptions')
 			.from('subscription.cancelled')
 			.by('plan', 'provider', 'reason'),
-		newUsers: count('New users').from('user.signed_up').by('provider', 'role', 'plan'),
 		uploads: count('Uploads').from('file.uploaded').by('provider', 'mimeType'),
 		storageUsedBytes: sum('Storage used', 'bytes')
 			.from('storage.usage_recorded', 'file.uploaded')

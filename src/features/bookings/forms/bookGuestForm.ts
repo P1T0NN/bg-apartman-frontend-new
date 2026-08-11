@@ -5,7 +5,6 @@ export const bookGuestForm: MutationFormSection[] = [
 	{
 		id: 'guest-details',
 		title: 'Your details',
-		plain: true,
 		fields: [
 			{
 				id: 'firstName',

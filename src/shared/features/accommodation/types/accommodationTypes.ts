@@ -16,8 +16,8 @@ export type typesAccommodationFeeState =
 	| { kind: 'inactive' }
 	/** `listing_fee` listing that never paid — publish is gated on this (ASD §8). */
 	| { kind: 'unpaid' }
-	/** Paid and comfortably live. */
-	| { kind: 'active'; expiresAt: number; daysLeft: number }
+	/** Paid and comfortably live. `daysLeft: null` marks a forever grant (no countdown). */
+	| { kind: 'active'; expiresAt: number; daysLeft: number | null }
 	/** Inside the reminder window — the T−7 nudge has been (or is about to be) sent. */
 	| { kind: 'expiring'; expiresAt: number; daysLeft: number }
 	/** Past expiry but inside grace: still published, renewal still extends from expiry. */

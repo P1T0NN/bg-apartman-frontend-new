@@ -21,6 +21,7 @@
 	// TYPES
 	import type { Snippet } from 'svelte';
 	import type { FunctionReference } from 'convex/server';
+	import type { Id } from '@/convex/_generated/dataModel';
 	import type {
 		typesBookingSafe,
 		typesBookingFilter,
@@ -33,7 +34,7 @@
 
 	let {
 		query,
-		selected = $bindable(null),
+		selectedId = $bindable(null),
 		sheetOpen = $bindable(false),
 		errorContent,
 		defaultFilter = 'all'
@@ -41,10 +42,11 @@
 		/** Scoped list query (host reservations / guest my-bookings) — see `listUserBookingsQuery`.
 		 *  One subscription: pages AND the tab counts (`extra.counts`) come from the same payload. */
 		query: FunctionReference<'query', 'public', Record<string, unknown>, typesUserBookingsPayload>;
-		/** The row a cell picked. The table does NOT render the detail sheet — the page does, so
-		 *  there is exactly one sheet per page and other openers (a `?booking=` deep link, a
-		 *  calendar cell) write this same pair instead of mounting a second one. */
-		selected?: typesBookingSafe | null;
+		/** The id of the row a cell picked. The table does NOT render the detail sheet — the page
+		 *  does, and the sheet fetches its row with its own by-id subscription, so every opener
+		 *  (a row click, a `?booking=` deep link, a calendar cell) writes this same id +
+		 *  `sheetOpen` pair instead of mounting a second sheet. */
+		selectedId?: Id<'bookings'> | null;
 		sheetOpen?: boolean;
 		/** Rendered instead of the table when the list query errors (page-specific error card). */
 		errorContent?: Snippet;
@@ -116,7 +118,7 @@
 </div>
 
 {#snippet guestCell({ row }: DataTableCellSnippetProps<typesBookingSafe>)}
-	<GuestField booking={row} bind:selected bind:open={sheetOpen} />
+	<GuestField booking={row} bind:selectedId bind:open={sheetOpen} />
 {/snippet}
 
 {#snippet apartmentCell({ row }: DataTableCellSnippetProps<typesBookingSafe>)}
@@ -144,5 +146,5 @@
 {/snippet}
 
 {#snippet actionsCell({ row }: DataTableCellSnippetProps<typesBookingSafe>)}
-	<ActionsField booking={row} bind:selected bind:open={sheetOpen} />
+	<ActionsField booking={row} bind:selectedId bind:open={sheetOpen} />
 {/snippet}

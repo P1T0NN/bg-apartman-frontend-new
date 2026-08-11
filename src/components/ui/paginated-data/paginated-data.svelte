@@ -40,7 +40,10 @@
 		 * disabled. The component never writes `page` in this mode; the route loader owns it.
 		 */
 		href?: (page: number) => string;
-		/** Render page numbers. Defaults to on in `href` mode, off otherwise. Needs `totalPages`. */
+		/**
+		 * Render page numbers. Defaults to on whenever `totalPages` is known (offset mode)
+		 * or in `href` mode; pass `false` to force them off. Needs `totalPages`.
+		 */
 		numbered?: boolean;
 		/** Neighbours shown either side of the current page. See `pageWindow`. */
 		span?: number;
@@ -72,7 +75,9 @@
 	const canGoPrev = $derived(page > 1);
 
 	/** No total means no last page, so there is nothing to number against. */
-	const showNumbers = $derived((numbered ?? href !== undefined) && totalPages !== undefined);
+	const showNumbers = $derived(
+		(numbered ?? (href !== undefined || totalPages !== undefined)) && totalPages !== undefined
+	);
 
 	const slots = $derived(showNumbers ? pageWindow(page, totalPages!, span) : []);
 

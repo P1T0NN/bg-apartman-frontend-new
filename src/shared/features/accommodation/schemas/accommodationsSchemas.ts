@@ -94,10 +94,11 @@ export const accommodationFieldsShape = {
 
 	// The Places autocomplete is the single address entry; selecting fills `placeId`
 	// (the required gate — the accommodation's city+country search key) plus
-	// `address`/`city`/`country`/`coordinates`.
+	// `address`/`city`/`country`/`coordinates`. Street and number are required like the
+	// city — the autocomplete only resolves them once a city is picked.
 	placeId: z.string().trim().min(1),
-	address: z.string().trim().optional(),
-	addressNumber: z.string().trim().max(20).optional(),
+	address: z.string().trim().min(1),
+	addressNumber: z.string().trim().min(1).max(20),
 	city: z.string().trim().min(2),
 	country: z.string().trim().optional(),
 	coordinates: z.object({ lat: z.number(), lng: z.number() }).optional(),
@@ -290,5 +291,18 @@ export const moderateAccommodationSchema = z.object({
 	id: zid('apartments'),
 	status: z.enum(['published', 'suspended', 'archived']),
 	reason: moderationReasonSchema.optional(),
+	locale: z.string().optional()
+});
+
+/**
+ * Admin grants a listing-fee waiver ("free publish") — paid coverage with no payment and no
+ * revenue event (the audit entry is the trail). `forever` maps to the shared
+ * {@link FREE_LISTING_FOREVER_EXPIRY} sentinel; the other durations extend the current
+ * coverage like a renewal. One schema is the mutation's args AND the admin dialog's model,
+ * so the option values can never drift.
+ */
+export const grantFreePublishSchema = z.object({
+	id: zid('apartments'),
+	duration: z.enum(['1m', '3m', '6m', '1y', 'forever']),
 	locale: z.string().optional()
 });

@@ -30,12 +30,6 @@ export type AdminDashboardPage = {
 		/** Exact count of unresolved reports (aggregate; client caps the display). */
 		total: number;
 	};
-	today: {
-		signups: number;
-		bookingsCreated: number;
-		checkIns: number;
-		pendingOpen: number;
-	};
 	platform: {
 		usersTotal: number;
 		/** True once `usersTotal` hit its read cap — render it as "N+", not an exact figure. */

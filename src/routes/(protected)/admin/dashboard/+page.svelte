@@ -7,7 +7,6 @@
 	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
 	import AdminDashboardHeader from '@/components/pages/(protected)/admin/dashboard/admin-dashboard-header.svelte';
 	import AdminDashboardReportsQueue from '@/components/pages/(protected)/admin/dashboard/admin-dashboard-reports-queue.svelte';
-	import AdminDashboardTodayOverview from '@/components/pages/(protected)/admin/dashboard/admin-dashboard-today-overview.svelte';
 	import AdminDashboardStatCards from '@/components/pages/(protected)/admin/dashboard/admin-dashboard-stat-cards.svelte';
 	import AdminDashboardTrendChart from '@/components/pages/(protected)/admin/dashboard/admin-dashboard-trend-chart.svelte';
 	import AdminDashboardPageLoading from '@/components/pages/(protected)/admin/dashboard/loading/admin-dashboard-page-loading.svelte';
@@ -44,7 +43,6 @@
 		<AdminDashboardPageLoading />
 	{:else}
 		<AdminDashboardReportsQueue data={data.reportsQueue} />
-		<AdminDashboardTodayOverview data={data.today} />
 		<AdminDashboardStatCards data={data.platform} />
 		<AdminDashboardTrendChart data={data.platform} />
 	{/if}

@@ -8,28 +8,44 @@
 
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
+	import {
+		DropdownMenu,
+		DropdownMenuTrigger,
+		DropdownMenuContent,
+		DropdownMenuItem,
+		DropdownMenuSeparator
+	} from '@/components/ui/dropdown-menu';
 	import AdminModerateAccommodationDialog from '../admin-moderate-accommodation-dialog.svelte';
 	import AdminStampListingFeeDialog from '../admin-stamp-listing-fee-dialog.svelte';
+	import AdminGrantFreePublishDialog from '../admin-grant-free-publish-dialog.svelte';
 
 	// UTILS
 	import { appHref } from '@/utils/app-navigation';
 	import { safeMutation } from '@/utils/convexHelpers';
 	import { toastResult } from '@/utils/toastResult';
-	import { listingIsListingFee } from '@/shared/features/accommodation/utils/listingFeeState';
+	import {
+		listingFeeState,
+		listingIsListingFee
+	} from '@/shared/features/accommodation/utils/listingFeeState';
 
 	// TYPES
 	import type { Id } from '@/convex/_generated/dataModel';
 	import type { AdminAccommodationRow } from '@/shared/features/accommodation/types/accommodationTypes';
 
 	// LUCIDE ICONS
+	import MoreHorizontalIcon from '@lucide/svelte/icons/more-horizontal';
 	import ExternalLinkIcon from '@lucide/svelte/icons/external-link';
 	import StarIcon from '@lucide/svelte/icons/star';
+	import GiftIcon from '@lucide/svelte/icons/gift';
 	import ReceiptIcon from '@lucide/svelte/icons/receipt';
+	import CheckIcon from '@lucide/svelte/icons/check';
+	import BanIcon from '@lucide/svelte/icons/ban';
+	import ArchiveIcon from '@lucide/svelte/icons/archive';
 
 	/**
-	 * Every moderation action available on one listing row (AdminPagesSystemDesign.md §2).
-	 * The row is the only prop: this component owns its own mutation calls and its own
-	 * dialogs, so the page above it stays a header plus a table.
+	 * Every moderation action available on one listing row (AdminPagesSystemDesign.md §2),
+	 * behind a single ellipsis menu — the row stays a header plus a table, and one control
+	 * per row beats a stack of icon buttons for the price of one extra click.
 	 *
 	 * Dialogs are per row, single-item confirm flows only (§6) — the same shape the host's
 	 * change-plan action uses. They mount their content only while open.
@@ -38,9 +54,16 @@
 
 	const convex = useConvexClient();
 
+	// Once a listing is covered forever, both billing actions are no-ops: a re-grant does
+	// nothing, and recording a payment would stamp revenue nobody paid — so the menu hides
+	// them. Finite grants keep both (extending or topping up is still meaningful).
+	const fee = $derived(listingIsListingFee(row) ? listingFeeState(row) : null);
+	const coveredForever = $derived(fee?.kind === 'active' && fee.daysLeft === null);
+
 	let moderationAction = $state<'published' | 'suspended' | 'archived'>('published');
 	let moderationOpen = $state(false);
 	let feeOpen = $state(false);
+	let freePublishOpen = $state(false);
 
 	function openModeration(action: 'published' | 'suspended' | 'archived') {
 		moderationAction = action;
@@ -68,60 +91,84 @@
 	}
 </script>
 
-<div class="flex items-center justify-end gap-1">
-	<!-- The public page in a new tab: admins review a listing exactly as guests see it,
-	     which is why no separate admin preview surface exists to keep in sync. -->
-	<Button
-		href={appHref(UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION.replace(':slug', row.slug))}
-		target="_blank"
-		rel="noopener"
-		variant="ghost"
-		size="icon-sm"
-		aria-label="Open public page"
-		title="Open public page"
-	>
-		<ExternalLinkIcon class="size-4" aria-hidden="true" />
-	</Button>
+<div class="flex items-center justify-end">
+	<DropdownMenu>
+		<DropdownMenuTrigger>
+			{#snippet child({ props })}
+				<Button
+					{...props}
+					variant="ghost"
+					size="icon-sm"
+					aria-label="More actions"
+					title="More actions"
+				>
+					<MoreHorizontalIcon class="size-4" aria-hidden="true" />
+				</Button>
+			{/snippet}
+		</DropdownMenuTrigger>
 
-	<Button
-		variant="ghost"
-		size="icon-sm"
-		disabled={featuring}
-		onclick={toggleFeatured}
-		aria-label={row.isFeatured ? 'Remove from homepage' : 'Feature on homepage'}
-		title={row.isFeatured ? 'Remove from homepage' : 'Feature on homepage'}
-	>
-		<StarIcon
-			class="size-4 {row.isFeatured ? 'fill-amber-500 text-amber-500' : ''}"
-			aria-hidden="true"
-		/>
-	</Button>
-
-	{#if listingIsListingFee(row)}
-		<Button
-			variant="ghost"
-			size="icon-sm"
-			onclick={() => (feeOpen = true)}
-			aria-label="Record fee payment"
-			title="Record fee payment"
+	<DropdownMenuContent align="end" class="w-56">
+		<!-- The public page in a new tab: admins review a listing exactly as guests see it,
+		     which is why no separate admin preview surface exists to keep in sync. -->
+		<DropdownMenuItem
+			onclick={() =>
+				window.open(
+					appHref(UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION.replace(':slug', row.slug)),
+					'_blank',
+					'noopener'
+				)}
 		>
-			<ReceiptIcon class="size-4" aria-hidden="true" />
-		</Button>
-	{/if}
+			<ExternalLinkIcon aria-hidden="true" />
+			Open public page
+		</DropdownMenuItem>
 
-	<!-- Publish only from the two statuses §1's transition set allows. An `expired` listing
-	     is NOT publishable here: billing is not moderation, and its road back is a payment —
-	     the host renews, or an admin records a bank transfer with the receipt button above
-	     (AccommodationsSystemDesign.md §1/§8). -->
-	{#if row.status === 'pending_review' || row.status === 'suspended'}
-		<Button size="sm" variant="outline" onclick={() => openModeration('published')}>Publish</Button>
-	{/if}
-	{#if row.status === 'published' || row.status === 'pending_review'}
-		<Button size="sm" variant="ghost" onclick={() => openModeration('suspended')}>Suspend</Button>
-	{/if}
-	{#if row.status !== 'archived'}
-		<Button size="sm" variant="ghost" onclick={() => openModeration('archived')}>Archive</Button>
-	{/if}
+		<DropdownMenuItem onclick={toggleFeatured} disabled={featuring}>
+			<StarIcon
+				class={row.isFeatured ? 'fill-amber-500 text-amber-500' : ''}
+				aria-hidden="true"
+			/>
+			{row.isFeatured ? 'Remove from homepage' : 'Feature on homepage'}
+		</DropdownMenuItem>
+
+		{#if listingIsListingFee(row) && !coveredForever}
+			<DropdownMenuSeparator />
+			<!-- Billing is not moderation: the grant and the bank-transfer stamp sit in their own
+			     group, above the status actions. Hidden once covered forever — see `coveredForever`. -->
+			<DropdownMenuItem onclick={() => (freePublishOpen = true)}>
+				<GiftIcon aria-hidden="true" />
+				Grant free publish
+			</DropdownMenuItem>
+			<DropdownMenuItem onclick={() => (feeOpen = true)}>
+				<ReceiptIcon aria-hidden="true" />
+				Record fee payment
+			</DropdownMenuItem>
+		{/if}
+
+		<DropdownMenuSeparator />
+
+		<!-- Publish only from the two statuses §1's transition set allows. An `expired` listing
+		     is NOT publishable here: its road back is a payment — the host renews, or an admin
+		     records a bank transfer or grants free publish above (AccommodationsSystemDesign.md §1/§8). -->
+		{#if row.status === 'pending_review' || row.status === 'suspended'}
+			<DropdownMenuItem onclick={() => openModeration('published')}>
+				<CheckIcon aria-hidden="true" />
+				Publish
+			</DropdownMenuItem>
+		{/if}
+		{#if row.status === 'published' || row.status === 'pending_review'}
+			<DropdownMenuItem onclick={() => openModeration('suspended')}>
+				<BanIcon aria-hidden="true" />
+				Suspend
+			</DropdownMenuItem>
+		{/if}
+		{#if row.status !== 'archived'}
+			<DropdownMenuItem onclick={() => openModeration('archived')}>
+				<ArchiveIcon aria-hidden="true" />
+				Archive
+			</DropdownMenuItem>
+		{/if}
+		</DropdownMenuContent>
+	</DropdownMenu>
 </div>
 
 <AdminModerateAccommodationDialog
@@ -131,5 +178,6 @@
 />
 
 {#if listingIsListingFee(row)}
+	<AdminGrantFreePublishDialog accommodation={row} bind:open={freePublishOpen} />
 	<AdminStampListingFeeDialog accommodation={row} bind:open={feeOpen} />
 {/if}

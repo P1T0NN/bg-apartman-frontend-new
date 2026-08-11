@@ -9,6 +9,7 @@ import { AUDIT_ACTIONS } from '@/convex/tables/auditLog/auditLogConfigs';
 import { sendAccommodationPublishedEmail } from '@/convex/email/sendAccommodationPublishedEmail';
 import { sendAccommodationSuspendedEmail } from '@/convex/email/sendAccommodationSuspendedEmail';
 import { optStr } from '@/shared/utils/validationUtils';
+import { toLatin } from '@/utils/cyrillicToLatin';
 import { r2PublicUrl } from '@/convex/storage/r2/r2';
 import { validateImageCount } from '@/shared/features/accommodation/utils/validateImageCount';
 import { splitRegionPlaceId } from '@/shared/features/accommodation/utils/splitRegionPlaceId';
@@ -60,6 +61,13 @@ export const updateApartment = authMutation('updateApartment')({
 			return { success: false, message: { key: 'GenericMessages.UNEXPECTED_ERROR' } };
 		}
 		const args = parsed.data;
+
+		// TODO.md §2 layer 4 — the server can't be bypassed: normalize location strings to
+		// Latin even if a hacked client sends Cyrillic (no-op on the happy path).
+		args.address = toLatin(args.address ?? '');
+		args.addressNumber = toLatin(args.addressNumber ?? '');
+		args.city = toLatin(args.city);
+		args.country = toLatin(args.country ?? '');
 
 		const apartment = await ctx.db.get(args.id);
 		if (!apartment || apartment.hostId !== ctx.userId) return forbiddenResult();

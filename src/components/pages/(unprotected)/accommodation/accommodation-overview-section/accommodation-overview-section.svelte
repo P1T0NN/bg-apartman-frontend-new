@@ -4,9 +4,11 @@
 	import ShareButton from '@/components/ui/share-button/share-button.svelte';
 	import AccommodationOverviewItem from './accommodation-overview-item.svelte';
 	import SuperhostBadge from '@/features/accommodations/components/superhost-badge.svelte';
+	import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar/index.js';
 
 	// UTILS
 	import { accommodationTypeLabel } from '@/features/accommodations/utils/accommodationPresentation';
+	import { initials } from '@/shared/utils/stringUtils';
 	import {
 		formatGuests,
 		formatBedrooms,
@@ -65,14 +67,12 @@
 
 		<div class="rounded-2xl border p-5 sm:p-6">
 			<div class="flex items-center gap-4">
-				{#if accommodation.host.avatarUrl}
-					<img
-						src={accommodation.host.avatarUrl}
-						alt={accommodation.host.name}
-						class="size-16 rounded-full object-cover ring-1 ring-border"
-						loading="lazy"
-					/>
-				{/if}
+				<Avatar class="size-16">
+					{#if accommodation.host.avatarUrl}
+						<AvatarImage src={accommodation.host.avatarUrl} alt={accommodation.host.name} />
+					{/if}
+					<AvatarFallback>{initials(accommodation.host.name)}</AvatarFallback>
+				</Avatar>
 
 				<div class="space-y-1">
 					<p class="text-lg font-semibold">{accommodation.host.name}</p>

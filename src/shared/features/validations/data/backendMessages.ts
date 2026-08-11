@@ -29,6 +29,7 @@ export const BACKEND_MESSAGES: Record<string, string> = {
 	'GenericMessages.ACCOMMODATION_FEATURED': 'Accommodation added to the homepage strip.',
 	'GenericMessages.ACCOMMODATION_UNFEATURED': 'Accommodation removed from the homepage strip.',
 	'GenericMessages.LISTING_FEE_PAID': 'Listing renewed — it stays live for another period.',
+	'GenericMessages.FREE_PUBLISH_GRANTED': 'Free publish granted — the listing is live with no payment recorded.',
 	'GenericMessages.LISTING_FEE_UNPAID':
 		"This listing's fee hasn't been paid yet, so it can't go live. Record the payment first.",
 	'GenericMessages.MONETIZATION_CHOICE_REQUIRED':

@@ -49,7 +49,7 @@
 			</h2>
 
 			<p class="mt-5 max-w-md text-pretty text-background/60">
-				We're a small Belgrade team, not a faceless marketplace. That shapes everything below.
+				We're the Belgrade team behind BGApartman — hands-on, accountable, and never out of reach. That's the standard below.
 			</p>
 
 			<p

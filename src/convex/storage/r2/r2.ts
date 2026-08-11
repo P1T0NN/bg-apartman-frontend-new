@@ -51,7 +51,12 @@ const ALLOWED_CONTENT_TYPES = new Set<string>(UPLOAD_LIMITS.ALLOWED_CONTENT_TYPE
  * minted: any failure means no URL, no PUT, no orphan possible.
  */
 export const generateR2UploadUrl = authMutation('generateR2UploadUrl')({
-	args: {},
+	args: {
+		// Optional folder prefix (e.g. the accommodation's folder id). Accommodation photos
+		// upload BEFORE the row exists, so the caller supplies a stable per-accommodation
+		// folder and the object lands at `${folder}/${uuid}`; without it the key stays flat.
+		folder: v.optional(v.string())
+	},
 	returns: v.object({
 		success: v.boolean(),
 		message: v.object({
@@ -60,9 +65,14 @@ export const generateR2UploadUrl = authMutation('generateR2UploadUrl')({
 		}),
 		data: v.optional(v.object({ url: v.string(), key: v.string() }))
 	}),
-	handler: async (): Promise<ConvexMutationResult<{ url: string; key: string }>> => {
-		// `authMutation` already handled auth + rate-limit before we got here.
-		const minted = await r2.generateUploadUrl();
+	handler: async (
+		_ctx,
+		args
+	): Promise<ConvexMutationResult<{ url: string; key: string }>> => {
+		// `authMutation` already handled auth + rate-limit before we got here. A custom key
+		// must be unique — a random uuid guarantees it regardless of folder collisions.
+		const customKey = args.folder ? `${args.folder}/${crypto.randomUUID()}` : undefined;
+		const minted = customKey ? await r2.generateUploadUrl(customKey) : await r2.generateUploadUrl();
 		return {
 			success: true,
 			message: { key: 'GenericMessages.UPLOAD_URL_READY' },

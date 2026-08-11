@@ -40,43 +40,6 @@
 	const weekendActive = $derived(weekendPremium > 0 && quote.weekendNights > 0);
 	const regularNights = $derived(quote.nights - quote.weekendNights);
 
-	// The listing's rate structure, shown before dates are picked: one row per component that
-	// actually applies (weekend rate, weekly discount, cleaning fee). The nightly discount is
-	// deliberately NOT here — it lives in the hero line itself as a struck original + badge, so
-	// the actual price stays the anchor instead of competing with a second, larger number.
-	// All lucide icons share one Component<LucideProps> type, so `typeof CalendarDaysIcon` is exact.
-	type PricingFeature = {
-		icon: typeof CalendarDaysIcon;
-		label: string;
-		value: string;
-	};
-
-	const pricingFeatures = $derived.by<PricingFeature[]>(() => {
-		const features: PricingFeature[] = [];
-		if (accommodation.weekendPremium && accommodation.weekendPremium > 0) {
-			features.push({
-				icon: CalendarDaysIcon,
-				label: 'Weekend rate (Fri–Sat)',
-				value: `${formatCurrency(accommodation.weekendPremium)}/night`
-			});
-		}
-		if (accommodation.weeklyDiscount && accommodation.weeklyDiscount > 0) {
-			features.push({
-				icon: PercentIcon,
-				label: 'Weekly discount',
-				value: `−${accommodation.weeklyDiscount}% off stays of 7+ nights`
-			});
-		}
-		if (accommodation.cleaningFee && accommodation.cleaningFee > 0) {
-			features.push({
-				icon: SprayCanIcon,
-				label: 'Cleaning fee',
-				value: `${formatCurrency(accommodation.cleaningFee)}, once per stay`
-			});
-		}
-		return features;
-	});
-
 	// The additions that sit between the per-night math and the total. When any exist, they get
 	// a hairline above them so they read as "added on top of the nights", not part of the rate.
 	const hasAdjustments = $derived(
@@ -225,16 +188,49 @@
 
 		<!-- The listing's rate structure, shown before dates exist to price it. One row per
 		     component that actually applies; the arithmetic below takes over once dates are
-		     picked, so the same fact is never stated twice. -->
-		{#if pricingFeatures.length > 0}
+		     picked, so the same fact is never stated twice. The nightly discount is deliberately
+		     NOT here — it lives in the hero line itself as a struck original + badge, so the
+		     actual price stays the anchor instead of competing with a second, larger number. -->
+		{#if accommodation.weekendPremium || accommodation.weeklyDiscount || accommodation.cleaningFee}
 			<dl class="space-y-2.5 border-t border-border pt-3 text-sm">
-				{#each pricingFeatures as feature (feature.label)}
+				{#if accommodation.weekendPremium && accommodation.weekendPremium > 0}
 					<div class="flex items-center gap-2.5">
-						<feature.icon class="size-3.5 shrink-0 text-muted-foreground/70" aria-hidden="true" />
-						<dt class="flex-1 text-muted-foreground">{feature.label}</dt>
-						<dd class="text-right font-medium tabular-nums">{feature.value}</dd>
+						<CalendarDaysIcon
+							class="size-3.5 shrink-0 text-muted-foreground/70"
+							aria-hidden="true"
+						/>
+						<dt class="flex-1 text-muted-foreground">Weekend rate (Fri–Sat)</dt>
+						<dd class="text-right font-medium tabular-nums"
+							>{formatCurrency(accommodation.weekendPremium)}/night</dd
+						>
 					</div>
-				{/each}
+				{/if}
+
+				{#if accommodation.weeklyDiscount && accommodation.weeklyDiscount > 0}
+					<div class="flex items-center gap-2.5">
+						<PercentIcon
+							class="size-3.5 shrink-0 text-muted-foreground/70"
+							aria-hidden="true"
+						/>
+						<dt class="flex-1 text-muted-foreground">Weekly discount</dt>
+						<dd class="text-right font-medium tabular-nums"
+							>−{accommodation.weeklyDiscount}% off stays of 7+ nights</dd
+						>
+					</div>
+				{/if}
+
+				{#if accommodation.cleaningFee && accommodation.cleaningFee > 0}
+					<div class="flex items-center gap-2.5">
+						<SprayCanIcon
+							class="size-3.5 shrink-0 text-muted-foreground/70"
+							aria-hidden="true"
+						/>
+						<dt class="flex-1 text-muted-foreground">Cleaning fee</dt>
+						<dd class="text-right font-medium tabular-nums"
+							>{formatCurrency(accommodation.cleaningFee)}, once per stay</dd
+						>
+					</div>
+				{/if}
 			</dl>
 		{/if}
 	{/if}

@@ -62,7 +62,7 @@
 
 	// While the provider is dark, cash is the only thing a guest can be offered — even if the
 	// listing still says `online`/`both` (PaymentsSystemDesign.md §8). UI half of the gate.
-	const accepted = ONLINE_PAYMENTS_ENABLED ? accommodation.paymentMethod : 'cash';
+	const accepted = $derived(ONLINE_PAYMENTS_ENABLED ? accommodation.paymentMethod : 'cash');
 
 	// Seeded once from the accommodation payment settings; the guest may change it locally.
 	// `both` means the guest chooses — default to cash, the picker shows both options.

@@ -6,9 +6,10 @@
 	import ConfirmBookingDialog from '../confirm-booking-dialog/confirm-booking-dialog.svelte';
 
 	// TYPES
+	import type { Id } from '@/convex/_generated/dataModel';
 	import type {
-		typesBookingSafe,
-		typesBookingAction
+		typesBookingAction,
+		typesBookingSafe
 	} from '@/shared/features/booking/types/bookingTypes';
 
 	/**
@@ -18,11 +19,11 @@
 	 * read-only sheet never ships host mutations.
 	 */
 	let {
-		booking,
+		bookingId,
 		open = $bindable(false),
 		onOpenChange
 	}: {
-		booking: typesBookingSafe | null;
+		bookingId: Id<'bookings'> | null;
 		open?: boolean;
 		/** Fires on every open/close — the reservations page uses it to drop `?booking=`. */
 		onOpenChange?: (open: boolean) => void;
@@ -58,7 +59,7 @@
 	}
 </script>
 
-<BookingsDetailSheet {booking} bind:open {onOpenChange} onAction={handleAction} />
+<BookingsDetailSheet {bookingId} bind:open {onOpenChange} onAction={handleAction} />
 
 <DeclineBookingDialog booking={declineTarget} bind:open={declineOpen} />
 <CancelBookingDialog booking={cancelTarget} bind:open={cancelOpen} />

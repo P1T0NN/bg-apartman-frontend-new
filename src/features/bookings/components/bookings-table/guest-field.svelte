@@ -3,24 +3,26 @@
 	import { initials } from '@/shared/utils/stringUtils';
 
 	// TYPES
+	import type { Id } from '@/convex/_generated/dataModel';
 	import type { typesBookingSafe } from '@/shared/features/booking/types/bookingTypes';
 
 	// The table's detail-sheet state, bound straight through: this cell is one of the two
-	// places a row opens from, so it does the opening itself.
+	// places a row opens from, so it does the opening itself. Only the id travels — the
+	// sheet fetches the live row with its own by-id subscription.
 	let {
 		booking,
-		selected = $bindable(null),
+		selectedId = $bindable(null),
 		open = $bindable(false)
 	}: {
 		booking: typesBookingSafe;
-		selected?: typesBookingSafe | null;
+		selectedId?: Id<'bookings'> | null;
 		open?: boolean;
 	} = $props();
 
 	const name = $derived(`${booking.guestFirstName} ${booking.guestLastName}`);
 
 	function openDetail() {
-		selected = booking;
+		selectedId = booking._id;
 		open = true;
 	}
 </script>

@@ -26,13 +26,9 @@
 		applyStreetToValues
 	} from '@/features/accommodations/utils/applyPlaceToLocationValues';
 
-	// LIBRARIES
-	import { formatRegionLabel } from '@/lib/google-maps/places';
-
 	// TYPES
 	import type { Doc } from '@/convex/_generated/dataModel';
 	import type { typesEditAccommodationForm } from '@/shared/features/accommodation/types/accommodationTypes';
-	import type { RegionBounds } from '@/lib/google-maps/places';
 	import type { ZodType } from 'zod';
 
 	let { accommodation }: { accommodation: Doc<'apartments'> } = $props();
@@ -43,25 +39,25 @@
 	// svelte-ignore state_referenced_locally
 	let values = $state<typesEditAccommodationForm>(accommodationDocToFormValues(accommodation));
 
-	// Viewport of the picked country/city — scopes the street search to that region. Empty until
-	// the host re-picks a region (the stored accommodation carries city/country but no viewport), so the
-	// street search falls back to a country-wide bias until then.
-	let regionViewport = $state<RegionBounds | undefined>();
+	// R2 folder for new uploads: the accommodation's existing image keys already live under
+	// one folder prefix, so new photos join it. Fallback uuid covers an image-less apartment.
+	// Parent keys this component on `updatedAt`, so a save remounts → derived fresh.
+	// svelte-ignore state_referenced_locally
+	const uploadFolder = accommodation.images[0]?.key.split('/')[0] ?? crypto.randomUUID();
+
 	const regionSelected = $derived(Boolean(values.city || values.country));
 
-	// Seed the city input's display with the stored "City, Country" so the field isn't blank on
-	// edit. The id stays valid from the doc until the host edits the text (which clears it).
+	// Seed the city input's display with the stored city so the field isn't blank on edit (the
+	// country shows in its own field). The id stays valid from the doc until the host edits the
+	// text (which clears it).
 	// svelte-ignore state_referenced_locally
-	const cityInitial = formatRegionLabel({
-		city: values.city,
-		country: values.country,
-		formattedAddress: ''
-	});
+	const cityInitial = values.city || values.country;
 </script>
 
 <!-- City autocomplete — cities only (country shown as secondary text). On select it fills
-     city/country, resolves `placeId` (the merged city+country key and gate), and captures the
-     region viewport. Editing the text clears the id, so a real pick is required. -->
+     city/country, resolves `placeId` (the merged city+country key and gate), and sets the name
+     the street search appends to its query. Editing the text clears the id, so a real pick is
+     required. -->
 {#snippet regionField({
 	inputId,
 	setValue
@@ -76,13 +72,14 @@
 		value={cityInitial}
 		onInput={() => setValue('')}
 		onSelect={(place) => {
-			void applyRegionToValues(values, place, setValue, (vp) => (regionViewport = vp ?? undefined));
+			void applyRegionToValues(values, place, setValue);
 		}}
 	/>
 {/snippet}
 
-<!-- Street autocomplete — disabled until a country/city is set, then restricted to that region's
-     viewport. On select it fills the street name, map pin and timezone. -->
+<!-- Street autocomplete — disabled until a country/city is set; the picked city is appended to
+     the query to scope the search (a viewport restriction suppresses resort-town streets). On
+     select it fills the street name, map pin and timezone. -->
 {#snippet streetField({
 	inputId,
 	setValue
@@ -94,7 +91,7 @@
 		id={inputId}
 		variant="address"
 		disabled={!regionSelected}
-		locationRestriction={regionViewport}
+		regionName={values.city}
 		placeholder={regionSelected ? 'Search street name' : 'Pick a city first'}
 		bind:value={values.address}
 		onSelect={(place) => applyStreetToValues(values, place, setValue)}
@@ -154,6 +151,7 @@
 		updateAccommodationSchema.parse({ ...args, id: accommodation._id, locale: 'en' })}
 	submitLabel="Save changes"
 	resetOnSuccess={false}
+	{uploadFolder}
 	customFields={{
 		placeId: regionField,
 		address: streetField,

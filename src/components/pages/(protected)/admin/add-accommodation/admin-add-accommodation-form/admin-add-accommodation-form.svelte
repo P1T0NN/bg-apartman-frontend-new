@@ -32,7 +32,6 @@
 
 	// TYPES
 	import type { typesAdminAddAccommodationForm } from '@/shared/features/accommodation/types/accommodationTypes';
-	import type { RegionBounds } from '@/lib/google-maps/places';
 	import type { ZodType } from 'zod';
 
 	const addAccommodationInitialValues: typesAdminAddAccommodationForm = {
@@ -87,6 +86,11 @@
 		structuredClone(addAccommodationInitialValues)
 	);
 
+	// Stable per-accommodation R2 folder for this form's uploads. Photos upload BEFORE the
+	// apartment row exists, so the folder can't be the Convex `_id` — a client-generated id
+	// is minted once and reused on retry; success redirects/unmounts → next create is fresh.
+	const uploadFolder = crypto.randomUUID();
+
 	// Owner picker state. The SearchInput shows the typed text; `hostId` holds the picked
 	// user's id. Any edit that diverges from the last selected title invalidates the pick, so
 	// typing a name alone never creates the listing on an unconfirmed owner.
@@ -99,8 +103,6 @@
 		}
 	});
 
-	// Viewport of the picked country/city — scopes the street search to that region.
-	let regionViewport = $state<RegionBounds | undefined>();
 	const regionSelected = $derived(Boolean(values.city || values.country));
 
 	const goToAdminAccommodations = () => appGoto(ADMIN_PAGE_ENDPOINTS.ACCOMMODATIONS);
@@ -108,7 +110,7 @@
 
 <!-- City autocomplete — cities only (country shown as secondary text). On select it fills
      city/country, resolves `placeId` (the merged city+country search key and required gate) and
-     captures the region viewport for the street search. Editing the text clears the id, so the
+     sets the name the street search appends to its query. Editing the text clears the id, so the
      host must pick from the list — typing a name alone never sets it. -->
 {#snippet regionField({
 	inputId,
@@ -123,13 +125,14 @@
 		placeholder="Search your city"
 		onInput={() => setValue('')}
 		onSelect={(place) => {
-			void applyRegionToValues(values, place, setValue, (vp) => (regionViewport = vp ?? undefined));
+			void applyRegionToValues(values, place, setValue);
 		}}
 	/>
 {/snippet}
 
-<!-- Street autocomplete — disabled until a city is picked, then restricted to that city's
-     viewport. On select it fills the street name, map pin and timezone. -->
+<!-- Street autocomplete — disabled until a city is picked; the picked city is appended to the
+     query to scope the search (a viewport restriction suppresses resort-town streets). On select
+     it fills the street name, map pin and timezone. -->
 {#snippet streetField({
 	inputId,
 	setValue
@@ -141,7 +144,7 @@
 		id={inputId}
 		variant="address"
 		disabled={!regionSelected}
-		locationRestriction={regionViewport}
+		regionName={values.city}
 		placeholder={regionSelected ? 'Search street name' : 'Pick a city first'}
 		bind:value={values.address}
 		onSelect={(place) => applyStreetToValues(values, place, setValue)}
@@ -233,6 +236,7 @@
 	mapArgs={(_formValues, args) => createAccommodationAdminSchema.parse({ ...args, locale: 'en' })}
 	onSuccess={goToAdminAccommodations}
 	submitLabel="Submit for review"
+	{uploadFolder}
 	customFields={{
 		hostId: ownerField,
 		placeId: regionField,

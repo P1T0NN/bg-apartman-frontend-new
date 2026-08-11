@@ -6,6 +6,7 @@ import { authMutation, adminMutation } from '@/convex/auth/middleware/authMiddle
 import { authComponent } from '@/convex/auth/auth';
 import { sendCreateAccommodationEmail } from '@/convex/email/sendCreateAccommodationEmail';
 import { optStr } from '@/shared/utils/validationUtils';
+import { toLatin } from '@/utils/cyrillicToLatin';
 import { r2PublicUrl } from '@/convex/storage/r2/r2';
 import { validateImageCount } from '@/shared/features/accommodation/utils/validateImageCount';
 import { splitRegionPlaceId } from '@/shared/features/accommodation/utils/splitRegionPlaceId';
@@ -42,6 +43,24 @@ import type { Doc } from '@/convex/_generated/dataModel';
  *    collectable at all).
  * Returns null when fine, a MutationResult error otherwise.
  */
+/**
+ * TODO.md §2 layer 4 — the server is the line that can't be bypassed: a hacked client could
+ * still send Cyrillic location strings, so every write normalizes them to Latin here. With
+ * the client layers (bootstrap `language`, autocomplete transliteration, pick guard) this is
+ * a no-op on the happy path; it exists so nothing Cyrillic can ever persist.
+ */
+function latinizeLocation(args: {
+	address?: string;
+	addressNumber?: string;
+	city: string;
+	country?: string;
+}): void {
+	args.address = toLatin(args.address ?? '');
+	args.addressNumber = toLatin(args.addressNumber ?? '');
+	args.city = toLatin(args.city);
+	args.country = toLatin(args.country ?? '');
+}
+
 function validateMonetizationChoice(args: {
 	monetization?: 'listing_fee' | 'booking_fee';
 	paymentMethod: 'cash' | 'online' | 'both';
@@ -166,6 +185,7 @@ export const createApartment = authMutation('createApartment')({
 			return { success: false, message: { key: 'GenericMessages.UNEXPECTED_ERROR' } };
 		}
 		const args = parsed.data;
+		latinizeLocation(args);
 
 		// Config-driven, so it can move without touching the schema (ASD §3).
 		const photoCountError = validateImageCount(args.photos.length);
@@ -227,6 +247,7 @@ export const createApartmentAdmin = adminMutation('createApartmentAdmin')({
 			return { success: false, message: { key: 'GenericMessages.UNEXPECTED_ERROR' } };
 		}
 		const args = parsed.data;
+		latinizeLocation(args);
 
 		const photoCountError = validateImageCount(args.photos.length);
 		if (photoCountError) return { success: false, message: photoCountError };

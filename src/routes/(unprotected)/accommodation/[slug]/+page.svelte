@@ -8,7 +8,7 @@
 	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
 	import { Card } from '@/components/ui/card/index.js';
 	import { Separator } from '@/components/ui/separator/index.js';
-	import AccommodationGallerySection from '@/components/pages/(unprotected)/accommodation/accommodation-gallery-section/accommodation-gallery-section.svelte';
+	import ImageGallery from '@/components/ui/image-gallery/image-gallery.svelte';
 	import AccommodationOverviewSection from '@/components/pages/(unprotected)/accommodation/accommodation-overview-section/accommodation-overview-section.svelte';
 	import AccommodationSummarySection from '@/components/pages/(unprotected)/accommodation/accommodation-summary-section/accommodation-summary-section.svelte';
 	import AccommodationAmenitiesSection from '@/components/pages/(unprotected)/accommodation/accommodations-amenities-section/accommodation-amenities-section.svelte';
@@ -63,7 +63,7 @@
 {:else}
 	<div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
 		<div class="py-5 md:py-6">
-			<AccommodationGallerySection {images} title={accommodation.title} />
+			<ImageGallery {images} title={accommodation.title} />
 		</div>
 
 		<div
@@ -82,17 +82,19 @@
 
 				<Separator />
 
-				<AccommodationLocationSection {accommodation} />
-
-				<Separator />
-
 				<AccommodationPoliciesSection {accommodation} />
 			</div>
 
 			<aside class="hidden lg:block">
-				<div class="sticky top-20">
+				<div
+					class="sticky top-20 max-h-[calc(100vh-5rem)] space-y-6 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+				>
 					<Card class="p-6 shadow-sm">
 						<AccommodationBookingPanel {accommodation} />
+					</Card>
+
+					<Card class="p-6 shadow-sm">
+						<AccommodationLocationSection {accommodation} />
 					</Card>
 				</div>
 			</aside>

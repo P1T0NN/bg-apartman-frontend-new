@@ -38,7 +38,7 @@
 	const { PERCENT, MIN_EUROS } = ACCOMMODATIONS_CONFIG.BOOKING_FEE;
 	const fee = $derived(listingFeeState(row));
 	const daysLeft = $derived(
-		fee.kind === 'active' || fee.kind === 'expiring' ? Math.max(fee.daysLeft, 0) : 0
+		fee.kind === 'active' || fee.kind === 'expiring' ? Math.max(fee.daysLeft ?? 0, 0) : 0
 	);
 
 	async function submit() {
@@ -75,6 +75,8 @@
 			each booking, and the listing accepts online payments only.
 			{#if daysLeft > 0}
 				You have {daysLeft} paid {daysLeft === 1 ? 'day' : 'days'} left; switching gives them up.
+			{:else if fee.kind === 'active' && fee.daysLeft === null}
+				Your listing is covered forever; switching gives that up.
 			{/if}
 			This cannot be reversed for this listing — going back to a listing fee would mean creating a new
 			listing. No refunds.

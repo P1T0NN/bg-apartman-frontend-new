@@ -52,7 +52,7 @@
 		start: toDate(page.url.searchParams.get('checkIn')),
 		end: toDate(page.url.searchParams.get('checkOut'))
 	});
-	let adults = $state(Number(page.url.searchParams.get('adults') ?? '2') || 2);
+	let adults = $state(Number(page.url.searchParams.get('adults') ?? '1') || 1);
 	let children = $state(Number(page.url.searchParams.get('children') ?? '0') || 0);
 
 	const checkIn = $derived(dateRange.start?.toString() ?? null);

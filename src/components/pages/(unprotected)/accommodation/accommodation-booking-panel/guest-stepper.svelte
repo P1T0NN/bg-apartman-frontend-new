@@ -8,7 +8,7 @@
 
 	let {
 		maxGuests,
-		adults = $bindable(2),
+		adults = $bindable(1),
 		children = $bindable(0)
 	}: {
 		maxGuests: number;

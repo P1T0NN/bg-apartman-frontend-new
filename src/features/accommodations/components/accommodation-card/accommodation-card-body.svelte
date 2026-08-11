@@ -1,12 +1,10 @@
 <script lang="ts">
+	// COMPONENTS
+	import DiscountedPrice from '@/shared/features/pricing/components/discounted-price.svelte';
+
 	// UTILS
 	import { accommodationTypeLabel } from '@/features/accommodations/utils/accommodationPresentation';
-	import {
-		formatCurrency,
-		formatGuests,
-		formatBedrooms,
-		formatBathrooms
-	} from '@/utils/formatters';
+	import { formatGuests, formatBedrooms, formatBathrooms } from '@/utils/formatters';
 	import { cn } from '@/utils/utils.js';
 
 	// TYPES
@@ -57,17 +55,10 @@
 	{#if actions}
 		<div class="mt-auto flex items-end justify-between gap-2 pt-2">
 			<p class="text-sm">
-				{#if accommodation.originalPrice}
-					<span class="text-destructive line-through"
-						>{formatCurrency(accommodation.originalPrice)}</span
-					>
-				{/if}
-
-				<span
-					class="font-semibold {accommodation.originalPrice
-						? 'text-emerald-700 dark:text-emerald-300'
-						: ''}">{formatCurrency(accommodation.pricePerNight)}</span
-				>
+				<DiscountedPrice
+					original={accommodation.originalPrice}
+					price={accommodation.pricePerNight}
+				/>
 				<span class="text-muted-foreground">/ night</span>
 			</p>
 
@@ -75,17 +66,10 @@
 		</div>
 	{:else}
 		<p class="pt-0.5 text-sm">
-			{#if accommodation.originalPrice}
-				<span class="text-destructive line-through"
-					>{formatCurrency(accommodation.originalPrice)}</span
-				>
-			{/if}
-
-			<span
-				class="font-semibold {accommodation.originalPrice
-					? 'text-emerald-700 dark:text-emerald-300'
-					: ''}">{formatCurrency(accommodation.pricePerNight)}</span
-			>
+			<DiscountedPrice
+				original={accommodation.originalPrice}
+				price={accommodation.pricePerNight}
+			/>
 			<span class="text-muted-foreground">/ night</span>
 		</p>
 	{/if}

@@ -35,7 +35,7 @@
 		<h2
 			class="mt-3 font-display text-3xl font-medium tracking-tight text-balance text-foreground sm:text-4xl"
 		>
-			Handpicked apartments in Belgrade
+			Handpicked apartments
 		</h2>
 		<p class="mt-3 text-pretty text-muted-foreground">
 			A short, curated selection — verified hosts, honest photos and clear pricing.

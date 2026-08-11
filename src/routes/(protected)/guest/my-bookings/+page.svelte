@@ -10,11 +10,11 @@
 	import BookingsDetailSheet from '@/features/bookings/components/bookings-table/bookings-detail-sheet/bookings-detail-sheet.svelte';
 
 	// TYPES
-	import type { typesBookingSafe } from '@/shared/features/booking/types/bookingTypes';
+	import type { Id } from '@/convex/_generated/dataModel';
 
-	// The table reports which row was picked; the sheet renders it. No `onAction` — a guest
-	// reads their own booking here, they don't act on it.
-	let selected = $state<typesBookingSafe | null>(null);
+	// The table reports which row was picked (by id); the sheet renders it, fetching the live
+	// row itself. No `onAction` — a guest reads their own booking here, they don't act on it.
+	let selectedId = $state<Id<'bookings'> | null>(null);
 	let sheetOpen = $state(false);
 </script>
 
@@ -25,13 +25,13 @@
 
 	<BookingsTable
 		query={api.tables.bookings.queries.fetchMyBookingsSafe.fetchMyBookingsSafe}
-		bind:selected
+		bind:selectedId
 		bind:sheetOpen
 		{errorContent}
 	/>
 </section>
 
-<BookingsDetailSheet booking={selected} bind:open={sheetOpen} />
+<BookingsDetailSheet bookingId={selectedId} bind:open={sheetOpen} />
 
 {#snippet errorContent()}
 	<ErrorComponent

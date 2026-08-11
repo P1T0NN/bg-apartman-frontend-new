@@ -1,4 +1,8 @@
 <script lang="ts">
+	// LIBRARIES
+	import { api } from '@/convex/_generated/api';
+	import { useQuery } from 'convex-svelte';
+
 	// COMPONENTS
 	import { NativeSheet } from '@/components/ui/native-sheet/index.js';
 	import StayConfirmationPanel from '../stay-confirmation-panel.svelte';
@@ -15,20 +19,23 @@
 	import { availableBookingActions } from '@/features/bookings/utils/availableBookingActions';
 
 	// TYPES
+	import type { Id } from '@/convex/_generated/dataModel';
 	import type {
 		typesBookingSafe,
 		typesBookingAction
 	} from '@/shared/features/booking/types/bookingTypes';
 
 	let {
-		booking,
+		bookingId,
 		open = $bindable(false),
 		onOpenChange,
 		onAction,
 		getActions = availableBookingActions,
 		hostName
 	}: {
-		booking: typesBookingSafe | null;
+		/** Which booking the sheet shows. The sheet fetches it itself — one by-id
+		 *  subscription, live only while open (`skip` otherwise). */
+		bookingId: Id<'bookings'> | null;
 		open?: boolean;
 		/** Fires on every open/close — the reservations page uses it to drop `?booking=` once
 		 *  the host closes a deep-linked sheet. */
@@ -39,6 +46,16 @@
 		/** Host label shown under the property — admin context only. */
 		hostName?: string;
 	} = $props();
+
+	// The sheet owns its data: the page passes only the id, and this subscription resolves
+	// the live row (`fetchBookingByIdSafe`, entitled to host or guest). Live matters — the
+	// stay-confirmation panel and the action footer read fields mutations stamp, and this
+	// way they update the moment a mutation lands instead of rendering a stale snapshot.
+	const bookingQuery = useQuery(
+		api.tables.bookings.queries.fetchBookingByIdSafe.fetchBookingByIdSafe,
+		() => (open && bookingId ? { bookingId } : 'skip')
+	);
+	const booking = $derived((bookingQuery.data ?? null) as typesBookingSafe | null);
 
 	function runAction(action: typesBookingAction) {
 		if (!booking || !onAction) return;

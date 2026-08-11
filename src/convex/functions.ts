@@ -80,18 +80,6 @@ export const { counters, wrapDB } = defineCounters<DataModel>()((counter) => ({
 		sortKey: (doc) => doc.status,
 		sumValue: (doc) => doc.net
 	}),
-	/**
-	 * Bookings by status, keyed by check-in date (ISO string, so bounds compare the way the
-	 * `by_*_status_checkin` indexes already do). Powers the admin dashboard's pulse row
-	 * (AdminDashboardPageSystemDesign.md §3):
-	 * - check-ins today: bounded count on `confirmed`, `[today, today]`
-	 * - pending open:    `counters.bookings.count(ctx, 'pending')`
-	 */
-	bookings: counter('bookings', {
-		component: components.aggregateBookings,
-		namespace: (doc) => doc.status,
-		sortKey: (doc) => doc.checkInDate
-	})
 }));
 
 // Composed with `wrapDB` rather than taking `defineCounters`' own mutation constructors:
@@ -103,8 +91,7 @@ export const internalMutation = customMutation(rawInternalMutation, customCtx(wr
 const counterName = v.union(
 	v.literal('reports'),
 	v.literal('apartments'),
-	v.literal('hostEarnings'),
-	v.literal('bookings')
+	v.literal('hostEarnings')
 );
 
 /**
@@ -117,19 +104,15 @@ const counterName = v.union(
  * bunx convex run functions:backfillCounters "{counter:'reports'}"
  * bunx convex run functions:backfillCounters "{counter:'apartments'}"
  * bunx convex run functions:backfillCounters "{counter:'hostEarnings'}"
- * bunx convex run functions:backfillCounters "{counter:'bookings'}"
  * ```
  *
  * Also re-run for a counter whose DEFINITION changed (namespace / sort key / sum), after
  * clearing it with {@link clearCounter} — a changed definition invalidates the stored tree.
  *
- * ⚠️ **ALWAYS {@link clearCounter} first when RE-PROVISIONING a component that existed
+ * ⚠️ **ALWAYS {@link clearCounter} first when RE-PROVISIONING a counter that existed
  * before.** A Convex component keeps its stored data across being removed from
  * `convex.config.ts` and added back, so a backfill onto a resurrected tree ADDS to whatever
- * was already in it and every count reads high. This bit the bookings counter on dev
- * (2026-07-31): it shipped early, was removed unused, and when re-added for the admin
- * dashboard the rows that existed in its first life were counted twice — the dashboard
- * reported 2 pending requests against 1 real one. The backfill itself is genuinely
+ * was already in it and every count reads high. The backfill itself is genuinely
  * idempotent (verified: re-running it changes nothing); the duplication comes from the
  * pre-existing tree, which only {@link clearCounter} removes.
  */

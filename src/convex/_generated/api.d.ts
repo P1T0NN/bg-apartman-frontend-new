@@ -112,6 +112,7 @@ import type * as tables_accommodations_helpers_resolveFavoriteAccommodations fro
 import type * as tables_accommodations_helpers_searchAccommodationsStream from "../tables/accommodations/helpers/searchAccommodationsStream.js";
 import type * as tables_accommodations_mutations_createAccommodation from "../tables/accommodations/mutations/createAccommodation.js";
 import type * as tables_accommodations_mutations_deleteAccommodation from "../tables/accommodations/mutations/deleteAccommodation.js";
+import type * as tables_accommodations_mutations_grantFreePublish from "../tables/accommodations/mutations/grantFreePublish.js";
 import type * as tables_accommodations_mutations_setApartmentFeatured from "../tables/accommodations/mutations/setApartmentFeatured.js";
 import type * as tables_accommodations_mutations_switchListingMonetization from "../tables/accommodations/mutations/switchListingMonetization.js";
 import type * as tables_accommodations_mutations_syncHostSuperhost from "../tables/accommodations/mutations/syncHostSuperhost.js";
@@ -164,7 +165,7 @@ import type * as tables_bookings_mutations_findMyReservation from "../tables/boo
 import type * as tables_bookings_mutations_requestStayConfirmation from "../tables/bookings/mutations/requestStayConfirmation.js";
 import type * as tables_bookings_mutations_withdrawBookingGuest from "../tables/bookings/mutations/withdrawBookingGuest.js";
 import type * as tables_bookings_queries_fetchBookingById from "../tables/bookings/queries/fetchBookingById.js";
-import type * as tables_bookings_queries_fetchHostBookingSafe from "../tables/bookings/queries/fetchHostBookingSafe.js";
+import type * as tables_bookings_queries_fetchBookingByIdSafe from "../tables/bookings/queries/fetchBookingByIdSafe.js";
 import type * as tables_bookings_queries_fetchHostBookingsSafe from "../tables/bookings/queries/fetchHostBookingsSafe.js";
 import type * as tables_bookings_queries_fetchMyBookingsSafe from "../tables/bookings/queries/fetchMyBookingsSafe.js";
 import type * as tables_bookings_queries_listBookingsAdmin from "../tables/bookings/queries/listBookingsAdmin.js";
@@ -293,6 +294,7 @@ declare const fullApi: ApiFromModules<{
   "tables/accommodations/helpers/searchAccommodationsStream": typeof tables_accommodations_helpers_searchAccommodationsStream;
   "tables/accommodations/mutations/createAccommodation": typeof tables_accommodations_mutations_createAccommodation;
   "tables/accommodations/mutations/deleteAccommodation": typeof tables_accommodations_mutations_deleteAccommodation;
+  "tables/accommodations/mutations/grantFreePublish": typeof tables_accommodations_mutations_grantFreePublish;
   "tables/accommodations/mutations/setApartmentFeatured": typeof tables_accommodations_mutations_setApartmentFeatured;
   "tables/accommodations/mutations/switchListingMonetization": typeof tables_accommodations_mutations_switchListingMonetization;
   "tables/accommodations/mutations/syncHostSuperhost": typeof tables_accommodations_mutations_syncHostSuperhost;
@@ -345,7 +347,7 @@ declare const fullApi: ApiFromModules<{
   "tables/bookings/mutations/requestStayConfirmation": typeof tables_bookings_mutations_requestStayConfirmation;
   "tables/bookings/mutations/withdrawBookingGuest": typeof tables_bookings_mutations_withdrawBookingGuest;
   "tables/bookings/queries/fetchBookingById": typeof tables_bookings_queries_fetchBookingById;
-  "tables/bookings/queries/fetchHostBookingSafe": typeof tables_bookings_queries_fetchHostBookingSafe;
+  "tables/bookings/queries/fetchBookingByIdSafe": typeof tables_bookings_queries_fetchBookingByIdSafe;
   "tables/bookings/queries/fetchHostBookingsSafe": typeof tables_bookings_queries_fetchHostBookingsSafe;
   "tables/bookings/queries/fetchMyBookingsSafe": typeof tables_bookings_queries_fetchMyBookingsSafe;
   "tables/bookings/queries/listBookingsAdmin": typeof tables_bookings_queries_listBookingsAdmin;
@@ -399,5 +401,4 @@ export declare const components: {
   aggregateReports: import("@convex-dev/aggregate/_generated/component.js").ComponentApi<"aggregateReports">;
   aggregateApartments: import("@convex-dev/aggregate/_generated/component.js").ComponentApi<"aggregateApartments">;
   aggregateHostEarnings: import("@convex-dev/aggregate/_generated/component.js").ComponentApi<"aggregateHostEarnings">;
-  aggregateBookings: import("@convex-dev/aggregate/_generated/component.js").ComponentApi<"aggregateBookings">;
 };

@@ -6,8 +6,7 @@
 		REGION_PRIMARY_TYPES,
 		CITY_PRIMARY_TYPES,
 		type PlaceDetails,
-		type PlaceSuggestion,
-		type RegionBounds
+		type PlaceSuggestion
 	} from '@/lib/google-maps/places';
 
 	// COMPONENTS
@@ -16,6 +15,7 @@
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
+	import { toLatin } from '@/utils/cyrillicToLatin.js';
 
 	// LUCIDE ICONS
 	import SearchIcon from '@lucide/svelte/icons/search';
@@ -31,8 +31,11 @@
 		regionCodes,
 		/** `address` — full street addresses. `region` — cities & countries (search). `city` — cities only. */
 		variant = 'address',
-		/** Restrict suggestions to this bbox (e.g. a picked city/country's viewport). */
-		locationRestriction,
+		/** Picked region (city) name appended to address-variant queries. Google's address matcher
+		 *  won't resolve a bare street name in resort towns ("Stefana Prvovenčanog" finds nothing
+		 *  in Kopaonik, "Stefana Prvovenčanog, Kopaonik" does) — and a viewport rectangle suppresses
+		 *  even the appended query, so the region completes the search instead of a bbox. */
+		regionName,
 		minLength = 3,
 		onSelect,
 		/** Fires on every manual keystroke (not on programmatic select) — lets a caller invalidate a
@@ -45,7 +48,7 @@
 		disabled?: boolean;
 		regionCodes?: string[];
 		variant?: 'address' | 'region' | 'city';
-		locationRestriction?: RegionBounds;
+		regionName?: string;
 		minLength?: number;
 		onSelect?: (place: PlaceDetails) => void;
 		onInput?: (value: string) => void;
@@ -104,7 +107,10 @@
 		activeIndex = -1;
 		clearTimeout(debounce);
 
-		const trimmed = next.trim();
+		// Transliterate before searching (TODO.md §2 layer 2): typing «Стефана Првовенчаног»
+		// searches «Stefana Prvovencanog», so the dropdown always shows Latin suggestions.
+		// The input itself keeps what the user typed — the pick stores the Latin counterpart.
+		const trimmed = toLatin(next).trim();
 		if (trimmed.length < minLength) {
 			suggestions = [];
 			open = false;
@@ -112,18 +118,20 @@
 			return;
 		}
 
+		// The picked region completes the address query: a bare street name resolves nothing in
+		// resort towns ("Stefana Prvovenčanog" in Kopaonik), with the region appended it does.
+		// `regionName` is already Latin from the storage boundary; toLatin is belt-and-braces.
+		const query = regionName ? `${trimmed}, ${toLatin(regionName)}` : trimmed;
+
 		loading = true;
 		open = true;
-		debounce = setTimeout(() => void runSearch(trimmed), 250);
+		debounce = setTimeout(() => void runSearch(query), 250);
 	}
 
 	async function runSearch(input: string) {
 		const seq = ++requestSeq;
 		try {
-			const results = await session.search(
-				input,
-				locationRestriction ? { locationRestriction } : undefined
-			);
+			const results = await session.search(input);
 			if (seq !== requestSeq) return; // a newer keystroke superseded this one
 			suggestions = results;
 			open = true;
@@ -148,7 +156,12 @@
 			const details = await session.select(suggestion.placeId);
 			if (details) {
 				value =
-					variant === 'address' ? details.formattedAddress || value : formatRegionLabel(details);
+					variant === 'address'
+						? details.formattedAddress || value
+						: variant === 'city'
+							// The city field shows only the city; the country lands in its own field.
+							? details.city || formatRegionLabel(details)
+							: formatRegionLabel(details);
 				onSelect?.(details);
 			}
 		} catch (err) {

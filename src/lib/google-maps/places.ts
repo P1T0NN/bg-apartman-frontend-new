@@ -1,5 +1,6 @@
 // LIBRARIES
 import { importGoogleLibrary } from './loader';
+import { toLatin } from '../../utils/cyrillicToLatin';
 
 /**
  * Thin, dependency-free wrapper around the **Places API (New)** autocomplete.
@@ -23,9 +24,6 @@ export type PlaceSuggestion = {
 	secondaryText: string;
 };
 
-/** Bounding box of a place — fed back as a follow-up search's `locationRestriction`. */
-export type RegionBounds = google.maps.LatLngBoundsLiteral;
-
 export type PlaceDetails = {
 	placeId: string;
 	/** Full one-line address from Google. */
@@ -38,11 +36,11 @@ export type PlaceDetails = {
 	streetNumber: string;
 	city: string;
 	country: string;
+	/** ISO 3166-1 alpha-2 of the place's country (e.g. "RS", "ME") — biases every follow-up
+	 *  region lookup so homonyms can't cross countries ("Bar" → Barajevo/Barcelona). */
+	countryCode: string;
 	lat: number | null;
 	lng: number | null;
-	/** Viewport bounds of the place (a city's or country's bbox), used to scope a
-	 *  follow-up street search to this region. `null` when Google didn't return one. */
-	viewport: RegionBounds | null;
 	/** IANA zone of the pin (e.g. `'Europe/Belgrade'`), resolved from lat/lng when the
 	 *  session opts in via `resolveTimeZone`. `null` when not requested or unresolvable. */
 	timeZone: string | null;
@@ -105,13 +103,16 @@ export function loadPlacesLibrary(): Promise<google.maps.PlacesLibrary> {
  */
 export async function resolveRegionPlaceId(
 	input: string,
-	type: 'locality' | 'country'
+	type: 'locality' | 'country',
+	// Bias to one country so a homonym can't win ("Bar" → Barajevo/Barcelona without it).
+	regionCodes?: string[]
 ): Promise<string | null> {
 	if (!input.trim()) return null;
 	try {
 		const lib = await loadPlacesLibrary();
 		const { suggestions } = await lib.AutocompleteSuggestion.fetchAutocompleteSuggestions({
 			input,
+			includedRegionCodes: regionCodes,
 			includedPrimaryTypes: [type]
 		});
 		for (const suggestion of suggestions) {
@@ -133,7 +134,7 @@ export async function resolveRegionPlaceId(
  */
 export async function resolveMergedRegionPlaceId(place: PlaceDetails): Promise<string> {
 	const [cityId, countryId] = await Promise.all([
-		resolveRegionPlaceId(place.city, 'locality'),
+		resolveRegionPlaceId(place.city, 'locality', place.countryCode ? [place.countryCode] : undefined),
 		resolveRegionPlaceId(place.country, 'country')
 	]);
 	const merged = [cityId, countryId].filter(Boolean).join(' ');
@@ -167,12 +168,7 @@ export function createPlacesSession(options?: {
 		return library;
 	}
 
-	async function search(
-		input: string,
-		// Per-call so it can change between keystrokes (e.g. once a region is picked, the
-		// street search is restricted to that region's bbox). Not a session option.
-		perCall?: { locationRestriction?: RegionBounds }
-	): Promise<PlaceSuggestion[]> {
+	async function search(input: string): Promise<PlaceSuggestion[]> {
 		const lib = await ensureLibrary();
 		const { suggestions } = await lib.AutocompleteSuggestion.fetchAutocompleteSuggestions({
 			input,
@@ -182,7 +178,6 @@ export function createPlacesSession(options?: {
 			includedPrimaryTypes: options?.includedPrimaryTypes
 				? [...options.includedPrimaryTypes]
 				: undefined,
-			locationRestriction: perCall?.locationRestriction,
 			language: options?.language
 		});
 
@@ -207,13 +202,13 @@ export function createPlacesSession(options?: {
 
 		const place = prediction.toPlace();
 		await place.fetchFields({
-			fields: ['id', 'formattedAddress', 'addressComponents', 'location', 'viewport']
+			fields: ['id', 'formattedAddress', 'addressComponents', 'location']
 		});
 
 		// Selection closes the session; next keystroke starts a fresh token.
 		token = null;
 
-		const details = toPlaceDetails(place);
+		const details = await toPlaceDetails(place);
 		if (options?.resolveTimeZone && details.lat !== null && details.lng !== null) {
 			details.timeZone = await lookupTimeZone(details.lat, details.lng);
 		}
@@ -248,18 +243,83 @@ function component(
 	return components?.find((c) => c.types.includes(type))?.longText ?? '';
 }
 
-function toPlaceDetails(place: google.maps.places.Place): PlaceDetails {
+// Municipality names that must never be stored as `city` (the geocoder + audit carry the same
+// list). Google's data itself labels Belgrade's municipalities as `locality` ("Савски Венац")
+// and Montenegro's municipalities as admin_level_1 ("Opština Bar") — both pose as localities.
+const MUNICIPALITY_RE = /\b(Venac|Opština|Opstina|Grad|Naselje|Settlement)\b|-/i;
+
+/**
+ * Tail case of the city ladder (TODO.md §3): a place with **no** locality-level component at
+ * all — only a sublocality / neighborhood (e.g. a pin dropped in "Savski Venac"). Such a
+ * sublocality is never stored as `city`; instead the parent region (admin_level_1 or 2) is
+ * resolved to its real locality through the search-box API. `''` when nothing resolves —
+ * the form flags the row rather than ever storing a sublocality as the city.
+ */
+async function resolveParentLocalityName(
+	components: google.maps.places.AddressComponent[] | null | undefined,
+	// ISO alpha-2 of the pin's country — without it "Bar" autocompletes to Barcelona, Spain.
+	countryCode: string
+): Promise<string> {
+	const parent =
+		component(components, 'administrative_area_level_1') ||
+		component(components, 'administrative_area_level_2') ||
+		component(components, 'postal_town');
+	if (!parent) return '';
+	// "Opština Bar" would autocomplete to Barajevo (a homonym) — strip the prefix so the
+	// resolution targets the town itself, then bias to the pin's country so the stripped
+	// "Bar" lands on Bar, Montenegro rather than Barcelona, Spain. (Mirror of the geocoder's
+	// server-side step.)
+	const clean = parent.replace(/^(Opština|Opstina)\s+/i, '');
+	try {
+		const lib = await loadPlacesLibrary();
+		const { suggestions } = await lib.AutocompleteSuggestion.fetchAutocompleteSuggestions({
+			input: clean,
+			includedRegionCodes: countryCode ? [countryCode] : undefined,
+			includedPrimaryTypes: ['locality']
+		});
+		// First suggestion is Google's most prominent locality for the parent name — the same
+		// source `resolveRegionPlaceId` uses, plus the display name we need to store.
+		return suggestions[0]?.placePrediction?.mainText?.text ?? '';
+	} catch (error) {
+		console.error('[places] parent locality resolution failed:', error);
+		return '';
+	}
+}
+
+async function toPlaceDetails(place: google.maps.places.Place): Promise<PlaceDetails> {
 	const components = place.addressComponents;
 
 	const streetNumber = component(components, 'street_number');
 	const route = component(components, 'route');
 	const addressLine = [streetNumber, route].filter(Boolean).join(' ').trim();
 
-	const city =
+	// Resolution order (TODO.md §3): locality → postal_town → admin_level_2 → admin_level_1.
+	// `sublocality` / `neighborhood` / `postal_code` are NEVER candidates.
+	let city =
 		component(components, 'locality') ||
 		component(components, 'postal_town') ||
 		component(components, 'administrative_area_level_2') ||
 		component(components, 'administrative_area_level_1');
+
+	// Municipalities posing as localities: drop them and resolve the parent instead. Two
+	// signals — the name itself (Venac/Opština/Grad/…) or a DISTINCT political-typed
+	// component carrying the same name as the city (Google puts Belgrade's municipality in a
+	// separate `political` component while ALSO labeling it `locality`). The locality
+	// component itself is typed ["locality","political"], so only a political component that
+	// is NOT the locality/postal_town itself counts as a signal.
+	const municipality =
+		components?.find(
+			(c) => c.types.includes('political') && !c.types.includes('locality') && !c.types.includes('postal_town')
+		)?.longText ?? '';
+	// Compare latinized names: Google mixes scripts (locality "Савски Венац" + political
+	// "Savski Venac") so a raw comparison misses the match.
+	if (city && (MUNICIPALITY_RE.test(toLatin(city)) || toLatin(city).toLowerCase() === toLatin(municipality).toLowerCase())) city = '';
+
+	const country = component(components, 'country');
+	const countryCode = components?.find((c) => c.types.includes('country'))?.shortText ?? '';
+
+	// Tail: no real locality → resolve the parent region's real locality (never a sublocality).
+	if (!city) city = await resolveParentLocalityName(components, countryCode);
 
 	const formattedAddress = place.formattedAddress ?? '';
 
@@ -270,10 +330,10 @@ function toPlaceDetails(place: google.maps.places.Place): PlaceDetails {
 		street: route,
 		streetNumber,
 		city,
-		country: component(components, 'country'),
+		country,
+		countryCode,
 		lat: place.location ? place.location.lat() : null,
 		lng: place.location ? place.location.lng() : null,
-		viewport: place.viewport ? place.viewport.toJSON() : null,
 		// Resolved by `select()` after the fact (needs an async lookup); null here.
 		timeZone: null
 	};

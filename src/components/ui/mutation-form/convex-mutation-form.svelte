@@ -51,6 +51,7 @@
 		header,
 		extraFields,
 		actions,
+		uploadFolder,
 		class: className,
 		wizard = false,
 		extraStepMeta,
@@ -78,6 +79,8 @@
 		header?: Snippet;
 		extraFields?: Snippet;
 		actions?: Snippet<[{ busy: boolean }]>;
+		/** Optional R2 folder prefix for uploaded files (per-accommodation folder). Omit for flat keys. */
+		uploadFolder?: string;
 		class?: string;
 		/** Opt-in: render one section per step with progress + Back/Continue. */
 		wizard?: boolean;
@@ -105,7 +108,9 @@
 			args,
 			progress,
 			uploadOne: (file) =>
-				FEATURES.USE_R2 ? uploadFileToR2(convex, file) : uploadFileToConvexStorage(convex, file)
+				FEATURES.USE_R2
+					? uploadFileToR2(convex, file, uploadFolder)
+					: uploadFileToConvexStorage(convex, file)
 		});
 	};
 

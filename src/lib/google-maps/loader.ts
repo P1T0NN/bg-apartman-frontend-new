@@ -65,10 +65,15 @@ function injectMapsScript(w: Window, apiKey: string): Promise<void> {
 				"[google-maps] Google rejected the API key. Check that: the key is correct, this origin is in the key's HTTP-referrer allowlist, the required APIs are enabled, and billing is active."
 			);
 
+		// `language: 'en'` is the address-script invariant's master switch (TODO.md §2 layer 1):
+		// without it, a `sr-Cyrl` browser locale makes Google return Cyrillic street/city names.
+		// 'en' matches the app's English UI — 'sr' would return the same Latin names ("Knez
+		// Mihailova") once the app localizes; either is safe, a Cyrillic locale never is.
 		const params = new URLSearchParams({
 			key: apiKey,
 			v: 'weekly',
 			loading: 'async',
+			language: 'en',
 			callback: '__onGoogleMapsReady'
 		});
 

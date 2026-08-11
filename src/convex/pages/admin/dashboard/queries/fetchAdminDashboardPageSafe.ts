@@ -8,7 +8,6 @@ import { components } from '@/convex/_generated/api';
 import { requireAdmin } from '@/convex/auth/middleware/authMiddleware';
 import { analytics } from '@/convex/analytics';
 import { counters } from '@/convex/functions';
-import { todayInPropertyZone } from '@/shared/features/booking/utils/daysUntilCheckIn';
 import { monthStartUtc } from '@/shared/utils/dateUtils';
 
 // TYPES
@@ -31,11 +30,10 @@ const REPORTS_QUEUE_LIMIT = 5;
  * Realtime verdict: **subscription** — reports, bookings and signups arrive from other
  * people while the admin watches (GeneralSystemDesignRule.md's admin-orders example).
  * The read is cheap by construction, so re-runs on writes are affordable:
- *   - NOW-questions (queue count, check-ins, pending, published) are counter reads,
- *     O(log n), never a scan;
- *   - HAPPENED-questions (signups, bookings created, the 12-month series) are the
- *     analytics component's pre-aggregated rollups, global scope — every tracked event
- *     rolls up globally regardless of its host resource scope;
+ *   - NOW-questions (queue count, published) are counter reads, O(log n), never a scan;
+ *   - HAPPENED-questions (the 12-month series) are the analytics component's
+ *     pre-aggregated rollups, global scope — every tracked event rolls up globally
+ *     regardless of its host resource scope;
  *   - the only table reads are two `.take(5)` slices of the reports queue and the
  *     component-side user count, which is itself `.take()`-bounded.
  *
@@ -62,24 +60,12 @@ export const inspectAdminDashboardPage = internalQuery({
 async function readAdminDashboardPage(ctx: QueryCtx): Promise<AdminDashboardPage> {
 	{
 		const now = Date.now();
-		const todayIso = todayInPropertyZone();
-		const dayStartMs = Date.parse(todayIso);
 		const seriesFrom = monthStartUtc(now, 11);
-
-		// checkInDate is the counter's sort key, so "today's check-ins" is an exact-key bound.
-		const todayBounds = {
-			lower: { key: todayIso, inclusive: true },
-			upper: { key: todayIso, inclusive: true }
-		} as const;
 
 		const [
 			stampedNew,
 			legacyNew,
 			newReportsTotal,
-			signups,
-			bookingsCreated,
-			checkIns,
-			pendingOpen,
 			usersTotal,
 			publishedListings,
 			metricMaps
@@ -98,15 +84,6 @@ async function readAdminDashboardPage(ctx: QueryCtx): Promise<AdminDashboardPage
 				.take(REPORTS_QUEUE_LIMIT),
 			// The aggregate's namespace already normalizes `undefined → 'new'`.
 			counters.reports.count(ctx, 'new'),
-			analytics
-				.fetchSummary(ctx, { metric: 'newUsers', from: dayStartMs, to: now })
-				.then((s) => s.value),
-			// booking.created — measures demand: stays 5 today even if 2 cancel later.
-			analytics
-				.fetchSummary(ctx, { metric: 'bookings', from: dayStartMs, to: now })
-				.then((s) => s.value),
-			counters.bookings.aggregate.count(ctx, { namespace: 'confirmed', bounds: todayBounds }),
-			counters.bookings.count(ctx, 'pending'),
 			// BA `user` table is component-local — the app's counter triggers can't see it,
 			// so the count lives beside the data (see `countUsers` for its stated ceiling).
 			ctx.runQuery(components.betterAuth.userQueries.countUsers, {}),
@@ -179,7 +156,6 @@ async function readAdminDashboardPage(ctx: QueryCtx): Promise<AdminDashboardPage
 
 		return {
 			reportsQueue: { items, total: newReportsTotal },
-			today: { signups, bookingsCreated, checkIns, pendingOpen },
 			platform: {
 				usersTotal: usersTotal.total,
 				usersTotalCapped: usersTotal.capped,

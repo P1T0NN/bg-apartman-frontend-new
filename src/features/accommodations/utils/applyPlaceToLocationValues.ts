@@ -1,8 +1,9 @@
 // UTILS
 import { resolveMergedRegionPlaceId } from '@/lib/google-maps/places';
+import { toLatin } from '@/utils/cyrillicToLatin';
 
 // TYPES
-import type { PlaceDetails, RegionBounds } from '@/lib/google-maps/places';
+import type { PlaceDetails } from '@/lib/google-maps/places';
 import type { typesAddAccommodationForm } from '@/shared/features/accommodation/types/accommodationTypes';
 
 /** Location fields the autocompletes fill directly on the `$state` form proxy. The required
@@ -17,26 +18,25 @@ type AccommodationLocationValues = Pick<
  *
  * Fills `city`/`country` and resolves the accommodation's merged city+country `placeId` (the required
  * gate, set through `setPlaceId` so its validation error clears — the place's own id first so the
- * gate passes immediately, then the resolved region id once the lookups return). The region's
- * viewport is handed back via `onViewport` to scope the follow-up street search. Any street picked
+ * gate passes immediately, then the resolved region id once the lookups return). Any street picked
  * for the *previous* region is cleared, since it no longer belongs here.
  */
 export async function applyRegionToValues(
 	target: AccommodationLocationValues,
 	place: PlaceDetails,
-	setPlaceId: (value: string) => void,
-	onViewport: (viewport: RegionBounds | null) => void
+	setPlaceId: (value: string) => void
 ): Promise<void> {
-	target.city = place.city;
-	target.country = place.country;
+	// toLatin guard (TODO.md §2 layer 3): whatever a picked place carries is stored Latin.
+	// With the `language: 'en'` bootstrap this is a no-op on the happy path — it catches any
+	// bypassed layer (e.g. a Cyrillic formatted-address fallback) at the storage boundary.
+	target.city = toLatin(place.city);
+	target.country = toLatin(place.country);
 
 	// Region changed — the previously selected street/number/pin no longer apply.
 	target.address = '';
 	target.addressNumber = '';
 	target.coordinates = undefined;
 	target.timeZone = '';
-
-	onViewport(place.viewport);
 
 	setPlaceId(place.placeId);
 	setPlaceId(await resolveMergedRegionPlaceId(place));
@@ -53,8 +53,8 @@ export function applyStreetToValues(
 	place: PlaceDetails,
 	setStreet: (value: string) => void
 ): void {
-	setStreet(place.street || place.addressLine);
-	if (place.streetNumber) target.addressNumber = place.streetNumber;
+	setStreet(toLatin(place.street || place.addressLine));
+	if (place.streetNumber) target.addressNumber = toLatin(place.streetNumber);
 	target.coordinates =
 		place.lat !== null && place.lng !== null ? { lat: place.lat, lng: place.lng } : undefined;
 	target.timeZone = place.timeZone ?? '';

@@ -32,6 +32,13 @@ export const listingIsBookingFee = (listing: ListingMonetizationSlice): boolean 
 	monetizationActive() && listing.monetization === 'booking_fee';
 
 /**
+ * A free-publish grant's "forever" expiry. Convex stores no `Infinity`, and 2100-01-01 is
+ * beyond any realistic horizon — and beyond the sweep's `dueThreshold` forever, so a
+ * "forever" row can never be expired by the cron's `by_status_expiry` read.
+ */
+export const FREE_LISTING_FOREVER_EXPIRY = 4102444800000;
+
+/**
  * One reading of a listing's fee position, shared by the sweep, the publish gate and the
  * host row so the cron's decision, the moderation refusal and the host's on-screen state
  * can never disagree.
@@ -58,5 +65,8 @@ export function listingFeeState(
 	if (daysLeft < -GRACE_DAYS) return { kind: 'lapsed', expiresAt, daysLeft };
 	if (daysLeft < 0) return { kind: 'grace', expiresAt, daysLeft };
 	if (daysLeft <= REMINDER_DAYS_BEFORE) return { kind: 'expiring', expiresAt, daysLeft };
+	// A "forever" grant has no countdown — surface it as plain active so no UI shows
+	// "Until 2100". `daysLeft: null` is the forever marker; callers render "Forever".
+	if (expiresAt >= FREE_LISTING_FOREVER_EXPIRY) return { kind: 'active', expiresAt, daysLeft: null };
 	return { kind: 'active', expiresAt, daysLeft };
 }

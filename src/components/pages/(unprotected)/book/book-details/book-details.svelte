@@ -2,6 +2,7 @@
 	// COMPONENTS
 	import BookingCalendar from '@/components/pages/(unprotected)/accommodation/accommodation-booking-panel/booking-calendar.svelte';
 	import GuestStepper from '@/components/pages/(unprotected)/accommodation/accommodation-booking-panel/guest-stepper.svelte';
+	import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 	import BookDetailsStayRules from './book-details-stay-rules.svelte';
 
 	// TYPES
@@ -11,7 +12,7 @@
 	let {
 		accommodation,
 		dateRange = $bindable<DateRange>({ start: undefined, end: undefined }),
-		adults = $bindable(2),
+		adults = $bindable(1),
 		children = $bindable(0)
 	}: {
 		accommodation: typesAccommodationEnriched;
@@ -22,24 +23,29 @@
 </script>
 
 <section class="space-y-8">
-	<div class="space-y-4">
-		<h2 class="text-lg font-semibold tracking-tight">Your dates</h2>
+	<Card>
+		<CardHeader>
+			<CardTitle>Your dates</CardTitle>
+		</CardHeader>
+		<CardContent class="space-y-4">
+			<BookingCalendar
+				{accommodation}
+				bind:dateRange
+				numberOfMonths={2}
+				showPolicy={false}
+				class="w-fit"
+			/>
 
-		<BookingCalendar
-			{accommodation}
-			bind:dateRange
-			numberOfMonths={2}
-			showPolicy={false}
-			class="w-fit rounded-xl border"
-		/>
+			<BookDetailsStayRules {accommodation} />
+		</CardContent>
+	</Card>
 
-		<BookDetailsStayRules {accommodation} />
-	</div>
-
-	<div class="space-y-3">
-		<h2 class="text-lg font-semibold tracking-tight">Guests</h2>
-		<div class="rounded-xl border p-4">
+	<Card>
+		<CardHeader>
+			<CardTitle>Guests</CardTitle>
+		</CardHeader>
+		<CardContent>
 			<GuestStepper maxGuests={accommodation.maxGuests} bind:adults bind:children />
-		</div>
-	</div>
+		</CardContent>
+	</Card>
 </section>
