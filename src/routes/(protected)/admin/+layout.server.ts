@@ -4,6 +4,9 @@ import { redirect } from '@sveltejs/kit';
 // CONFIG
 import { UNPROTECTED_PAGE_ENDPOINTS, PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
+// UTILS
+import { localizedPath } from '@/utils/localizedPath';
+
 // TYPES
 import type { LayoutServerLoad } from '../$types';
 
@@ -12,7 +15,7 @@ export const load: LayoutServerLoad = async (event) => {
 	const { currentUser } = await event.parent();
 
 	if (!currentUser) {
-		throw redirect(302, UNPROTECTED_PAGE_ENDPOINTS.LOGIN);
+		throw redirect(302, localizedPath(event, UNPROTECTED_PAGE_ENDPOINTS.LOGIN));
 	}
 
 	if ((currentUser as { role?: string }).role !== 'admin') {

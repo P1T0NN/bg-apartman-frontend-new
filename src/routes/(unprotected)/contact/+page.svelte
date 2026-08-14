@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { COMPANY_DATA } from '@/shared/config.js';
 
@@ -42,25 +45,24 @@
 			fields: [
 				{
 					id: 'name',
-					label: 'Your name',
+					label: m['ContactPage.nameLabel'](),
 					kind: 'input',
-					placeholder: 'Marko MarkoviÄ‡',
+					placeholder: m['ContactPage.namePlaceholder'](),
 					autocomplete: 'name'
 				},
 				{
 					id: 'email',
-					label: 'Email',
+					label: m['ContactPage.emailLabel'](),
 					kind: 'input',
 					type: 'email',
-					placeholder: 'you@example.com',
+					placeholder: m['ContactPage.emailPlaceholder'](),
 					autocomplete: 'email'
 				},
 				{
 					id: 'message',
-					label: 'How can we help?',
+					label: m['ContactPage.messageLabel'](),
 					kind: 'textarea',
-					placeholder:
-						'Tell us a little about what you need â€” dates, a place you saw, or a question.',
+					placeholder: m['ContactPage.messagePlaceholder'](),
 					rows: 6
 				}
 			]
@@ -70,19 +72,19 @@
 	const contactDetails = [
 		{
 			icon: MailIcon,
-			label: 'Email us',
+			label: m['ContactPage.emailUs'](),
 			value: COMPANY_DATA.EMAIL,
 			href: `mailto:${COMPANY_DATA.EMAIL}`
 		},
-		{ icon: MapPinIcon, label: 'Where we are', value: 'Belgrade, Serbia' },
-		{ icon: ClockIcon, label: 'Typical reply', value: 'Within one business day' }
+		{ icon: MapPinIcon, label: m['ContactPage.whereWeAre'](), value: m['ContactPage.whereWeAreValue']() },
+		{ icon: ClockIcon, label: m['ContactPage.typicalReply'](), value: m['ContactPage.typicalReplyValue']() }
 	];
 
 	const socials = [
-		{ icon: InstagramIcon, href: COMPANY_DATA.INSTAGRAM_URL, label: 'Instagram' },
-		{ icon: FacebookIcon, href: COMPANY_DATA.FACEBOOK_URL, label: 'Facebook' },
-		{ icon: TikTokIcon, href: COMPANY_DATA.TIKTOK_URL, label: 'TikTok' },
-		{ icon: YoutubeIcon, href: COMPANY_DATA.YOUTUBE_URL, label: 'YouTube' }
+		{ icon: InstagramIcon, href: COMPANY_DATA.INSTAGRAM_URL, label: m['ContactPage.instagram']() },
+		{ icon: FacebookIcon, href: COMPANY_DATA.FACEBOOK_URL, label: m['ContactPage.facebook']() },
+		{ icon: TikTokIcon, href: COMPANY_DATA.TIKTOK_URL, label: m['ContactPage.tiktok']() },
+		{ icon: YoutubeIcon, href: COMPANY_DATA.YOUTUBE_URL, label: m['ContactPage.youtube']() }
 	];
 
 	// Client-side validation runs first (MutationForm), then the BotID-guarded remote command
@@ -99,29 +101,30 @@
 			toast.success(result.message);
 			return true;
 		} catch {
-			toast.error(`Something went wrong. Please try again or email us at ${COMPANY_DATA.EMAIL}.`);
+			toast.error(m['ContactPage.sendError']({ email: COMPANY_DATA.EMAIL }));
 			return false;
 		}
 	}
 </script>
 
 <SvelteHead
-	title="Contact â€” {COMPANY_DATA.NAME}"
-	description="Questions about a stay, a booking or hosting in Belgrade? Send us a message or email us directly â€” we usually reply within one business day."
+	title={m['ContactPage.SEO.title']({ name: COMPANY_DATA.NAME })}
+	description={m['ContactPage.SEO.description']()}
 />
 
 <div class="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
 	<!-- Heading -->
 	<div class="max-w-2xl">
-		<p class="text-xs font-semibold tracking-[0.22em] text-primary uppercase">Contact</p>
+		<p class="text-xs font-semibold tracking-[0.22em] text-primary uppercase">
+			{m['ContactPage.eyebrow']()}
+		</p>
 		<h1
 			class="mt-4 font-display text-4xl font-medium tracking-tight text-balance text-foreground sm:text-5xl"
 		>
-			Talk to a real person
+			{m['ContactPage.heading']()}
 		</h1>
 		<p class="mt-4 text-lg text-pretty text-muted-foreground">
-			Whether it's a question about a booking, a place you have your eye on, or hosting your own
-			apartment â€” we read every message and reply personally.
+			{m['ContactPage.intro']()}
 		</p>
 	</div>
 
@@ -156,7 +159,7 @@
 
 			<div class="mt-10 border-t border-border pt-8">
 				<p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-					Follow along
+					{m['ContactPage.followAlong']()}
 				</p>
 				<div class="mt-4 flex gap-3">
 					{#each socials as social (social.label)}
@@ -181,13 +184,15 @@
 				sections={contactSections}
 				schema={sendContactFormEmailSchema as unknown as ZodType<ContactValues>}
 				onSubmit={handleSubmit}
-				submitLabel="Send message"
+				submitLabel={m['ContactPage.submitLabel']()}
 			>
 				{#snippet header()}
 					<div>
-						<h2 class="text-xl font-semibold tracking-tight text-foreground">Send us a message</h2>
+						<h2 class="text-xl font-semibold tracking-tight text-foreground">
+							{m['ContactPage.formTitle']()}
+						</h2>
 						<p class="mt-1.5 text-sm text-muted-foreground">
-							Fill in the form and we'll get back to you by email.
+							{m['ContactPage.formSubtitle']()}
 						</p>
 					</div>
 				{/snippet}

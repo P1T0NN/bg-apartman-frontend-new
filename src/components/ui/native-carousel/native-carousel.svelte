@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// UTILS
 	import { cn } from '@/utils/utils.js';
 
@@ -33,7 +36,7 @@
 		dots = true,
 		class: className,
 		slideClass,
-		label = 'Carousel',
+		label = m['NativeCarousel.label'](),
 		arrowLeft: ArrowLeft = ChevronLeftIcon,
 		arrowRight: ArrowRight = ChevronRightIcon
 	}: Props = $props();
@@ -67,13 +70,21 @@
 				{@render slide()}
 
 				{#if arrows && i > 0}
-					<a href={`#${slideId(i - 1)}`} class="carousel__arrow left-3" aria-label="Previous slide">
+					<a
+						href={`#${slideId(i - 1)}`}
+						class="carousel__arrow left-3"
+						aria-label={m['NativeCarousel.previousSlide']()}
+					>
 						<ArrowLeft class="size-5" />
 					</a>
 				{/if}
 
 				{#if arrows && i < slides.length - 1}
-					<a href={`#${slideId(i + 1)}`} class="carousel__arrow right-3" aria-label="Next slide">
+					<a
+						href={`#${slideId(i + 1)}`}
+						class="carousel__arrow right-3"
+						aria-label={m['NativeCarousel.nextSlide']()}
+					>
 						<ArrowRight class="size-5" />
 					</a>
 				{/if}
@@ -87,7 +98,7 @@
 				<a
 					href={`#${slideId(i)}`}
 					class="size-2.5 rounded-full bg-muted-foreground/30 transition-colors hover:bg-muted-foreground focus-visible:bg-muted-foreground focus-visible:outline-none"
-					aria-label={`Go to slide ${i + 1}`}
+					aria-label={m['NativeCarousel.goToSlide']({ index: i + 1 })}
 				></a>
 			{/each}
 		</div>

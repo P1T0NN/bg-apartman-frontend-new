@@ -1,4 +1,7 @@
 <script lang="ts" generics="T extends Record<string, unknown>">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { useQuery } from 'convex-svelte';
 
@@ -8,9 +11,6 @@
 	// COMPONENTS
 	import DataList from './data-list.svelte';
 	import { ErrorComponent } from '@/components/ui/error-component/index.js';
-
-	// UTILS
-	import { convexOneShotQuery } from '@/utils/convexOneShot.svelte.js';
 
 	// TYPES
 	import type { Snippet } from 'svelte';
@@ -47,9 +47,7 @@
 		item: itemSnippet,
 		empty,
 		error,
-		loading,
-		onReady,
-		realtime = false
+		loading
 	}: {
 		class?: string;
 		listClass?: string;
@@ -67,18 +65,6 @@
 		summaryLoading?: boolean;
 		hasError?: boolean;
 		item: Snippet<[DataListItemSnippetProps<T>]>;
-		/**
-		 * Handed back a `refetch()` for THIS list. Call it after a mutation made from an item
-		 * or a dialog on the same screen, so a one-shot list shows your own write. No-op when
-		 * `realtime`.
-		 */
-		onReady?: (controls: { refetch: () => void }) => void;
-		/**
-		 * Hold a live subscription instead of fetching once per args change. OFF by default
-		 * (`docs/GeneralSystemDesignRule.md`) — see `ConvexDataTable.realtime` for the full
-		 * rationale. Read once at mount; do not toggle at runtime.
-		 */
-		realtime?: boolean;
 		empty?: Snippet;
 		/**
 		 * Override the failure UI. Defaults to a shared `ErrorComponent` — a failed query must
@@ -125,20 +111,11 @@
 		}
 	}
 
-	// Both return the same `{ data, error, isLoading }` surface, so nothing downstream branches
-	// on which one is in play. `realtime` is read once here on purpose — swapping a subscription
-	// for a one-shot mid-life would strand the open channel.
+	// Live subscription: re-runs on every overlapping write, so rows change under the viewer
+	// WITHOUT them acting (another user, a cron) and a mutation made on this very screen both
+	// show up automatically — no manual refetch.
 	// svelte-ignore state_referenced_locally
-	const listQuery = realtime
-		? useQuery(query, currentArgs, { keepPreviousData: true })
-		: convexOneShotQuery(query, currentArgs, { keepPreviousData: true });
-
-	// `useQuery` re-runs itself on every relevant write, so its refetch is a no-op; the
-	// one-shot path needs a real one to show a mutation made from this very screen.
-	const refetch = () => {
-		if (!realtime) (listQuery as { refetch: () => void }).refetch();
-	};
-	$effect(() => onReady?.({ refetch }));
+	const listQuery = useQuery(query, currentArgs, { keepPreviousData: true });
 
 	const listPayload = $derived(listQuery.data as PaginatedListPayload<T> | undefined);
 
@@ -230,9 +207,9 @@
 {#snippet defaultError()}
 	<ErrorComponent
 		variant="plain"
-		title="Couldn't load data"
-		description="Something went wrong while loading this list. Please try again."
-		retryLabel="Retry"
+		title={m['ConvexDataList.errorTitle']()}
+		description={m['ConvexDataList.errorDescription']()}
+		retryLabel={m['ConvexDataList.retry']()}
 		onRetry={() => location.reload()}
 	/>
 {/snippet}

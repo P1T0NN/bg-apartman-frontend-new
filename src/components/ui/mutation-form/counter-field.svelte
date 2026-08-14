@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Input } from '@/components/ui/input/index.js';
 
@@ -28,7 +31,7 @@
 	const current = $derived(value == null ? '' : String(value));
 
 	// Open straight into the manual input when the stored value isn't one of the presets
-	// (e.g. editing a accommodation with 8 guests, or a studio with 0 bedrooms).
+	// (e.g. editing an accommodation with 8 guests, or a studio with 0 bedrooms).
 	// svelte-ignore state_referenced_locally
 	let custom = $state(current !== '' && !OPTIONS.includes(current));
 </script>
@@ -67,7 +70,7 @@
 					: 'text-muted-foreground hover:text-foreground'
 			)}
 		>
-			Custom
+			{m['MutationForm.CounterField.custom']()}
 		</button>
 	</div>
 
@@ -78,7 +81,7 @@
 			type="number"
 			min="0"
 			inputmode="numeric"
-			placeholder={field.placeholder ?? 'Enter a number'}
+			placeholder={field.placeholder ?? m['MutationForm.CounterField.enterNumber']()}
 			value={value as string | number | undefined}
 			oninput={(e) => setValue(e.currentTarget.value)}
 			aria-invalid={invalid ? 'true' : undefined}

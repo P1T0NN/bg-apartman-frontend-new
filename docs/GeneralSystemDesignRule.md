@@ -1,4 +1,4 @@
-# General System Design Rule — Realtime Is Opt-In, Not Default
+# General System Design Rule — Live Subscriptions Are Default
 
 > Status: **standing rule** (decided 2026-07-23). Applies to this project and is written to be
 > portable to any future project, with or without Convex. Backend-agnostic: "subscription"
@@ -7,13 +7,18 @@
 
 ## The rule
 
-**Every piece of data starts as a one-shot fetch. It earns a realtime subscription only by
-proving it changes underneath the user while they are looking at it.**
+**Every data read is a live subscription by default. A read becomes one-shot only when a
+subscription is impossible or pointless — the route loaders (which can't subscribe) and
+server-only reads that never change under the viewer.**
 
-A subscription is not a convenience default — it is a standing cost you pay for as long as the
-component is mounted: server-side query tracking, an open push channel, invalidation traffic,
-and client-side reactive bookkeeping. Paying that cost for data that only changes when the
-user themselves navigates away and edits it elsewhere buys you nothing.
+A live subscription re-runs whenever a write touches its read set, so another user's write, a
+cron advancing a status, or your own mutation made on the same screen all show up without a
+manual refetch. The cost is server-side read-set tracking and push traffic for as long as the
+component is mounted — noise at this platform's concurrency (peaks in the low hundreds), and
+the one-shot dual path it replaced (`convexOneShotQuery`, `safeQuery`, `realtime`/`onReady`)
+was more expensive to maintain than the subscriptions it saved. If the platform ever reaches
+thousands of concurrent viewers, the plan is a Postgres migration, not a revival of one-shot
+reads.
 
 ## The decision test
 
@@ -22,26 +27,26 @@ Ask one question per piece of data:
 > **"Can this data change while the user is looking at this screen, in a way they must see
 > without acting?"**
 
-- **NO → one-shot fetch.** Fetch once on mount (or in the route loader). Navigation back to
-  the screen remounts and refetches, which is always fresh enough — the only way the data
-  changed is that somebody navigated somewhere and changed it.
-- **YES → subscription.** The data moves under the user: another user writes it, a background
-  process advances it, or the same screen both displays and mutates it.
+- **YES (the default) → live subscription.** Subscribe with `useQuery`. Another user writes
+  it, a background process advances it, or the same screen both displays and mutates it —
+  the subscription re-runs on the write, no manual refetch.
+- **NO → one-shot.** Only reach for a one-shot read when a subscription is impossible (a
+  route loader) or the data genuinely cannot change under the viewer (build-time config).
 
 ### Worked examples (from this project)
 
-| Data                                                          | Verdict                      | Why                                                                                          |
-| ------------------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------- |
-| Category options in the add/edit-product form                 | **One-shot**                 | Categories are edited on a _different_ page. Getting back to the form remounts it → refetch. |
-| Slug→name lookup for a table column                           | **One-shot**                 | Same reasoning; the lookup set changes on another page.                                      |
-| The admin orders table                                        | **Subscription**             | New orders arrive from _other people_ while the admin is watching.                           |
-| The cart sidebar                                              | **Subscription**             | The same screen mutates it (add/remove) and server-side pruning can change it.               |
-| A products table on the page where products are edited inline | **Subscription**             | Display and mutation share the screen.                                                       |
-| Static-ish config, feature lists, country lists               | **One-shot** (or build-time) | Changes require a deploy or an admin action elsewhere.                                       |
+| Data                                                          | Verdict                      | Why                                                                                                     |
+| ------------------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Category options in the add/edit-product form                 | **Subscription**             | The option set can change (edited elsewhere) while the form sits open — live keeps the dropdown honest. |
+| Slug→name lookup for a table column                           | **Subscription**             | Live by default; the lookup set changes on another page.                                                |
+| The admin orders table                                        | **Subscription**             | New orders arrive from _other people_ while the admin is watching.                                      |
+| The cart sidebar                                              | **Subscription**             | The same screen mutates it (add/remove) and server-side pruning can change it.                          |
+| A products table on the page where products are edited inline | **Subscription**             | Display and mutation share the screen.                                                                  |
+| Static-ish config, feature lists, country lists               | **One-shot** (or build-time) | Changes require a deploy or an admin action elsewhere.                                                  |
 
 ## Companion rules
 
-1. **Fetch the shape you need, not the row.** A one-shot lookup endpoint returns the minimal
+1. **Fetch the shape you need, not the row.** A lookup endpoint returns the minimal
    projection (`{ slug, name }`), not full documents. Smaller payload, no accidental coupling
    to fields the consumer never reads.
 2. **Whole-set reads get a whole-set endpoint.** If a consumer needs _all_ rows of a small set
@@ -52,10 +57,10 @@ Ask one question per piece of data:
    data — that makes every page pay for one page's need. Lift a fetch to a layout only for
    data genuinely read on ~every page (in this project: auth/session only).
 4. **Dedupe repeated fetch logic into a feature-scoped hook/helper** once ≥2 call sites are
-   identical — but the hook stays one-shot; DRY is not a license to add realtime.
-5. **When in doubt, start one-shot.** Upgrading to a subscription later is a small, local
-   change. Downgrading is too — but you'll never notice you need to, and the subscription
-   quietly costs you forever. Default to the cheap side.
+   identical — the hook wraps `useQuery`; DRY is not a license to duplicate subscriptions.
+5. **When in doubt, subscribe.** Downgrading a live read to one-shot later is a small, local
+   change. The subscription is the default; the one-shot read is the exception that has to
+   justify itself.
 
 ## Why this matters (cost model)
 
@@ -68,8 +73,11 @@ Per unnecessary subscription you pay, continuously:
 - **Billing:** realtime backends (Convex included) bill function re-executions — idle
   subscriptions to hot tables re-run on every write someone else makes.
 
-A one-shot read costs one execution, once, and is typically served from cache. For lookup
-data the difference is orders of magnitude, and the user cannot tell.
+A live subscription's standing cost is real but bounded; at this platform's concurrency it is
+noise. The one-shot dual path it replaced (`convexOneShotQuery` + `safeQuery` + `realtime`
+prop + `refetch` plumbing) cost more in maintenance than the subscriptions it saved — that is
+why the default flipped. Route-loader reads keep the one-shot cost model exactly as written:
+one execution, once, typically cache-served.
 
 ---
 
@@ -117,8 +125,9 @@ something the instant navigation begins.** Two facts drive every rule below:
   single biggest free speed win in the app, and it is loader-only.
 
 **Consequence:** in an SPA, "no SSR" does _not_ mean "fetch in the component." The loader still
-runs (in the browser), still starts before the component, and still enables preloading. Default
-one-shot reads to the loader, not to `onMount`.
+runs (in the browser), still starts before the component, and still enables preloading — so a
+read that CANNOT subscribe (route-loader-only, secret/DB-bound, build-time config) belongs in
+the loader, not `onMount`. Live reads belong in the component via `useQuery`.
 
 ### Which loader file — universal `+page.ts` vs server `+page.server.ts`
 
@@ -263,22 +272,23 @@ the earlier start and the preloading win for nothing.
 
 ### Decision matrix
 
-| Data / scenario                                         | Realtime verdict | Where                  | Loader file                                                                 | Streamed / awaited                          |
-| ------------------------------------------------------- | ---------------- | ---------------------- | --------------------------------------------------------------------------- | ------------------------------------------- |
-| List, table, dashboard, search results, detail view     | One-shot         | Loader                 | `+page.ts` (unless secret/DB → `+page.server.ts`)                           | **Streamed** (Pattern A)                    |
-| Single-record edit form (profile, settings, onboarding) | One-shot         | Loader                 | `+page.ts` (unless secret/DB → `+page.server.ts`)                           | **Awaited** (Pattern B)                     |
-| Small lookup / `<select>` options / slug→name map       | One-shot         | Loader                 | `+page.ts` (whole-set endpoint)                                             | Streamed or awaited — small, either is fine |
-| Session / auth needed on ~every page                    | One-shot         | Loader                 | `+layout.server.ts` if it reads httpOnly cookies/secrets; else `+layout.ts` | Awaited (gates the app)                     |
-| Read needing a secret / private env / direct DB access  | One-shot         | Loader                 | **`+page.server.ts`** (required)                                            | Streamed or awaited per Pattern A/B         |
-| Public read from our backend / Convex (most pages)      | One-shot         | Loader                 | **`+page.ts`** (one hop, no server middleman)                               | Streamed (Pattern A)                        |
-| Admin orders table, cart sidebar, inline-edit table     | Subscription     | Component              | n/a                                                                         | `onMount` / `useQuery`                      |
-| Chat, notifications, live presence                      | Subscription     | Component              | n/a                                                                         | `onMount` (open + teardown)                 |
-| Polling refresh, upload progress, device/DOM APIs       | Lifecycle        | Component              | n/a                                                                         | `onMount`                                   |
-| Initial paint + live updates on one screen              | Both             | Loader **+** component | loader (`+page.ts`/`.server.ts`) streams first paint                        | Streamed **+** `onMount` channel            |
+| Data / scenario                                         | Realtime verdict | Where                  | Loader file                                          | Streamed / awaited                            |
+| ------------------------------------------------------- | ---------------- | ---------------------- | ---------------------------------------------------- | --------------------------------------------- |
+| List, table, dashboard, search results, detail view     | **Subscription** | Component              | n/a                                                  | `useQuery` (the default everywhere)           |
+| Single-record edit form (profile, settings, onboarding) | **Subscription** | Component              | n/a (secret/DB reads still need a server loader)     | `useQuery` — loads the record live            |
+| Small lookup / `<select>` options / slug→name map       | **Subscription** | Component              | n/a                                                  | `useQuery` — live by default                  |
+| Session / auth needed on ~every page                    | **Subscription** | Component              | n/a (unless httpOnly-cookie/secret → server loader)  | `useQuery` in the root layout — gates the app |
+| Read needing a secret / private env / direct DB access  | One-shot         | Loader                 | **`+page.server.ts`** (required)                     | Streamed or awaited per Pattern A/B           |
+| Public read from our backend / Convex (most pages)      | **Subscription** | Component              | n/a                                                  | `useQuery` — live by default                  |
+| Admin orders table, cart sidebar, inline-edit table     | Subscription     | Component              | n/a                                                  | `onMount` / `useQuery`                        |
+| Chat, notifications, live presence                      | Subscription     | Component              | n/a                                                  | `onMount` (open + teardown)                   |
+| Polling refresh, upload progress, device/DOM APIs       | Lifecycle        | Component              | n/a                                                  | `onMount`                                     |
+| Initial paint + live updates on one screen              | Both             | Loader **+** component | loader (`+page.ts`/`.server.ts`) streams first paint | Streamed **+** `onMount` channel              |
 
 ### Speed checklist (run per page)
 
-1. **Is this one-shot?** (realtime rule) If yes, it goes in a **loader**, not `onMount`.
+1. **Can this read subscribe?** If yes, `useQuery` in the component (the default). If it's a
+   route-loader / server-only read that can't subscribe, put it in the **loader**, not `onMount`.
 2. **Which loader file?** Needs a secret / direct DB / server-only cookies → **`+page.server.ts`**.
    Otherwise → **`+page.ts`** (default; one hop straight to the backend, no server round-trip).
 3. **Editing one record?** → **awaited** loader (Pattern B) for cheap dirty state. Otherwise →
@@ -293,12 +303,14 @@ the earlier start and the preloading win for nothing.
 
 ### § FOR LLMs / AI ASSISTANTS — READ BEFORE WIRING A PAGE'S DATA
 
-1. **First apply the realtime rule** (one-shot vs subscription). Then apply this section for the
-   mechanism. They are separate decisions — do not skip the second.
-2. **One-shot ⇒ route loader by default, streamed.** Reach for a loader returning an
-   un-awaited promise rendered through `{#await}`. Do NOT fetch one-shot data in `onMount` —
-   that adds a mount→fetch waterfall and forfeits preloading. If you write a one-shot fetch in
-   `onMount`, justify in a code comment why the loader was unsuitable (almost never true).
+1. **Default = live subscription.** Wire the read with `useQuery` in the component. Only when
+   the read cannot subscribe (route loader, secret/DB-bound, build-time config) does it become
+   one-shot.
+2. **One-shot ⇒ route loader by default, streamed.** The remaining one-shot reads belong in a
+   loader returning an un-awaited promise rendered through `{#await}`. Do NOT fetch one-shot
+   data in `onMount` — that adds a mount→fetch waterfall and forfeits preloading. If you write
+   a one-shot fetch in `onMount`, justify in a code comment why the loader was unsuitable
+   (almost never true).
 3. **Pick the loader file explicitly — do not default to `+page.server.ts`.** Use **`+page.ts`
    (universal)** unless the read needs a **secret / private env, direct DB or server-only
    access, or server-side cookies/session** — only then use **`+page.server.ts`**. A server
@@ -321,7 +333,7 @@ the earlier start and the preloading win for nothing.
    awaited dirty-state, or a live channel."
 
 Mental checklist to run on every page wire-up:
-`one-shot? → loader (universal +page.ts by default; +page.server.ts only for secret/DB/cookies; stream by default, await only for single-record edit forms) | subscription/lifecycle? → onMount with teardown | both? → loader stream + onMount channel | always: preload links, parallel requests, minimal projection, fetch where used.`
+`can it subscribe? → useQuery in the component (default) | can't subscribe (route loader / server-only)? → universal +page.ts by default, +page.server.ts only for secret/DB/cookies; stream by default | always: preload links, parallel requests, minimal projection, fetch where used.`
 
 ---
 
@@ -343,18 +355,18 @@ So the choice is never "server vs client filtering". It is three independent axe
 | Axis                | Options                                            | Consequence                                                                                                        |
 | ------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | **State location**  | URL vs component state                             | Is this view linkable, shareable, crawlable, back-button-correct?                                                  |
-| **Transport**       | loader (one-shot HTTP) vs subscription (WebSocket) | Does it update live? Does each viewer cost a standing subscription?                                                |
+| **Transport**       | loader (one-shot HTTP) vs subscription (WebSocket) | Does it update live? Live is the default; loaders are the one-shot exception.                                      |
 | **Pagination mode** | `offset` vs `cursor`                               | Page numbers + exact total (O(matching rows) scan, or O(log n) with an aggregate) — or O(page) reads with neither. |
 
 ### The mechanisms
 
-| Mechanism              | Component                                    | State     | Transport                | Mode              | Use for                                                                    |
-| ---------------------- | -------------------------------------------- | --------- | ------------------------ | ----------------- | -------------------------------------------------------------------------- |
-| **URL-driven list**    | `DataList`/`DataTable` + `pageHref` + loader | URL       | one-shot (loader)        | `offset`          | Public/SEO listings with page numbers; any view worth linking, sharing, crawling |
-| **URL-driven scroll**  | `convexOneShotPaginatedQuery` + `infiniteScroll` | URL (filters) | one-shot (per page) | `cursor`      | `/search` — filters are linkable, results are endless and unbounded (`AccommodationsSystemDesign.md` §9.1) |
-| **State-driven table** | `ConvexDataTable`                            | component | one-shot _or_ subscribed | `cursor`/`offset` | Admin, host and guest tables                                               |
-| **State-driven list**  | `ConvexDataList`                             | component | one-shot _or_ subscribed | `cursor`/`offset` | Non-tabular collections (saved places)                                     |
-| **Presentational**     | `DataTable` / `DataList` / `PaginatedData`   | caller's  | none — renders props     | caller's          | You already have the rows and only need the chrome                         |
+| Mechanism              | Component                                    | State         | Transport               | Mode              | Use for                                                                                                    |
+| ---------------------- | -------------------------------------------- | ------------- | ----------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| **URL-driven list**    | `DataList`/`DataTable` + `pageHref` + loader | URL           | one-shot (loader)       | `offset`          | Public/SEO listings with page numbers; any view worth linking, sharing, crawling                           |
+| **URL-driven scroll**  | `usePaginatedQuery` + `infiniteScroll`       | URL (filters) | subscription (per page) | `cursor`          | `/search` — filters are linkable, results are endless and unbounded (`AccommodationsSystemDesign.md` §9.1) |
+| **State-driven table** | `ConvexDataTable`                            | component     | subscription            | `cursor`/`offset` | Admin, host and guest tables                                                                               |
+| **State-driven list**  | `ConvexDataList`                             | component     | subscription            | `cursor`/`offset` | Non-tabular collections (saved places)                                                                     |
+| **Presentational**     | `DataTable` / `DataList` / `PaginatedData`   | caller's      | none — renders props    | caller's          | You already have the rows and only need the chrome                                                         |
 
 There is no separate URL-driven component: the SAME `DataList` / `DataTable` the admin screens
 use becomes URL-driven the moment you pass `pageHref` (and `sortHref` on a table). In that mode
@@ -372,8 +384,8 @@ Ask in this order; the first "yes" wins:
    crawl _this exact filtered page_? → **URL-driven list.** This is the only mechanism whose
    state survives a reload. It is also the only one that is crawlable.
 2. **"Do rows change under the viewer while they watch?"** (the realtime rule) → a **Convex
-   component with `realtime`**. If no, and you still don't need an address, use the same
-   component _without_ `realtime` — a subscription is a standing cost per viewer.
+   component** (they are all live now). If the answer is no AND the surface needs a canonical
+   address, the URL-driven loader list (row 1) already covers it.
 3. **"Are page numbers meaningful?"** → table/list with a paginator. If the collection is a
    feed where page numbers mean nothing (a timeline, a map's markers), accumulate instead of
    replacing (see `infinite-scroll.svelte.ts`).
@@ -401,42 +413,32 @@ import it. Domain codecs layer ON it rather than re-deriving it: a search-params
 what a filter IS (which params exist, how each validates, how they couple) and delegates what a
 list URL DOES to `listUrlState`, so no control has to know that filtering resets the page.
 
-**State-driven table/list** — no URL noise, simplest state. With `realtime` it costs one open
-subscription per viewer that re-executes on every write touching its read set. That is _more_
-server load under traffic, not less; choose it for freshness, never for speed.
+**State-driven table/list** — no URL noise, simplest state. Each costs one open subscription
+per viewer that re-executes on every write touching its read set. That is the standing default;
+it is what makes a write on the same screen show up without a manual refetch.
 
-### Realtime is a prop, not a mechanism
+### All Convex components are live
 
-Both Convex components (`ConvexDataTable`, `ConvexDataList`) take `realtime`. It defaults to
-**`false`**, matching the standing rule at the top of this document: without it they fetch once
-per args change via `client.query` (`src/utils/convexOneShot.svelte.ts`); with it they hold a
-subscription.
+Both `ConvexDataTable` and `ConvexDataList` hold a live subscription — there is no one-shot
+mode, no `realtime` prop, no `refetch`. The old dual path (`src/utils/convexOneShot.svelte.ts`,
+`safeQuery`, `onReady` plumbing) was deleted: one subscription path is simpler than two, and
+the performance difference only matters at concurrency this platform will never see.
 
-Pass `realtime` only when you can answer _"what changes this data while this exact screen is
-open, without the user acting?"_ — another user writes it, a cron or webhook advances it, or
-this screen also mutates it. It is read once at mount; do not toggle it at runtime.
+Data that cannot subscribe (route loaders, server-only reads) is the one-shot exception and
+goes in the loader per the data-loading section above.
 
-Current verdicts in this project, each justified in a comment at the call site:
+Every list surface in this project is a live subscription:
 
-| Surface                      | Verdict      | Why                                                             |
-| ---------------------------- | ------------ | --------------------------------------------------------------- |
-| `/admin/accommodations`      | **realtime** | Hosts submit and edit listings while an admin watches the queue |
-| `/admin/bookings`            | **realtime** | Guests create bookings; the lifecycle cron advances statuses    |
-| `/admin/reports`             | **realtime** | Users file reports while staff are on the screen                |
-| `/admin/users/[id]` activity | **realtime** | The danger-zone actions on that page write the audit rows       |
-| `/host/my-accommodations`    | **realtime** | Admin moderation + the listing-fee cron flip status under host  |
-| Bookings table (host/guest)  | **realtime** | The other party acts, and the lifecycle cron advances the stay  |
-| `/admin/users`               | one-shot     | Every user mutation lives on the `[id]` detail page             |
-| `/guest/favorites`           | one-shot     | Unfavouriting changes `favoriteIds`; an args change refetches   |
-| Saved-listing id set         | one-shot     | Ids only, once per session; own writes return their own truth    |
+| Surface                   | Transport    | Why it's live                                                    |
+| ------------------------- | ------------ | ---------------------------------------------------------------- |
+| Admin tables, host tables | subscription | Another party writes them, or a cron advances statuses, mid-view |
+| `/guest/favorites`        | subscription | Unfavouriting re-runs the list; the layout feeds the id set live |
+| Saved-listing id set      | subscription | Layout's `fetchMyFavoriteIdsSafe`; own writes confirm the set    |
 
-**Seeing your own writes does not require a subscription.** A one-shot list would otherwise sit
-on stale rows after a mutation made from its own screen (the args did not change, so nothing
-re-runs), and that alone would force half the admin surface to subscribe. So the one-shot path
-exposes a real `refetch()`: `ConvexDataTable`'s built-in bulk delete calls it automatically, and
-any row action can reach it via `onReady={({ refetch }) => …}`. It is a no-op under `realtime`,
-where the subscription already knows. Freshness after your own write is therefore never a reason
-to pass `realtime` — only data moving under the viewer is.
+**Seeing your own writes is automatic.** A live list re-runs on the mutation's own write, so a
+bulk delete on the same screen drops the rows without a manual `refetch()` — that plumbing was
+deleted with the one-shot path. `favoritesClass` keeps the same property: the layout feeds the
+saved-id set as a union, and `toggleFavorite`'s mutation confirms each optimistic flip.
 
 ### Hard limits — read before committing to one
 
@@ -504,9 +506,10 @@ These are ceilings, not bugs. Each one will eventually surface in a real project
 
 ### What this is ready for
 
-Ready today, verified: admin/host/guest tables, realtime where justified and one-shot everywhere
-else; server-side filtering and pagination everywhere; index-bounded filtered queries including
-the better-auth component's `user` table.
+Ready today, verified: admin/host/guest tables and search are all live subscriptions; server-side
+filtering and pagination everywhere; index-bounded filtered queries including the better-auth
+component's `user` table. The only one-shot reads left are route-loaders and server-only reads,
+which cannot subscribe.
 
 Also ready, with wiring: exact totals + page jumps above 10k matched rows — `aggregate` mode
 needs one counter registered per surface plus a one-time backfill. And the URL-driven
@@ -521,33 +524,30 @@ Not ready without extra work: sorting by a column no index can order under the a
 
 ## § FOR LLMs / AI ASSISTANTS — READ THIS BEFORE WIRING DATA
 
-You are likely biased toward subscribing to everything, because framework examples
-(`useQuery`, `onSnapshot`, live queries) make subscriptions the path of least resistance.
-In this codebase — and any project citing this document — that default is **inverted**:
+You are biased toward one-shot reads if you learned pre-subscription patterns. In this
+codebase — and any project citing this document — that default is **inverted**:
 
-1. **DEFAULT = one-shot fetch on mount / in the route loader.** Reach for the client's
-   imperative call (`client.query(...)`, plain `fetch`, one-time read) inside `onMount` or
-   the loader. Do NOT reach for the reactive/subscribing primitive first.
-2. **Before you write any subscribing call, state the justification** in a code comment on
-   that line, answering: _what changes this data while this exact screen is open, without
-   the user acting?_ If the honest answer is "another user", "a background job/cron", or
-   "this same screen writes it" — subscribe. If the answer is "the user edits it on another
-   page" or "rarely/never" — one-shot. No justification ⇒ one-shot.
+1. **DEFAULT = live subscription via `useQuery`.** Reach for the reactive primitive first,
+   in the component. A one-shot read is the exception, justified only when the read cannot
+   subscribe (route loader, secret/DB-bound) or is build-time config.
+2. **When a read CANNOT subscribe** (a route loader, a server-only read), put it in the
+   **loader**, not `onMount`, and state in a comment why the loader was required.
 3. **Never render one page of a paginated API as the full set.** Either the UI has pager
    controls wired to the cursor/offset, or the consumer calls a dedicated non-paginated
    whole-set endpoint. Silently truncated lists are bugs, not simplifications.
-4. **Do not lift feature fetches into layouts or global stores** to "share" them. Fetch in
-   the page/component that uses the data. Shared _logic_ goes in a feature-scoped hook that
-   still fetches one-shot per mount. The only layout-level live data is session/auth-class
-   information needed by effectively every page.
+4. **Do not lift feature fetches into layouts or global stores** to "share" them. Subscribe
+   in the page/component that uses the data. Shared _logic_ goes in a feature-scoped hook
+   that wraps `useQuery`. The only layout-level live data is session/auth-class information
+   needed by effectively every page — plus the one favorites-id subscription feeding the
+   shared set.
 5. **Minimal projection.** New lookup endpoints return only the fields consumers use.
-6. **When uncertain, choose one-shot and say so** in your summary, e.g. "fetched one-shot
-   per GeneralSystemDesignRule.md; say the word if this needs to be live." Do not silently
-   choose the subscription.
+6. **When uncertain, subscribe and say so** in your summary, e.g. "live `useQuery` per
+   GeneralSystemDesignRule.md; say the word if this can't hold a subscription and needs to
+   move to a route loader."
 
 7. **Rendering a collection? Also apply § LIST & PAGINATION MECHANISMS.** Pick by the decision
-   test there (address needed? → URL-driven list; changes under viewer? → `realtime`; otherwise
-   → the same component without it). Never filter a collection in the browser. Before choosing
+   test there (address needed? → URL-driven loader list; otherwise → the live Convex component).
+   Never filter a collection in the browser. Before choosing
    `offset` (page numbers + totals), state in a comment either why the matched set stays
    bounded (the scan form reads every matching row and degrades past the 10k cap) or that the
    surface has an `aggregate` wired (unbounded-safe; requires the counter + triggers + backfill
@@ -571,9 +571,10 @@ In this codebase — and any project citing this document — that default is **
    `_generated/server` — they have no `ctx.db` writes.
 
 Checklist to run mentally on every data wire-up:
-`changes-under-viewer? → subscribe (justify in comment) | else → one-shot, minimal shape,
-fetched where used, whole-set endpoint if a select/lookup needs all rows | collection? → §LIST
-mechanism by address/realtime/page-numbers, server-side filtering always.`
+`can it subscribe? → useQuery in the component (the default) | can't (route loader/server-only)?
+→ one-shot in the loader, streamed, minimal shape, whole-set endpoint if a select/lookup needs
+all rows | collection? → §LIST mechanism by address/live/page-numbers, server-side filtering
+always.`
 
 ---
 
@@ -877,7 +878,7 @@ you use:
    interpolation, dates, currency all happen client-side where the locale lives.
 2. **One translation seam.** A single `translateFromBackend(message)` function is the only
    place backend keys meet the catalog. Today it reads a plain English object; swapping in
-   Paraglide (`m[key](params)`), i18next (`i18next.t(key, params)`), or wuchale → you rewrite
+   Paraglide (`m[key](params)`), or i18next (`i18next.t(key, params)`) → you rewrite
    ~5 lines in one file; zero backend files, zero call sites change.
 3. **Auto-translation at the boundary, not per call site.** The mutation/error helpers
    (`safeMutation`, form components, `DataTable`) already pipe `message` through the seam, so

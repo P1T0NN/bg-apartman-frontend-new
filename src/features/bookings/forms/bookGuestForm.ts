@@ -1,51 +1,54 @@
+// I18N
+import { m } from '@/paraglide/messages';
+
 // TYPES
 import type { MutationFormSection } from '@/components/ui/mutation-form/types';
 
 export const bookGuestForm: MutationFormSection[] = [
 	{
 		id: 'guest-details',
-		title: 'Your details',
+		title: m['BookPage.BookGuestForm.yourDetails'](),
 		fields: [
 			{
 				id: 'firstName',
-				label: 'First name',
+				label: m['BookPage.BookGuestForm.firstName'](),
 				kind: 'input',
 				autocomplete: 'given-name',
-				placeholder: 'Marko',
+				placeholder: m['BookPage.BookGuestForm.firstNamePlaceholder'](),
 				colSpan: 1
 			},
 			{
 				id: 'lastName',
-				label: 'Last name',
+				label: m['BookPage.BookGuestForm.lastName'](),
 				kind: 'input',
 				autocomplete: 'family-name',
-				placeholder: 'Marković',
+				placeholder: m['BookPage.BookGuestForm.lastNamePlaceholder'](),
 				colSpan: 1
 			},
 			{
 				id: 'email',
-				label: 'Email',
+				label: m['BookPage.BookGuestForm.email'](),
 				kind: 'input',
 				type: 'email',
 				autocomplete: 'email',
-				placeholder: 'you@example.com',
+				placeholder: m['BookPage.BookGuestForm.emailPlaceholder'](),
 				colSpan: 1
 			},
 			{
 				id: 'phone',
-				label: 'Phone',
+				label: m['BookPage.BookGuestForm.phone'](),
 				kind: 'input',
 				type: 'tel',
 				autocomplete: 'tel',
-				placeholder: '+381 6X XXX XXXX',
+				placeholder: m['BookPage.BookGuestForm.phonePlaceholder'](),
 				colSpan: 1
 			},
 			{
 				id: 'specialRequests',
-				label: 'Message to host',
+				label: m['BookPage.BookGuestForm.messageToHost'](),
 				kind: 'textarea',
-				placeholder: 'Arrival time, special requests, anything the host should know…',
-				description: 'Optional',
+				placeholder: m['BookPage.BookGuestForm.specialRequestsPlaceholder'](),
+				description: m['BookPage.BookGuestForm.optional'](),
 				rows: 4
 			}
 		]

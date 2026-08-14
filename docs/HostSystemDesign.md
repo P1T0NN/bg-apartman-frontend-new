@@ -57,14 +57,14 @@ Analytics       Analytics (§2b — read-only, no badge)
 navSecondary    Switch to traveling (+ Admin Page, admins only)
 ```
 
-| Page                      | One question it answers                        | Verdict (per `GeneralSystemDesignRule.md`)                                                                                            |
-| ------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `/host/dashboard`         | "What needs me, what's today, how's business?" | Composed page query, streamed one-shot — EXCEPT the pending strip, which shares the queue's live query (`BookingSystemDesign.md` §9). |
-| `/host/reservations`      | "Answer requests; manage stays"                | **Subscription** — the rule's admin-orders example verbatim (decided in `BookingSystemDesign.md` §9).                                 |
-| `/host/my-accommodations` | "My listings and their states"                 | **Subscription** — admin moderation and the listing-fee cron move rows under the viewer (`AccommodationsSystemDesign.md` §9).         |
-| Add / edit accommodation  | authoring                                      | Awaited loader, Pattern B dirty-state (`AccommodationsSystemDesign.md` §9).                                                           |
-| Per-listing calendar (§4) | "When is this place actually free?"            | **Subscription** — bookings land from other people while the host edits blocks, and the same screen both displays and mutates.        |
-| `/host/analytics` (§2b)   | "How's business, really?"                      | **One-shot** — month-scale aggregates don't move under a viewer; a remount is fresh enough.                                           |
+| Page                      | One question it answers                        | Verdict (per `GeneralSystemDesignRule.md`)                                                                                                                                          |
+| ------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/host/dashboard`         | "What needs me, what's today, how's business?" | **Subscription** — one live read for the strips + tiles (`fetchHostDashboardStats`); the pending strip rides its own small live read so a new request doesn't re-run the heavy leg. |
+| `/host/reservations`      | "Answer requests; manage stays"                | **Subscription** — the rule's admin-orders example verbatim (decided in `BookingSystemDesign.md` §9).                                                                               |
+| `/host/my-accommodations` | "My listings and their states"                 | **Subscription** — admin moderation and the listing-fee cron move rows under the viewer (`AccommodationsSystemDesign.md` §9).                                                       |
+| Add / edit accommodation  | authoring                                      | Awaited loader, Pattern B dirty-state (`AccommodationsSystemDesign.md` §9).                                                                                                         |
+| Per-listing calendar (§4) | "When is this place actually free?"            | **Subscription** — bookings land from other people while the host edits blocks, and the same screen both displays and mutates.                                                      |
+| `/host/analytics` (§2b)   | "How's business, really?"                      | **Subscription** — one live read per chosen window; the period picker swaps its args.                                                                                               |
 
 Dashboard band order (existing components, re-ranked by §0.2): **1)** pending-requests
 strip with deadline chips (absent when empty — Band-1 convention), **2)** earnings/payout
@@ -109,16 +109,16 @@ Two zones, one page:
 Data: one query, `fetchHostAnalyticsSafe` — the series from host-scoped pre-aggregated
 rollups (HAPPENED-questions, `GeneralSystemDesignRule.md` § table counts), the table from
 index-bounded `by_host_status_checkin` slices clipped to the month via `nightsWithinWindow`.
-**One-shot** (see the §2 table): no live channel, so these reads run only when the page is
-actually opened.
+**Subscription** (see the §2 table), skipped until the period picker resolves a window — so
+these reads still run only while the page is actually open.
 
 Note the deliberate asymmetry with §2: this page still scans bookings, where the dashboard no
 longer does. That is not an oversight. The occupancy ledger is host-scoped, so it cannot
 answer "which of my places is carrying me" — a PER-LISTING breakdown needs per-listing data.
 Given a 100+-listing host this page is the expensive one, and it is allowed to be: it is
-opened on purpose, one-shot, and its whole reason to exist is the per-listing split. If it
-ever needs to stop scanning, the move is an `apartmentId` breakdown property on
-`booking.nights_booked` (`.by('apartmentId')`), not a second table. States: skeletons → error card → a one-line "numbers appear with your
+opened on purpose, and its whole reason to exist is the per-listing split. If it ever needs
+to stop scanning, the move is an `apartmentId` breakdown property on `booking.nights_booked`
+(`.by('apartmentId')`), not a second table. States: skeletons → error card → a one-line "numbers appear with your
 first confirmed booking" empty — never an empty chart frame.
 
 ## 3. The reservations queue — complete state handling
@@ -313,8 +313,7 @@ payments). Nothing here blocks any other document's delta.
    otherwise, it's teaching the wrong model.
 5. **`awaiting` doesn't exist here** — if host-side code branches on it, the invisibility
    rule (`PaymentsSystemDesign.md` §3) is being violated.
-6. **Live surfaces are the decided three** (queue, my-accommodations, calendar — §2);
-   everything else streams one-shot. New subscriptions need the general rule's written
-   justification.
+6. **Every read is a live subscription** (§2 — the general rule's default). The only
+   one-shot reads left are route loaders, which can't subscribe.
 7. **When uncertain, say so in your summary** with the section, e.g. "kept blocks
    metadata-free per HostSystemDesign.md §4; say the word if hosts need block labels."

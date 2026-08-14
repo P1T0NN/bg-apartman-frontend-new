@@ -1,3 +1,6 @@
+// I18N
+import { m } from '@/paraglide/messages';
+
 // TYPES
 import type { MutationFormSection } from '@/components/ui/mutation-form/types';
 
@@ -12,7 +15,7 @@ export const subscribeToNewsletterForm: MutationFormSection[] = [
 				label: '',
 				kind: 'input',
 				type: 'email',
-				placeholder: 'Enter your email',
+				placeholder: m['HomePage.SubscribeToNewsletterForm.enterYourEmail'](),
 				autocomplete: 'email',
 				// The visible label lives nowhere in this design; hide the (empty) field label so it
 				// adds no height above the input and the input top-aligns with the Subscribe button.

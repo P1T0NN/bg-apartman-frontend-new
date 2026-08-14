@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 
@@ -33,22 +36,21 @@
 	const hasSavedIds = $derived(favoriteIds.length > 0);
 </script>
 
-<SvelteHead title="Saved stays" description="Places you've saved for later." noIndex />
+<SvelteHead title={m['GuestFavoritesPage.SEO.title']()} description={m['GuestFavoritesPage.SEO.description']()} noIndex />
 
 <section class="flex w-full flex-col gap-6 p-4 md:p-6">
 	<header class="flex flex-col gap-1 border-b pb-5">
-		<h1 class="text-2xl font-semibold tracking-tight md:text-3xl">Saved stays</h1>
+		<h1 class="text-2xl font-semibold tracking-tight md:text-3xl">{m['GuestFavoritesPage.title']()}</h1>
 		<p class="max-w-2xl text-sm leading-relaxed text-muted-foreground">
 			{#if hasSavedIds}
-				{formatPlaces(favoriteIds.length)} you've saved for later.
+				{m['GuestFavoritesPage.savedForLater']({ places: formatPlaces(favoriteIds.length) })}
 			{:else}
-				Places you've saved for later.
+				{m['GuestFavoritesPage.placesSavedForLater']()}
 			{/if}
 		</p>
 	</header>
 
 	{#if hasSavedIds}
-		<!-- one-shot: unfavouriting changes `favoriteIds`, and an args change already refetches. -->
 		<ConvexDataList
 			query={api.tables.accommodations.queries.fetchFavoriteAccommodationsSafe
 				.fetchFavoriteAccommodationsSafe}

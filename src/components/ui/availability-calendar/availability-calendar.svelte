@@ -66,6 +66,7 @@
 	// UTILS
 	import { cn } from '@/utils/utils.js';
 	import { formatDaysSelected, formatNights } from '@/utils/formatters';
+	import { getLocale } from '@/paraglide/runtime';
 
 	const defaultTimeZone = getLocalTimeZone();
 
@@ -84,7 +85,7 @@
 		selectionActions,
 		onBookedClick,
 		timeZone = defaultTimeZone,
-		locale = 'en',
+		locale = getLocale(),
 		numberOfMonths = 2,
 		minValue,
 		calendarLabel = 'Availability calendar',

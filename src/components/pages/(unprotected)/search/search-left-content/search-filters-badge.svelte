@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Badge } from '@/components/ui/badge/index.js';
 
@@ -22,7 +25,7 @@
 	variant="outline"
 	role="button"
 	tabindex={0}
-	aria-label={`Remove ${chip.label} filter`}
+	aria-label={m['SearchPage.SearchFiltersBadge.removeFilter']({ label: chip.label })}
 	onclick={remove}
 	onkeydown={(e) => {
 		if (e.key === 'Enter' || e.key === ' ') {

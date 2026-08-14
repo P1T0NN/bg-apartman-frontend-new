@@ -1,3 +1,6 @@
+// I18N
+import { m } from '@/paraglide/messages';
+
 // UTILS
 import { formatCurrency, formatDateShort } from '@/utils/formatters';
 
@@ -16,27 +19,27 @@ import type { HostAccommodationRow } from '@/convex/pages/host/analytics/types/h
 export const HOST_ANALYTICS_TABLE_COLUMNS: ColumnDef<HostAccommodationRow>[] = [
 	{
 		id: 'title',
-		header: 'Accommodation',
+		header: m['HostAnalyticsPage.HostAnalyticsTableData.accommodation'](),
 		accessor: (row) => row.title,
 		cellClass: 'min-w-48'
 	},
 	{
 		id: 'occupancy',
-		header: 'Occupancy',
+		header: m['HostAnalyticsPage.HostAnalyticsTableData.occupancy'](),
 		accessor: (row) => `${Math.round(row.occupancyPct)}%`,
 		headerClass: 'text-right',
 		cellClass: 'text-right tabular-nums'
 	},
 	{
 		id: 'revenue',
-		header: 'Revenue',
+		header: m['HostAnalyticsPage.HostAnalyticsTableData.revenue'](),
 		accessor: (row) => formatCurrency(row.revenue),
 		headerClass: 'text-right',
 		cellClass: 'text-right tabular-nums'
 	},
 	{
 		id: 'nextCheckIn',
-		header: 'Next check-in',
+		header: m['HostAnalyticsPage.HostAnalyticsTableData.nextCheckIn'](),
 		accessor: (row) => (row.nextCheckIn ? formatDateShort(row.nextCheckIn) : '—'),
 		hideBelow: 'sm',
 		headerClass: 'text-right',

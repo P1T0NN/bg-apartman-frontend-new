@@ -1,4 +1,7 @@
 <script lang="ts">
+	// PARAGLIDE
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useConvexClient } from 'convex-svelte';
@@ -33,4 +36,4 @@
 	}
 </script>
 
-<Button variant="outline" onclick={unban} disabled={isPending}>Unban</Button>
+<Button variant="outline" onclick={unban} disabled={isPending}>{m['AdminUsersPage.UnbanUserButton.label']()}</Button>

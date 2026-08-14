@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// SVELTEKIT
 	import { page } from '$app/state';
 
@@ -33,8 +36,11 @@
 </script>
 
 <SvelteHead
-	title={`Your reservation for ${booking?.apartmentTitle ?? ''} | ${COMPANY_DATA.NAME}`}
-	description={`Your booking details and confirmation code for ${booking?.apartmentTitle ?? ''}.`}
+	title={m['ReservationPage.SEO.title']({
+		apartment: booking?.apartmentTitle ?? '',
+		company: COMPANY_DATA.NAME
+	})}
+	description={m['ReservationPage.SEO.description']({ apartment: booking?.apartmentTitle ?? '' })}
 	noIndex
 />
 
@@ -46,8 +52,8 @@
 	{#if bookingQuery.error}
 		<ErrorComponent
 			variant="alert"
-			title="Something went wrong"
-			description="We couldn’t load this reservation. Please try again in a moment."
+			title={m['ReservationPage.loadErrorTitle']()}
+			description={m['ReservationPage.loadErrorDescription']()}
 		/>
 	{:else if booking === undefined}
 		<ReservationPageLoading />

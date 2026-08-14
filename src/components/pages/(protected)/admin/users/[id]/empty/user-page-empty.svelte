@@ -1,6 +1,11 @@
 <script lang="ts">
-	// LIBRARIES
-	import { goto } from '$app/navigation';
+	// PARAGLIDE
+	import { m } from '@/paraglide/messages';
+
+	// UTILS
+	import { appGoto } from '@/utils/app-navigation.js';
+
+	// LUCIDE ICONS
 	import UserXIcon from '@lucide/svelte/icons/user-x';
 	import ArrowLeftIcon from '@lucide/svelte/icons/arrow-left';
 
@@ -16,14 +21,14 @@
 	</div>
 
 	<div class="flex flex-col gap-1">
-		<h2 class="text-lg font-semibold">User not found</h2>
+		<h2 class="text-lg font-semibold">{m['AdminUsersPage.UserPageEmpty.title']()}</h2>
 		<p class="max-w-sm text-sm text-muted-foreground">
-			The user you're looking for doesn't exist or may have been deleted.
+			{m['AdminUsersPage.UserPageEmpty.description']()}
 		</p>
 	</div>
 
-	<Button variant="outline" size="sm" onclick={() => goto('/admin/users')}>
+	<Button variant="outline" size="sm" onclick={() => appGoto('/admin/users')}>
 		<ArrowLeftIcon class="size-4" />
-		Back to users
+		{m['AdminUsersPage.UserPageEmpty.backToUsers']()}
 	</Button>
 </div>

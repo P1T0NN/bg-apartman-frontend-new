@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useConvexClient } from 'convex-svelte';
@@ -67,21 +70,21 @@
 	const copy = $derived.by(() => {
 		if (action === 'withdraw') {
 			return {
-				trigger: 'Withdraw request',
+				trigger: m['BookingsFeature.GuestBookingActions.withdrawRequest'](),
 				variant: 'outline' as const,
-				title: 'Withdraw this request?',
-				body: `${booking.hostName} hasn't answered yet, so nothing is cancelled and nothing is charged. You can send a new request any time.`,
-				keep: 'Keep request',
-				go: 'Withdraw request'
+				title: m['BookingsFeature.GuestBookingActions.withdrawTitle'](),
+				body: m['BookingsFeature.GuestBookingActions.withdrawBody']({ hostName: booking.hostName }),
+				keep: m['BookingsFeature.GuestBookingActions.keepRequest'](),
+				go: m['BookingsFeature.GuestBookingActions.withdrawRequest']()
 			};
 		}
 		return {
-			trigger: 'Cancel booking',
+			trigger: m['BookingsFeature.GuestBookingActions.cancelBooking'](),
 			variant: 'destructive' as const,
-			title: 'Cancel this booking?',
+			title: m['BookingsFeature.GuestBookingActions.cancelTitle'](),
 			body: guestCancelConsequence(booking.checkInDate, booking.policy, booking.paymentMethod),
-			keep: 'Keep booking',
-			go: 'Cancel booking'
+			keep: m['BookingsFeature.GuestBookingActions.keepBooking'](),
+			go: m['BookingsFeature.GuestBookingActions.cancelBooking']()
 		};
 	});
 
@@ -105,7 +108,7 @@
 
 {#if windowClosed}
 	<p class="self-center text-xs text-muted-foreground">
-		The cancellation window has closed — contact {booking.hostName} if your plans changed.
+		{m['BookingsFeature.GuestBookingActions.windowClosed']({ hostName: booking.hostName })}
 	</p>
 {:else if action}
 	<Button variant={copy.variant} onclick={() => (confirmOpen = true)} disabled={isPending}>

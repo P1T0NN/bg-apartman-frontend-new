@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
 	import MyAccommodationsHeader from '@/components/pages/(protected)/host/my-accommodations/my-accommodations-header.svelte';
@@ -6,8 +9,8 @@
 </script>
 
 <SvelteHead
-	title="My accommodations"
-	description="Manage your accommodation accommodations, publishing status and pricing."
+	title={m['HostMyAccommodationsPage.SEO.title']()}
+	description={m['HostMyAccommodationsPage.SEO.description']()}
 	noIndex
 />
 

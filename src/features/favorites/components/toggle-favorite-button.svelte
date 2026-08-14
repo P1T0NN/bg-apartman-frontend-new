@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
@@ -44,14 +46,14 @@
 
 		const nowSaved = favoritesClass.toggle(apartmentId);
 
-		toast.success(nowSaved ? 'Saved to your list' : 'Removed from your list');
+		toast.success(nowSaved ? m['FavoritesFeature.ToggleFavoriteButton.savedToList']() : m['FavoritesFeature.ToggleFavoriteButton.removedFromList']());
 	}
 </script>
 
 {#if variant === 'overlay'}
 	<button
 		type="button"
-		aria-label={saved ? 'Remove from saved' : 'Save'}
+		aria-label={saved ? m['FavoritesFeature.ToggleFavoriteButton.removeFromSaved']() : m['FavoritesFeature.ToggleFavoriteButton.save']()}
 		aria-pressed={saved}
 		onclick={handleToggleFavorite}
 		class={cn(
@@ -71,6 +73,6 @@
 	>
 		<HeartIcon class={cn('size-4', saved && 'fill-red-500 text-red-500')} aria-hidden="true" />
 
-		<span class="hidden sm:inline">{saved ? 'Saved' : 'Save'}</span>
+		<span class="hidden sm:inline">{saved ? m['FavoritesFeature.ToggleFavoriteButton.saved']() : m['FavoritesFeature.ToggleFavoriteButton.save']()}</span>
 	</Button>
 {/if}

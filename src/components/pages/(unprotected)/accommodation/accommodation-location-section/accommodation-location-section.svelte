@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import AccommodationLocationMap from './accommodation-location-map.svelte';
 
@@ -21,7 +24,7 @@
 
 <section class="space-y-4">
 	<div class="space-y-1">
-		<h2 class="text-lg font-semibold tracking-tight">Where you’ll be</h2>
+		<h2 class="text-lg font-semibold tracking-tight">{m['AccommodationPage.AccommodationLocationSection.title']()}</h2>
 
 		<p class="flex items-center gap-1.5 text-sm text-muted-foreground">
 			<MapPinIcon class="size-4 shrink-0" aria-hidden="true" />

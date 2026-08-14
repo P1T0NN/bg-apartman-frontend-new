@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// UTILS
 	import { cn } from '@/utils/utils.js';
 
@@ -29,12 +32,12 @@
 		'focus-visible:ring-2 focus-visible:ring-primary-foreground/40 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground focus-visible:outline-none',
 		className
 	)}
-	aria-label="Created by OmniLabs — opens in a new tab"
+	aria-label={m['CreatedByOmniLabs.ariaLabel']()}
 >
 	<span
 		class="text-[0.625rem] font-semibold tracking-[0.28em] text-primary-foreground/50 uppercase transition-colors group-hover:text-primary-foreground/70"
 	>
-		Created by
+		{m['CreatedByOmniLabs.createdBy']()}
 	</span>
 
 	<img

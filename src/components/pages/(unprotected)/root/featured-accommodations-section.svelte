@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useQuery } from 'convex-svelte';
@@ -31,22 +34,24 @@
 >
 	<!-- Header -->
 	<div class="max-w-xl">
-		<p class="text-xs font-semibold tracking-[0.22em] text-primary uppercase">Featured stays</p>
+		<p class="text-xs font-semibold tracking-[0.22em] text-primary uppercase">
+			{m['HomePage.FeaturedAccommodationsSection.eyebrow']()}
+		</p>
 		<h2
 			class="mt-3 font-display text-3xl font-medium tracking-tight text-balance text-foreground sm:text-4xl"
 		>
-			Handpicked apartments
+			{m['HomePage.FeaturedAccommodationsSection.title']()}
 		</h2>
 		<p class="mt-3 text-pretty text-muted-foreground">
-			A short, curated selection — verified hosts, honest photos and clear pricing.
+			{m['HomePage.FeaturedAccommodationsSection.subtitle']()}
 		</p>
 	</div>
 
 	{#if featuredQuery.error}
 		<ErrorComponent
 			variant="alert"
-			title="Couldn't load featured stays"
-			description="Something went wrong while loading these. Please try again in a moment."
+			title={m['HomePage.FeaturedAccommodationsSection.errorTitle']()}
+			description={m['HomePage.FeaturedAccommodationsSection.errorDescription']()}
 		/>
 	{:else if featured === undefined}
 		<FeaturedAccommodationsLoading />

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 
@@ -46,7 +49,9 @@
 		<!-- Eyebrow label -->
 		<div class="mb-6 flex items-center justify-center gap-2">
 			<span class="h-px w-8 bg-primary/40"></span>
-			<span class="text-xs font-medium tracking-[0.2em] text-primary/70 uppercase">Newsletter</span>
+			<span class="text-xs font-medium tracking-[0.2em] text-primary/70 uppercase"
+				>{m['HomePage.NewslettersSection.eyebrow']()}</span
+			>
 			<span class="h-px w-8 bg-primary/40"></span>
 		</div>
 
@@ -54,15 +59,14 @@
 		<h2
 			class="text-center font-serif text-3xl font-bold tracking-tight text-background sm:text-4xl lg:text-5xl"
 		>
-			Stay in the loop
+			{m['HomePage.NewslettersSection.title']()}
 		</h2>
 
 		<!-- Description -->
 		<p
 			class="mx-auto mt-4 max-w-lg text-center text-sm leading-relaxed text-background/60 lg:text-base"
 		>
-			Get the best apartments, seasonal deals and Belgrade travel tips delivered straight to your
-			inbox.
+			{m['HomePage.NewslettersSection.subtitle']()}
 		</p>
 
 		<!-- Form area -->
@@ -80,7 +84,7 @@
 
 		<!-- Disclaimer -->
 		<p class="mt-5 text-center text-xs leading-relaxed text-background/40 sm:text-left">
-			By subscribing you agree to receive occasional emails. Unsubscribe anytime.
+			{m['HomePage.NewslettersSection.disclaimer']()}
 		</p>
 
 		<!-- Decorative bottom element -->
@@ -106,8 +110,8 @@
 	<Input
 		id={inputId}
 		type="email"
-		aria-label="Email address"
-		placeholder="Enter your email"
+		aria-label={m['HomePage.NewslettersSection.emailAriaLabel']()}
+		placeholder={m['HomePage.NewslettersSection.emailPlaceholder']()}
 		autocomplete="email"
 		value={value as string}
 		oninput={(e) => setValue(e.currentTarget.value)}
@@ -129,9 +133,9 @@
 	>
 		{#if busy}
 			<LoaderCircleIcon class="mr-2 inline-block h-4 w-4 animate-spin" />
-			Subscribing...
+			{m['HomePage.NewslettersSection.subscribing']()}
 		{:else}
-			Subscribe
+			{m['HomePage.NewslettersSection.subscribe']()}
 			<ArrowRightIcon class="ml-2 inline-block h-4 w-4 transition-transform duration-200" />
 		{/if}
 	</Button>

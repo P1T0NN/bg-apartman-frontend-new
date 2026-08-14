@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useConvexClient } from 'convex-svelte';
@@ -56,7 +59,7 @@
 
 			toast.success(translateFromBackend(result.message), {
 				action: {
-					label: 'Undo',
+					label: m['AdminReportsPage.AdminReportsTableActions.undo'](),
 					onClick: () => void setStatus(previous)
 				}
 			});
@@ -75,5 +78,7 @@
 	{#if pending}
 		<Loader class="h-3 w-3 animate-spin" />
 	{/if}
-	{isResolved ? 'Reopen' : 'Resolve'}
+	{isResolved
+		? m['AdminReportsPage.AdminReportsTableActions.reopen']()
+		: m['AdminReportsPage.AdminReportsTableActions.resolve']()}
 </Button>

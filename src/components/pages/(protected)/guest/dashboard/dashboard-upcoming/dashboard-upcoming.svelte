@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import DashboardUpcomingItem from '@/components/pages/(protected)/guest/dashboard/dashboard-upcoming/dashboard-upcoming-item.svelte';
 
@@ -10,7 +13,9 @@
 
 {#if trips.length}
 	<div class="space-y-3">
-		<h3 class="text-sm font-medium text-muted-foreground">More upcoming</h3>
+		<h3 class="text-sm font-medium text-muted-foreground">
+			{m['GuestDashboardPage.DashboardUpcoming.moreUpcoming']()}
+		</h3>
 
 		<div class="grid gap-3">
 			{#each trips as trip (trip.id)}

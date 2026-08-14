@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import HeroSectionSearch from './hero-section-search.svelte';
 </script>
@@ -25,22 +28,22 @@
 			<!-- Trust Indicators -->
 			<div class="hero-item mb-6 flex flex-wrap items-center gap-4 lg:mb-8">
 				<div class="flex items-center gap-2 text-sm text-hero-overlay-foreground/90">
-					<span class="font-semibold">Handpicked</span>
-					<span class="text-hero-overlay-foreground/70">apartments</span>
+					<span class="font-semibold">{m['HomePage.HeroSection.handpicked']()}</span>
+					<span class="text-hero-overlay-foreground/70">{m['HomePage.HeroSection.apartments']()}</span>
 				</div>
 
 				<div class="hidden h-4 w-px bg-hero-overlay-foreground/30 sm:block"></div>
 
 				<div class="flex items-center gap-2 text-sm text-hero-overlay-foreground/90">
-					<span class="font-semibold">Simple</span>
-					<span class="text-hero-overlay-foreground/70">booking</span>
+					<span class="font-semibold">{m['HomePage.HeroSection.simple']()}</span>
+					<span class="text-hero-overlay-foreground/70">{m['HomePage.HeroSection.booking']()}</span>
 				</div>
 
 				<div class="hidden h-4 w-px bg-hero-overlay-foreground/30 sm:block"></div>
 
 				<div class="flex items-center gap-2 text-sm text-hero-overlay-foreground/90">
-					<span class="font-semibold">Local</span>
-					<span class="text-hero-overlay-foreground/70">support</span>
+					<span class="font-semibold">{m['HomePage.HeroSection.local']()}</span>
+					<span class="text-hero-overlay-foreground/70">{m['HomePage.HeroSection.support']()}</span>
 				</div>
 			</div>
 
@@ -50,7 +53,9 @@
 				style="animation-delay: 100ms"
 			>
 				<span class="text-balance">
-					Feel at home, <span class="text-primary italic">wherever you stay.</span>
+					{m['HomePage.HeroSection.feelAtHome']()}{' '}<span class="text-primary italic"
+						>{m['HomePage.HeroSection.whereverYouStay']()}</span
+					>
 				</span>
 			</h1>
 
@@ -59,8 +64,7 @@
 				class="hero-item mb-8 max-w-xl text-base leading-relaxed text-hero-overlay-foreground/70 lg:mb-12 lg:text-lg"
 				style="animation-delay: 200ms"
 			>
-				Handpicked apartments for a night, a week, or a whole season — booked in minutes, no
-				back-and-forth.
+				{m['HomePage.HeroSection.subtitle']()}
 			</p>
 
 			<HeroSectionSearch />

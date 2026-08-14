@@ -1,0 +1,54 @@
+[
+	[
+		"ActionsField.viewBooking",
+		"View booking {bookingCode}"
+	],
+	[
+		"CancelBookingDialog.theGuest",
+		"{guestFirstName} {guestLastName}"
+	],
+	[
+		"SaveUploadedFile.savedSingle",
+		"Saved: ${optimizedImages[0]?.name ?? 'file'}"
+	],
+	[
+		"UploadFileItemMultiple.remove",
+		"Remove {name}"
+	],
+	[
+		"UseProgress.compressProgress",
+		"Compressing ${info.fileIndex + 1} / {totalFiles} (${Math.round(info.fileCompressionPercent)}%)"
+	],
+	[
+		"UseProgress.filesUploaded",
+		"{fileNum} of {totalFiles} files uploaded ({pctOfFiles}%)"
+	],
+	[
+		"accommodation.AccommodationAmenitiesSection.showAll",
+		"Show all {amenities.length} amenities"
+	],
+	[
+		"accommodation.AccommodationPoliciesSection.noSmoking",
+		"Quiet hours {quietHoursStart}–{quietHoursEnd}"
+	],
+	[
+		"accommodation.AccommodationSummarySection.superhostTitle",
+		"{name} is a Superhost"
+	],
+	[
+		"adminReports.AdminReportDetail.replyTo",
+		"Reply to {report.email"
+	],
+	[
+		"book.BookSummaryAccommodation.in",
+		"accommodationTypeLabel(accommodation.type)} in {accommodation.city"
+	],
+	[
+		"home.TestimonialsSection.watchReviewAlt",
+		"Watch {testimonial.name}'s review"
+	],
+	[
+		"hostDashboard.HostDashboardStatCards.inReview",
+		"{pendingReview} in review"
+	]
+]

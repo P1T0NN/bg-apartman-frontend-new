@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useQuery } from 'convex-svelte';
@@ -6,6 +9,9 @@
 
 	// CONFIG
 	import { PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
+
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 
 	// CLASSES
 	import { siteHeaderBreadcrumb } from '@/components/ui/app-sidebar/site-header-breadcrumb.svelte.js';
@@ -44,14 +50,18 @@
 	});
 </script>
 
-<SvelteHead title="Calendar" description="Block and reopen nights on your listing." noIndex />
+<SvelteHead
+	title={m['HostCalendarPage.SEO.title']()}
+	description={m['HostCalendarPage.SEO.description']()}
+	noIndex
+/>
 
 <section class="flex w-full flex-col gap-6 p-4 md:p-6">
 	{#if accommodationQuery.error}
 		<ErrorComponent
 			variant="alert"
-			title="Couldn't load this accommodation"
-			description="Something went wrong while loading this accommodation. Please try again in a moment."
+			title={m['HostCalendarPage.loadErrorTitle']()}
+			description={m['HostCalendarPage.loadErrorDescription']()}
 		/>
 	{:else if accommodation === null}
 		<EditAccommodationPageEmpty />
@@ -64,20 +74,19 @@
 					{accommodation.title}
 				</h1>
 				<p class="max-w-2xl text-sm leading-relaxed text-muted-foreground">
-					Select dates to block or reopen them. Nights a guest already booked can't be changed here
-					— cancel the booking first if you need them back.
+					{m['HostCalendarPage.blockDatesHint']()}
 				</p>
 			</div>
 
 			<!-- Booked nights are read-only cells; the queue is where a stay is acted on
 			     (HostSystemDesign.md §4). -->
 			<Button
-				href={`${PROTECTED_PAGE_ENDPOINTS.RESERVATIONS}?status=confirmed`}
+				href={`${appHref(PROTECTED_PAGE_ENDPOINTS.RESERVATIONS)}?status=confirmed`}
 				variant="outline"
 				class="w-full shrink-0 sm:w-auto"
 			>
 				<CalendarCheckIcon class="size-4" aria-hidden="true" />
-				View reservations
+				{m['HostCalendarPage.viewReservations']()}
 			</Button>
 		</header>
 

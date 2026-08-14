@@ -1,6 +1,12 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
+
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 
 	// COMPONENTS
 	import DataTable from '@/components/ui/data-table/data-table.svelte';
@@ -21,21 +27,23 @@
 	 * listing's edit page: the host's next move after seeing a weak row is changing price or
 	 * photos, and that lives there.
 	 *
-	 * The rows arrive whole from the page's one-shot query, so this is the plain `DataTable`
-	 * (not the Convex one) with its pager off — there is nothing to page through.
+	 * The rows arrive whole from the page's live analytics query, so this is the plain
+	 * `DataTable` (not the Convex one) with its pager off — there is nothing to page through.
 	 */
 	let { rows }: { rows: HostAccommodationRow[] } = $props();
 
 	function editHref(id: string): string {
-		return PROTECTED_PAGE_ENDPOINTS.EDIT_ACCOMMODATION.replace(':id', id);
+		return appHref(PROTECTED_PAGE_ENDPOINTS.EDIT_ACCOMMODATION.replace(':id', id));
 	}
 </script>
 
 <section class="flex flex-col gap-3">
-	<h2 class="text-base font-semibold tracking-tight">By accommodation</h2>
+	<h2 class="text-base font-semibold tracking-tight">
+		{m['HostAnalyticsPage.HostAnalyticsPerAccommodationTable.byAccommodation']()}
+	</h2>
 
 	<DataTable
-		caption="By accommodation"
+		caption={m['HostAnalyticsPage.HostAnalyticsPerAccommodationTable.byAccommodation']()}
 		data={rows}
 		columns={HOST_ANALYTICS_TABLE_COLUMNS}
 		getRowId={(row) => row.apartmentId}

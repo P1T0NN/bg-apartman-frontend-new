@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 
@@ -62,7 +64,7 @@
 						class="flex items-center gap-1 rounded-md bg-primary px-1.5 py-1 text-[0.65rem] font-medium text-primary-foreground shadow-md"
 					>
 						<StarIcon class="size-3.5 fill-current" aria-hidden="true" />
-						Cover
+						{m['UploadFileFeature.UploadFile.UploadFileItemMultiple.cover']()}
 					</span>
 				{:else}
 					<Button
@@ -71,7 +73,7 @@
 						size="icon-sm"
 						class="shadow-md"
 						onclick={onSetCover}
-						aria-label={`Set ${name} as cover image`}
+						aria-label={m['UploadFileFeature.UploadFile.UploadFileItemMultiple.setCover']({ name })}
 					>
 						<StarIcon class="size-3.5" aria-hidden="true" />
 					</Button>
@@ -86,7 +88,7 @@
 				size="icon-sm"
 				class="shadow-md"
 				onclick={onRemove}
-				aria-label={`Remove ${name}`}
+				aria-label={m['UploadFileFeature.UploadFile.UploadFileItemMultiple.remove']({ name })}
 			>
 				<XIcon class="size-3.5" aria-hidden="true" />
 			</Button>

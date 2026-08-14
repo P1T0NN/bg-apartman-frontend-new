@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// SVELTEKIT IMPORTS
 	import { untrack } from 'svelte';
 
@@ -71,8 +74,8 @@
 {#snippet errorContent()}
 	<ErrorComponent
 		variant="alert"
-		title="Couldn't load reservations"
-		description="Something went wrong while loading your reservations. Please try again."
+		title={m['HostReservationsPage.ReservationsTable.errorTitle']()}
+		description={m['HostReservationsPage.ReservationsTable.errorDescription']()}
 	/>
 {/snippet}
 

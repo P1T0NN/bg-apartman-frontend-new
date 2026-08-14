@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Badge } from '@/components/ui/badge/index.js';
 
@@ -35,8 +38,8 @@
 
 	const label = $derived.by(() => {
 		if (!chip) return null;
-		if (chip.isExpired) return 'Expired';
-		return chip.timeRemaining ? `Expires in ${chip.timeRemaining}` : null;
+		if (chip.isExpired) return m['BookingsFeature.BookingExpiryBadge.expired']();
+		return chip.timeRemaining ? m['BookingsFeature.BookingExpiryBadge.expiresIn']({ timeRemaining: chip.timeRemaining }) : null;
 	});
 
 	/**

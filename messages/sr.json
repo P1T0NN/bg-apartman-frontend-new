@@ -1,0 +1,2120 @@
+{
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+
+	"AccommodationsFeature": {
+		"AccommodationCard": {
+			"featured": "Istaknuto",
+			"AccommodationCardBody": {
+				"night": "/ noć",
+				"typeInCity": "{type} u {city}"
+			},
+			"NewAccommodationBadge": {
+				"new": "Novo"
+			}
+		},
+		"SameDayDisplay": {
+			"noSameDayCheckIn": "Nije moguća prijava istog dana",
+			"sameDayCheckInAvailable": "Prijava istog dana je dostupna"
+		},
+		"SingleStayDisplay": {
+			"noSingleNightStays": "Nisu dostupni boravci od jedne noći",
+			"singleNightStaysAvailable": "Dostupni su boravci od jedne noći"
+		},
+		"SuperhostBadge": {
+			"superhost": "Superdomaćin"
+		}
+	},
+	"accommodationsData": {
+		"archived": "Arhivirano",
+		"expired": "Isteklo",
+		"pendingReview": "Pregled na čekanju",
+		"published": "Objavljeno",
+		"suspended": "Suspendovano"
+	},
+	"ActionButton": {
+		"cancel": "Otkaži",
+		"cannotBeReversed": "Ova radnja se ne može poništiti",
+		"confirmDescription": "Da li si siguran da želiš ovo da uradiš? Ova radnja se ne može poništiti.",
+		"proceed": "Nastavi"
+	},
+	"BookingsFeature": {
+		"BookingsTable": {
+			"ActionsField": {
+				"viewBooking": "Pogledaj rezervaciju {bookingCode}"
+			}
+		},
+		"BookingExpiryBadge": {
+			"expired": "Isteklo",
+			"expiresIn": "Ističe za {timeRemaining}"
+		},
+		"BookingsDetailSheet": {
+			"title": "Detalji rezervacije",
+			"BookingsDetailSheetActions": {
+				"cashCancellationClosedToday": "Boravak počinje danas, pa otkazivanje više nije moguće. Ako nešto nije u redu, kontaktiraj podršku.",
+				"cashCancellationNeedsConfirmation": "Otkazivanje postaje dostupno samo ako gost ignoriše zahtev za potvrdu boravka — koristi „{label}“ iznad.",
+				"emergencyContactSupport": "U slučaju stvarne hitnosti, kontaktiraj podršku.",
+				"onlineCancellationClosed": "Ova plaćena rezervacija ne može da se otkaže ovako blizu prijave — boravak gosta je potvrđen."
+			},
+			"BookingsDetailSheetCancellation": {
+				"admin": "administrator",
+				"cancelledBy": "Otkazao/la {by}",
+				"declinedByHost": "Domaćin je odbio",
+				"guest": "gost",
+				"host": "domaćin",
+				"requestExpired": "Zahtev je istekao",
+				"system": "sistem"
+			},
+			"BookingsDetailSheetGuestContact": {
+				"detailsStayClosed": "Ovaj zahtev nikada nije potvrđen, pa podaci za kontakt ostaju nedostupni.",
+				"emailAppearsAfterConfirm": "Imejl i telefon će biti prikazani kada potvrdiš ovaj zahtev.",
+				"title": "Kontakt gosta"
+			},
+			"BookingsDetailSheetPriceBreakdown": {
+				"cleaningFee": "Trošak čišćenja",
+				"serviceFee": "Naknada za uslugu",
+				"title": "Pregled cene",
+				"total": "Ukupno ({payment})"
+			},
+			"BookingsDetailSheetPropertyInfo": {
+				"hostLabel": "Domaćin: {host}",
+				"title": "Smeštaj"
+			},
+			"BookingsDetailSheetSpecialRequests": {
+				"title": "Posebni zahtevi"
+			},
+			"BookingsDetailSheetStayInfo": {
+				"checkIn": "Prijava",
+				"checkOut": "Odjava"
+			},
+			"CancelBookingDialog": {
+				"bodyCash": "{guest} će dobiti imejl sa tvojim razlogom, a datumi će ponovo biti dostupni. Koristi ovo kada gost ne odgovara u vezi sa boravkom uz plaćanje gotovinom — prvo probaj WhatsApp ili imejl. Ponavljana otkazivanja se proveravaju. Ovo se ne može poništiti.",
+				"bodyOnline": "{guest} će dobiti imejl sa tvojim razlogom i biće mu vraćen ceo iznos — otkazivanje od strane domaćina nikada ne ide na trošak gosta. Ponavljana otkazivanja se proveravaju. Ovo se ne može poništiti.",
+				"cancelBooking": "Otkaži rezervaciju",
+				"keepBooking": "Zadrži rezervaciju",
+				"reasonForCancelling": "Razlog otkazivanja",
+				"reasonPlaceholder": "npr. Apartman zahteva hitne popravke i ne može da primi goste tokom ovih datuma.",
+				"theGuest": "gost",
+				"title": "Otkaži ovu potvrđenu rezervaciju?"
+			},
+			"ConfirmBookingDialog": {
+				"ConfirmBookingButton": {
+					"confirm": "Potvrdi rezervaciju"
+				},
+				"body": "Boravak gosta {guest} je potvrđen za ove datume. {payment} Svi drugi zahtevi za iste noći automatski će biti odbijeni.",
+				"chargedNow": "Kartica će mu sada biti terećena, a dobiće obaveštenje putem imejla.",
+				"notYet": "Još ne",
+				"payAtProperty": "Dobiće obaveštenje putem imejla i platiće ti u smeštaju.",
+				"theGuest": "Gost",
+				"title": "Potvrdi ovu rezervaciju?"
+			},
+			"DeclineBookingDialog": {
+				"body": "Ovim odbijaš zahtev gosta {guest}, a on će dobiti imejl sa tvojim razlogom. Ovo se ne može poništiti, zato ukratko i ljubazno objasni svoju odluku.",
+				"declineRequest": "Odbij zahtev",
+				"keepRequest": "Zadrži zahtev",
+				"reasonForDeclining": "Razlog odbijanja",
+				"reasonPlaceholder": "npr. Ovi datumi više nisu dostupni za rezervaciju.",
+				"theGuest": "gost",
+				"title": "Odbij ovaj zahtev za rezervaciju?"
+			},
+			"StayConfirmationPanel": {
+				"askGuestToConfirm": "Zatraži potvrdu od gosta",
+				"askedNoReply": "Poslato {time} — još nema odgovora. Ako gost ne odgovori u roku od {hours} sati, otkazivanje će postati dostupno.",
+				"guestConfirmed": "Gost je potvrdio da dolazi ({time}). Možeš ponovo da zatražiš potvrdu bliže datumu ako postoji mogućnost promene planova.",
+				"noReplyUnlocked": "Nema odgovora duže od {hours} sati (poslato {time}). Otkazivanje je sada dostupno ispod ako ti datumi ponovo trebaju.",
+				"notSureGuestComing": "Nisi siguran da gost dolazi? Zatraži potvrdu jednim klikom — gost će dobiti imejl, a njegov odgovor će se prikazati ovde.",
+				"title": "Potvrda boravka"
+			}
+		},
+		"GuestBookingActions": {
+			"cancelBooking": "Otkaži rezervaciju",
+			"cancelTitle": "Otkaži ovu rezervaciju?",
+			"keepBooking": "Zadrži rezervaciju",
+			"keepRequest": "Zadrži zahtev",
+			"windowClosed": "Rok za otkazivanje je istekao — kontaktiraj {hostName} ako su ti se planovi promenili.",
+			"withdrawBody": "{hostName} još nije odgovorio, tako da ništa nije otkazano i ništa ti nije naplaćeno. Uvek možeš poslati novi zahtev.",
+			"withdrawRequest": "Povuci zahtev",
+			"withdrawTitle": "Povući ovaj zahtev?"
+		},
+		"GuestStayConfirmation": {
+			"asked": "{hostName} pita: i dalje dolaziš?",
+			"confirmed": "Potvrdio/la si da dolaziš — {hostName} zna.",
+			"oneClick": "Jednim klikom možeš da mu omogućiš da se pripremi za tvoj dolazak. Ako su ti se planovi promenili, koristi opcije ispod.",
+			"yesComing": "Da, dolazim"
+		}
+	},
+	"amenitiesData": {
+		"airConditioning": "Klima-uređaj",
+		"balcony": "Balkon",
+		"bathtub": "Kada",
+		"childrensPlayground": "Dečje igralište",
+		"coffeeMaker": "Aparat za kafu",
+		"dishwasher": "Mašina za pranje sudova",
+		"dryer": "Mašina za sušenje veša",
+		"elevator": "Lift",
+		"freeParking": "Besplatan parking",
+		"heating": "Grejanje",
+		"hotTub": "Hidromasažna kada",
+		"kitchen": "Kuhinja",
+		"pool": "Bazen",
+		"privateParking": "Privatan parking",
+		"publicParking": "Javni parking",
+		"sauna": "Sauna",
+		"selfCheckin": "Samostalna prijava",
+		"shampoo": "Šampon",
+		"shower": "Tuš",
+		"smokeAlarm": "Detektor dima",
+		"toiletPaper": "Toalet papir",
+		"towels": "Peškiri",
+		"tv": "TV",
+		"washer": "Mašina za pranje veša",
+		"wifi": "Wi-Fi",
+		"workspace": "Namenski radni prostor"
+	},
+	"AuthFeature": {
+		"AuthErrorBanner": {
+			"accessDenied": "Pristup odbijen",
+			"accountBanned": "Nalog je blokiran",
+			"gotIt": "Razumem",
+			"signInError": "Greška pri prijavljivanju",
+			"signInRequired": "Potrebno je da se prijaviš"
+		},
+		"EmailVerificationForm": {
+			"cancel": "Otkaži",
+			"checkYourEmail": "Proveri svoj imejl",
+			"continue": "Nastavi",
+			"invalidOrExpiredCode": "Kod je nevažeći ili je istekao. Pokušaj ponovo.",
+			"verificationCode": "Verifikacioni kod",
+			"verificationCodeSent": "Poslali smo verifikacioni kod na {email}. Unesi ga ispod da nastaviš.",
+			"EmailVerificationResend": {
+				"didntReceiveCode": "Nisi dobio/la kod?",
+				"resend": "Pošalji ponovo",
+				"resendIn": "Pošalji ponovo za {cooldownRemaining}s"
+			}
+		},
+		"GoogleLoginButton": {
+			"continueWithGoogle": "Nastavi sa Google-om"
+		},
+		"LoginButton": {
+			"login": "Prijavi se"
+		},
+		"LogoutButton": {
+			"loggedOutToast": "Uspešno si se odjavio/la.",
+			"logout": "Odjavi se"
+		},
+		"PasswordInput": {
+			"hidePassword": "Sakrij lozinku",
+			"showPassword": "Prikaži lozinku"
+		},
+		"PasswordResetForm": {
+			"cancel": "Otkaži",
+			"chooseNewPassword": "Izaberi novu lozinku",
+			"code": "Kod",
+			"codeDescription": "Unesi 8-cifreni kod iz imejla.",
+			"codeSent": "Poslali smo kod na {email}. Unesi ga ispod zajedno sa novom lozinkom. Kod važi 5 minuta.",
+			"confirmNewPassword": "Potvrdi novu lozinku",
+			"continue": "Nastavi",
+			"email": "Imejl",
+			"emailPlaceholder": "m@example.com",
+			"newPassword": "Nova lozinka",
+			"resetDescription": "Unesi imejl svog naloga. Poslaćemo ti jednokratni kod koji možeš da koristiš za izbor nove lozinke.",
+			"resetPassword": "Resetuj lozinku",
+			"sendCode": "Pošalji kod"
+		}
+	},
+	"AvailabilityCalendar": {
+		"AvailabilityCalendarLegend": {
+			"blocked": "Blokirano",
+			"booked": "Rezervisano",
+			"selected": "Izabrano",
+			"today": "Danas",
+			"todayUnavailable": "Danas nije dostupno"
+		}
+	},
+	"availableBookingActions": {
+		"bookingCancelled": "Rezervacija otkazana",
+		"bookingConfirmed": "Rezervacija potvrđena",
+		"cancelBooking": "Otkaži rezervaciju",
+		"confirmBooking": "Potvrdi rezervaciju",
+		"decline": "Odbij",
+		"requestDeclined": "Zahtev odbijen"
+	},
+	"availableBookingGuestActions": {
+		"bookingCancelled": "Rezervacija otkazana",
+		"cancelBooking": "Otkaži rezervaciju",
+		"requestWithdrawn": "Zahtev povučen",
+		"withdrawRequest": "Povuci zahtev"
+	},
+	"bookingsData": {
+		"all": "Sve",
+		"awaitingPayment": "Čeka se plaćanje",
+		"cancelled": "Otkazano",
+		"cardHeld": "Kartica rezervisana",
+		"cashOnArrival": "Plaćanje gotovinom po dolasku",
+		"checkedIn": "Prijavljen",
+		"checkedOut": "Odjavljen",
+		"confirmed": "Potvrđeno",
+		"declined": "Odbijeno",
+		"expired": "Isteklo",
+		"holdReleased": "Rezervacija kartice oslobođena",
+		"hostingNow": "Trenutno ugošćavanje",
+		"paid": "Plaćeno",
+		"pending": "Na čekanju",
+		"refunded": "Novac vraćen",
+		"requests": "Zahtevi",
+		"statusHelpAria": "Saznaj šta znači svaki status rezervacije",
+		"upcoming": "Predstojeće",
+		"withdrawn": "Povučeno"
+	},
+	"Breadcrumb": {
+		"breadcrumb": "putanja navigacije",
+		"BreadcrumbEllipsis": {
+			"more": "Više"
+		}
+	},
+	"contactActionsRemote": {
+		"couldNotSendMessage": "Poruka nije mogla da se pošalje. Pokušaj ponovo.",
+		"couldNotVerifyRequest": "Zahtev nije mogao da se potvrdi. Pokušaj ponovo.",
+		"emailSentSuccessfully": "Imejl je uspešno poslat.",
+		"tooManyMessages": "Previše poruka. Pokušaj ponovo kasnije."
+	},
+	"ConvexDataList": {
+		"errorDescription": "Nešto nije u redu pri učitavanju ove liste. Pokušaj ponovo.",
+		"errorTitle": "Podaci nisu mogli da se učitaju",
+		"retry": "Pokušaj ponovo"
+	},
+	"convexHelpers": {
+		"uploadFailed": "Otpremljeni fajl nije mogao da se sačuva. Pokušaj ponovo."
+	},
+	"CopyButton": {
+		"copied": "Kopirano",
+		"copy": "Kopiraj"
+	},
+	"MutationForm": {
+		"CounterField": {
+			"custom": "Prilagođeno",
+			"enterNumber": "Unesi broj"
+		},
+		"back": "Nazad",
+		"continue": "Nastavi",
+		"correctFormErrors": "Potrebno je da ispraviš greške u formularu",
+		"goToStep": "Idi na korak {step}",
+		"progress": "Napredak",
+		"stepOf": "Korak {step} od {total}",
+		"submit": "Pošalji"
+	},
+	"CreatedByOmniLabs": {
+		"ariaLabel": "Kreirao OmniLabs — otvara se u novom tabu",
+		"createdBy": "Kreirao"
+	},
+	"Footer": {
+		"account": "Nalog",
+		"contact": "Kontakt",
+		"dashboard": "Kontrolna tabla",
+		"legal": "Pravne informacije",
+		"overview": "Pregled",
+		"product": "Proizvod",
+		"reportAnIssue": "Prijavi problem",
+		"signIn": "Prijavi se",
+		"support": "Podrška",
+		"termsOfService": "Uslovi korišćenja",
+		"copyright": "© {year} {brand}. Sva prava zadržana.",
+		"facebook": "Facebook",
+		"instagram": "Instagram",
+		"paymentsSecuredBy": "Plaćanja obezbeđuje",
+		"tikTok": "TikTok",
+		"youTube": "YouTube"
+	},
+	"formatters": {
+		"adult": "{count} odrasla osoba",
+		"adults": "{count} odraslih osoba",
+		"bathroom": "{count} kupatilo",
+		"bathrooms": "{count} kupatila",
+		"bedroom": "{count} spavaća soba",
+		"bedrooms": "{count} spavaćih soba",
+		"child": "{count} dete",
+		"children": "{count} dece",
+		"daySelected": "{count} izabran dan",
+		"daysSelected": "{count} izabrana dana",
+		"guest": "{count} gost",
+		"guests": "{count} gostiju",
+		"maxGuestsAllowed": "Ovaj smeštaj prima najviše {count} gosta.",
+		"maxGuestsAllowedPlural": "Ovaj smeštaj prima najviše {count} gostiju.",
+		"night": "{count} noć",
+		"nights": "{count} noći",
+		"place": "{count} mesto",
+		"places": "{count} mesta",
+		"startsToday": "Počinje danas",
+		"upToGuest": "Do {count} gosta",
+		"upToGuests": "Do {count} gostiju"
+	},
+	"guestCancelConsequence": {
+		"freeCancelCash": "Besplatno otkazivanje — do prijave ima još najmanje {freeCancelDays} dana. Ništa ti nije naplaćeno; domaćin će biti obavešten, a datumi će odmah ponovo biti dostupni.",
+		"freeCancelOnline": "Besplatno otkazivanje — do prijave ima još najmanje {freeCancelDays} dana, pa će ti ceo iznos biti vraćen. Domaćin će biti obavešten, a datumi će odmah ponovo biti dostupni.",
+		"lateCancel": "Do prijave ima manje od {freeCancelDays} dana, pa se ovo smatra kasnim otkazivanjem i uplata ti neće biti vraćena."
+	},
+	"ImageGallery": {
+		"closeGallery": "Zatvori galeriju",
+		"nextSlide": "Sledeća slika",
+		"openPhotoFullscreen": "Otvori fotografiju {index} preko celog ekrana",
+		"photoGallery": "{title} — galerija fotografija",
+		"previousSlide": "Prethodna slika",
+		"showAllPhotos": "Prikaži sve fotografije",
+		"viewPhotoOf": "Pogledaj fotografiju {index} od {total}"
+	},
+	"loader": {
+		"browserOnly": "Google Maps može da se učita samo u pregledaču.",
+		"loadFailed": "Učitavanje Google Maps skripte nije uspelo.",
+		"mapsUnavailable": "Mapa nije dostupna: PUBLIC_GOOGLE_MAPS_API_KEY nije podešen."
+	},
+	"LocationMap": {
+		"description": "Pin i koordinate će se automatski pojaviti ovde kada izabereš adresu iznad.",
+		"loadError": "Mapa nije mogla da se učita.",
+		"title": "Izbor lokacije na mapi"
+	},
+	"NativeCarousel": {
+		"goToSlide": "Idi na sliku {index}",
+		"label": "Karusel",
+		"nextSlide": "Sledeća slika",
+		"previousSlide": "Prethodna slika"
+	},
+	"NativeSheet": {
+		"close": "Zatvori"
+	},
+	"Header": {
+		"becomeAHost": "Postani domaćin",
+		"contact": "Kontakt",
+		"featured": "Istaknuto",
+		"home": "Početna",
+		"newsletters": "Novosti",
+		"testimonials": "Utisci",
+		"login": "Prijavi se",
+		"main": "Glavni meni",
+		"NormalHeaderAuthActions": {
+			"account": "Nalog",
+			"accountMenu": "Meni naloga",
+			"becomeAHost": "Postani domaćin",
+			"guestDashboard": "Kontrolna tabla gosta",
+			"reportAnIssue": "Prijavi problem",
+			"switchToHosting": "Pređi na izdavanje"
+		},
+		"NormalHeaderMobile": {
+			"becomeAHost": "Postani domaćin",
+			"closeMenu": "Zatvori meni",
+			"guestDashboard": "Kontrolna tabla gosta",
+			"login": "Prijavi se",
+			"menu": "Meni",
+			"mobileMain": "Glavni meni za mobilni",
+			"openMenu": "Otvori meni",
+			"switchToHosting": "Pređi na izdavanje"
+		}
+	},
+	"PaginatedData": {
+		"ariaLabel": "paginacija",
+		"goToNextPage": "Idi na sledeću stranicu",
+		"goToPage": "Idi na stranicu {page}",
+		"goToPreviousPage": "Idi na prethodnu stranicu",
+		"page": "Stranica {page}",
+		"pageOf": "Stranica {page} od {total}"
+	},
+	"Pagination": {
+		"pagination": "paginacija",
+		"PaginationNext": {
+			"goToNextPage": "Idi na sledeću stranicu",
+			"next": "Sledeća"
+		},
+		"PaginationPrevious": {
+			"goToPreviousPage": "Idi na prethodnu stranicu",
+			"previous": "Prethodna"
+		}
+	},
+	"paymentFlags": {
+		"captureFailedBody": "Rezervacija sredstava na kartici je i dalje aktivna, a rezervacija čeka domaćina kao uobičajen zahtev. Proveri plaćanje na kontrolnoj tabli provajdera; ako je ipak prošlo, označi ovo kao rešeno.",
+		"captureFailedTitle": "Plaćanje gosta nije moglo da se naplati",
+		"reconcileMismatchBody": "Dnevno usklađivanje je pronašlo plaćanje koje je ostalo u nezavršenom statusu nakon predviđenog roka ili nije moglo da kontaktira provajdera radi potvrde. Uporedi podatke sa kontrolnom tablom provajdera i završi ono što je preostalo.",
+		"reconcileMismatchTitle": "Ovo plaćanje je predugo zaglavljeno",
+		"refundFailedBody": "Rezervacija je otkazana, ali je gostu novac i dalje naplaćen. Izvrši povraćaj novca na kontrolnoj tabli provajdera, a zatim označi ovo kao rešeno.",
+		"refundFailedTitle": "Povraćaj novca nije izvršen",
+		"releaseFailedBody": "Novac nije prebačen, ali se rezervacija sredstava možda i dalje prikazuje na kartici gosta. Oslobodi sredstva na kontrolnoj tabli provajdera, a zatim označi ovo kao rešeno.",
+		"releaseFailedTitle": "Rezervacija sredstava na kartici nije mogla da se oslobodi",
+		"transferFailedBody": "Zarada ostaje zadržana, a isplata preskače ovu stavku dok se problem ne reši — najčešće zbog zatvorenog ili odbijenog bankovnog računa. Reši problem sa domaćinom, a zatim označi ovo kao rešeno kako bi sledeća isplata pokušala ponovo.",
+		"transferFailedTitle": "Isplata domaćinu nije uspela"
+	},
+	"paymentMethods": {
+		"accommodationCashDescription": "Gosti ti plaćaju ceo iznos po dolasku.",
+		"accommodationPayOnlineDescription": "Gosti plaćaju online kada se rezervacija potvrdi.",
+		"both": "Oba načina — neka gosti izaberu",
+		"bothDescription": "Gosti biraju između plaćanja gotovinom pri prijavi i online plaćanja.",
+		"cashAtCheckIn": "Gotovina pri prijavi",
+		"cashDescription": "Kartica nije potrebna — ceo iznos plaćaš domaćinu po dolasku.",
+		"comingSoon": " Dostupno kada online plaćanja budu pokrenuta.",
+		"payOnline": "Plati online",
+		"payOnlineDescription": "Plati bezbedno online — kartica će ti biti terećena kada se rezervacija potvrdi."
+	},
+	"PlacesAutocomplete": {
+		"loadSelectedError": "Izabrano mesto nije moglo da se učita.",
+		"loadSuggestionsError": "Predlozi adresa nisu mogli da se učitaju.",
+		"noMatches": "Nema pronađenih rezultata.",
+		"searchCityOrCountry": "Pretraži grad ili državu...",
+		"startTypingAddress": "Počni da unosiš adresu..."
+	},
+	"RefreshQueryButton": {
+		"tryAgain": "Pokušaj ponovo"
+	},
+	"remoteFunctionsUtils": {
+		"actionForbidden": "Nemaš dozvolu da izvršiš ovu radnju."
+	},
+	"reportsData": {
+		"bug": "Greška",
+		"daysAgo": "pre {days}d",
+		"hoursAgo": "pre {hours}h",
+		"idea": "Ideja",
+		"justNow": "upravo sada",
+		"minutesAgo": "pre {minutes}m",
+		"other": "Ostalo"
+	},
+	"UploadFileFeature": {
+		"SaveUploadedFile": {
+			"file": "fajl",
+			"save": "Sačuvaj",
+			"savedMultiple": "Sačuvano {count} fajlova u skladište",
+			"savedSingle": "Sačuvano: {name}"
+		},
+		"UploadFile": {
+			"UploadFileEmpty": {
+				"accepted": "Prihvaćeno: {format}",
+				"choosePlural": "fajlove",
+				"chooseSingular": "fajl",
+				"dragPlural": "ih",
+				"dragSingular": "ga"
+			},
+			"UploadFileItemMultiple": {
+				"cover": "Naslovna",
+				"remove": "Ukloni {name}",
+				"setCover": "Postavi {name} kao naslovnu fotografiju"
+			},
+			"UploadFileItemSingle": {
+				"remove": "Ukloni",
+				"replace": "Zameni",
+				"unknownType": "Nepoznat tip"
+			},
+			"UploadFileMultipleDropzone": {
+				"intro": "Koristi zonu za otpuštanje da dodaš fajlove — ona ostaje na mestu dok se pregledi prikazuju u mreži ispod. Ukloni bilo koji fajl pomoću",
+				"outro": "kontrole u gornjem desnom uglu svake kartice pregleda"
+			},
+			"UploadFileMultipleList": {
+				"ariaLabel": "Otpremljeni fajlovi. Prevuci još fajlova ovde da ih dodaš.",
+				"unknown": "Nepoznato"
+			},
+			"UploadFileSingleContent": {
+				"ariaLabel": "Pregled fajla. Prevuci fajl ovde da ga zameniš."
+			},
+			"UploadFileSingleDropzone": {
+				"intro": "Izaberi ili prevuci fajl, pregledaj ga, a zatim sačuvaj. Koristi",
+				"or": "ili",
+				"outro": "na kartici fajla ako se predomisliš.",
+				"remove": "Ukloni",
+				"replace": "Zameni"
+			}
+		}
+	},
+	"SearchInput": {
+		"SearchDropdown": {
+			"searchResults": "Rezultati pretrage",
+			"searching": "Pretraživanje..."
+		},
+		"SearchEmpty": {
+			"noResults": "Nema rezultata",
+			"tryDifferentTerm": "Probaj drugi pojam za pretragu."
+		},
+		"ariaLabel": "Pretraga",
+		"placeholder": "Pretraži..."
+	},
+	"ShareButton": {
+		"linkCopied": "Link je kopiran u privremenu memoriju",
+		"share": "Podeli"
+	},
+	"Sidebar": {
+		"title": "Bočna traka",
+		"SidebarRail": {
+			"toggle": "Prikaži/sakrij bočnu traku"
+		},
+		"SidebarTrigger": {
+			"toggle": "Prikaži/sakrij bočnu traku"
+		}
+	},
+	"TimeInput": {
+		"placeholder": "HH:MM"
+	},
+	"FavoritesFeature": {
+		"ToggleFavoriteButton": {
+			"removeFromSaved": "Ukloni iz sačuvanih",
+			"removedFromList": "Uklonjeno sa tvoje liste",
+			"save": "Sačuvaj",
+			"saved": "Sačuvano",
+			"savedToList": "Sačuvano na tvojoj listi"
+		}
+	},
+	"TryAgainErrorButton": {
+		"tryAgain": "Pokušaj ponovo"
+	},
+	"useFileUpload": {
+		"notAccepted": "{name} nije podržan format. Prihvaćeno: {format}."
+	},
+	"useProgress": {
+		"compressProgress": "Kompresovanje {current} / {total} ({percent}%)",
+		"done": "Gotovo",
+		"filesUploaded": "Otpremljeno {current} od {total} fajlova ({percent}%)",
+		"starting": "Pokretanje...",
+		"uploadingFile": "Otprema se fajl {current} od {total}…"
+	},
+	"HostAddAccommodationPage": {
+		"AddAccommodationForm": {
+			"accommodationTitle": "Naziv smeštaja",
+			"additionalHouseRules": "Dodatna kućna pravila",
+			"amenities": "Pogodnosti",
+			"amenitiesDescription": "Izaberi sve što tvoj smeštaj nudi — izaberi najmanje 5 da nastaviš.",
+			"basicsDescription": "Reci gostima kakav smeštaj rezervišu.",
+			"bathrooms": "Kupatila",
+			"bathroomsPlaceholder": "Broj kupatila",
+			"bedrooms": "Spavaće sobe",
+			"bedroomsDescription": "Izaberi broj ili koristi Prilagođeno (npr. 0 za studio).",
+			"bedroomsPlaceholder": "Broj spavaćih soba",
+			"checkInTime": "Vreme prijave",
+			"checkOutTime": "Vreme odjave",
+			"choosePaymentMethodDescription": "Izaberi kako gosti plaćaju svoj boravak.",
+			"city": "Grad",
+			"cityDescription": "Pretraži svoj grad i izaberi ga sa liste — automatski ćemo postaviti državu i omogućiti pretragu ulice ispod.",
+			"cleaningFee": "Trošak čišćenja",
+			"cleaningFeeDescription": "Jednokratna naknada koja se dodaje jednom po rezervaciji, pored cene po noći. Ostavi prazno ako je ne naplaćuješ.",
+			"country": "Država",
+			"countryPlaceholder": "Automatski postavljeno na osnovu grada",
+			"descriptionLabel": "Opis",
+			"descriptionPlaceholder": "Opiši prostor, komšiluk i ono što ga čini posebnim…",
+			"discount": "Popust",
+			"discountDescription": "Niža cena po noći prikazana gostima, dok je redovna cena precrtana pored nje. Ostavi prazno ako nema popusta.",
+			"findOwnerDescription": "Pronađi vlasnika po imenu ili imejlu.",
+			"guestPaymentMethod": "Način plaćanja gosta",
+			"housePolicies": "Pravila smeštaja",
+			"housePoliciesDescription": "Kako gosti mogu da rezervišu i šta je dozvoljeno u smeštaju.",
+			"houseRules": "Kućna pravila",
+			"houseRulesDescription": "Sve što gosti treba da znaju pre nego što rezervišu.",
+			"houseRulesPlaceholder": "Još nešto što gosti treba da znaju? (opciono)",
+			"instantBooking": "Instant rezervacija",
+			"instantBookingDescription": "Gosti mogu da rezervišu bez čekanja na tvoje odobrenje.",
+			"leaveEmptyForNone": "Ostavi prazno ako nema",
+			"location": "Lokacija",
+			"locationDescription": "Gde će gosti boraviti?",
+			"maxGuests": "Maksimalan broj gostiju",
+			"maxGuestsPlaceholder": "Broj gostiju",
+			"maximumNights": "Maksimalan broj noći",
+			"maximumNightsDescription": "Najveći broj noći koje gost može da rezerviše u jednom boravku. Ostavi prazno ako nema ograničenja.",
+			"minimumNights": "Minimalan broj noći",
+			"minimumNightsDescription": "Najmanji broj noći koje gost može da rezerviše u jednom boravku.",
+			"noLimit": "Bez ograničenja",
+			"optional": "Opciono",
+			"owner": "Vlasnik",
+			"ownerOfApartment": "Vlasnik apartmana",
+			"ownerOfApartmentDescription": "Kreiraj ovaj smeštaj u ime njegovog vlasnika.",
+			"partiesAndEvents": "Žurke i događaji",
+			"partiesAndEventsDescription": "Događaji i okupljanja su dozvoljeni.",
+			"paymentsAndPlan": "Plaćanja i plan",
+			"paymentsAndPlanDescription": "Kako gosti plaćaju tebi i kako se ovaj smeštaj plaća za korišćenje platforme. Plan po rezervaciji je trajno vezan za ovaj smeštaj — pažljivo izaberi.",
+			"paymentsDescription": "Kako gosti plaćaju svoj boravak.",
+			"pets": "Kućni ljubimci",
+			"petsDescription": "Gosti mogu da dovedu kućne ljubimce.",
+			"photos": "Fotografije",
+			"photosDescription": "Smeštaji sa odličnim fotografijama dobijaju više rezervacija. Dodaj nekoliko da završiš.",
+			"pinOnMap": "Označi na mapi",
+			"pricePerNight": "Cena po noći",
+			"pricePerNightDescription": "Standardna cena koju gost plaća za jednu noć.",
+			"pricing": "Cene",
+			"pricingDescription": "Postavi cenu po noći ispod. Sva ostala polja su opciona — ostavi ih prazna ako želiš da ih preskočiš. Svi iznosi su u punim evrima (€).",
+			"propertyType": "Tip smeštaja",
+			"quietHoursEnd": "Kraj perioda tišine",
+			"quietHoursEndDescription": "Kada se period tišine završava sledećeg jutra (npr. 08:00). Ostavi prazno ako ga nema.",
+			"quietHoursStart": "Početak perioda tišine",
+			"quietHoursStartDescription": "Kada gosti treba da počnu da smanjuju buku (npr. 22:00). Ostavi prazno ako ga nema.",
+			"sameDayReservations": "Rezervacije istog dana",
+			"sameDayReservationsDescription": "Dozvoli boravke koji počinju danas.",
+			"selectTime": "Izaberi vreme",
+			"selectType": "Izaberi tip",
+			"singleDayStays": "Boravci od jednog dana",
+			"singleDayStaysDescription": "Prijava i odjava istog dana.",
+			"sizeM2": "Veličina (m²)",
+			"smoking": "Pušenje",
+			"smokingDescription": "Pušenje je dozvoljeno u smeštaju.",
+			"spaceAndCapacity": "Prostor i kapacitet",
+			"spaceAndCapacityDescription": "Za koliko gostiju je smeštaj udoban?",
+			"streetName": "Naziv ulice",
+			"streetNameDescription": "Prvo izaberi državu ili grad, a zatim pretraži ulicu.",
+			"streetNumber": "Broj ulice",
+			"streetNumberPlaceholder": "npr. 12a",
+			"theBasics": "Osnovno",
+			"timesAndLimits": "Vremena i ograničenja",
+			"timesAndLimitsDescription": "Prijava i odjava, dužina boravka gostiju i period tišine.",
+			"titlePlaceholder": "Svetao jednosoban apartman blizu reke",
+			"uploadPhotos": "Otpremi fotografije",
+			"weekendPremiumDescription": "Naplaćuje se umesto cene po noći petkom i subotom. Ostavi prazno ako želiš jednu cenu tokom cele nedelje.",
+			"weekendPrice": "Vikend cena (pet–sub)",
+			"weeklyDiscount": "Nedeljni popust (%)",
+			"weeklyDiscountDescription": "Procenat popusta na ukupan iznos za boravke od 7+ noći (npr. 10 = 10% popusta). Ostavi prazno ako nema popusta.",
+			"whatThisPlaceOffers": "Šta ovaj smeštaj nudi",
+			"yourPlan": "Tvoj plan",
+			"pickCityFirst": "Prvo izaberi grad",
+			"searchCityPlaceholder": "Pretraži svoj grad",
+			"searchStreetPlaceholder": "Pretraži naziv ulice",
+			"submitForReview": "Pošalji na pregled"
+		},
+		"AddAccommodationHeader": {
+			"description": "Popuni detalje ispod. Sve možeš kasnije da izmeniš — tvoj smeštaj će biti objavljen nakon brze provere.",
+			"title": "Objavi svoj smeštaj"
+		},
+		"AmenitiesField": {
+			"pickAtLeast": "Izaberi najmanje {count}",
+			"selected": "izabrano"
+		},
+		"MonetizationField": {
+			"bookingFeeDescription": "Gosti plaćaju naknadu za uslugu od {percent}% (min. €{minEuros}) za svaku rezervaciju. Samo online plaćanja. Trajno: ovaj plan se kasnije ne može promeniti — ako želiš naknadu za oglas umesto toga, moraćeš da napraviš novi oglas.",
+			"bookingFeeLabel": "Naknada po rezervaciji — besplatno oglašavanje",
+			"bookingFeeNote": "Dostupno kada online plaćanja budu pokrenuta.",
+			"listingFeeDescription": "Zadrži 100% od svake rezervacije. Prihvati gotovinska ili online plaćanja. Tvoj oglas će biti objavljen nakon pregleda i plaćanja.",
+			"listingFeeLabel": "Naknada za oglas — €{amount} na svakih {periodDays} dana"
+		},
+		"SEO": {
+			"description": "Popuni detalje ispod. Sve možeš kasnije da izmeniš — tvoj smeštaj će biti objavljen nakon brze provere.",
+			"title": "Objavi svoj smeštaj"
+		}
+	},
+	"AdminAddAccommodationPage": {
+		"AdminAddAccommodationForm": {
+			"owner": "Vlasnik",
+			"ownerDescription": "Pretraži korisnika kome ovaj smeštaj pripada — on postaje njegov domaćin.",
+			"pickCityFirst": "Prvo izaberi grad",
+			"searchCityPlaceholder": "Pretraži svoj grad",
+			"searchOwnerPlaceholder": "Pretraži po imenu ili imejlu",
+			"searchStreetPlaceholder": "Pretraži naziv ulice"
+		},
+		"AdminAddAccommodationHeader": {
+			"subtitle": "Kreiraj oglas u ime njegovog vlasnika. Sve možeš kasnije da izmeniš — biće objavljen nakon brze provere.",
+			"title": "Dodaj smeštaj"
+		},
+		"AdminAmenitiesField": {
+			"pickAtLeast": "Izaberi najmanje {count}",
+			"selected": "izabrano"
+		},
+		"SEO": {
+			"description": "Kreiraj oglas u ime njegovog vlasnika. Biće objavljen nakon brze provere.",
+			"title": "Dodaj smeštaj"
+		}
+	},
+	"BookPage": {
+		"BookGuestForm": {
+			"email": "Imejl",
+			"emailPlaceholder": "you@example.com",
+			"firstName": "Ime",
+			"firstNamePlaceholder": "Marko",
+			"lastName": "Prezime",
+			"lastNamePlaceholder": "Marković",
+			"messageToHost": "Poruka za domaćina",
+			"optional": "Opciono",
+			"phone": "Telefon",
+			"phonePlaceholder": "+381 6X XXX XXXX",
+			"specialRequestsPlaceholder": "Vreme dolaska, posebni zahtevi, bilo šta što domaćin treba da zna…",
+			"yourDetails": "Tvoji podaci"
+		},
+		"BookConfirmActionsField": {
+			"agreement": "Izborom opcije {action} prihvataš kućna pravila domaćina i obavezuješ se da platiš ceo iznos putem {paymentMethod}.",
+			"confirmReservation": "Potvrdi rezervaciju",
+			"pickDates": "Izaberi datume na vrhu stranice pre nego što nastaviš.",
+			"requestToBook": "Pošalji zahtev za rezervaciju"
+		},
+		"BookDetails": {
+			"guests": "Gosti",
+			"yourDates": "Tvoji datumi"
+		},
+		"BookDetailsStayRules": {
+			"minimumStay": "Minimalni boravak od {nights}",
+			"noSameDay": "Prijava istog dana nije dostupna — izaberi datum početka najmanje jedan dan unapred",
+			"sameDayAvailable": "Prijava istog dana je dostupna",
+			"title": "Pre rezervacije"
+		},
+		"BookGuestDetails": {
+			"dates": "Datumi",
+			"guests": "Gosti"
+		},
+		"BookHeader": {
+			"backToAccommodation": "Nazad na smeštaj",
+			"confirmBooking": "Potvrdi svoju rezervaciju",
+			"datesMissing": "Još nisi izabrao/la datume — dodaj ih u odeljku",
+			"datesMissingSuffix": "da vidiš punu cenu i potvrdiš.",
+			"requestToBook": "Pošalji zahtev za rezervaciju",
+			"yourTrip": "Tvoje putovanje"
+		},
+		"BookPaymentField": {
+			"title": "Plaćanje"
+		},
+		"BookPrice": {
+			"addDatesHint": "Dodaj datume da vidiš punu cenu — od",
+			"cleaningFee": "Trošak čišćenja",
+			"cleaningFeeOnce": "{price}, jednom po boravku",
+			"perNightPeriod": "/ noć.",
+			"serviceFee": "Naknada za uslugu",
+			"title": "Detalji cene",
+			"total": "Ukupno",
+			"weekendRate": "Vikend cena (pet–sub)",
+			"weekendRatePerNight": "{price}/noć",
+			"weeklyDiscount": "Nedeljni popust",
+			"weeklyDiscountOff": "−{percent}% popusta za boravke od 7+ noći",
+			"weeklyDiscountPercent": "Nedeljni popust ({percent}%)"
+		},
+		"BookSummaryAccommodation": {
+			"in": "u"
+		},
+		"SEO": {
+			"description": "Potvrdi detalje svoje rezervacije.",
+			"title": "Rezerviši {title}"
+		},
+		"loadErrorDescription": "Nešto nije u redu pri učitavanju ovog smeštaja. Pokušaj ponovo za trenutak.",
+		"loadErrorTitle": "Smeštaj nije mogao da se učita"
+	},
+	"HostEditAccommodationPage": {
+		"EditAccommodationForm": {
+			"addMorePhotos": "Dodaj još fotografija",
+			"currentPhotos": "Trenutne fotografije",
+			"payments": "Plaćanja",
+			"paymentsDescription": "Kako gosti plaćaju svoj boravak.",
+			"removePhotosDescription": "Ukloni fotografije koje više ne želiš i dodaj još kako bi upotpunio/la smeštaj."
+		},
+		"EditAccommodationExistingPhotos": {
+			"noCurrentPhotos": "Nema trenutnih fotografija. Otpremi neke ispod.",
+			"photoName": "fotografija"
+		},
+		"EditAccommodationInformationTab": {
+			"pickCityFirst": "Prvo izaberi grad",
+			"saveChanges": "Sačuvaj izmene",
+			"searchCityPlaceholder": "Pretraži svoj grad",
+			"searchStreetPlaceholder": "Pretraži naziv ulice"
+		},
+		"EditAccommodationPageEmpty": {
+			"backToMyAccommodations": "Nazad na moje smeštaje",
+			"notFoundDescription": "Ovaj smeštaj je možda uklonjen ili nije jedan od tvojih. Vrati se na svoje smeštaje da nastaviš sa izmenama.",
+			"notFoundTitle": "Smeštaj nije pronađen"
+		},
+		"EditAccommodationSettingsTab": {
+			"currentStatus": "Trenutni status",
+			"dangerZoneDescription": "Brisanje smeštaja je trajno — njegove fotografije i detalji biće zauvek uklonjeni.",
+			"dangerZoneTitle": "Zona opasnosti",
+			"deleteAccommodation": "Obriši smeštaj",
+			"deleteDescription": "Unesi naziv smeštaja „{title}“ da potvrdiš. Ovo se ne može poništiti.",
+			"deleteTitle": "Obrisati ovaj smeštaj?",
+			"relist": "Ponovo objavi",
+			"relistDescription": "Biće poslat na pregled i javno vidljiv kada bude odobren.",
+			"relistTitle": "Ponovo objaviti ovaj smeštaj?",
+			"suspendedByAdmin": "Administrator je suspendovao smeštaj.",
+			"unlist": "Povuci iz ponude",
+			"unlistDescription": "Biće sakriven iz pretrage i sa javne stranice dok ga ponovo ne objaviš.",
+			"unlistTitle": "Povući ovaj smeštaj iz ponude?",
+			"visibilityDescription": "Kontroliši da li se ovaj smeštaj može javno pronaći.",
+			"visibilityTitle": "Vidljivost"
+		},
+		"EditAccommodationTabs": {
+			"description": "Izmeni detalje svog smeštaja, dostupnost i podešavanja.",
+			"information": "Informacije",
+			"settings": "Podešavanja",
+			"viewAccommodation": "Pogledaj smeštaj"
+		},
+		"SEO": {
+			"description": "Izmeni detalje svog smeštaja.",
+			"title": "Izmeni smeštaj"
+		},
+		"loadErrorDescription": "Nešto nije u redu pri učitavanju ovog smeštaja. Pokušaj ponovo za trenutak.",
+		"loadErrorTitle": "Smeštaj nije mogao da se učita"
+	},
+	"LoginPage": {
+		"LoginFormNoImage": {
+			"email": "Imejl",
+			"emailPlaceholder": "m@example.com",
+			"forgotPassword": "Zaboravio/la si lozinku?",
+			"login": "Prijavi se",
+			"loginDescription": "Unesi svoj imejl ispod da se prijaviš na svoj nalog",
+			"noAccount": "Nemaš nalog?",
+			"password": "Lozinka",
+			"signInFailed": "Prijavljivanje nije uspelo. Proveri svoje podatke i pokušaj ponovo.",
+			"signUp": "Registruj se",
+			"signedInToast": "Uspešno si se prijavio/la."
+		},
+		"LoginFormWithImage": {
+			"email": "Imejl",
+			"emailPlaceholder": "m@example.com",
+			"forgotPassword": "Zaboravio/la si lozinku?",
+			"login": "Prijavi se",
+			"loginDescription": "Unesi svoj imejl ispod da se prijaviš na svoj nalog",
+			"loginTitle": "Prijavi se na svoj nalog",
+			"noAccount": "Nemaš nalog?",
+			"orContinueWith": "Ili nastavi sa",
+			"password": "Lozinka",
+			"signInFailed": "Prijavljivanje nije uspelo. Proveri svoje podatke i pokušaj ponovo.",
+			"signUp": "Registruj se",
+			"signedInToast": "Uspešno si se prijavio/la."
+		},
+		"SEO": {
+			"description": "Prijavi se na svoj nalog.",
+			"title": "Prijavi se"
+		}
+	},
+	"ForgotPasswordPage": {
+		"PasswordResetFormModel": {
+			"invalidOrExpiredCode": "Nevažeći ili istekao kod. Pokušaj ponovo.",
+			"passwordResetSuccess": "Lozinka je uspešno resetovana."
+		},
+		"SEO": {
+			"description": "Zatraži link za resetovanje lozinke.",
+			"title": "Resetuj lozinku"
+		}
+	},
+	"SignUpPage": {
+		"SignUpFormNoImage": {
+			"accountCreatedToast": "Nalog je uspešno kreiran.",
+			"alreadyHaveAccount": "Već imaš nalog?",
+			"confirmPassword": "Potvrdi lozinku",
+			"confirmPasswordDescription": "Potvrdi svoju lozinku.",
+			"createAccount": "Kreiraj nalog",
+			"createAccountDescription": "Unesi svoje podatke ispod da kreiraš nalog",
+			"createAccountTitle": "Kreiraj nalog",
+			"email": "Imejl",
+			"emailDescription": "Koristićemo ga da te kontaktiramo. Tvoj imejl nećemo deliti ni sa kim.",
+			"emailPlaceholder": "m@example.com",
+			"fullName": "Ime i prezime",
+			"fullNamePlaceholder": "Petar Petrović",
+			"password": "Lozinka",
+			"passwordDescription": "Mora da sadrži najmanje 8 karaktera.",
+			"signIn": "Prijavi se",
+			"signUpFailed": "Nismo uspeli da kreiramo tvoj nalog. Proveri podatke i pokušaj ponovo ili se prijavi ako već imaš nalog."
+		},
+		"SignUpFormWithImage": {
+			"accountCreatedToast": "Nalog je uspešno kreiran.",
+			"alreadyHaveAccount": "Već imaš nalog?",
+			"confirmPassword": "Potvrdi lozinku",
+			"confirmPasswordDescription": "Potvrdi svoju lozinku.",
+			"createAccount": "Kreiraj nalog",
+			"createAccountDescription": "Popuni formular ispod da kreiraš nalog",
+			"createAccountTitle": "Kreiraj svoj nalog",
+			"email": "Imejl",
+			"emailDescription": "Koristićemo ga da te kontaktiramo. Tvoj imejl nećemo deliti ni sa kim.",
+			"emailPlaceholder": "m@example.com",
+			"fullName": "Ime i prezime",
+			"fullNamePlaceholder": "Petar Petrović",
+			"orContinueWith": "Ili nastavi sa",
+			"password": "Lozinka",
+			"passwordDescription": "Mora da sadrži najmanje 8 karaktera.",
+			"signIn": "Prijavi se",
+			"signUpFailed": "Nismo uspeli da kreiramo tvoj nalog. Proveri podatke i pokušaj ponovo ili se prijavi ako već imaš nalog."
+		},
+		"SEO": {
+			"description": "Registruj se da sačuvaš omiljene smeštaje, rezervišeš boravke i postaneš domaćin.",
+			"title": "Kreiraj svoj nalog"
+		}
+	},
+	"HomePage": {
+		"SubscribeToNewsletterForm": {
+			"enterYourEmail": "Unesi svoj imejl"
+		},
+		"BecomeHostSection": {
+			"eyebrow": "Za domaćine",
+			"listingsText": "Status objavljivanja, cene i naknade na jednom mestu — izmeni, obnovi ili dodaj još jedan smeštaj jednim klikom.",
+			"listingsTitle": "Svaki smeštaj u jednoj tabeli.",
+			"numbersText": "Zahtevi na čekanju, dolasci i odlasci, popunjenost u odnosu na prošli mesec i zarada koja ti pripada.",
+			"numbersTitle": "Tvoji podaci, uživo.",
+			"requestsText": "Odobri, odbij ili zatraži od gosta da potvrdi boravak — rokovi i periodi za otkazivanje rešavaju se automatski.",
+			"requestsTitle": "Svaki zahtev, jedna odluka.",
+			"revenueLabel": "Prihod · poslednjih 12 meseci",
+			"subtitle": "Četiri ekrana pokrivaju sve — evo šta dobijaš kada tvoj smeštaj bude aktivan.",
+			"title": "Sve što ti je potrebno za domaćinstvo.",
+			"trendsText": "Prihod i rezervacije za bilo koji period do 366 dana, plus pregled po smeštaju koji pokazuje koji ti smeštaj donosi najviše.",
+			"trendsTitle": "Trendovi, do godinu dana.",
+			"pricingEyebrow": "ISPLATA",
+			"pricingTitle": "Izaberi kako nam plaćaš",
+			"pricingSubtitle": "Postavlja se jednom, kada kreiraš oglas: fiksna naknada koja se naplaćuje na svaka tri meseca, ili procenat koji uzimamo od svake rezervacije.",
+			"flatFeeMeta": "NAPLAĆUJE SE KVARTALNO",
+			"flatFeeTitle": "Fiksna naknada",
+			"flatFeeText": "Jedan fiksni iznos na svaka tri meseca, bez obzira na broj rezervacija. Predvidljivo i lako za planiranje.",
+			"percentageMeta": "PO REZERVACIJI",
+			"percentageTitle": "Procenat od rezervacija",
+			"percentageText": "Uzimamo fiksni procenat od svake potvrđene rezervacije. U mirnom mesecu ne naplaćujemo ništa.",
+			"pricingOr": "ILI"
+		},
+		"FeaturedAccommodationsEmpty": {
+			"emptyText": "Biramo najbolje apartmane u Beogradu — svrati ponovo uskoro.",
+			"emptyTitle": "Još nema istaknutih smeštaja"
+		},
+		"FeaturedAccommodationsSection": {
+			"errorDescription": "Nešto nije u redu pri učitavanju ovih smeštaja. Pokušaj ponovo za trenutak.",
+			"errorTitle": "Istaknuti smeštaji nisu mogli da se učitaju",
+			"eyebrow": "Istaknuti boravci",
+			"subtitle": "Kratak, pažljivo odabran izbor — provereni domaćini, iskrene fotografije i jasne cene.",
+			"title": "Pažljivo odabrani apartmani"
+		},
+		"HeroSection": {
+			"apartments": "apartmani",
+			"booking": "rezervacija",
+			"feelAtHome": "Osećaj se kao kod kuće,",
+			"handpicked": "Pažljivo odabrano",
+			"local": "Lokalno",
+			"simple": "Jednostavno",
+			"subtitle": "Pažljivo odabrani apartmani za noć, nedelju ili celu sezonu — rezerviši za nekoliko minuta, bez dopisivanja u nedogled.",
+			"support": "podrška",
+			"whereverYouStay": "gde god da boraviš."
+		},
+		"HeroSectionSearch": {
+			"addDates": "Dodaj datume",
+			"any": "Bilo koji",
+			"fourPlusGuests": "4+ gosta",
+			"guests": "Gosti",
+			"locationRequired": "Unesi lokaciju za pretragu.",
+			"oneGuest": "1 gost",
+			"search": "Pretraži",
+			"threeGuests": "3 gosta",
+			"twoGuests": "2 gosta",
+			"when": "Kada",
+			"where": "Gde",
+			"wherePlaceholder": "Gde ideš?"
+		},
+		"NewslettersSection": {
+			"disclaimer": "Prijavom prihvataš da primaš povremene imejlove. Možeš da se odjaviš kad god želiš.",
+			"emailAriaLabel": "Imejl adresa",
+			"emailPlaceholder": "Unesi svoj imejl",
+			"eyebrow": "Novosti",
+			"subscribe": "Prijavi se",
+			"subscribing": "Prijavljivanje...",
+			"subtitle": "Najbolji apartmani, sezonske ponude i saveti za putovanje u Beograd stižu direktno u tvoj sandučić.",
+			"title": "Budi u toku"
+		},
+		"SEO": {
+			"description": "Pažljivo odabrani apartmani za noć, nedelju ili celu sezonu. Pretraži, uporedi i rezerviši boravak za nekoliko minuta — jasne cene, trenutna potvrda, lokalna podrška.",
+			"title": "Pažljivo odabrani apartmani — pronađi i rezerviši svoj boravak"
+		},
+		"TestimonialsSection": {
+			"aroundTheWorld": "širom sveta",
+			"bestPrice": "Najbolja cena",
+			"eyebrow": "Utisci",
+			"lovedByGuests": "Gosti ih obožavaju",
+			"secureBooking": "Sigurna rezervacija",
+			"verifiedReviews": "Provereni utisci",
+			"watchReview": "Pogledaj utisak",
+			"watchReviewAlt": "Pogledaj utisak korisnika {name}"
+		},
+		"WhyUsSection": {
+			"bookingAStay": "Rezerviši boravak,",
+			"eyebrow": "Zašto BGApartman",
+			"intro": "Mi smo beogradski tim koji stoji iza BGApartmana — posvećeni, odgovorni i uvek dostupni. To je standard koji postavljamo.",
+			"note": "Bez aplikacija za preuzimanje, bez beskrajnih imejlova — samo dobro mesto za boravak i neko koga možeš da pozoveš ako ti zatreba.",
+			"reasonBookText": "Izaberi datume, potvrdi i odmah dobij detalje rezervacije — bez dopisivanja u nedogled.",
+			"reasonBookTitle": "Rezerviši za nekoliko minuta",
+			"reasonHandpickedText": "Svaki smeštaj je lično proveren — prave fotografije, iskreni opisi, bez iznenađenja pri prijavi.",
+			"reasonHandpickedTitle": "Pažljivo odabrani apartmani",
+			"reasonLocalText": "Nalazimo se u Beogradu. Ako nešto iskrsne tokom tvog boravka, javiće ti se stvarna osoba.",
+			"reasonLocalTitle": "Lokalna podrška",
+			"reasonTransparentText": "Cena koju vidiš je cena koju plaćaš. Bez skrivenih naknada i trikova sa troškovima čišćenja.",
+			"reasonTransparentTitle": "Transparentne cene",
+			"withoutTheGuesswork": "bez nagađanja"
+		}
+	},
+	"AccommodationPage": {
+		"AccommodationAmenitiesSection": {
+			"showAll": "Prikaži svih {count} pogodnosti",
+			"title": "Šta ovaj smeštaj nudi"
+		},
+		"AccommodationBookingPanel": {
+			"checkAvailability": "Proveri dostupnost",
+			"notChargedYet": "Još ti ništa neće biti naplaćeno"
+		},
+		"AccommodationLocationMap": {
+			"mapTitle": "Mapa za {title}"
+		},
+		"AccommodationLocationSection": {
+			"title": "Gde ćeš boraviti"
+		},
+		"AccommodationMobileBar": {
+			"checkAvailability": "Proveri dostupnost",
+			"from": "od",
+			"night": "noć"
+		},
+		"AccommodationOverviewSection": {
+			"hostingSince": "Domaćin od",
+			"in": "u"
+		},
+		"AccommodationPageEmpty": {
+			"browseStays": "Pogledaj smeštaje",
+			"text": "Ovaj smeštaj je možda uklonjen ili više nije objavljen. Pogledaj naše druge smeštaje.",
+			"title": "Smeštaj nije dostupan"
+		},
+		"AccommodationPoliciesSection": {
+			"bookingRulesTitle": "Rezervacija i boravak",
+			"houseRulesTitle": "Kućna pravila",
+			"title": "Dobro je znati",
+			"checkInAfter": "Prijava nakon {time}",
+			"checkoutBefore": "Odjava pre {time}",
+			"eventsAllowed": "Događaji su dozvoljeni",
+			"instantBooking": "Instant rezervacija",
+			"maximumStayNights": "Maksimalan boravak {days} noći",
+			"minimumStayNights": "Minimalan boravak {days} noći",
+			"noPartiesOrEvents": "Žurke i događaji nisu dozvoljeni",
+			"noPets": "Kućni ljubimci nisu dozvoljeni",
+			"noSameDay": "Rezervacije istog dana nisu moguće",
+			"noSmoking": "Pušenje nije dozvoljeno",
+			"petsAllowed": "Kućni ljubimci su dozvoljeni",
+			"quietHours": "Period tišine {start}–{end}",
+			"requestToBook": "Pošalji zahtev za rezervaciju",
+			"sameDayAccepted": "Rezervacije istog dana su moguće",
+			"smokingAllowed": "Pušenje je dozvoljeno"
+		},
+		"AccommodationSummaryDescription": {
+			"showLess": "Prikaži manje",
+			"showMore": "Prikaži više",
+			"title": "O ovom apartmanu"
+		},
+		"AccommodationSummarySection": {
+			"instantBookingText": "Tvoji datumi se odmah potvrđuju — nema čekanja na odobrenje.",
+			"instantBookingTitle": "Instant rezervacija",
+			"parkingText": "Ostavi automobil odmah ispred smeštaja, bez dodatne naknade.",
+			"parkingTitle": "Besplatan parking u okviru smeštaja",
+			"petsText": "Putuješ sa ljubimcem? Samo obavesti domaćina unapred.",
+			"petsTitle": "Kućni ljubimci su dobrodošli",
+			"selfCheckInText": "Uđi kad god želiš pomoću tastature — nema potrebe za susretom.",
+			"selfCheckInTitle": "Samostalna prijava",
+			"superhostText": "Superdomaćini su iskusni i visoko ocenjeni domaćini posvećeni odličnim boravcima.",
+			"superhostTitle": "{name} je superdomaćin"
+		},
+		"BookingCalendar": {
+			"minimumStay": "Minimalan boravak {nights}"
+		},
+		"BookingPanelFacts": {
+			"checkIn": "Prijava",
+			"checkOut": "Odjava",
+			"cleaningFee": "Trošak čišćenja",
+			"maxGuests": "Maksimalan broj gostiju",
+			"minimumStay": "Minimalan boravak",
+			"nightsCount": "{count} noć(i)",
+			"noCleaningFee": "Bez troška čišćenja",
+			"weekendNights": "Vikend noći (pet–sub)",
+			"weeklyDiscount": "Nedeljni popust",
+			"weeklyDiscountOff": "{percent}% popusta (7+ noći)"
+		},
+		"BookingPanelFooter": {
+			"instantBooking": "Instant rezervacija"
+		},
+		"BookingPanelPrice": {
+			"perNight": "/ noć"
+		},
+		"GuestStepper": {
+			"adults": "Odrasli",
+			"ageHint": "Uzrast 13+",
+			"agesHint": "Uzrast 2–12",
+			"children": "Deca",
+			"decreaseAdults": "Smanji broj odraslih",
+			"decreaseChildren": "Smanji broj dece",
+			"increaseAdults": "Povećaj broj odraslih",
+			"increaseChildren": "Povećaj broj dece"
+		},
+		"SEO": {
+			"fallbackDescription": "Pogledaj detalje smeštaja.",
+			"fallbackTitle": "Smeštaj",
+			"title": "{title} — {city}"
+		},
+		"loadErrorDescription": "Nešto nije u redu pri učitavanju ovog smeštaja. Pokušaj ponovo za trenutak.",
+		"loadErrorTitle": "Smeštaj nije mogao da se učita"
+	},
+	"AdminAccommodationsPage": {
+		"AdminAccommodationsFilters": {
+			"anyStatus": "Bilo koji status",
+			"anyType": "Bilo koji tip",
+			"clear": "Obriši",
+			"filterByStatus": "Filtriraj po statusu",
+			"filterByType": "Filtriraj po tipu"
+		},
+		"AdminAccommodationsHeader": {
+			"addAccommodation": "Dodaj smeštaj",
+			"subtitle": "Koji smeštaji čekaju pregled i šta je trenutno objavljeno na platformi.",
+			"title": "Smeštaji"
+		},
+		"AdminAccommodationsTable": {
+			"allListings": "Svi smeštaji",
+			"featuredOnHomepage": "Istaknuti na početnoj stranici",
+			"searchByTitle": "Pretraži po nazivu…"
+		},
+		"AdminAccommodationsTableActions": {
+			"archive": "Arhiviraj",
+			"featureOnHomepage": "Istakni na početnoj stranici",
+			"grantFreePublish": "Odobri besplatno objavljivanje",
+			"moreActions": "Još radnji",
+			"openPublicPage": "Otvori javnu stranicu",
+			"publish": "Objavi",
+			"recordFeePayment": "Evidentiraj uplatu naknade",
+			"removeFromHomepage": "Ukloni sa početne stranice",
+			"suspend": "Suspenduj"
+		},
+		"AdminAccommodationsTableStatus": {
+			"awaitingPayment": "Čeka se uplata"
+		},
+		"AdminGrantFreePublishDialog": {
+			"body": "Ukida naknadu za oglas za izabrani period — {listing} se ponaša potpuno isto kao da je plaćeno, ali se uplata ne evidentira i ništa se ne računa kao prihod. Odobrenje se beleži u evidenciji.",
+			"cancel": "Otkaži",
+			"confirm": "Odobri besplatno objavljivanje",
+			"coveredForeverNote": "Trenutno pokriveno zauvek — ovo odobrenje tako i ostavlja.",
+			"coveredUntilNote": "Trenutno pokriveno do {date} — ovo odobrenje produžava period od tog datuma.",
+			"duration": "Trajanje",
+			"forever": "Zauvek",
+			"graceNote": "Trenutno je u periodu tolerancije nakon isteka — odobrenje produžava period od trenutnog isteka.",
+			"lapsedNote": "Ovaj smeštaj je istekao — odobrenje ga odmah ponovo objavljuje, bez novog pregleda.",
+			"oneMonth": "1 mesec",
+			"oneYear": "1 godina",
+			"sixMonths": "6 meseci",
+			"suspendedNote": "Ovaj smeštaj je suspendovan — odobrenje pokriva naknadu, ali ga ne objavljuje; objavljivanje i dalje ostaje korak moderacije.",
+			"thisListing": "ovaj smeštaj",
+			"threeMonths": "3 meseca",
+			"title": "Odobriti besplatno objavljivanje?",
+			"unpaidNote": "Ovaj smeštaj nikada nije imao plaćen period — odobrenje pokriva naknadu i odmah ga objavljuje, bez novog pregleda."
+		},
+		"AdminModerateAccommodationDialog": {
+			"archiveBody": "{listing} je sakriven od gostiju. Imejl se ne šalje — arhiviranje služi za sređivanje, a ne za moderaciju. Domaćin može ponovo da ga pošalje na pregled.",
+			"archiveListing": "Arhiviraj smeštaj",
+			"archiveTitle": "Arhivirati ovaj smeštaj?",
+			"cancel": "Otkaži",
+			"publishBody": "{listing} će biti objavljen i gosti će moći da ga rezervišu. Domaćin će biti obavešten imejlom.",
+			"publishListing": "Objavi smeštaj",
+			"publishTitle": "Objaviti ovaj smeštaj?",
+			"reasonForSuspending": "Razlog za suspenziju",
+			"suspendBody": "{listing} se uklanja iz pretrage i više ne može da se rezerviše. Već potvrđene rezervacije će se realizovati kako je planirano. Domaćin će ovu informaciju dobiti imejlom, a samo administrator može ponovo da aktivira smeštaj.",
+			"suspendListing": "Suspenduj smeštaj",
+			"suspendReasonPlaceholder": "npr. Fotografije se ne podudaraju sa navedenom adresom.",
+			"suspendTitle": "Suspendovati ovaj smeštaj?",
+			"thisListing": "Ovaj smeštaj"
+		},
+		"AdminStampListingFeeDialog": {
+			"amountLabel": "Primljeni iznos (EUR) — standardno je {amount}",
+			"bankReference": "Poziv na broj / referenca banke",
+			"bankReferencePlaceholder": "npr. ID transakcije ili stavka sa izvoda",
+			"cancel": "Otkaži",
+			"recordBody": "{listing} dobija još jedan plaćeni period, koji se nastavlja od trenutnog isteka. Ako je smeštaj istekao, odmah se ponovo objavljuje — bez novog pregleda. Stavka se beleži u evidenciji kao dokaz o uplati koju platforma nije obradila.",
+			"recordFeePaymentTitle": "Evidentirati uplatu naknade?",
+			"recordPayment": "Evidentiraj uplatu",
+			"thisListing": "ovaj smeštaj"
+		}
+	},
+	"AdminBookingsPage": {
+		"AdminBookingDetailRow": {
+			"automatic": "Automatski",
+			"byThe": "Od strane {actor}",
+			"cancelBooking": "Otkaži rezervaciju",
+			"cancellation": "Otkazivanje",
+			"cancelledOn": "dana {date}",
+			"cleaning": "Čišćenje",
+			"guest": "Gost",
+			"hostLabel": "Domaćin: {host}",
+			"lateCancellation": "kasno otkazivanje (domaćin zadržava uplatu)",
+			"markHandled": "Označi kao rešeno",
+			"night": "{count} noć",
+			"nights": "{count} noći",
+			"openGuestReservationPage": "Otvori stranicu rezervacije gosta",
+			"price": "Cena",
+			"serviceFee": "Naknada za uslugu",
+			"specialRequests": "Posebni zahtevi",
+			"stay": "Boravak",
+			"subtotal": "Međuzbir",
+			"total": "Ukupno"
+		},
+		"AdminBookingsFilters": {
+			"anyPayment": "Bilo koje plaćanje",
+			"anyStatus": "Bilo koji status",
+			"checkInFrom": "Prijava od",
+			"checkInTo": "Prijava do",
+			"clear": "Obriši",
+			"code": "Kod",
+			"email": "Imejl",
+			"filterByBookingStatus": "Filtriraj po statusu rezervacije",
+			"filterByPaymentStatus": "Filtriraj po statusu plaćanja",
+			"needsAttention": "Zahteva pažnju",
+			"searchField": "Polje za pretragu"
+		},
+		"AdminBookingsTable": {
+			"accommodation": "Smeštaj",
+			"bookings": "Rezervacije",
+			"code": "Kod",
+			"guest": "Gost",
+			"host": "Domaćin",
+			"payment": "Plaćanje",
+			"paymentNeedsAttention": "Plaćanje zahteva pažnju",
+			"searchByBookingCode": "Pretraži po kodu rezervacije…",
+			"searchByGuestEmail": "Pretraži po imejlu gosta…",
+			"status": "Status",
+			"stay": "Boravak",
+			"total": "Ukupno"
+		},
+		"AdminCancelBookingDialog": {
+			"cancelBooking": "Otkaži rezervaciju",
+			"cancelThisBooking": "Otkazati ovu rezervaciju?",
+			"keepBooking": "Zadrži rezervaciju",
+			"notificationBody": "I gost i domaćin će biti obavešteni imejlom uz ovaj razlog. Ako je gost platio online, automatski će mu biti vraćen ceo iznos. Ovo se ne može poništiti.",
+			"reasonForCancelling": "Razlog za otkazivanje",
+			"reasonPlaceholder": "npr. Gost i domaćin su se dogovorili da otkažu rezervaciju putem imejla."
+		},
+		"description": "Pronađi rezervaciju i pogledaj šta se sa njom dogodilo.",
+		"title": "Rezervacije"
+	},
+	"AdminDashboardPage": {
+		"AdminDashboardChartEmpty": {
+			"noBookingsYet": "Još nema rezervacija ni prihoda platforme — trend će se pojaviti nakon prve potvrđene rezervacije ili naknade"
+		},
+		"AdminDashboardHeader": {
+			"dashboard": "Kontrolna tabla",
+			"platformOverview": "Pregled platforme i stvari koje zahtevaju tvoju pažnju."
+		},
+		"AdminDashboardPageLoading": {
+			"loadingDashboard": "Učitavanje kontrolne table"
+		},
+		"AdminDashboardReportsQueue": {
+			"allReports": "Svi prijavljeni problemi",
+			"needsAttention": "Zahteva pažnju",
+			"newCount": "{count} novih",
+			"reply": "Odgovori"
+		},
+		"AdminDashboardStatCards": {
+			"bookings": "Rezervacije",
+			"platform": "@render ledger('Platform', platform)",
+			"publishedListings": "Objavljeni smeštaji",
+			"revenue": "Prihod",
+			"thisMonth": "@render ledger('This month', thisMonth)",
+			"users": "Korisnici"
+		},
+		"SEO": {
+			"description": "Pregled platforme.",
+			"title": "Administratorska kontrolna tabla"
+		},
+		"loadDashboardErrorDescription": "Nešto nije u redu pri učitavanju pregleda. Pokušaj ponovo.",
+		"loadDashboardErrorTitle": "Kontrolna tabla nije mogla da se učita"
+	},
+	"AdminLayout": {
+		"navAccommodations": "Smeštaji",
+		"navBackToUser": "Nazad na korisnika",
+		"navBookings": "Rezervacije",
+		"navDashboard": "Kontrolna tabla",
+		"navFeedback": "Povratne informacije",
+		"navGeneral": "Opšte",
+		"navReports": "Prijave",
+		"navUsers": "Korisnici"
+	},
+	"AdminReportsPage": {
+		"AdminReportDetail": {
+			"replyTo": "Odgovori na {email}",
+			"resolvedSuffix": "· Rešeno"
+		},
+		"AdminReportsHeader": {
+			"reports": "Prijave",
+			"subtitle": "Šta nam korisnici prijavljuju i šta još nije pročitano."
+		},
+		"AdminReportsTable": {
+			"loadError": "Prijave nisu mogle da se učitaju. Pokušaj da osvežiš stranicu.",
+			"new": "Novo",
+			"newReportsLandHere": "Nove prijave se ovde pojavljuju čim ih neko pošalje.",
+			"noReportsYet": "Još nema prijava.",
+			"nobodyFiledReport": "Još niko nije poslao prijavu.",
+			"nothingNew": "Nema ničeg novog. Sve je rešeno.",
+			"reportRowLabel": "{label} prijava",
+			"reports": "Prijave",
+			"resolved": "Rešeno"
+		},
+		"AdminReportsTableActions": {
+			"reopen": "Ponovo otvori",
+			"resolve": "Reši",
+			"undo": "Poništi"
+		},
+		"AdminReportsTableFilters": {
+			"all": "Sve",
+			"anyCategory": "Bilo koja kategorija",
+			"filterByCategory": "Filtriraj po kategoriji",
+			"new": "Novo",
+			"reportView": "Pregled prijava"
+		},
+		"AdminReportsTableData": {
+			"category": "Kategorija",
+			"new": "Novo",
+			"received": "Primljeno",
+			"report": "Prijava",
+			"resolved": "Rešeno",
+			"status": "Status"
+		}
+	},
+	"AdminUsersPage": {
+		"BanUserDialog": {
+			"description": "Korisnik će biti odjavljen i neće moći ponovo da se prijavi dok se zabrana ne ukine. Opcioni razlog će biti prikazan pri sledećem pokušaju prijave.",
+			"expires1Day": "1 dan",
+			"expires30Days": "30 dana",
+			"expires7Days": "7 dana",
+			"expiresLabel": "Ističe",
+			"expiresPermanent": "Trajno",
+			"reasonLabel": "Razlog (opciono)",
+			"reasonPlaceholder": "Kršenje uslova korišćenja…",
+			"title": "Zabrani {userEmail}",
+			"trigger": "Zabrani"
+		},
+		"ChangeRoleButton": {
+			"demote": "Postavi na ulogu korisnika",
+			"demoteDescription": "Da li si siguran da želiš ovo da uradiš? Korisnik će odmah izgubiti administratorske privilegije.",
+			"demoteTitle": "Postaviti {userEmail} na ulogu korisnika?",
+			"promote": "Postavi za administratora",
+			"promoteDescription": "Da li si siguran da želiš ovo da uradiš? Korisnik će dobiti pune administratorske privilegije, uključujući mogućnost zabrane i brisanja drugih naloga.",
+			"promoteTitle": "Postaviti {userEmail} za administratora?"
+		},
+		"DeleteUserDialog": {
+			"cannotDeleteDescription": "Administratori prvo moraju biti postavljeni na ulogu korisnika pre nego što mogu biti obrisani.",
+			"cannotDeleteTitle": "Nije moguće obrisati {userEmail}",
+			"deleteDescription": "Ovo je trajno i obuhvata i sesije i naloge. Unesi imejl ispod da potvrdiš.",
+			"deleteTitle": "Obrisati {userEmail}?",
+			"trigger": "Obriši…"
+		},
+		"SEO": {
+			"description": "Pregledaj i upravljaj korisničkim nalogom.",
+			"title": "Detalji korisnika"
+		},
+		"SuperhostButton": {
+			"makeSuperhost": "Postavi za superdomaćina",
+			"makeSuperhostDescription": "Bedž će se pojaviti na svim smeštajima koje poseduje, kao i na svim smeštajima koje kasnije doda. Njegovi smeštaji se ažuriraju u pozadini, pa kod većeg broja smeštaja može potrajati trenutak.",
+			"makeSuperhostTitle": "Postaviti {userEmail} za superdomaćina?",
+			"removeSuperhost": "Ukloni status superdomaćina",
+			"removeSuperhostDescription": "Bedž će nestati sa svih smeštaja koje poseduje. Njegovi smeštaji se ažuriraju u pozadini, pa kod većeg broja smeštaja može potrajati trenutak.",
+			"removeSuperhostTitle": "Ukloniti status superdomaćina korisniku {userEmail}?"
+		},
+		"UnbanUserButton": {
+			"label": "Ukini zabranu"
+		},
+		"UserAccounts": {
+			"createdLabel": "Kreirano: {created}",
+			"description": "Provajderi za prijavu povezani sa ovim korisnikom.",
+			"empty": "Nema povezanih naloga.",
+			"idLabel": "ID: {id}",
+			"loadFailed": "Nije moguće učitati naloge.",
+			"noPassword": "Nema lozinke",
+			"passwordSet": "Lozinka je postavljena",
+			"scopeLabel": "Opseg: {scope}",
+			"title": "Povezani nalozi"
+		},
+		"UserActivity": {
+			"columnAction": "Radnja",
+			"columnIp": "IP",
+			"columnResource": "Resurs",
+			"columnStatus": "Status",
+			"columnWhen": "Vreme",
+			"description": "Stavke revizorskog dnevnika za ovog korisnika. Najnovije prvo.",
+			"statusFailed": "Neuspešno",
+			"statusSuccess": "Uspešno",
+			"title": "Aktivnost"
+		},
+		"UserDangerZone": {
+			"banDescription": "Odjavi korisnika i spreči dalju prijavu.",
+			"description": "Radnje na nivou naloga. Promene ovde se evidentiraju i mogu biti nepovratne.",
+			"grantAdminDescription": "Dodeli administratorske privilegije ovom nalogu.",
+			"removeAdminDescription": "Ukloni administratorske privilegije sa ovog naloga.",
+			"roleTitle": "Uloga: {role}",
+			"statusActive": "Aktivan",
+			"statusBanned": "Zabranjen",
+			"title": "Opasna zona",
+			"unbanDescription": "Ukini zabranu kako bi korisnik ponovo mogao da se prijavi."
+		},
+		"UserOverview": {
+			"activityLabel": "Aktivnost",
+			"banReasonLabel": "Razlog zabrane",
+			"bannedPermanent": "Zabranjen (trajno)",
+			"bannedUntil": "Zabranjen do {date}",
+			"copyUserId": "Kopiraj ID korisnika",
+			"createdLabel": "Kreirano",
+			"notSuperhostDescription": "Nije superdomaćin. Dodeljivanjem ovog statusa bedž će se prikazati na svim njegovim smeštajima.",
+			"reputationLabel": "Reputacija",
+			"roleLabel": "Uloga",
+			"statusActive": "Aktivan",
+			"statusLabel": "Status",
+			"superhostDescription": "Superdomaćin — bedž se prikazuje na svakom smeštaju koji poseduje.",
+			"unverified": "Nepotvrđeno",
+			"updatedLabel": "Ažurirano",
+			"userIdLabel": "ID korisnika",
+			"verified": "Potvrđeno",
+			"viewBookings": "Pogledaj rezervacije",
+			"viewListings": "Pogledaj smeštaje"
+		},
+		"UserPageEmpty": {
+			"backToUsers": "Nazad na korisnike",
+			"description": "Korisnik kog tražiš ne postoji ili je možda obrisan.",
+			"title": "Korisnik nije pronađen"
+		},
+		"UserSessions": {
+			"createdLabel": "Kreirano: {created}",
+			"description": "Uređaji na kojima je korisnik trenutno prijavljen. Opozivanje odmah odjavljuje uređaj.",
+			"empty": "Nema aktivnih sesija.",
+			"expiresLabel": "Ističe: {expires}",
+			"ipLabel": "IP: {ip}",
+			"loadFailed": "Nije moguće učitati sesije.",
+			"revoke": "Opozovi",
+			"revokeAll": "Opozovi sve",
+			"title": "Aktivne sesije",
+			"unknownDevice": "Nepoznat uređaj"
+		},
+		"UserTabs": {
+			"accounts": "Nalozi",
+			"activity": "Aktivnost",
+			"dangerZone": "Opasna zona",
+			"overview": "Pregled",
+			"sessions": "Sesije"
+		},
+		"UsersFilters": {
+			"anyRole": "Bilo koja uloga",
+			"anyStatus": "Bilo koji status",
+			"anyVerification": "Bilo koja verifikacija",
+			"clear": "Obriši",
+			"roleAdmin": "Administrator",
+			"roleUser": "Korisnik",
+			"searchFieldEmail": "Imejl",
+			"searchFieldName": "Ime",
+			"statusActive": "Aktivan",
+			"statusBanned": "Zabranjen",
+			"unverified": "Nepotvrđeno",
+			"verified": "Potvrđeno"
+		},
+		"active": "Aktivan",
+		"banned": "Zabranjen",
+		"colCreated": "Kreirano",
+		"colEmail": "Imejl",
+		"colRole": "Uloga",
+		"colStatus": "Status",
+		"colUser": "Korisnik",
+		"colVerified": "Potvrđeno",
+		"description": "Pretraži, filtriraj i upravljaj korisničkim nalozima.",
+		"loadUserErrorDescription": "Nešto nije u redu pri učitavanju ovog korisnika. Pokušaj ponovo.",
+		"loadUserErrorTitle": "Korisnik nije mogao da se učita",
+		"no": "Ne",
+		"searchPlaceholder": "Pretraži po {field}…",
+		"title": "Korisnici",
+		"yes": "Da"
+	},
+	"BookingStatusExplanationPage": {
+		"SEO": {
+			"description": "Kratak vodič kroz značenja statusa rezervacije — na čekanju, potvrđeno, prijavljen, odjavljen i otkazano.",
+			"title": "Objašnjenje statusa rezervacije"
+		},
+		"cancelledDescription": "Rezervacija je otkazana — od strane gosta ili domaćina — i datumi su ponovo dostupni.",
+		"cancelledHeading": "Ako se nešto promeni",
+		"cancelledPolicy": "Gosti mogu besplatno da otkažu potvrđen boravak ako je do prijave ostalo najmanje 7 dana. Ako je ostalo manje, obrati se direktno domaćinu.",
+		"checkedInDescription": "Gost je stigao i boravak je trenutno u toku.",
+		"checkedOutDescription": "Boravak je završen i gost se odjavio.",
+		"confirmedDescription": "Domaćin je prihvatio rezervaciju. Datumi su rezervisani i imejl sa potvrdom je poslat.",
+		"pendingDescription": "Zahtev za rezervaciju je poslat i čeka potvrdu domaćina. Ništa se ne naplaćuje dok rezervacija ne bude prihvaćena.",
+		"subtitle": "Svaka rezervacija prolazi kroz nekoliko jednostavnih faza. Evo šta svaki status znači, da uvek znaš na čemu si.",
+		"title": "Objašnjenje statusa rezervacije"
+	},
+	"ContactPage": {
+		"SEO": {
+			"description": "Imaš pitanja o boravku, rezervaciji ili izdavanju smeštaja u Beogradu? Pošalji nam poruku ili direktno imejl — obično odgovaramo u roku od jednog radnog dana.",
+			"title": "Kontakt — {name}"
+		},
+		"emailLabel": "Imejl",
+		"emailPlaceholder": "you@example.com",
+		"emailUs": "Pošalji nam imejl",
+		"eyebrow": "Kontakt",
+		"facebook": "Facebook",
+		"followAlong": "Prati nas",
+		"formSubtitle": "Popuni formular i odgovorićemo ti putem imejla.",
+		"formTitle": "Pošalji nam poruku",
+		"heading": "Razgovaraj sa pravom osobom",
+		"instagram": "Instagram",
+		"intro": "Bilo da imaš pitanje o rezervaciji, mestu koje ti je zapalo za oko ili želiš da izdaš svoj apartman — čitamo svaku poruku i lično odgovaramo.",
+		"messageLabel": "Kako možemo da pomognemo?",
+		"messagePlaceholder": "Napiši nam ukratko šta ti je potrebno — datume, mesto koje si video ili pitanje.",
+		"nameLabel": "Tvoje ime",
+		"namePlaceholder": "Marko Marković",
+		"sendError": "Nešto nije u redu. Pokušaj ponovo ili nam pošalji imejl na {email}.",
+		"submitLabel": "Pošalji poruku",
+		"tiktok": "TikTok",
+		"typicalReply": "Uobičajeno vreme odgovora",
+		"typicalReplyValue": "U roku od jednog radnog dana",
+		"whereWeAre": "Gde smo",
+		"whereWeAreValue": "Beograd, Srbija",
+		"youtube": "YouTube"
+	},
+	"ErrorPage": {
+		"SEO": {
+			"pageNotFound": "Stranica nije pronađena",
+			"somethingWentWrong": "Nešto nije u redu"
+		},
+		"backToHome": "Nazad na početnu",
+		"keepsHappening": "I dalje se dešava?",
+		"linkOutdated": "Link je možda zastareo ili je stranica premeštena. Hajde da te vratimo na pravo mesto.",
+		"reportIssue": "Prijavi problem",
+		"somethingWentWrong": "Nešto nije u redu",
+		"thisPageDoesntExist": "Ova stranica ne postoji",
+		"tryAgain": "Pokušaj ponovo",
+		"unexpectedError": "Došlo je do neočekivane greške. Pokušaj ponovo za trenutak — ako se problem ponavlja, javi nam."
+	},
+	"GuestLayout": {
+		"navAdminPage": "Administratorska stranica",
+		"navBecomeAHost": "Postani domaćin",
+		"navBrowseStays": "Pregledaj smeštaje",
+		"navDashboard": "Kontrolna tabla",
+		"navMyBookings": "Moje rezervacije",
+		"navSaved": "Sačuvano",
+		"navSwitchToHosting": "Pređi na izdavanje"
+	},
+	"GuestDashboardPage": {
+		"DashboardHeader": {
+			"welcomeBack": "Dobrodošao nazad",
+			"welcomeBackName": "Dobrodošao nazad, {firstName}"
+		},
+		"DashboardNextTrip": {
+			"browseStays": "Pregledaj smeštaje",
+			"checkIn": "Prijava",
+			"checkOut": "Odjava",
+			"confirmation": "Potvrda",
+			"guests": "Gosti",
+			"viewBooking": "Pogledaj rezervaciju",
+			"yourNextTrip": "Tvoje sledeće putovanje"
+		},
+		"DashboardNextTripEmpty": {
+			"browseStays": "Pregledaj smeštaje",
+			"noTripsYet": "Još nema putovanja",
+			"whenYouBook": "Kada rezervišeš boravak, pojaviće se ovde."
+		},
+		"DashboardShortcuts": {
+			"checkedOut": "Odjavljeni",
+			"savedPlaces": "Sačuvani smeštaji",
+			"upcomingTrips": "Predstojeća putovanja"
+		},
+		"DashboardUpcoming": {
+			"moreUpcoming": "Još predstojećih"
+		},
+		"SEO": {
+			"description": "Tvoja putovanja na jednom mestu.",
+			"title": "Kontrolna tabla gosta"
+		},
+		"loadDashboardErrorDescription": "Nešto nije u redu pri učitavanju tvojih putovanja. Pokušaj ponovo za trenutak.",
+		"loadDashboardErrorTitle": "Tvoja kontrolna tabla nije mogla da se učita",
+		"nextStay": "Tvoj sledeći boravak je {countdown}.",
+		"noTripsBooked": "Još nema rezervisanih putovanja — hajde da pronađemo tvoje sledeće."
+	},
+	"GuestFavoritesPage": {
+		"FavoritesPageEmpty": {
+			"browseStays": "Pregledaj smeštaje",
+			"noSavedStaysYet": "Još nema sačuvanih boravaka",
+			"tapTheHeart": "Dodirni srce na bilo kom smeštaju koji ti se dopada i pojaviće se ovde, spreman za tvoje sledeće putovanje."
+		},
+		"SEO": {
+			"description": "Smeštaji koje si sačuvao za kasnije.",
+			"title": "Sačuvani boravci"
+		},
+		"placesSavedForLater": "Smeštaji koje si sačuvao za kasnije.",
+		"savedForLater": "{places} koje si sačuvao za kasnije.",
+		"title": "Sačuvani boravci"
+	},
+	"GuestMyBookingsPage": {
+		"MyBookingsHeader": {
+			"myBookings": "Moje rezervacije",
+			"trackYourUpcoming": "Prati svoja predstojeća putovanja, pregledaj prethodne boravke i proveri status svake rezervacije."
+		},
+		"SEO": {
+			"description": "Tvoja putovanja, rezervacije i prethodni boravci.",
+			"title": "Moje rezervacije"
+		},
+		"loadBookingsErrorDescription": "Nešto nije u redu pri učitavanju tvojih rezervacija. Pokušaj ponovo za trenutak.",
+		"loadBookingsErrorTitle": "Tvoje rezervacije nisu mogle da se učitaju"
+	},
+	"HostAnalyticsPage": {
+		"HostAnalyticsEmpty": {
+			"emptyDescription": "Probaj duži period — podaci se pojavljuju nakon prve potvrđene rezervacije.",
+			"emptyTitle": "Nema podataka za ovaj period"
+		},
+		"HostAnalyticsHeader": {
+			"description": "Kako tvoji smeštaji posluju — trendovi i pregled po smeštaju.",
+			"title": "Analitika"
+		},
+		"HostAnalyticsPerAccommodationTable": {
+			"byAccommodation": "Po smeštaju"
+		},
+		"HostAnalyticsPeriodPicker": {
+			"custom": "Prilagođeno",
+			"minDaysError": "Izaberi najmanje {days} dana.",
+			"selectCustomRange": "Izaberi prilagođeni period"
+		},
+		"HostAnalyticsRevenueChart": {
+			"bookings": "Prihod",
+			"revenue": "prihod",
+			"revenueAndBookings": "Prihod i rezervacije",
+			"totalBookings": "Ukupan prihod",
+			"totalRevenue": "prihod"
+		},
+		"SEO": {
+			"description": "Kako tvoji smeštaji posluju.",
+			"title": "Analitika"
+		},
+		"loadAnalyticsErrorTitle": "Nije moguće učitati analitiku",
+		"refreshPage": "Pokušaj da osvežiš stranicu.",
+		"HostAnalyticsTableData": {
+			"accommodation": "Smeštaj",
+			"nextCheckIn": "Sledeća prijava",
+			"occupancy": "Popunjenost",
+			"revenue": "Prihod"
+		}
+	},
+	"HostCalendarPage": {
+		"ApartmentCalendar": {
+			"block": "Blokiraj",
+			"clear": "Obriši",
+			"loadError": "Nije moguće učitati ovaj kalendar. Osveži stranicu i pokušaj ponovo.",
+			"unblock": "Odblokiraj"
+		},
+		"SEO": {
+			"description": "Blokiraj i ponovo otvori noći u svom smeštaju.",
+			"title": "Kalendar"
+		},
+		"blockDatesHint": "Izaberi datume koje želiš da blokiraš ili ponovo otvoriš. Noći koje je gost već rezervisao ne mogu ovde da se menjaju",
+		"loadErrorDescription": "Nešto je pošlo naopako prilikom učitavanja ovog smeštaja. Pokušaj ponovo za koji trenutak.",
+		"loadErrorTitle": "Nije moguće učitati ovaj smeštaj",
+		"viewReservations": "Prikaži rezervacije"
+	},
+	"HostDashboardPage": {
+		"HostDashboardEarnings": {
+			"addPayoutDetails": "Dodaj podatke za isplatu",
+			"onTheWay": "na putu",
+			"payoutPending": "Dodaj podatke za isplatu — potrebno je oko 3 minuta — i poslaćemo ti novac. Ništa ne ističe, tako da ne moraš da žuriš.",
+			"payoutSet": "Podaci za isplatu su podešeni. Šaljemo ti zaradu kada se svaki boravak završi.",
+			"waitingForYou": "čeka na tebe"
+		},
+		"HostDashboardHeader": {
+			"subtitle": "Tvoji smeštaji na jednom mestu. · {date}",
+			"title": "Kontrolna tabla"
+		},
+		"HostDashboardNoBookingsEmpty": {
+			"description": "Tvoji smeštaji su aktivni. Podeli ih i počni da primaš zahteve.",
+			"title": "Spreman si za svoju prvu rezervaciju"
+		},
+		"HostDashboardPendingReservations": {
+			"description": "Zahtevi koji čekaju tvoj odgovor — automatski ističu.",
+			"loadErrorDescription": "Otvori svoje rezervacije da odgovoriš na njih.",
+			"loadErrorTitle": "Nije moguće učitati zahteve na čekanju",
+			"reservationsLink": "Rezervacije",
+			"title": "Rezervacije na čekanju",
+			"view": "Prikaži"
+		},
+		"HostDashboardPendingReservationsLoading": {
+			"loadingPending": "Učitavanje rezervacija na čekanju"
+		},
+		"HostDashboardStatCards": {
+			"ahead": "@render ledger('Ispred', ahead)",
+			"allLive": "Sve aktivno",
+			"checkIns": "Prijave",
+			"inReview": "{count} na proveri",
+			"nextDate": "Sledeći {date}",
+			"noChange": "Bez promene",
+			"noneInNext7Days": "Nema ih u narednih 7 dana",
+			"nothingLiveYet": "Još ništa nije aktivno",
+			"occupancy": "Popunjenost",
+			"pts": "{count} boda",
+			"published": "Objavljeno",
+			"revenue": "Prihod",
+			"thisMonth": "@render ledger('Ovaj mesec', thisMonth)",
+			"vsLastMonth": "u odnosu na prošli mesec"
+		},
+		"HostDashboardStatsSectionLoading": {
+			"loading": "Učitavanje tvoje kontrolne table"
+		},
+		"HostDashboardTodayOverview": {
+			"checkInsToday": "Današnje prijave",
+			"checkOutsToday": "Današnje odjave",
+			"currentlyHosting": "Trenutno u boravku",
+			"more": "+{count} još",
+			"noArrivalsOrDepartures": "Danas nema dolazaka ni odlazaka.",
+			"nothingToday": "Danas nema ničega"
+		},
+		"SEO": {
+			"description": "Tvoji smeštaji na jednom mestu.",
+			"title": "Kontrolna tabla"
+		},
+		"loadDashboardErrorDescription": "Nešto je pošlo naopako prilikom učitavanja tvoje kontrolne table. Pokušaj ponovo.",
+		"loadDashboardErrorTitle": "Nije moguće učitati kontrolnu tablu"
+	},
+	"BecomeHostState": {
+		"cta": "Dodaj svoj prvi smeštaj",
+		"subtitle": "Kreiraj smeštaj i počni da dočekuješ goste — potrebno je samo nekoliko minuta.",
+		"title": "Objavi svoj prvi smeštaj"
+	},
+	"HostLayout": {
+		"navAccommodations": "Smeštaji",
+		"navAddAccommodation": "Dodaj smeštaj",
+		"navAdminPage": "Admin stranica",
+		"navAnalytics": "Analitika",
+		"navDashboard": "Kontrolna tabla",
+		"navMyAccommodations": "Moji smeštaji",
+		"navOverview": "Pregled",
+		"navReservations": "Rezervacije",
+		"navSwitchToTraveling": "Pređi na putovanje"
+	},
+	"HostMyAccommodationsPage": {
+		"MyAccommodationsHeader": {
+			"addAccommodation": "Dodaj smeštaj",
+			"description": "Na jednom mestu pregledaj status, cene i kapacitet svojih smeštaja.",
+			"title": "Moji smeštaji"
+		},
+		"MyAccommodationsTable": {
+			"capacity": "{guests} gostiju, {bedrooms} spavaćih soba",
+			"emptyDescription": "Probaj drugačiju pretragu ili ukloni filter statusa.",
+			"emptyTitle": "Nijedan smeštaj se ne podudara",
+			"searchPlaceholder": "Pretraži svoje smeštaje po nazivu…"
+		},
+		"MyAccommodationsTableAccommodationInfo": {
+			"inCity": "u {city}"
+		},
+		"MyAccommodationsTableActions": {
+			"calendar": "Kalendar",
+			"edit": "Izmeni",
+			"editAccommodation": "Izmeni smeštaj",
+			"openCalendar": "Otvori kalendar",
+			"view": "Prikaži",
+			"viewAccommodation": "Prikaži smeštaj"
+		},
+		"MyAccommodationsTableChangePlan": {
+			"changePlan": "Promeni plan",
+			"keepListingFee": "Zadrži naknadu za oglas",
+			"switchBodyCoveredForever": "Tvoj oglas je pokriven zauvek; prelaskom na drugi plan odričeš se toga.",
+			"switchBodyDaysMany": "Imaš još {daysLeft} plaćenih dana; prelaskom na drugi plan odričeš se tih dana.",
+			"switchBodyDaysOne": "Imaš još {daysLeft} plaćen dan; prelaskom na drugi plan odričeš se tog dana.",
+			"switchBodyIntro": "{title} postaje besplatan za objavljivanje — gosti plaćaju naknadu za uslugu od {percent}% (min. €{minEuros}) za svaku rezervaciju, a oglas prihvata samo online plaćanja.",
+			"switchBodyNoRefund": "Ovo ne može da se poništi za ovaj oglas — povratak na naknadu za oglas značio bi kreiranje novog oglasa. Nema povraćaja novca.",
+			"switchPermanently": "Pređi trajno",
+			"switchTitle": "Preći na naknadu po rezervaciji?"
+		},
+		"MyAccommodationsTableFilters": {
+			"anyStatus": "Bilo koji status",
+			"clear": "Obriši",
+			"filterByStatus": "Filtriraj po statusu"
+		},
+		"MyAccommodationsTableListingFee": {
+			"coveredForever": "Pokriveno zauvek",
+			"expired": "Isteklo",
+			"expiresInDays": "Ističe za {days} dana",
+			"expiresToday": "Ističe danas",
+			"listingFeeNotPaid": "Naknada za oglas nije plaćena — plati €{amount} da bi oglas bio aktivan",
+			"overdueRenewNow": "Isteklo — obnovi sada",
+			"payNow": "Plati sada",
+			"perBookingFee": "Naknada po rezervaciji ({percent}%) — trajno · novi oglas za promenu plana",
+			"untilDate": "Do {date}"
+		},
+		"MyAccommodationsTableRenewButton": {
+			"renew": "Obnovi"
+		},
+		"SEO": {
+			"description": "Upravljaj svojim smeštajima, statusom objavljivanja i cenama.",
+			"title": "Moji smeštaji"
+		},
+		"MyAccommodationsTableData": {
+			"accommodation": "Smeštaj",
+			"capacity": "Kapacitet",
+			"created": "Kreirano",
+			"plan": "Plan",
+			"price": "Cena",
+			"status": "Status"
+		}
+	},
+	"HostReservationsPage": {
+		"ReservationsHeader": {
+			"description": "Pregledaj nove zahteve, prati predstojeće boravke i upravljaj svojim gostima — sve na jednom mestu.",
+			"title": "Rezervacije"
+		},
+		"ReservationsTable": {
+			"errorDescription": "Nešto je pošlo naopako prilikom učitavanja tvojih rezervacija. Pokušaj ponovo.",
+			"errorTitle": "Nije moguće učitati rezervacije"
+		},
+		"SEO": {
+			"description": "Pregledaj zahteve za rezervaciju, prati predstojeće boravke i upravljaj svojim gostima.",
+			"title": "Rezervacije"
+		}
+	},
+	"ReportPage": {
+		"ReportHeader": {
+			"foundABug": "Pronašao/la si grešku ili nešto nije bilo kako treba? Dovoljno je nekoliko reči — čitamo svaku prijavu.",
+			"tellUsWhatHappened": "Reci nam šta se desilo"
+		},
+		"SEO": {
+			"description": "Reci nam za grešku ili bilo koji drugi problem na koji si naišao/la.",
+			"title": "Prijavi problem"
+		},
+		"categoryBroken": "Nešto ne radi",
+		"categoryIdea": "Imam ideju",
+		"categoryOther": "Nešto drugo",
+		"details": "Detalji",
+		"detailsPlaceholder": "Opiši šta si radio/la i šta je pošlo naopako. Što više detalja navedeš, brže možemo da rešimo problem.",
+		"emailDescription": "Ostavi svoj email ako želiš da ti se javimo.",
+		"emailOptional": "Email (opciono)",
+		"emailPlaceholder": "you@example.com",
+		"sendReport": "Pošalji prijavu",
+		"whatsThisAbout": "O čemu se radi?"
+	},
+	"ReservationPage": {
+		"ReservationConfirmation": {
+			"backToAccommodation": "Nazad na smeštaj",
+			"bookAgain": "Rezerviši ponovo",
+			"browseMoreStays": "Pogledaj još smeštaja",
+			"cancelled": "Ova rezervacija za {apartmentTitle} je otkazana. Ako to nisi očekivao/la, javi se domaćinu {hostName}.",
+			"cardHeld": "Na kartici je blokirano {amount} — naplaćujemo ti samo ako domaćin potvrdi.",
+			"checkIn": "Prijava",
+			"checkOut": "Odjava",
+			"checkedInDescription": "Uživaj u boravku u {apartmentTitle}. Ako ti bilo šta zatreba, {hostName} je tvoj kontakt.",
+			"checkedOutDescription": "Nadamo se da si uživao/la u {apartmentTitle}. Hvala ti što si boravio/la kod nas.",
+			"confirmationCode": "Kod potvrde",
+			"confirmedDescription": "Sve je spremno za {apartmentTitle}. Poslali smo ti detalje potvrde na email.",
+			"copyConfirmationCode": "Kopiraj kod potvrde",
+			"copySentTo": "Kopija je poslata na {email}",
+			"finalisingPayment": "Završavamo plaćanje…",
+			"guests": "Gosti",
+			"holdReleased": "Rezervacija sredstava na tvojoj kartici je oslobođena. Nije ti ništa naplaćeno.",
+			"hostCancelledThisBooking": "Domaćin je otkazao ovu rezervaciju",
+			"hostCouldNotAccept": "{hostName} nije mogao/la da prihvati ovaj zahtev. Datumi nikada nisu bili rezervisani.",
+			"hostCouldntTakeThisOne": "Domaćin nije mogao da prihvati ovu rezervaciju",
+			"hostDidNotRespond": "Domaćin nije odgovorio na vreme.",
+			"nothingCharged": "Ništa nije naplaćeno — u bilo kom trenutku možeš da zatražiš druge datume.",
+			"paid": "Plaćeno {amount}.",
+			"payOnArrival": "Plati {amount} u gotovini u smeštaju.",
+			"pendingDescription": "{hostName} ima {hours} sati da odgovori. Neće ti biti ništa naplaćeno dok rezervacija ne bude potvrđena.",
+			"refunded": "Vraćeno {amount}.",
+			"requestClosed": "Zahtev je zatvoren",
+			"requestSent": "Zahtev je poslat!",
+			"reservationCancelled": "Rezervacija je otkazana",
+			"status": "Status",
+			"stay": "Boravak",
+			"stayComplete": "Boravak je završen",
+			"supportCancelledThisBooking": "Podrška je otkazala ovu rezervaciju",
+			"total": "Ukupno ({method})",
+			"withdrawnDescription": "Ništa nije rezervisano i ništa nije naplaćeno. {apartmentTitle} je i dalje tu kada budeš želeo/la.",
+			"youCancelledThisBooking": "Otkazao/la si ovu rezervaciju",
+			"youWithdrewThisRequest": "Povukao/la si ovaj zahtev",
+			"yourStayIsBooked": "Tvoj boravak je rezervisan!",
+			"youreCheckedIn": "Prijavljen/a si"
+		},
+		"ReservationPageEmpty": {
+			"browseStays": "Pogledaj smeštaje",
+			"invalidLink": "Ovaj link za rezervaciju nije važeći ili je možda uklonjen. Proveri link iz potvrde ili pogledaj druge smeštaje.",
+			"reservationNotFound": "Rezervacija nije pronađena"
+		},
+		"ReservationPageLoading": {
+			"loadingYourReservation": "Učitavanje tvoje rezervacije"
+		},
+		"SEO": {
+			"description": "Detalji tvoje rezervacije i kod potvrde za {apartment}.",
+			"title": "Tvoja rezervacija za {apartment} | {company}"
+		},
+		"loadErrorDescription": "Nismo mogli da učitamo ovu rezervaciju. Pokušaj ponovo za koji trenutak.",
+		"loadErrorTitle": "Nešto je pošlo naopako"
+	},
+	"ReservationsPage": {
+		"ReservationsForm": {
+			"bookingCode": "Kod rezervacije",
+			"bookingCodeDescription": "Kod na vrhu emaila sa potvrdom.",
+			"email": "Email",
+			"emailDescription": "Adresa sa kojom si rezervisao/la.",
+			"findMyReservation": "Pronađi moju rezervaciju"
+		},
+		"ReservationsHeader": {
+			"findYourReservation": "Pronađi svoju rezervaciju",
+			"lostEmail": "Izgubio/la si email? Unesi kod rezervacije i email sa kojim si rezervisao/la i odmah ćemo te odvesti do tvoje rezervacije."
+		},
+		"SEO": {
+			"description": "Izgubio/la si email? Pronađi svoju rezervaciju pomoću koda rezervacije i email adrese.",
+			"title": "Pronađi svoju rezervaciju"
+		},
+		"contactUs": "Kontaktiraj nas",
+		"stillStuck": "I dalje ne možeš?",
+		"wellLookItUp": "i pronaći ćemo je za tebe."
+	},
+	"SearchPage": {
+		"SEO": {
+			"title": "Smeštaji u {location}",
+			"description": "Pregledaj smeštaje u {location}."
+		},
+		"SearchFilters": {
+			"any": "Bilo koji",
+			"clear": "Obriši",
+			"done": "Gotovo",
+			"filters": "Filteri"
+		},
+		"SearchFiltersBadge": {
+			"removeFilter": "Ukloni filter {label}"
+		},
+		"SearchFiltersEmpty": {
+			"clearFilters": "Obriši filtere",
+			"newSearch": "Nova pretraga",
+			"noStaysFound": "Nije pronađen nijedan smeštaj",
+			"noStaysInLocation": "Nismo pronašli nijedan smeštaj u {location}. Probaj da ublažiš filtere ili pretražiš okolinu.",
+			"nothingMatches": "Ništa ne odgovara tvojim trenutnim filterima. Ukloni neki filter da vidiš više mesta."
+		},
+		"SearchLeftContentHeader": {
+			"clearAll": "Obriši sve",
+			"pricesIncludeAllFees": "Cene uključuju sve naknade",
+			"searchingStaysIn": "Pretražujemo smeštaje u {location}",
+			"staysIn": "{count} smeštaja u {location}"
+		},
+		"SearchMarkerSelectedCard": {
+			"close": "Zatvori",
+			"view": "Prikaži"
+		},
+		"showList": "Prikaži listu",
+		"showMap": "Prikaži mapu",
+		"SearchState": {
+			"bathrooms": "Kupatila",
+			"bathsNoun": "kupatila",
+			"bedrooms": "Spavaće sobe",
+			"bedroomsNoun": "spavaćih soba",
+			"chip": "{count} {noun}",
+			"guests": "Gosti",
+			"guestsNoun": "gostiju"
+		}
+	},
+	"GenericMessages": {
+		"ACCOMMODATION_CREATED": "Smeštaj je poslat na pregled.",
+		"ACCOMMODATION_HAS_ACTIVE_BOOKINGS": "Ovaj smeštaj ima aktivne rezervacije i ne može da se obriše. Prvo ih otkaži ili odbij.",
+		"ACCOMMODATION_NOT_AVAILABLE_TO_SAVE": "Ovaj smeštaj trenutno nije moguće sačuvati.",
+		"ACCOMMODATION_NOT_BOOKABLE": "Ovaj oglas više nije aktivan, pa rezervacije za njega ne mogu biti potvrđene.",
+		"CALENDAR_UPDATED": "Kalendar je ažuriran.",
+		"DATES_HAVE_CONFIRMED_STAY": "Za te datume postoji potvrđen boravak. Prvo otkaži rezervaciju ako želiš da ih oslobodiš.",
+		"ACCOMMODATION_STATUS_UPDATED": "Vidljivost smeštaja je ažurirana.",
+		"SUSPENDED_CANNOT_RESUBMIT": "Suspendovani oglas pregledava naš tim — odgovori na email o suspenziji i mi ćemo preuzeti dalje.",
+		"PHOTOS_MIN_REQUIRED": "Dodaj najmanje {min} fotografija — gosti retko rezervišu ono što ne mogu da vide.",
+		"PHOTOS_MAX_EXCEEDED": "Oglas može imati najviše {max} fotografija.",
+		"ACCOMMODATION_UPDATED": "Smeštaj je ažuriran.",
+		"ACCOMMODATION_FEATURED": "Smeštaj je dodat u istaknuti deo početne stranice.",
+		"ACCOMMODATION_UNFEATURED": "Smeštaj je uklonjen iz istaknutog dela početne stranice.",
+		"LISTING_FEE_PAID": "Oglas je obnovljen — ostaje aktivan još jedan period.",
+		"FREE_PUBLISH_GRANTED": "Odobreno je besplatno objavljivanje — oglas je aktivan bez evidentirane uplate.",
+		"LISTING_FEE_UNPAID": "Naknada za ovaj oglas još nije plaćena, pa oglas ne može biti aktivan. Prvo evidentiraj uplatu.",
+		"MONETIZATION_CHOICE_REQUIRED": "Izaberi plan za ovaj oglas — naknada za oglas ili naknada po rezervaciji.",
+		"BOOKING_FEE_REQUIRES_ONLINE": "Oglasi sa naknadom po rezervaciji prihvataju samo online plaćanja.",
+		"MONETIZATION_SWITCH_FORBIDDEN": "Oglas sa naknadom po rezervaciji ne može da pređe na naknadu za oglas — umesto toga kreiraj novi oglas.",
+		"MONETIZATION_SWITCHED": "Plan je promenjen — ovaj oglas sada koristi naknadu po rezervaciji.",
+		"LISTING_FEE_CHARGE_FAILED": "Plaćanje nije prošlo, tako da ništa nije naplaćeno i oglas nije promenjen. Pokušaj ponovo.",
+		"RENEWAL_NEEDS_SUPPORT": "Online obnova još nije dostupna — odgovori na email o obnovi ili nas kontaktiraj i mi ćemo se pobrinuti za sve.",
+		"ADMIN_ACCESS_REQUIRED": "Za ovu radnju su potrebna administratorska prava.",
+		"ADMIN_CANNOT_BE_DELETED": "Administratori ne mogu da se obrišu. Prvo im promeni ulogu na korisnika.",
+		"ALL_SESSIONS_REVOKED": "Sve sesije su opozvane.",
+		"BATCH_TOO_LARGE": "Previše stavki u jednom zahtevu (maks. {limit}).",
+		"HOST_CANCEL_WINDOW_CLOSED": "Ova plaćena rezervacija ne može da se otkaže ovako blizu prijave. U hitnim slučajevima kontaktiraj podršku.",
+		"BOOKING_CANCEL_TOO_LATE": "Rok za otkazivanje ove rezervacije je istekao. Ako su ti se planovi promenili, kontaktiraj domaćina.",
+		"BOOKING_ALREADY_REQUESTED": "Već si poslao/la zahtev za ove datume — evo te rezervacije.",
+		"BOOKING_CREATED": "Rezervacija je potvrđena.",
+		"BOOKING_UPDATED": "Rezervacija je ažurirana.",
+		"DATA_TABLE_DELETED_ALL": "Obrisano je {count} stavki.",
+		"DATA_TABLE_DELETED_WITH_MISSING": "Obrisano je {count} stavki; {missing} je već bilo obrisano.",
+		"DATES_UNAVAILABLE": "Te datume je upravo rezervisao neko drugi. Izaberi druge datume.",
+		"EMAIL_SENT_SUCCESSFULLY": "Email je uspešno poslat.",
+		"FAVORITES_MERGED": "Sačuvani smeštaji su sinhronizovani sa tvojim nalogom.",
+		"FAVORITE_REMOVED": "Uklonjeno sa tvoje liste.",
+		"FAVORITE_SAVED": "Sačuvano na tvojoj listi.",
+		"FORBIDDEN": "Nemaš dozvolu da izvršiš ovu radnju.",
+		"INVALID_BOOKING_DATES": "Odjava mora biti nakon prijave.",
+		"MODERATION_REASON_REQUIRED": "Potrebno je navesti razlog za suspenziju smeštaja.",
+		"NEWSLETTER_SUBSCRIBED": "Hvala što si se prijavio/la! Proveri inbox za najbolje smeštaje i ponude.",
+		"NOT_AUTHENTICATED": "Prijavi se da bi nastavio/la.",
+		"NO_ITEMS_PROVIDED": "Nisu navedene stavke.",
+		"NO_MATCHING_ITEMS": "Nisu pronađene odgovarajuće stavke.",
+		"PASSWORD_TOO_COMMON": "Ova lozinka je previše česta. Izaberi jaču lozinku.",
+		"PASSWORD_TOO_LONG": "Lozinka je predugačka.",
+		"PASSWORD_TOO_SHORT": "Lozinka mora imati najmanje {min} karaktera.",
+		"PAYMENT_METHOD_NOT_ACCEPTED": "Ovaj smeštaj ne prihvata taj način plaćanja.",
+		"CHECKOUT_READY": "Vodimo te na bezbedno plaćanje…",
+		"CHECKOUT_EXPIRED": "Ova sesija plaćanja je istekla. Ponovo započni rezervaciju i ponovo ćemo proveriti dostupnost datuma.",
+		"CHECKOUT_UNAVAILABLE": "Nismo mogli da otvorimo stranicu za plaćanje. Ništa nije naplaćeno — pokušaj ponovo.",
+		"PAYMENT_NOT_READY": "Plaćanje ove rezervacije još nije spremno. Osveži stranicu za koji trenutak i pokušaj ponovo.",
+		"PAYMENT_CAPTURE_FAILED": "Plaćanje gosta nije moglo da bude naplaćeno, pa rezervacija nije potvrđena. Zamoli gosta da ponovo rezerviše.",
+		"ONLINE_PAYMENTS_UNAVAILABLE": "Online plaćanja još nisu dostupna — smeštaji za sada mogu da prihvate samo gotovinu prilikom prijave.",
+		"PAYOUTS_UNAVAILABLE": "Trenutno nismo mogli da otvorimo podešavanje isplate. Tvoja zarada je bezbedna — pokušaj ponovo uskoro.",
+		"PAYOUT_ONBOARDING_READY": "Otvaranje podešavanja isplate…",
+		"PAYMENT_FLAG_CLEARED": "Oznaka za plaćanje je uklonjena.",
+		"REPORT_MESSAGE_REQUIRED": "Dodaj nekoliko reči o tome šta se desilo.",
+		"REPORT_SUBMITTED": "Hvala na prijavi — primili smo je.",
+		"REPORT_RESOLVED": "Prijava je rešena.",
+		"REPORT_REOPENED": "Prijava je ponovo otvorena.",
+		"RESERVATION_FOUND": "Pronašli smo je — otvaramo tvoju rezervaciju.",
+		"RESERVATION_NOT_FOUND": "Nismo mogli da pronađemo rezervaciju sa tim kodom i emailom. Proveri oba podatka i pokušaj ponovo.",
+		"SESSION_REVOKED": "Sesija je opozvana.",
+		"STAY_CONFIRMATION_REQUESTED": "Zahtev za potvrdu je poslat — gost je dobio email sa opcijom da potvrdi jednim klikom. Ako ne odgovori u roku od 24 sata, otkazivanje oslobađa datume.",
+		"STAY_CONFIRMATION_COOLDOWN": "Već si nedavno poslao/la zahtev — daj gostu još malo vremena da odgovori.",
+		"STAY_CONFIRMED": "Hvala — tvoj boravak je potvrđen. Domaćin je obavešten da dolaziš.",
+		"HOST_CANCEL_NEEDS_CONFIRMATION": "Prvo zamoli gosta da potvrdi boravak — ako ne odgovori u roku od 24 sata, otkazivanje oslobađa datume.",
+		"STORAGE_DELETE_FAILED": "Nije moguće obrisati fajl iz skladišta. Ništa nije uklonjeno.",
+		"STORAGE_URL_UNAVAILABLE": "Nije moguće pronaći URL fajla.",
+		"TEST_ROW_CREATED": "Testni red je kreiran.",
+		"TOO_MANY_REQUESTS": "Previše zahteva. Pokušaj ponovo kasnije.",
+		"TOO_MANY_REQUESTS_MINUTES": "Previše zahteva. Pokušaj ponovo za {minutes} min.",
+		"TOO_MANY_REQUESTS_SECONDS": "Previše zahteva. Pokušaj ponovo za {seconds}s.",
+		"UNEXPECTED_ERROR": "Došlo je do neočekivane greške. Pokušaj ponovo.",
+		"UPLOAD_NOT_FOUND": "Otpremanje nije pronađeno. Pokušaj ponovo.",
+		"UPLOAD_SAVED": "Fajl je sačuvan.",
+		"UPLOAD_SAVE_FAILED": "Nije moguće sačuvati otpremljeni fajl. Pokušaj ponovo.",
+		"UPLOAD_TOO_LARGE": "Fajl je prevelik.",
+		"UPLOAD_TYPE_NOT_ALLOWED": "Taj tip fajla nije dozvoljen.",
+		"UPLOAD_URL_READY": "URL za otpremanje je generisan.",
+		"USER_BANNED": "Korisnik je banovan.",
+		"USER_DELETED": "Korisnik je obrisan.",
+		"USER_NOT_FOUND": "Korisnik nije pronađen.",
+		"USER_ROLE_UPDATED": "Uloga korisnika je ažurirana.",
+		"USER_SUPERHOST_UPDATED": "Superhost status je ažuriran.",
+		"USER_UNBANNED": "Korisniku je uklonjen ban.",
+		"YOU_NEED_TO_CORRECT_FORM_ERRORS": "Moraš da ispraviš greške u formularu"
+	},
+	"ValidationMessages": {
+		"Default": {
+			"required": "Ovo polje je obavezno.",
+			"invalidValue": "Proveri ovo polje.",
+			"notANumber": "Unesi broj.",
+			"invalidDate": "Unesi važeći datum.",
+			"invalidEmail": "Unesi važeću email adresu.",
+			"invalidUrl": "Unesi važeći link.",
+			"invalidChoice": "Izaberi važeću opciju.",
+			"textTooShort": "Mora imati najmanje {min} karaktera.",
+			"textTooLong": "Neka bude kraće od {max} karaktera.",
+			"tooFewItems": "Dodaj najmanje {min}.",
+			"tooManyItems": "Dodaj najviše {max}.",
+			"numberNotNegative": "Ovo ne može biti negativno.",
+			"numberTooSmall": "Unesi {min} ili više.",
+			"numberTooBig": "Unesi {max} ili manje."
+		},
+		"Field": {
+			"placeId": "Izaberi svoj grad sa liste (samo kucanje neće postaviti grad).",
+			"type": "Izaberi tip nekretnine.",
+			"description": "Dodaj kratak opis (najmanje 20 karaktera).",
+			"amenities": "Izaberi najmanje {min} pogodnosti.",
+			"photos": "Otpremi najmanje {min} fotografija.",
+			"pricePerNight": "Postavi cenu po noći.",
+			"squareMeters": "Unesi površinu u m².",
+			"maxGuests": "Najmanje jedan gost.",
+			"bathrooms": "Najmanje jedno kupatilo.",
+			"minReservationDays": "Najmanje 1 noć.",
+			"checkInTime": "Postavi vreme prijave.",
+			"checkOutTime": "Postavi vreme odjave.",
+			"hostId": "Izaberi vlasnika ovog smeštaja.",
+			"phone": "Unesi važeći broj telefona.",
+			"stayDates": "Izaberi datume.",
+			"bookingCode": "Unesi kod rezervacije iz emaila sa potvrdom.",
+			"reason": "Napiši najmanje 4 karaktera.",
+			"confirmPassword": "Potvrdi lozinku.",
+			"code": "Koristi {length}-cifreni kod iz svog emaila."
+		},
+		"Accommodation": {
+			"bedroomsRequired": "Najmanje jedna spavaća soba (garsonjere mogu biti bez nje).",
+			"photosMinTotal": "Zadrži ili dodaj ukupno najmanje {min} fotografija.",
+			"monetizationRequired": "Izaberi plan za ovaj oglas — naknada za oglas ili naknada po rezervaciji.",
+			"silent": ""
+		},
+		"Booking": {
+			"minOneNight": "Tvoj boravak mora trajati najmanje jednu noć.",
+			"maxStayNights": "Jedan boravak može trajati najviše {max} noći."
+		},
+		"Auth": {
+			"codeFormat": "Koristi {length}-cifreni kod iz svog emaila.",
+			"passwordTooCommon": "Ova lozinka je previše česta. Izaberi jaču lozinku.",
+			"passwordsMustMatch": "Lozinke moraju da se podudaraju."
+		}
+	}
+}

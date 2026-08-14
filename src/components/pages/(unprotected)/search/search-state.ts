@@ -1,4 +1,5 @@
 // nuqs URL state + filter helpers shared by the search page panes (list, map, filters).
+import { m } from '@/paraglide/messages';
 import { useQueryStates, parseAsString } from 'nuqs-svelte';
 
 import type { FilterKey, SearchState } from './types';
@@ -22,11 +23,23 @@ export function useSearchState() {
 }
 
 // The count filters. `noun` is what an active chip reads ("4+ baths").
-export const FILTER_DEFS = [
-	{ key: 'bedrooms', label: 'Bedrooms', noun: 'bedrooms' },
-	{ key: 'bathrooms', label: 'Bathrooms', noun: 'baths' },
-	{ key: 'guests', label: 'Guests', noun: 'guests' }
-] as const;
+export const FILTER_DEFS: ReadonlyArray<{
+	key: 'bedrooms' | 'bathrooms' | 'guests';
+	label: string;
+	noun: string;
+}> = [
+	{
+		key: 'bedrooms',
+		label: m['SearchPage.SearchState.bedrooms'](),
+		noun: m['SearchPage.SearchState.bedroomsNoun']()
+	},
+	{
+		key: 'bathrooms',
+		label: m['SearchPage.SearchState.bathrooms'](),
+		noun: m['SearchPage.SearchState.bathsNoun']()
+	},
+	{ key: 'guests', label: m['SearchPage.SearchState.guests'](), noun: m['SearchPage.SearchState.guestsNoun']() }
+];
 
 export const FILTER_OPTIONS = ['any', '1', '2', '3', '4+'] as const;
 
@@ -57,7 +70,7 @@ export type AccommodationSearchParams = {
 export function activeFilters(search: SearchState) {
 	return FILTER_DEFS.map((d) => ({
 		key: d.key,
-		label: `${search[d.key].current} ${d.noun}`,
+		label: m['SearchPage.SearchState.chip']({ count: search[d.key].current, noun: d.noun }),
 		value: search[d.key].current
 	})).filter((c) => c.value !== 'any');
 }

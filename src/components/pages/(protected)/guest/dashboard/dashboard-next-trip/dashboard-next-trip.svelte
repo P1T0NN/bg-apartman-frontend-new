@@ -1,7 +1,12 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { PROTECTED_PAGE_ENDPOINTS, UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 	// COMPONENTS
 	import * as Card from '@/components/ui/card/index.js';
 	import { Button } from '@/components/ui/button/index.js';
@@ -52,7 +57,7 @@
 
 			<div class="space-y-1">
 				<p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-					Your next trip
+					{m['GuestDashboardPage.DashboardNextTrip.yourNextTrip']()}
 				</p>
 				<h2 class="text-xl font-semibold tracking-tight">{trip.apartment.title}</h2>
 				<p class="flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -63,32 +68,42 @@
 
 			<dl class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
 				<div>
-					<dt class="text-xs text-muted-foreground">Check-in</dt>
+					<dt class="text-xs text-muted-foreground">
+						{m['GuestDashboardPage.DashboardNextTrip.checkIn']()}
+					</dt>
 					<dd class="font-medium">{formatDate(trip.checkInDate)}</dd>
 				</div>
 				<div>
-					<dt class="text-xs text-muted-foreground">Check-out</dt>
+					<dt class="text-xs text-muted-foreground">
+						{m['GuestDashboardPage.DashboardNextTrip.checkOut']()}
+					</dt>
 					<dd class="font-medium">{formatDate(trip.checkOutDate)}</dd>
 				</div>
 				<div>
-					<dt class="text-xs text-muted-foreground">Guests</dt>
+					<dt class="text-xs text-muted-foreground">
+						{m['GuestDashboardPage.DashboardNextTrip.guests']()}
+					</dt>
 					<dd class="flex items-center gap-1.5 font-medium">
 						<UsersIcon class="size-3.5 text-muted-foreground" aria-hidden="true" />
 						{formatAdultsAndChildren(trip.numberOfAdults, trip.numberOfChildren)}
 					</dd>
 				</div>
 				<div>
-					<dt class="text-xs text-muted-foreground">Confirmation</dt>
+					<dt class="text-xs text-muted-foreground">
+						{m['GuestDashboardPage.DashboardNextTrip.confirmation']()}
+					</dt>
 					<dd class="font-medium">{trip.bookingCode}</dd>
 				</div>
 			</dl>
 
 			<div class="mt-auto flex flex-wrap gap-3 pt-1">
-				<Button href={PROTECTED_PAGE_ENDPOINTS.GUEST_MY_BOOKINGS}>
-					View booking
+				<Button href={appHref(PROTECTED_PAGE_ENDPOINTS.GUEST_MY_BOOKINGS)}>
+					{m['GuestDashboardPage.DashboardNextTrip.viewBooking']()}
 					<ArrowRightIcon class="size-4" aria-hidden="true" />
 				</Button>
-				<Button variant="outline" href={UNPROTECTED_PAGE_ENDPOINTS.ROOT}>Browse stays</Button>
+				<Button variant="outline" href={appHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT)}>
+					{m['GuestDashboardPage.DashboardNextTrip.browseStays']()}
+				</Button>
 			</div>
 		</div>
 	</div>

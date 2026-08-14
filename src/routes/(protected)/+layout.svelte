@@ -1,6 +1,5 @@
 <script lang="ts">
 	// SVELTEKIT IMPORTS
-	import { goto } from '$app/navigation';
 
 	// LIBRARIES
 	import { useAuth } from '@mmailaender/convex-better-auth-svelte/svelte';
@@ -8,6 +7,8 @@
 	// CONFIG
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
+	// UTILS
+	import { appGoto } from '@/utils/app-navigation.js';
 	let { children } = $props();
 
 	const auth = useAuth();
@@ -19,7 +20,7 @@
 	// leave for the login page instead of idling on a dead shell.
 	$effect(() => {
 		if (!auth.isLoading && !auth.isAuthenticated) {
-			goto(UNPROTECTED_PAGE_ENDPOINTS.LOGIN);
+			appGoto(UNPROTECTED_PAGE_ENDPOINTS.LOGIN);
 		}
 	});
 </script>

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// SVELTEKIT IMPORTS
 	import { page } from '$app/state';
 
@@ -61,16 +64,16 @@
 </script>
 
 <SvelteHead
-	title={`Book ${accommodation?.title ?? ''}`}
-	description="Confirm your booking details."
+	title={m['BookPage.SEO.title']({ title: accommodation?.title ?? '' })}
+	description={m['BookPage.SEO.description']()}
 	noIndex
 />
 
 {#if accommodationQuery.error}
 	<ErrorComponent
 		variant="alert"
-		title="Couldn't load this accommodation"
-		description="Something went wrong while loading this accommodation. Please try again in a moment."
+		title={m['BookPage.loadErrorTitle']()}
+		description={m['BookPage.loadErrorDescription']()}
 	/>
 {:else if accommodation === null}
 	<AccommodationPageEmpty />

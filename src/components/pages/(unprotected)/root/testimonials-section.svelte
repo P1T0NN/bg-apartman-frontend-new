@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import Section from '@/components/ui/section/section.svelte';
 	import { QualityImage } from '@/components/ui/quality-image/index.js';
@@ -26,12 +29,14 @@
 	<!-- Section Header - left-aligned with trust badges on the right -->
 	<div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
 		<div>
-			<p class="text-xs font-semibold tracking-[0.22em] text-primary uppercase">Testimonials</p>
+			<p class="text-xs font-semibold tracking-[0.22em] text-primary uppercase">
+				{m['HomePage.TestimonialsSection.eyebrow']()}
+			</p>
 			<h2
 				class="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl"
 			>
-				Loved by guests<br class="hidden lg:block" />
-				<span class="text-primary">around the world</span>
+				{m['HomePage.TestimonialsSection.lovedByGuests']()}<br class="hidden lg:block" />
+				<span class="text-primary">{m['HomePage.TestimonialsSection.aroundTheWorld']()}</span>
 			</h2>
 		</div>
 
@@ -39,15 +44,21 @@
 		<div class="flex flex-wrap gap-4 lg:gap-5 lg:pb-1">
 			<div class="flex items-center gap-2">
 				<BadgeCheckIcon class="h-5 w-5 text-primary" />
-				<span class="text-sm font-medium text-muted-foreground">Verified Reviews</span>
+				<span class="text-sm font-medium text-muted-foreground"
+					>{m['HomePage.TestimonialsSection.verifiedReviews']()}</span
+				>
 			</div>
 			<div class="flex items-center gap-2">
 				<ShieldCheckIcon class="h-5 w-5 text-primary" />
-				<span class="text-sm font-medium text-muted-foreground">Secure Booking</span>
+				<span class="text-sm font-medium text-muted-foreground"
+					>{m['HomePage.TestimonialsSection.secureBooking']()}</span
+				>
 			</div>
 			<div class="flex items-center gap-2">
 				<CircleDollarSignIcon class="h-5 w-5 text-primary" />
-				<span class="text-sm font-medium text-muted-foreground">Best Price</span>
+				<span class="text-sm font-medium text-muted-foreground"
+					>{m['HomePage.TestimonialsSection.bestPrice']()}</span
+				>
 			</div>
 		</div>
 	</div>
@@ -164,7 +175,9 @@
 							src={testimonial.thumbnail480 ?? testimonial.thumbnail}
 							srcset={testimonial.thumbnail480 ? `${testimonial.thumbnail480} 480w` : undefined}
 							sizes="(max-width: 640px) 100vw, 33vw"
-							alt="Watch {testimonial.name}'s review"
+							alt={m['HomePage.TestimonialsSection.watchReviewAlt']({
+								name: testimonial.name
+							})}
 							class="h-full w-full object-cover transition-transform duration-500 group-hover/media:scale-105"
 							width={480}
 							height={270}
@@ -180,7 +193,7 @@
 							</div>
 						</div>
 						<span class="absolute bottom-2.5 left-3 text-xs font-medium text-white/90">
-							Watch Review
+							{m['HomePage.TestimonialsSection.watchReview']()}
 						</span>
 					</a>
 				{/if}

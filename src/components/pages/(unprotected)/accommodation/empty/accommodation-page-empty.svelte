@@ -1,4 +1,10 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
+
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 
@@ -22,15 +28,15 @@
 		</div>
 
 		<div class="flex flex-col gap-1.5">
-			<h1 class="text-lg font-semibold">Accommodation unavailable</h1>
+			<h1 class="text-lg font-semibold">{m['AccommodationPage.AccommodationPageEmpty.title']()}</h1>
 			<p class="mx-auto max-w-sm text-sm text-muted-foreground">
-				This stay may have been removed or is no longer published. Browse our other places to stay.
+				{m['AccommodationPage.AccommodationPageEmpty.text']()}
 			</p>
 		</div>
 
-		<Button href="/search" variant="outline">
+		<Button href={appHref('/search')} variant="outline">
 			<SearchIcon class="size-4" aria-hidden="true" />
-			Browse stays
+			{m['AccommodationPage.AccommodationPageEmpty.browseStays']()}
 		</Button>
 	</div>
 </div>

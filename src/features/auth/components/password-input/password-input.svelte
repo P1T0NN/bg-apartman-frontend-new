@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 	import { Input } from '@/components/ui/input/index.js';
@@ -41,7 +44,9 @@
 		size="icon-sm"
 		class="absolute end-1 top-1/2 z-10 -translate-y-1/2 text-muted-foreground hover:text-foreground"
 		onclick={() => (visible = !visible)}
-		aria-label={visible ? 'Hide password' : 'Show password'}
+		aria-label={
+			visible ? m['AuthFeature.PasswordInput.hidePassword']() : m['AuthFeature.PasswordInput.showPassword']()
+		}
 		aria-pressed={visible}
 		{disabled}
 	>

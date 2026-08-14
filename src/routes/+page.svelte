@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
 	import HeroSection from '@/components/pages/(unprotected)/root/hero-section/hero-section.svelte';
@@ -10,8 +13,8 @@
 </script>
 
 <SvelteHead
-	title="Handpicked apartments — find & book your stay"
-	description="Handpicked apartments for a night, a week, or a whole season. Search, compare and book your stay in minutes — clear pricing, instant confirmation, local support."
+	title={m['HomePage.SEO.title']()}
+	description={m['HomePage.SEO.description']()}
 	image="/opengraph-image.png"
 />
 

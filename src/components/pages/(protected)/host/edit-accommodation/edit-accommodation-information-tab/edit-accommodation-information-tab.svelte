@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 
@@ -68,7 +71,7 @@
 	<PlacesAutocomplete
 		id={inputId}
 		variant="city"
-		placeholder="Search your city"
+		placeholder={m['HostEditAccommodationPage.EditAccommodationInformationTab.searchCityPlaceholder']()}
 		value={cityInitial}
 		onInput={() => setValue('')}
 		onSelect={(place) => {
@@ -92,7 +95,11 @@
 		variant="address"
 		disabled={!regionSelected}
 		regionName={values.city}
-		placeholder={regionSelected ? 'Search street name' : 'Pick a city first'}
+		placeholder={
+			regionSelected
+				? m['HostEditAccommodationPage.EditAccommodationInformationTab.searchStreetPlaceholder']()
+				: m['HostEditAccommodationPage.EditAccommodationInformationTab.pickCityFirst']()
+		}
 		bind:value={values.address}
 		onSelect={(place) => applyStreetToValues(values, place, setValue)}
 	/>
@@ -149,7 +156,7 @@
 	runFunction={api.tables.accommodations.mutations.updateAccommodation.updateApartment}
 	mapArgs={(_formValues, args) =>
 		updateAccommodationSchema.parse({ ...args, id: accommodation._id, locale: 'en' })}
-	submitLabel="Save changes"
+	submitLabel={m['HostEditAccommodationPage.EditAccommodationInformationTab.saveChanges']()}
 	resetOnSuccess={false}
 	{uploadFolder}
 	customFields={{

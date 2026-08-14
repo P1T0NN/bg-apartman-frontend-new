@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { ACCOMMODATION_TYPES } from '@/shared/data/accommodationsData';
 
@@ -36,7 +39,9 @@
 		<p class="truncate text-xs text-muted-foreground">
 			{typeLabel}
 			{#if row.city}
-				in {row.city}
+				{m['HostMyAccommodationsPage.MyAccommodationsTableAccommodationInfo.inCity']({
+					city: row.city
+				})}
 			{/if}
 		</p>
 	</div>

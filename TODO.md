@@ -31,21 +31,22 @@ verified Google result or lands in a human review queue.
 
 ## 2. Forbid Cyrillic — the 4 layers
 
-| Layer | File | Change |
-|---|---|---|
-| 1. Source (master switch) | `src/lib/google-maps/loader.ts` | Add `language: 'en'` to the bootstrap script `URLSearchParams`. Today the script loads with **no** `language`, so a `sr-Cyrl` browser locale makes Google return Cyrillic street/city names. The bootstrap language is what `place.fetchFields()` address components follow, so this single line makes **every** resolved detail Latin regardless of the host's OS/UI language. |
-| 2. Input | `src/components/ui/places-autocomplete/places-autocomplete.svelte` | In `handleInput()`, run the typed text through `toLatin()` before `runSearch`. Typing «Стефана Првовенчаног» searches «Stefana Prvovencanog» → the dropdown always shows Latin suggestions. |
-| 3. Storage boundary | `src/features/accommodations/utils/applyPlaceToLocationValues.ts` | Run `toLatin()` on every value written from a picked place (`street`, `addressNumber`, `city`, `country`, `addressLine`). Picking the Latin dropdown entry stores the Latin counterpart — exactly the behavior requested. |
-| 4. Server (can't be bypassed) | `src/convex/.../createAccommodation.ts`, `updateAccommodation.ts` | Normalize `address`/`addressNumber`/`city`/`country`/`addressLine` through `toLatin()` in the args handler (or validate + reject non-Latin with a clear error). Nothing Cyrillic can persist even if the client is edited. |
+| Layer                         | File                                                               | Change                                                                                                                                                                                                                                                                                                                                                                          |
+| ----------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. Source (master switch)     | `src/lib/google-maps/loader.ts`                                    | Add `language: 'en'` to the bootstrap script `URLSearchParams`. Today the script loads with **no** `language`, so a `sr-Cyrl` browser locale makes Google return Cyrillic street/city names. The bootstrap language is what `place.fetchFields()` address components follow, so this single line makes **every** resolved detail Latin regardless of the host's OS/UI language. |
+| 2. Input                      | `src/components/ui/places-autocomplete/places-autocomplete.svelte` | In `handleInput()`, run the typed text through `toLatin()` before `runSearch`. Typing «Стефана Првовенчаног» searches «Stefana Prvovencanog» → the dropdown always shows Latin suggestions.                                                                                                                                                                                     |
+| 3. Storage boundary           | `src/features/accommodations/utils/applyPlaceToLocationValues.ts`  | Run `toLatin()` on every value written from a picked place (`street`, `addressNumber`, `city`, `country`, `addressLine`). Picking the Latin dropdown entry stores the Latin counterpart — exactly the behavior requested.                                                                                                                                                       |
+| 4. Server (can't be bypassed) | `src/convex/.../createAccommodation.ts`, `updateAccommodation.ts`  | Normalize `address`/`addressNumber`/`city`/`country`/`addressLine` through `toLatin()` in the args handler (or validate + reject non-Latin with a clear error). Nothing Cyrillic can persist even if the client is edited.                                                                                                                                                      |
 
 New util — `src/utils/cyrillicToLatin.ts` (~20 lines, no dependency):
+
 - `containsCyrillic(s: string): boolean`
 - `toLatin(s: string): string` — Serbian Cyrillic → Latin table (includes `Љ Њ Џ Ђ Ћ Ш Ч Ж` + common letters, plus `ё`/`е` handling); any other char passes through untouched.
 
 > Why `language: 'en'` and not `'sr'`: the requirement is about **script**, and both are
 > Latin. `en` matches the app's English UI ("Belgrade"); if the app later localizes to
 > Serbian, `sr` returns the same Latin street names ("Knez Mihailova") and Latin "Beograd".
-> Either is safe — the invariant is *never* a Cyrillic-script locale.
+> Either is safe — the invariant is _never_ a Cyrillic-script locale.
 
 ---
 
@@ -55,14 +56,15 @@ New util — `src/utils/cyrillicToLatin.ts` (~20 lines, no dependency):
   (`locality → postal_town → admin_level_2 → admin_level_1`). **Keep that order.** Add the
   tail case: if a place has **no** locality-level component at all (only a sublocality /
   neighborhood), resolve the parent via `resolveRegionPlaceId(admin_level_1-or-2 name,
-  'locality')`; if that also fails, return `city: ''` and let the form flag the row instead
+'locality')`; if that also fails, return `city: ''` and let the form flag the row instead
   of ever storing a sublocality as the city.
 - `resolveMergedRegionPlaceId()` already returns the canonical merged `<cityId> <countryId>`
   place id (place ids are language-independent, so "Beograd"/"Belgrade" → same id). The
   re-geocode uses it directly, which keeps the stored key identical to what the search box
-  produces — one accommodation matches city *and* country searches, in any language.
+  produces — one accommodation matches city _and_ country searches, in any language.
 
 Examples the hardened logic must produce:
+
 - `Serbia, Savski Venac` → `city: Belgrade` (sublocality discarded)
 - `Vojvodina` (admin_level_1) → the actual locality of the pin (e.g. `Novi Sad`)
 - village rows → Google returns the village as `locality` (accepted) or `admin_level_2`
@@ -91,16 +93,16 @@ another): prefer coordinates, but queue the row for human confirmation.
 
 **Per-row result** (`database/addresses/geocode-results.jsonl`, keyed by legacy `_id`):
 
-| Field | Source |
-|---|---|
-| `address` (street, Latin) | reverse/forward `route`; `toLatin()` |
-| `addressNumber` | `street_number` (`''` when absent — never rendered publicly) |
-| `city` | hardened locality climb (§3) |
-| `country` | `country` component |
-| `placeId` | `resolveMergedRegionPlaceId(details)` — the city+country merged key |
-| `coordinates` | the resolved pin (reuse legacy if unchanged) |
-| `timeZone` | `tz-lookup` from lat/lng (already a dependency) |
-| `addressLine` | `street_number + route` |
+| Field                     | Source                                                              |
+| ------------------------- | ------------------------------------------------------------------- |
+| `address` (street, Latin) | reverse/forward `route`; `toLatin()`                                |
+| `addressNumber`           | `street_number` (`''` when absent — never rendered publicly)        |
+| `city`                    | hardened locality climb (§3)                                        |
+| `country`                 | `country` component                                                 |
+| `placeId`                 | `resolveMergedRegionPlaceId(details)` — the city+country merged key |
+| `coordinates`             | the resolved pin (reuse legacy if unchanged)                        |
+| `timeZone`                | `tz-lookup` from lat/lng (already a dependency)                     |
+| `addressLine`             | `street_number + route`                                             |
 
 **Manual review queue — the "no exceptions" mechanism.** Rows that fail to resolve, resolve
 only to a region (no route), or conflict between coords/text are written to
@@ -139,11 +141,9 @@ them).
 
 - [x] All 178 rows: `address` is Latin, `city` is a real locality (grep — zero rows contain
       Cyrillic, zero contain sublocality-style values like "Venac", "Opština", "Beograd
-      Grad"), `placeId` resolves, `coordinates` set.
-      - Audit run: `node database/addresses/audit-addresses.cjs` → `✓ audit clean` (178/178).
-      - Dev searches: Beograd 93 (94 incl. 1 archived), Kopaonik 25, Bar 2, Podgorica 6,
-        Budva 16, Montenegro 24, Serbia 147, Bosnia 5, Barcelona(ES) 0 — country totals sum
-        to the 177 published.
+      Grad"), `placeId` resolves, `coordinates` set. - Audit run: `node database/addresses/audit-addresses.cjs` → `✓ audit clean` (178/178). - Dev searches: Beograd 93 (94 incl. 1 archived), Kopaonik 25, Bar 2, Podgorica 6,
+      Budva 16, Montenegro 24, Serbia 147, Bosnia 5, Barcelona(ES) 0 — country totals sum
+      to the 177 published.
 - [x] City search returns known listings (e.g. a Belgrade listing); **country search returns
       listings too** (new — the old rows had no `countryPlaceId`).
 - [x] Host flow, add + edit: type Cyrillic in city and street → dropdown is Latin → picking

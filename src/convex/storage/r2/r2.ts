@@ -65,10 +65,7 @@ export const generateR2UploadUrl = authMutation('generateR2UploadUrl')({
 		}),
 		data: v.optional(v.object({ url: v.string(), key: v.string() }))
 	}),
-	handler: async (
-		_ctx,
-		args
-	): Promise<ConvexMutationResult<{ url: string; key: string }>> => {
+	handler: async (_ctx, args): Promise<ConvexMutationResult<{ url: string; key: string }>> => {
 		// `authMutation` already handled auth + rate-limit before we got here. A custom key
 		// must be unique — a random uuid guarantees it regardless of folder collisions.
 		const customKey = args.folder ? `${args.folder}/${crypto.randomUUID()}` : undefined;

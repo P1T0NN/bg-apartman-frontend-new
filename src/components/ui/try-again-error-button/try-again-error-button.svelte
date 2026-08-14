@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// SVELTEKIT IMPORTS
 	import { invalidateAll } from '$app/navigation';
 
@@ -10,7 +13,7 @@
 
 	let {
 		// Fallback only — callers pass a localized label.
-		label = 'Try again',
+		label = m['TryAgainErrorButton.tryAgain'](),
 		onRetry,
 		class: className
 	}: {

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 
@@ -46,13 +48,15 @@
 	});
 
 	const guestName = $derived(
-		booking ? `${booking.guestFirstName} ${booking.guestLastName}` : 'The guest'
+		booking
+			? `${booking.guestFirstName} ${booking.guestLastName}`
+			: m['BookingsFeature.BookingsDetailSheet.CancelBookingDialog.theGuest']()
 	);
 
 	const reasonLength = $derived(values.cancelReason.trim().length);
 
 	const fields: MutationFormFieldDef[] = [
-		{ id: 'cancelReason', kind: 'textarea', label: 'Reason for cancelling' }
+		{ id: 'cancelReason', kind: 'textarea', label: m['BookingsFeature.BookingsDetailSheet.CancelBookingDialog.reasonForCancelling']() }
 	];
 </script>
 
@@ -69,18 +73,15 @@
 	}}
 >
 	<div class="alert-dialog__header">
-		<h2 class="text-destructive">Cancel this confirmed booking?</h2>
+		<h2 class="text-destructive">{m['BookingsFeature.BookingsDetailSheet.CancelBookingDialog.title']()}</h2>
 		<!-- Names the concrete consequence: who is emailed, who is refunded, what it costs
 		     the host to do this often (HostSystemDesign.md §3, BSD §4). The reason below is
 		     emailed to the guest verbatim. -->
 		<p>
 			{#if booking?.paymentMethod === 'online'}
-				{guestName} is notified by email with your reason and gets a full refund — host cancellations
-				are never the guest's cost. Repeated cancellations are reviewed. This can't be undone.
+				{m['BookingsFeature.BookingsDetailSheet.CancelBookingDialog.bodyOnline']({ guest: guestName })}
 			{:else}
-				{guestName} is notified by email with your reason and the dates reopen. Use this when a guest
-				has gone unresponsive about a cash stay — try WhatsApp or email first. Repeated cancellations
-				are reviewed. This can't be undone.
+				{m['BookingsFeature.BookingsDetailSheet.CancelBookingDialog.bodyCash']({ guest: guestName })}
 			{/if}
 		</p>
 	</div>
@@ -118,7 +119,7 @@
 		oninput={(e) => setValue(e.currentTarget.value)}
 		maxlength={500}
 		rows={4}
-		placeholder="e.g. The apartment needs urgent repairs and can't host these dates."
+		placeholder={m['BookingsFeature.BookingsDetailSheet.CancelBookingDialog.reasonPlaceholder']()}
 		aria-invalid={!!error}
 	/>
 	<span
@@ -134,7 +135,7 @@
 {#snippet formActions({ busy }: { busy: boolean })}
 	<div class="alert-dialog__footer">
 		<Button type="button" variant="outline" onclick={() => (open = false)} disabled={busy}>
-			Keep booking
+			{m['BookingsFeature.BookingsDetailSheet.CancelBookingDialog.keepBooking']()}
 		</Button>
 		<!-- Never disabled on validity: clicking must SAY what's wrong (the form's own
 		     field errors + toast), not silently refuse. -->
@@ -142,7 +143,7 @@
 			{#if busy}
 				<Loader class="h-3 w-3 animate-spin" />
 			{/if}
-			Cancel booking
+			{m['BookingsFeature.BookingsDetailSheet.CancelBookingDialog.cancelBooking']()}
 		</Button>
 	</div>
 {/snippet}

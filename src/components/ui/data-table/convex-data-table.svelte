@@ -12,7 +12,6 @@
 
 	// UTILS
 	import { safeMutation } from '@/utils/convexHelpers';
-	import { convexOneShotQuery } from '@/utils/convexOneShot.svelte.js';
 	import { translateFromBackend } from '@/features/validations/utils/translateFromBackend';
 
 	// TYPES
@@ -66,9 +65,7 @@
 		expandedContent,
 		getRowLabel,
 		emptyTitle,
-		emptyDescription,
-		onReady,
-		realtime = false
+		emptyDescription
 	}: {
 		class?: string;
 		caption?: string;
@@ -128,21 +125,6 @@
 		/** Empty-state copy. Worth setting where "nothing here" is itself the answer. */
 		emptyTitle?: string;
 		emptyDescription?: string;
-		/**
-		 * Handed back a `refetch()` for THIS list. Call it after a mutation made from a row or
-		 * a dialog on the same screen, so a one-shot list shows your own write immediately.
-		 * The built-in `deleteMutation` already calls it. No-op when `realtime`.
-		 */
-		onReady?: (controls: { refetch: () => void }) => void;
-		/**
-		 * Hold a live subscription instead of fetching once per args change. OFF by default
-		 * (`docs/GeneralSystemDesignRule.md`): a subscription is a standing per-viewer cost
-		 * that re-executes on every overlapping write. Turn it on only when rows change under
-		 * the viewer WITHOUT them acting — another user writes them, or a cron/webhook does.
-		 * Seeing your OWN write is not a reason; that is what `onReady`'s `refetch` is for.
-		 * Read once at mount; do not toggle at runtime.
-		 */
-		realtime?: boolean;
 	} = $props();
 
 	const convex = useConvexClient();
@@ -194,20 +176,11 @@
 		}
 	}
 
-	// Both return the same `{ data, error, isLoading }` surface, so nothing downstream branches
-	// on which one is in play. `realtime` is read once here on purpose — swapping a subscription
-	// for a one-shot mid-life would strand the open channel.
+	// Live subscription: re-runs on every overlapping write, so rows change under the viewer
+	// WITHOUT them acting (another user, a cron) and a mutation made on this very screen both
+	// show up automatically — no manual refetch.
 	// svelte-ignore state_referenced_locally
-	const listQuery = realtime
-		? useQuery(query, currentArgs, { keepPreviousData: true })
-		: convexOneShotQuery(query, currentArgs, { keepPreviousData: true });
-
-	// `useQuery` re-runs itself on every relevant write, so its refetch is a no-op; the
-	// one-shot path needs a real one to show a mutation made from this very screen.
-	const refetch = () => {
-		if (!realtime) (listQuery as { refetch: () => void }).refetch();
-	};
-	$effect(() => onReady?.({ refetch }));
+	const listQuery = useQuery(query, currentArgs, { keepPreviousData: true });
 
 	const listPayload = $derived(listQuery.data as PaginatedListPayload<T> | undefined);
 
@@ -272,14 +245,11 @@
 		const result = await safeMutation(convex, deleteMutation, { ids });
 		if (!result) return false;
 		if (!hasMutationEnvelope(result)) {
-			refetch();
 			return true;
 		}
 
 		toast[result.success ? 'success' : 'info'](translateFromBackend(result.message));
-		// A one-shot list would otherwise keep showing the rows it just deleted: the args did
-		// not change, so nothing re-runs. No-op under `realtime`.
-		if (result.success) refetch();
+		// The live list re-runs on this mutation's write, so deleted rows drop out on their own.
 		return result.success;
 	}
 </script>

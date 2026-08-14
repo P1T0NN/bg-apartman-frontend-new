@@ -1,12 +1,12 @@
 /** Branding and contact strings used by emails, headers, footers, etc. */
 export const COMPANY_DATA = {
 	NAME: 'BGApartman',
-	EMAIL: 'company@gmail.com',
-	RESEND_EMAIL: 'onboarding@resend.dev', // default email for the Resend provider
+	EMAIL: 'admin@bgapartman.com',
+	RESEND_EMAIL: 'info@bgapartman.com', // default email for the Resend provider
 	DOMAIN: 'bgapartman.com',
 	LOGO: '/logo/opt/logo-1536w.webp',
 	DESCRIPTION:
-		'We build dependable software and services so your team can focus on what matters most.',
+		'Find and book apartments in Belgrade with ease — browse verified stays, compare prices, and plan your trip in minutes.',
 	// Social profiles shown in the footer — replace '#' with the real URLs.
 	INSTAGRAM_URL: 'https://www.instagram.com/bgapartman/',
 	FACEBOOK_URL: 'https://www.facebook.com/profile.php?id=61557036657114',
@@ -15,7 +15,7 @@ export const COMPANY_DATA = {
 } as const;
 
 /**
- * Fallback IANA zone for a accommodation's availability calendar — used only when a accommodation
+ * Fallback IANA zone for an accommodation's availability calendar — used only when an accommodation
  * has no stored `timeZone` (rows created before timezone resolution existed, or a
  * failed lookup). Each accommodation now resolves its own zone from the address pin
  * (coordinates → IANA via `tz-lookup`; see `PlaceDetails.timeZone`), so the calendar

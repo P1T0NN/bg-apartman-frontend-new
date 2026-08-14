@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useQuery } from 'convex-svelte';
@@ -37,8 +40,8 @@
 </script>
 
 <SvelteHead
-	title="Edit accommodation"
-	description="Edit your accommodation accommodation."
+	title={m['HostEditAccommodationPage.SEO.title']()}
+	description={m['HostEditAccommodationPage.SEO.description']()}
 	noIndex
 />
 
@@ -46,8 +49,8 @@
 	{#if accommodationQuery.error}
 		<ErrorComponent
 			variant="alert"
-			title="Couldn't load this accommodation"
-			description="Something went wrong while loading this accommodation. Please try again in a moment."
+			title={m['HostEditAccommodationPage.loadErrorTitle']()}
+			description={m['HostEditAccommodationPage.loadErrorDescription']()}
 		/>
 	{:else if accommodation === null}
 		<EditAccommodationPageEmpty />

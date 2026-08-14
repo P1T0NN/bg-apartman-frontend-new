@@ -1,6 +1,12 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
+
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
@@ -22,13 +28,13 @@
 	</div>
 
 	<div class="flex flex-col gap-1.5">
-		<h2 class="text-lg font-semibold">List your first place</h2>
+		<h2 class="text-lg font-semibold">{m['BecomeHostState.title']()}</h2>
 		<p class="mx-auto max-w-sm text-sm text-muted-foreground">
-			Create an accommodation and start welcoming guests — it only takes a few minutes.
+			{m['BecomeHostState.subtitle']()}
 		</p>
 	</div>
 
-	<Button href={PROTECTED_PAGE_ENDPOINTS.ADD_ACCOMMODATION} size="lg" class="mt-1">
-		Add your first accommodation
+	<Button href={appHref(PROTECTED_PAGE_ENDPOINTS.ADD_ACCOMMODATION)} size="lg" class="mt-1">
+		{m['BecomeHostState.cta']()}
 	</Button>
 </div>

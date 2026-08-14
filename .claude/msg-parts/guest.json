@@ -1,0 +1,23 @@
+{
+	"guestDashboard.DashboardHeader.welcomeBack": "Welcome back",
+	"guestDashboard.DashboardHeader.welcomeBackName": "Welcome back, {firstName}",
+	"guestDashboard.DashboardShortcuts.upcomingTrips": "Upcoming trips",
+	"guestDashboard.DashboardShortcuts.savedPlaces": "Saved places",
+	"guestDashboard.DashboardShortcuts.checkedOut": "Checked out",
+	"guestDashboard.DashboardUpcoming.moreUpcoming": "More upcoming",
+	"guestDashboard.DashboardNextTripEmpty.noTripsYet": "No trips yet",
+	"guestDashboard.DashboardNextTripEmpty.whenYouBook": "When you book a stay, it'll show up here.",
+	"guestDashboard.DashboardNextTripEmpty.browseStays": "Browse stays",
+	"guestDashboard.DashboardNextTrip.yourNextTrip": "Your next trip",
+	"guestDashboard.DashboardNextTrip.checkIn": "Check-in",
+	"guestDashboard.DashboardNextTrip.checkOut": "Check-out",
+	"guestDashboard.DashboardNextTrip.guests": "Guests",
+	"guestDashboard.DashboardNextTrip.confirmation": "Confirmation",
+	"guestDashboard.DashboardNextTrip.viewBooking": "View booking",
+	"guestDashboard.DashboardNextTrip.browseStays": "Browse stays",
+	"guestFavorites.FavoritesPageEmpty.noSavedStaysYet": "No saved stays yet",
+	"guestFavorites.FavoritesPageEmpty.tapTheHeart": "Tap the heart on any place you like and it'll show up here, ready for your next trip.",
+	"guestFavorites.FavoritesPageEmpty.browseStays": "Browse stays",
+	"guestMyBookings.MyBookingsHeader.myBookings": "My bookings",
+	"guestMyBookings.MyBookingsHeader.trackYourUpcoming": "Track your upcoming trips, review past stays and check the status of every reservation."
+}

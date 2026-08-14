@@ -20,3 +20,6 @@ PRODUCT.md
 
 # Tool-managed, rewritten by Claude Code — not ours to format.
 .claude/
+
+# Browser-test harness snapshots — tool-generated, not source.
+.playwright-mcp/

@@ -79,7 +79,7 @@ export const { counters, wrapDB } = defineCounters<DataModel>()((counter) => ({
 		namespace: (doc) => doc.hostId,
 		sortKey: (doc) => doc.status,
 		sumValue: (doc) => doc.net
-	}),
+	})
 }));
 
 // Composed with `wrapDB` rather than taking `defineCounters`' own mutation constructors:

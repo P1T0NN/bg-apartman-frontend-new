@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 
@@ -40,24 +43,27 @@
 
 <!-- Offset query (slices by `page`, returns an exact `totalCount`) — the cursor default
      would re-serve the first slice on every page and never end. -->
-<!-- realtime: users file reports while staff are on this screen, and status is set from it. -->
 <ConvexDataTable
-	realtime
-	caption="Reports"
+	caption={m['AdminReportsPage.AdminReportsTable.reports']()}
 	query={api.tables.reports.queries.listReportsSafe.listReportsSafe}
 	optimizationStrategy="offset"
 	controlsPlace="top"
 	{queryArgs}
 	columns={ADMIN_REPORTS_TABLE_COLUMNS}
 	getRowId={(r) => r._id}
-	getRowLabel={(r) => `${REPORT_CATEGORY_TONE[r.category].label} report`}
+	getRowLabel={(r) =>
+		m['AdminReportsPage.AdminReportsTable.reportRowLabel']({
+			label: REPORT_CATEGORY_TONE[r.category].label
+		})}
 	customCells={{ category: categoryCell, status: statusCell, actions: actionsCell }}
 	{expandedContent}
 	{filters}
-	emptyTitle={view === 'new' ? 'Nothing new. All caught up.' : 'No reports yet.'}
+	emptyTitle={view === 'new'
+		? m['AdminReportsPage.AdminReportsTable.nothingNew']()
+		: m['AdminReportsPage.AdminReportsTable.noReportsYet']()}
 	emptyDescription={view === 'new'
-		? 'New reports land here the moment someone files one.'
-		: 'Nobody has filed a report yet.'}
+		? m['AdminReportsPage.AdminReportsTable.newReportsLandHere']()
+		: m['AdminReportsPage.AdminReportsTable.nobodyFiledReport']()}
 	{errorContent}
 />
 
@@ -80,10 +86,12 @@
 {#snippet statusCell({ row }: DataTableCellSnippetProps<AdminReportRow>)}
 	{#if row.status === 'resolved'}
 		<span class="rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
-			Resolved
+			{m['AdminReportsPage.AdminReportsTable.resolved']()}
 		</span>
 	{:else}
-		<span class="rounded bg-primary/10 px-1.5 py-0.5 text-xs font-medium text-primary">New</span>
+		<span class="rounded bg-primary/10 px-1.5 py-0.5 text-xs font-medium text-primary">
+			{m['AdminReportsPage.AdminReportsTable.new']()}
+		</span>
 	{/if}
 {/snippet}
 
@@ -97,6 +105,8 @@
 
 {#snippet errorContent()}
 	<Card class="p-8 text-center">
-		<p class="text-sm text-muted-foreground">Could not load reports. Try refreshing the page.</p>
+		<p class="text-sm text-muted-foreground">
+			{m['AdminReportsPage.AdminReportsTable.loadError']()}
+		</p>
 	</Card>
 {/snippet}

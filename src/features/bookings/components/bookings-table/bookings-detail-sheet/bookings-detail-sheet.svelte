@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useQuery } from 'convex-svelte';
@@ -68,7 +70,7 @@
 	bind:open
 	{onOpenChange}
 	side="right"
-	title="Booking details"
+	title={m['BookingsFeature.BookingsDetailSheet.title']()}
 	class="w-full max-w-none gap-0 bg-background sm:max-w-md"
 >
 	{#if booking}

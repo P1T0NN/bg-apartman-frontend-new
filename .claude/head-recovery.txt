@@ -1,0 +1,1730 @@
+=== CURRENT CONSUMER USAGE ===
+
+--- AccommodationPage.BookingPanelFacts.checkOut
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\accommodation\accommodation-booking-panel\booking-panel-facts.svelte:46: {m['AccommodationPage.BookingPanelFacts.checkOut']()}
+
+--- AccommodationPage.BookingPanelFacts.minimumStay
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\accommodation\accommodation-booking-panel\booking-panel-facts.svelte:104: {m['AccommodationPage.BookingPanelFacts.minimumStay']()}
+
+--- AccommodationPage.BookingPanelFacts.nightsCount
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\accommodation\accommodation-booking-panel\booking-panel-facts.svelte:107: {m['AccommodationPage.BookingPanelFacts.nightsCount']({ count: minNights })}
+
+--- AccommodationPage.BookingPanelFacts.weekendNights
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\accommodation\accommodation-booking-panel\booking-panel-facts.svelte:80: {m['AccommodationPage.BookingPanelFacts.weekendNights']()}
+
+--- AdminBookingsPage.AdminBookingsTable.guest
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(protected)\admin\bookings\admin-bookings-table\admin-bookings-table.svelte:89: header: m['AdminBookingsPage.AdminBookingsTable.guest'](),
+
+--- AdminBookingsPage.AdminBookingsTable.status
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(protected)\admin\bookings\admin-bookings-table\admin-bookings-table.svelte:113: { id: 'status', header: m['AdminBookingsPage.AdminBookingsTable.status'](), accessor: (r) => r.status, wrap: true }
+
+--- AdminBookingsPage.AdminBookingsTable.stay
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(protected)\admin\bookings\admin-bookings-table\admin-bookings-table.svelte:101: header: m['AdminBookingsPage.AdminBookingsTable.stay'](),
+
+--- AdminReportsPage.AdminReportsTable.loadError
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(protected)\admin\reports\admin-reports-table\admin-reports-table.svelte:109: {m['AdminReportsPage.AdminReportsTable.loadError']()}
+
+--- AdminReportsPage.AdminReportsTable.resolved
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(protected)\admin\reports\admin-reports-table\admin-reports-table.svelte:89: {m['AdminReportsPage.AdminReportsTable.resolved']()}
+
+--- adminReportsPage.AdminReportsTableData.resolved
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(protected)\admin\reports\admin-reports-table\adminReportsTableData.ts:43: ? m['adminReportsPage.AdminReportsTableData.resolved']()
+
+--- BookPage.BookPrice.total
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\book\book-summary-card\book-price.svelte:158: <span class="text-base font-semibold">{m['BookPage.BookPrice.total']()}</span>
+
+--- HomePage.BecomeHostSection.eyebrow
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\become-host-section.svelte:60: {m['HomePage.BecomeHostSection.eyebrow']()}
+
+--- HomePage.BecomeHostSection.listingsText
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\become-host-section.svelte:40: text: m['HomePage.BecomeHostSection.listingsText']()
+
+--- HomePage.BecomeHostSection.listingsTitle
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\become-host-section.svelte:39: title: m['HomePage.BecomeHostSection.listingsTitle'](),
+
+--- HomePage.BecomeHostSection.numbersText
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\become-host-section.svelte:22: text: m['HomePage.BecomeHostSection.numbersText']()
+
+--- HomePage.BecomeHostSection.requestsText
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\become-host-section.svelte:34: text: m['HomePage.BecomeHostSection.requestsText']()
+
+--- HomePage.BecomeHostSection.requestsTitle
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\become-host-section.svelte:33: title: m['HomePage.BecomeHostSection.requestsTitle'](),
+
+--- HomePage.BecomeHostSection.revenueLabel
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\become-host-section.svelte:74: >{m['HomePage.BecomeHostSection.revenueLabel']()}</span
+
+--- HomePage.BecomeHostSection.subtitle
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\become-host-section.svelte:66: {m['HomePage.BecomeHostSection.subtitle']()}
+
+--- HomePage.WhyUsSection.eyebrow
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\why-us-section.svelte:48: {m['HomePage.WhyUsSection.eyebrow']()}
+
+--- HomePage.WhyUsSection.reasonBookText
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\why-us-section.svelte:28: text: m['HomePage.WhyUsSection.reasonBookText']()
+
+--- HomePage.WhyUsSection.reasonBookTitle
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\why-us-section.svelte:27: title: m['HomePage.WhyUsSection.reasonBookTitle'](),
+
+--- HomePage.WhyUsSection.reasonHandpickedText
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\why-us-section.svelte:18: text: m['HomePage.WhyUsSection.reasonHandpickedText']()
+
+--- HomePage.WhyUsSection.reasonLocalText
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\why-us-section.svelte:33: text: m['HomePage.WhyUsSection.reasonLocalText']()
+
+--- HomePage.WhyUsSection.reasonLocalTitle
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\why-us-section.svelte:32: title: m['HomePage.WhyUsSection.reasonLocalTitle'](),
+
+--- HostDashboardPage.HostDashboardPendingReservations.title
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(protected)\host\dashboard\host-dashboard-pending-reservations\host-dashboard-pending-reservations.svelte:72: <h2 class="text-base font-semibold tracking-tight">{m['HostDashboardPage.HostDashboardPendingReservations.title']()}</h2>
+
+--- HomePage.HeroSectionSearch.addDates
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\hero-section\hero-section-search.svelte:54: if (!dates?.start) return m['HomePage.HeroSectionSearch.addDates']();
+
+--- UploadFileItemSingle.unknownType
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\features\uploadFile\components\upload-file-single\upload-file-item-single.svelte:67: {file.type || m['UploadFileItemSingle.unknownType']()} · {formatBytes(file.size)}
+
+--- HomePage.HeroSection.feelAtHome
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\hero-section\hero-section.svelte:56: {m['HomePage.HeroSection.feelAtHome']()}{' '}<span class="text-primary italic"
+
+--- HomePage.TestimonialsSection.lovedByGuests
+  D:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\src\components\pages\(unprotected)\root\testimonials-section.svelte:38: {m['HomePage.TestimonialsSection.lovedByGuests']()}<br class="hidden lg:block" />
+
+=== HEAD SOURCE (relevant files) ===
+
+===== src/components/pages/(protected)/admin/bookings/admin-bookings-table/admin-bookings-table.svelte (HEAD, 186 lines) =====
+<script lang="ts">
+	// SVELTEKIT
+	import { page } from '$app/state';
+
+	// LIBRARIES
+	import { api } from '@/convex/_generated/api';
+
+	// CONFIG
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
+
+	// COMPONENTS
+	import ConvexDataTable from '@/components/ui/data-table/convex-data-table.svelte';
+	import { FeatureStatus } from '@/components/ui/feature-status/index.js';
+	import BookingsFilters from './admin-bookings-filters.svelte';
+	import BookingDetailRow from './admin-booking-detail-row.svelte';
+	import AdminCancelBookingDialog from './admin-cancel-booking-dialog.svelte';
+
+	// DATA
+	import {
+		BOOKING_STATUS_CONFIG,
+		PAYMENT_STATUS_CONFIG
+	} from '@/features/bookings/data/bookingsData';
+
+	// UTILS
+	import { formatCurrency } from '@/utils/formatters';
+	import { appHref } from '@/utils/app-navigation';
+
+	// TYPES
+	import type { ColumnDef, DataTableCellSnippetProps } from '@/components/ui/data-table/types.js';
+	import type { AdminBookingRow } from '@/convex/tables/bookings/queries/listBookingsAdmin';
+	import type {
+		typesBookingStatus,
+		typesPaymentStatus
+	} from '@/shared/features/booking/types/bookingTypes';
+
+	// LUCIDE ICONS
+	import TriangleAlertIcon from '@lucide/svelte/icons/triangle-alert';
+
+	/**
+	 * The whole bookings surface: filters, table, row detail, and the cancel dialog the detail
+	 * row opens. Self-contained so the page file stays a header plus this — every piece of
+	 * state below (search field, filters, cancel target) exists only to serve this table, and
+	 * lifting any of it to the page would just be passing it straight back down.
+	 *
+	 * Subscription via `ConvexDataTable` — decided in AdminPagesSystemDesign.md §3, not here.
+	 */
+
+	// `guestId` arrives from the user-detail page's "View bookings" cross-link (APSD §5).
+	const guestId = $derived(page.url.searchParams.get('guestId') ?? undefined);
+
+	let searchField = $state<'code' | 'email'>('code');
+	let status = $state<typesBookingStatus | undefined>(undefined);
+	let paymentStatus = $state<typesPaymentStatus | undefined>(undefined);
+	let checkInFrom = $state('');
+	let checkInTo = $state('');
+	let flagged = $state(false);
+	let search = $state('');
+
+	const queryArgs = $derived({
+		searchField,
+		...(status !== undefined && { status }),
+		...(paymentStatus !== undefined && { paymentStatus }),
+		...(checkInFrom !== '' && { checkInFrom }),
+		...(checkInTo !== '' && { checkInTo }),
+		...(flagged ? { flagged: true } : {}),
+		...(guestId !== undefined && { guestId })
+	});
+
+	let cancelTarget = $state<AdminBookingRow | null>(null);
+	let cancelOpen = $state(false);
+
+	function openCancel(row: AdminBookingRow) {
+		cancelTarget = row;
+		cancelOpen = true;
+	}
+
+	const columns: ColumnDef<AdminBookingRow>[] = [
+		{ id: 'bookingCode', header: 'Code', accessor: (r) => r.bookingCode, hasCopy: true },
+		{ id: 'guest', header: 'Guest', accessor: (r) => `${r.guestFirstName} ${r.guestLastName}` },
+		{
+			id: 'accommodation',
+			header: 'Accommodation',
+			accessor: (r) => r.apartment.title,
+			hideBelow: 'md'
+		},
+		{ id: 'host', header: 'Host', accessor: (r) => r.hostName, hideBelow: 'md' },
+		{
+			id: 'stay',
+			header: 'Stay',
+			accessor: (r) => `${r.checkInDate} → ${r.checkOutDate}`,
+			hideBelow: 'lg'
+		},
+		{ id: 'total', header: 'Total', accessor: (r) => r.total, hideBelow: 'lg' },
+		{
+			id: 'payment',
+			header: 'Payment',
+			accessor: (r) => r.paymentStatus,
+			hideBelow: 'md',
+			wrap: true
+		},
+		{ id: 'status', header: 'Status', accessor: (r) => r.status, wrap: true }
+	];
+</script>
+
+<!-- `listBookingsAdmin` slices by `page` and returns an exact `totalCount` — it must be
+     driven in OFFSET mode. Left on the cursor default it never receives `page` (so every
+     page returns the first slice) and `isDone` never lands, so Next stays enabled forever. -->
+<!-- realtime: guests create bookings and the lifecycle cron advances statuses under the admin. -->
+<ConvexDataTable
+	realtime
+	caption="Bookings"
+	query={api.tables.bookings.queries.listBookingsAdmin.listBookingsAdmin}
+	optimizationStrategy="offset"
+	controlsPlace="top"
+	{queryArgs}
+	{columns}
+	getRowId={(r) => r._id}
+	getRowLabel={(r) => r.bookingCode}
+	customCells={{
+		guest: guestCell,
+		accommodation: accommodationCell,
+		total: totalCell,
+		payment: paymentCell,
+		status: statusCell
+	}}
+	{expandedContent}
+	searchable
+	bind:search
+	searchPlaceholder={searchField === 'code' ? 'Search by booking code…' : 'Search by guest email…'}
+	{filters}
+/>
+
+<AdminCancelBookingDialog booking={cancelTarget} bind:open={cancelOpen} />
+
+{#snippet filters()}
+	<BookingsFilters
+		bind:searchField
+		bind:status
+		bind:paymentStatus
+		bind:checkInFrom
+		bind:checkInTo
+		bind:flagged
+	/>
+{/snippet}
+
+{#snippet guestCell({ row }: DataTableCellSnippetProps<AdminBookingRow>)}
+	<div class="flex min-w-0 flex-col">
+		<span class="flex items-center gap-1.5 truncate font-medium">
+			{row.guestFirstName}
+			{row.guestLastName}
+			{#if row.paymentFlag}
+				<TriangleAlertIcon
+					class="size-3.5 shrink-0 text-amber-600 dark:text-amber-400"
+					aria-label="A payment operation needs attention"
+				/>
+			{/if}
+		</span>
+		<span class="truncate text-xs text-muted-foreground">{row.guestEmail}</span>
+	</div>
+{/snippet}
+
+{#snippet accommodationCell({ row }: DataTableCellSnippetProps<AdminBookingRow>)}
+	<a
+		href={appHref(UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION.replace(':slug', row.apartmentSlug))}
+		class="truncate text-primary hover:underline"
+	>
+		{row.apartment.title}
+	</a>
+{/snippet}
+
+{#snippet totalCell({ row }: DataTableCellSnippetProps<AdminBookingRow>)}
+	<span class="tabular-nums">{formatCurrency(row.total)}</span>
+{/snippet}
+
+{#snippet paymentCell({ row }: DataTableCellSnippetProps<AdminBookingRow>)}
+	<FeatureStatus config={PAYMENT_STATUS_CONFIG} status={row.paymentStatus} />
+{/snippet}
+
+{#snippet statusCell({ row }: DataTableCellSnippetProps<AdminBookingRow>)}
+	<FeatureStatus config={BOOKING_STATUS_CONFIG} status={row.status} />
+{/snippet}
+
+{#snippet expandedContent({ row }: { row: AdminBookingRow })}
+	<BookingDetailRow booking={row} onCancel={openCancel} />
+{/snippet}
+
+
+===== src/components/pages/(protected)/admin/reports/admin-reports-table/admin-reports-table.svelte (HEAD, 103 lines) =====
+<script lang="ts">
+	// LIBRARIES
+	import { api } from '@/convex/_generated/api';
+
+	// COMPONENTS
+	import ConvexDataTable from '@/components/ui/data-table/convex-data-table.svelte';
+	import { Card } from '@/components/ui/card/index.js';
+	import AdminReportsTableFilters from './admin-reports-table-filters.svelte';
+	import AdminReportsTableActions from './admin-reports-table-actions.svelte';
+	import AdminReportDetail from './admin-report-detail.svelte';
+
+	// UTILS
+	import { cn } from '@/utils/utils.js';
+
+	// DATA
+	import { ADMIN_REPORTS_TABLE_COLUMNS } from './adminReportsTableData';
+	import { REPORT_CATEGORY_TONE } from '@/features/reports/data/reportsData';
+
+	// TYPES
+	import type { DataTableCellSnippetProps } from '@/components/ui/data-table/types';
+	import type { AdminReportRow } from '@/convex/tables/reports/queries/listReportsSafe';
+	import type { ReportCategory } from '@/shared/features/report/schemas/reportsSchemas';
+
+	/**
+	 * The whole reports surface: filters, table, the row disclosure that carries the report
+	 * text, and the resolve/reopen action. Self-contained so the page file stays a header
+	 * plus this — the state below exists only to scope the query and its empty-state copy.
+	 *
+	 * The table owns the subscription — reports arrive from the public while the admin reads
+	 * the inbox, the same live case as the dashboard's feedback band.
+	 */
+	let view = $state<'new' | 'all'>('new');
+	let category = $state<ReportCategory | undefined>(undefined);
+
+	const queryArgs = $derived({
+		...(view === 'new' ? { status: 'new' as const } : {}),
+		...(category !== undefined ? { category } : {})
+	});
+</script>
+
+<!-- Offset query (slices by `page`, returns an exact `totalCount`) — the cursor default
+     would re-serve the first slice on every page and never end. -->
+<!-- realtime: users file reports while staff are on this screen, and status is set from it. -->
+<ConvexDataTable
+	realtime
+	caption="Reports"
+	query={api.tables.reports.queries.listReportsSafe.listReportsSafe}
+	optimizationStrategy="offset"
+	controlsPlace="top"
+	{queryArgs}
+	columns={ADMIN_REPORTS_TABLE_COLUMNS}
+	getRowId={(r) => r._id}
+	getRowLabel={(r) => `${REPORT_CATEGORY_TONE[r.category].label} report`}
+	customCells={{ category: categoryCell, status: statusCell, actions: actionsCell }}
+	{expandedContent}
+	{filters}
+	emptyTitle={view === 'new' ? 'Nothing new. All caught up.' : 'No reports yet.'}
+	emptyDescription={view === 'new'
+		? 'New reports land here the moment someone files one.'
+		: 'Nobody has filed a report yet.'}
+	{errorContent}
+/>
+
+{#snippet filters()}
+	<AdminReportsTableFilters bind:view bind:category />
+{/snippet}
+
+{#snippet categoryCell({ row }: DataTableCellSnippetProps<AdminReportRow>)}
+	{@const tone = REPORT_CATEGORY_TONE[row.category]}
+	<span
+		class={cn(
+			'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset',
+			tone.badgeClass
+		)}
+	>
+		{tone.label}
+	</span>
+{/snippet}
+
+{#snippet statusCell({ row }: DataTableCellSnippetProps<AdminReportRow>)}
+	{#if row.status === 'resolved'}
+		<span class="rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
+			Resolved
+		</span>
+	{:else}
+		<span class="rounded bg-primary/10 px-1.5 py-0.5 text-xs font-medium text-primary">New</span>
+	{/if}
+{/snippet}
+
+{#snippet actionsCell({ row }: DataTableCellSnippetProps<AdminReportRow>)}
+	<AdminReportsTableActions report={row} />
+{/snippet}
+
+{#snippet expandedContent({ row }: { row: AdminReportRow })}
+	<AdminReportDetail report={row} />
+{/snippet}
+
+{#snippet errorContent()}
+	<Card class="p-8 text-center">
+		<p class="text-sm text-muted-foreground">Could not load reports. Try refreshing the page.</p>
+	</Card>
+{/snippet}
+
+
+===== src/components/pages/(protected)/admin/reports/admin-reports-table/adminReportsTableData.ts (HEAD, 49 lines) =====
+// DATA
+import { REPORT_CATEGORY_TONE, reportAgo } from '@/features/reports/data/reportsData';
+
+// TYPES
+import type { ColumnDef } from '@/components/ui/data-table/types.js';
+import type { AdminReportRow } from '@/convex/tables/reports/queries/listReportsSafe';
+
+/**
+ * Columns for the `/admin/reports` inbox.
+ *
+ * The message column carries a one-line preview only: reports are prose, and prose dies in
+ * table cells (AdminPagesSystemDesign.md §4). The full text lives in the row's disclosure,
+ * which is what the reader opens once a preview looks worth reading.
+ */
+export const ADMIN_REPORTS_TABLE_COLUMNS: ColumnDef<AdminReportRow>[] = [
+	{
+		id: 'category',
+		header: 'Category',
+		accessor: (row) => REPORT_CATEGORY_TONE[row.category].label,
+		cellClass: 'w-40'
+	},
+	{
+		id: 'message',
+		header: 'Report',
+		accessor: (row) => row.message,
+		cellClass: 'min-w-[18rem]'
+	},
+	{
+		id: 'received',
+		header: 'Received',
+		accessor: (row) => reportAgo(row._creationTime),
+		hideBelow: 'md',
+		cellClass: 'w-32 text-muted-foreground'
+	},
+	{
+		id: 'status',
+		header: 'Status',
+		accessor: (row) => (row.status === 'resolved' ? 'Resolved' : 'New'),
+		hideBelow: 'sm',
+		cellClass: 'w-28'
+	},
+	{
+		id: 'actions',
+		header: '',
+		accessor: () => '',
+		cellClass: 'w-28 text-right'
+	}
+];
+
+
+===== src/components/pages/(protected)/host/dashboard/host-dashboard-pending-reservations/host-dashboard-pending-reservations.svelte (HEAD, 88 lines) =====
+<script lang="ts">
+	// LIBRARIES
+	import { api } from '@/convex/_generated/api';
+	import { useQuery } from 'convex-svelte';
+
+	// CONFIG
+	import { PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
+
+	// COMPONENTS
+	import { Card } from '@/components/ui/card/index.js';
+	import { Button } from '@/components/ui/button/index.js';
+	import HostDashboardPendingReservationsItem from './host-dashboard-pending-reservations-item.svelte';
+	import HostDashboardPendingReservationsLoading from './loading/host-dashboard-pending-reservations-loading.svelte';
+	import { ErrorComponent } from '@/components/ui/error-component/index.js';
+
+	// TYPES
+	import type { HostPendingReservations } from '@/convex/pages/host/dashboard/types/hostDashboardTypes';
+
+	// LUCIDE ICONS
+	import InboxIcon from '@lucide/svelte/icons/inbox';
+	import ArrowRightIcon from '@lucide/svelte/icons/arrow-right';
+
+	/**
+	 * Subscription, justified (GeneralSystemDesignRule.md): requests arrive from guests and
+	 * the lifecycle cron expires them while the host watches — the rule's admin-orders case
+	 * verbatim. The ONLY live channel on this page; the stats and chart legs are one-shot,
+	 * so a new request re-runs this small bounded read and nothing else.
+	 *
+	 * Fetched here rather than passed in, so the page file stays a layout of bands.
+	 */
+	const pendingQuery = useQuery(
+		api.pages.host.dashboard.queries.fetchHostDashboardPendingBookings
+			.fetchHostDashboardPendingBookings,
+		() => ({})
+	);
+
+	const data = $derived(pendingQuery.data as HostPendingReservations | undefined);
+
+	// Pending reservations are read-only here — confirming/declining happens on the reservations
+	// page. This card just surfaces what's waiting and links across.
+	const pendingHref = `${PROTECTED_PAGE_ENDPOINTS.RESERVATIONS}?status=pending`;
+</script>
+
+<!--
+	Branch order: error → loading → content. Absent when nothing is waiting — the band-1
+	convention, where absence means "done" rather than an empty card claiming space
+	(HostSystemDesign.md §2). That is also why the skeleton can collapse to nothing: an
+	empty queue is the good outcome, not a missing one.
+-->
+{#if pendingQuery.error}
+	<ErrorComponent
+		variant="content"
+		title="Couldn't load pending requests"
+		description="Open your reservations to answer them."
+	>
+		<Button href={pendingHref} variant="ghost" size="sm">Reservations</Button>
+	</ErrorComponent>
+{:else if data === undefined}
+	<HostDashboardPendingReservationsLoading />
+{:else if data.items.length > 0}
+	<Card class="gap-0 border-primary/30 bg-primary/3 p-4 sm:p-5">
+		<div class="mb-4 flex items-start gap-3">
+			<span
+				class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
+			>
+				<InboxIcon class="size-5" aria-hidden="true" />
+			</span>
+			<div class="min-w-0 flex-1">
+				<h2 class="text-base font-semibold tracking-tight">Pending reservations</h2>
+				<p class="text-xs text-muted-foreground">
+					Requests waiting for your response — they expire automatically.
+				</p>
+			</div>
+		</div>
+
+		<ul class="flex flex-col divide-y">
+			{#each data.items as booking (booking._id)}
+				<HostDashboardPendingReservationsItem {booking} />
+			{/each}
+		</ul>
+
+		<Button href={pendingHref} variant="outline" size="sm" class="mt-4 self-start">
+			View
+			<ArrowRightIcon class="size-4" aria-hidden="true" />
+		</Button>
+	</Card>
+{/if}
+
+
+===== src/components/pages/(unprotected)/accommodation/accommodation-booking-panel/booking-panel-facts.svelte (HEAD, 109 lines) =====
+<script lang="ts">
+	// UTILS
+	import { formatCurrency } from '@/utils/formatters';
+	import { minNightsFor } from '@/features/accommodations/utils/accommodationPresentation';
+
+	// TYPES
+	import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
+
+	// LUCIDE ICONS
+	import LogInIcon from '@lucide/svelte/icons/log-in';
+	import LogOutIcon from '@lucide/svelte/icons/log-out';
+	import UsersIcon from '@lucide/svelte/icons/users';
+	import SparklesIcon from '@lucide/svelte/icons/sparkles';
+	import SunIcon from '@lucide/svelte/icons/sun';
+	import CalendarDaysIcon from '@lucide/svelte/icons/calendar-days';
+	import ClockIcon from '@lucide/svelte/icons/clock';
+
+	let { accommodation }: { accommodation: typesAccommodationEnriched } = $props();
+
+	const cleaningFee = $derived(accommodation.cleaningFee ?? 0);
+	const hasWeekendPremium = $derived(
+		!!accommodation.weekendPremium && accommodation.weekendPremium > 0
+	);
+	const hasWeeklyDiscount = $derived(
+		!!accommodation.weeklyDiscount && accommodation.weeklyDiscount > 0
+	);
+	const minNights = $derived(minNightsFor(accommodation));
+</script>
+
+<div class="space-y-2">
+	<!-- Check-in / Check-out -->
+	<div class="grid grid-cols-2 overflow-hidden rounded-lg border bg-muted/30">
+		<div class="px-3 py-2.5">
+			<p class="flex items-center gap-1.5 text-xs text-muted-foreground">
+				<LogInIcon class="size-3.5" aria-hidden="true" />
+				Check-in
+			</p>
+			<p class="mt-0.5 text-sm font-medium">{accommodation.checkInTime ?? '—'}</p>
+		</div>
+		<div class="border-l px-3 py-2.5">
+			<p class="flex items-center gap-1.5 text-xs text-muted-foreground">
+				<LogOutIcon class="size-3.5" aria-hidden="true" />
+				Check-out
+			</p>
+			<p class="mt-0.5 text-sm font-medium">{accommodation.checkOutTime ?? '—'}</p>
+		</div>
+	</div>
+
+	<!-- Max guests -->
+	<div class="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2.5">
+		<span class="flex items-center gap-2 text-sm text-muted-foreground">
+			<UsersIcon class="size-4" aria-hidden="true" />
+			Max guests
+		</span>
+		<span class="text-sm font-medium">{accommodation.maxGuests}</span>
+	</div>
+
+	<!-- Cleaning fee -->
+	<div class="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2.5">
+		<span class="flex items-center gap-2 text-sm text-muted-foreground">
+			<SparklesIcon class="size-4" aria-hidden="true" />
+			Cleaning fee
+		</span>
+		<span
+			class={cleaningFee > 0
+				? 'text-sm font-medium'
+				: 'text-sm text-muted-foreground'}
+		>
+			{#if cleaningFee > 0}
+				{formatCurrency(cleaningFee)}
+			{:else}
+				No cleaning fee
+			{/if}
+		</span>
+	</div>
+
+	{#if hasWeekendPremium}
+		<div class="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2.5">
+			<span class="flex items-center gap-2 text-sm text-muted-foreground">
+				<SunIcon class="size-4" aria-hidden="true" />
+				Weekend nights (Fri–Sat)
+			</span>
+			<span class="text-sm font-medium">{formatCurrency(accommodation.weekendPremium ?? 0)}</span>
+		</div>
+	{/if}
+
+	{#if hasWeeklyDiscount}
+		<div class="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2.5">
+			<span class="flex items-center gap-2 text-sm text-muted-foreground">
+				<CalendarDaysIcon class="size-4" aria-hidden="true" />
+				Weekly discount
+			</span>
+			<span class="text-sm font-medium">{accommodation.weeklyDiscount ?? 0}% off (7+ nights)</span>
+		</div>
+	{/if}
+
+	{#if minNights > 1}
+		<div class="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2.5">
+			<span class="flex items-center gap-2 text-sm text-muted-foreground">
+				<ClockIcon class="size-4" aria-hidden="true" />
+				Minimum stay
+			</span>
+			<span class="text-sm font-medium">
+				{minNights} night{minNights > 1 ? 's' : ''}
+			</span>
+		</div>
+	{/if}
+</div>
+
+
+===== src/components/pages/(unprotected)/book/book-summary-card/book-price.svelte (HEAD, 238 lines) =====
+<script lang="ts">
+	// COMPONENTS
+	import { Separator } from '@/components/ui/separator/index.js';
+
+	// UTILS
+	import { hasNightlyDiscount } from '@/features/accommodations/utils/accommodationPresentation';
+	import { calculatePrice } from '@/shared/features/pricing/utils/calculatePrice';
+	import { nightsBetween } from '@/shared/utils/dateUtils';
+	import { formatCurrency, formatNights } from '@/utils/formatters';
+
+	// LUCIDE ICONS
+	import CalendarDaysIcon from '@lucide/svelte/icons/calendar-days';
+	import PercentIcon from '@lucide/svelte/icons/percent';
+	import SprayCanIcon from '@lucide/svelte/icons/spray-can';
+
+	// TYPES
+	import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
+
+	let {
+		accommodation,
+		checkIn,
+		checkOut
+	}: {
+		accommodation: typesAccommodationEnriched;
+		checkIn: string | null;
+		checkOut: string | null;
+	} = $props();
+
+	const nights = $derived(nightsBetween(checkIn, checkOut));
+	const quote = $derived(calculatePrice(accommodation, checkIn, checkOut));
+	const hasDates = $derived(nights > 0);
+	const discounted = $derived(hasNightlyDiscount(accommodation));
+	// Whole-percent saving off the base rate, shown next to the struck price (e.g. −20%).
+	const discountPercent = $derived(
+		discounted ? Math.round((1 - quote.nightly / accommodation.pricePerNight) * 100) : 0
+	);
+	// A stay with Fri/Sat nights splits into two rate buckets; the base bucket carries the
+	// discount strike, the weekend bucket never does (its rate already is the weekend price).
+	const weekendPremium = $derived(quote.weekendPremium ?? 0);
+	const weekendActive = $derived(weekendPremium > 0 && quote.weekendNights > 0);
+	const regularNights = $derived(quote.nights - quote.weekendNights);
+
+	// The additions that sit between the per-night math and the total. When any exist, they get
+	// a hairline above them so they read as "added on top of the nights", not part of the rate.
+	const hasAdjustments = $derived(
+		quote.lengthDiscount > 0 || quote.cleaningFee > 0 || quote.platformFee > 0
+	);
+</script>
+
+<div class="space-y-4">
+	<p class="text-sm font-semibold">Price details</p>
+
+	{#if hasDates}
+		<div class="space-y-3">
+			<dl class="space-y-2.5 text-sm">
+				<!-- Nightly subtotal, split into its rate buckets when a Fri/Sat override applies.
+				     The struck original total (right column) makes the saving read at a glance:
+				     "was X, now Y" — weekend nights were already the weekend price, so only the
+				     base nights carry the strike. -->
+				{#if weekendActive}
+					{#if regularNights > 0}
+						<div class="flex items-baseline justify-between gap-3">
+							<dt class="text-muted-foreground">
+								{formatCurrency(quote.nightly)}
+								<span class="text-muted-foreground/60">×</span>
+								{formatNights(regularNights)}
+							</dt>
+							<dd class="flex items-baseline gap-1.5">
+								{#if discounted}
+									<span class="text-xs text-muted-foreground/60 tabular-nums line-through">
+										{formatCurrency(accommodation.pricePerNight * regularNights)}
+									</span>
+									<span class="text-xs font-semibold text-destructive tabular-nums"
+										>−{discountPercent}%</span
+									>
+								{/if}
+								<span class="font-medium tabular-nums"
+									>{formatCurrency(quote.nightly * regularNights)}</span
+								>
+							</dd>
+						</div>
+					{/if}
+					<div class="flex items-baseline justify-between gap-3">
+						<dt class="text-muted-foreground">
+							{formatCurrency(weekendPremium)}
+							<span class="text-muted-foreground/60">×</span>
+							{formatNights(quote.weekendNights)}
+						</dt>
+						<dd class="font-medium tabular-nums">
+							{formatCurrency(weekendPremium * quote.weekendNights)}
+						</dd>
+					</div>
+				{:else}
+					<div class="flex items-baseline justify-between gap-3">
+						<dt class="text-muted-foreground">
+							{formatCurrency(quote.nightly)}
+							<span class="text-muted-foreground/60">×</span>
+							{formatNights(quote.nights)}
+						</dt>
+						<dd class="flex items-baseline gap-1.5">
+							{#if discounted}
+								<span class="text-xs text-muted-foreground/60 tabular-nums line-through">
+									{formatCurrency(accommodation.pricePerNight * quote.nights)}
+								</span>
+								<span class="text-xs font-semibold text-destructive tabular-nums"
+									>−{discountPercent}%</span
+								>
+							{/if}
+							<span class="font-medium tabular-nums"
+								>{formatCurrency(quote.accommodationTotal)}</span
+							>
+						</dd>
+					</div>
+				{/if}
+			</dl>
+
+			{#if hasAdjustments}
+				<!-- The additions that sit on top of the nightly math, grouped under a hairline so
+				     they read as "added to this stay", not part of the nightly rate. -->
+				<dl class="space-y-2.5 border-t border-border pt-3 text-sm">
+					{#if quote.lengthDiscount > 0}
+						<div class="flex items-baseline justify-between gap-3">
+							<dt class="text-muted-foreground">
+								Weekly discount ({quote.lengthDiscountPercent}%)
+							</dt>
+							<dd class="font-medium tabular-nums">−{formatCurrency(quote.lengthDiscount)}</dd>
+						</div>
+					{/if}
+
+					{#if quote.cleaningFee > 0}
+						<div class="flex items-baseline justify-between gap-3">
+							<dt class="text-muted-foreground">Cleaning fee</dt>
+							<dd class="font-medium tabular-nums">{formatCurrency(quote.cleaningFee)}</dd>
+						</div>
+					{/if}
+
+					<!-- The platform's cut, shown as its own line BEFORE the guest commits
+					     (AccommodationsSystemDesign.md §8). Zero outside `booking_fee` mode, so the
+					     line simply isn't there — no empty row, no "€0 service fee". -->
+					{#if quote.platformFee > 0}
+						<div class="flex items-baseline justify-between gap-3">
+							<dt class="text-muted-foreground">Service fee</dt>
+							<dd class="font-medium tabular-nums">{formatCurrency(quote.platformFee)}</dd>
+						</div>
+					{/if}
+				</dl>
+			{/if}
+
+			<Separator />
+
+			<!-- Total — the anchor of the card: biggest, boldest line so the eye lands here first. -->
+			<div class="flex items-baseline justify-between gap-3">
+				<span class="text-base font-semibold">Total</span>
+				<span class="text-xl font-bold tracking-tight tabular-nums"
+					>{formatCurrency(quote.total)}</span
+				>
+			</div>
+		</div>
+	{:else}
+		<!-- No dates yet: the hint leads into the nightly price, which sits on its own line —
+		     big and bold — so "99 / night" registers instantly instead of hiding mid-sentence. -->
+		<div class="rounded-xl bg-muted/40 p-4">
+			<p class="flex items-center gap-2 text-sm text-muted-foreground">
+				<CalendarDaysIcon class="size-4 shrink-0" aria-hidden="true" />
+				Add your dates to see the full price — from
+			</p>
+			<!-- The actual nightly price leads and stays the anchor; the original is struck and
+			     muted so it reads as "old", and the badge quantifies the win. A guest's eye lands
+			     on the first big number — make it the one they actually pay. -->
+			<p class="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+				<span class="flex items-baseline gap-1.5">
+					<span class="text-2xl font-bold tracking-tight text-foreground">
+						{formatCurrency(quote.nightly)}
+					</span>
+					<span class="text-sm font-medium text-muted-foreground"> / night. </span>
+				</span>
+				{#if discounted}
+					<span class="text-sm text-muted-foreground/60 tabular-nums line-through">
+						{formatCurrency(accommodation.pricePerNight)}
+					</span>
+					<span
+						class="rounded-md bg-destructive/10 px-1.5 py-0.5 text-xs font-semibold text-destructive tabular-nums"
+						>−{discountPercent}%</span
+					>
+				{/if}
+			</p>
+		</div>
+
+		<!-- The listing's rate structure, shown before dates exist to price it. One row per
+		     component that actually applies; the arithmetic below takes over once dates are
+		     picked, so the same fact is never stated twice. The nightly discount is deliberately
+		     NOT here — it lives in the hero line itself as a struck original + badge, so the
+		     actual price stays the anchor instead of competing with a second, larger number. -->
+		{#if accommodation.weekendPremium || accommodation.weeklyDiscount || accommodation.cleaningFee}
+			<dl class="space-y-2.5 border-t border-border pt-3 text-sm">
+				{#if accommodation.weekendPremium && accommodation.weekendPremium > 0}
+					<div class="flex items-center gap-2.5">
+						<CalendarDaysIcon
+							class="size-3.5 shrink-0 text-muted-foreground/70"
+							aria-hidden="true"
+						/>
+						<dt class="flex-1 text-muted-foreground">Weekend rate (Fri–Sat)</dt>
+						<dd class="text-right font-medium tabular-nums"
+							>{formatCurrency(accommodation.weekendPremium)}/night</dd
+						>
+					</div>
+				{/if}
+
+				{#if accommodation.weeklyDiscount && accommodation.weeklyDiscount > 0}
+					<div class="flex items-center gap-2.5">
+						<PercentIcon
+							class="size-3.5 shrink-0 text-muted-foreground/70"
+							aria-hidden="true"
+						/>
+						<dt class="flex-1 text-muted-foreground">Weekly discount</dt>
+						<dd class="text-right font-medium tabular-nums"
+							>−{accommodation.weeklyDiscount}% off stays of 7+ nights</dd
+						>
+					</div>
+				{/if}
+
+				{#if accommodation.cleaningFee && accommodation.cleaningFee > 0}
+					<div class="flex items-center gap-2.5">
+						<SprayCanIcon
+							class="size-3.5 shrink-0 text-muted-foreground/70"
+							aria-hidden="true"
+						/>
+						<dt class="flex-1 text-muted-foreground">Cleaning fee</dt>
+						<dd class="text-right font-medium tabular-nums"
+							>{formatCurrency(accommodation.cleaningFee)}, once per stay</dd
+						>
+					</div>
+				{/if}
+			</dl>
+		{/if}
+	{/if}
+</div>
+
+
+===== src/components/pages/(unprotected)/root/become-host-section.svelte (HEAD, 153 lines) =====
+<script lang="ts">
+	// COMPONENTS
+	import Section from '@/components/ui/section/section.svelte';
+
+	// LUCIDE ICONS
+	import LayoutDashboardIcon from '@lucide/svelte/icons/layout-dashboard';
+	import TrendingUpIcon from '@lucide/svelte/icons/trending-up';
+	import CalendarCheckIcon from '@lucide/svelte/icons/calendar-check';
+	import Building2Icon from '@lucide/svelte/icons/building-2';
+
+	// The host's four tools, one cell each. Copy is the whole sell here — no screenshots —
+	// so every cell leads with a serif claim and closes with a mono micro-label that names
+	// the promise in one word.
+	const tools = [
+		{
+			icon: LayoutDashboardIcon,
+			numeral: '01',
+			title: 'Your numbers, live.',
+			text: 'Pending requests, arrivals and departures, occupancy against last month, and the earnings held for you.',
+		},
+		{
+			icon: TrendingUpIcon,
+			numeral: '02',
+			title: 'Trends, up to a year.',
+			text: 'Revenue and bookings for any period up to 366 days, plus a per-listing breakdown of which place is carrying you.',
+		},
+		{
+			icon: CalendarCheckIcon,
+			numeral: '03',
+			title: 'Every request, one decision.',
+			text: 'Approve, decline or ask the guest to confirm their stay — deadlines and cancellation windows handled for you.',
+		},
+		{
+			icon: Building2Icon,
+			numeral: '04',
+			title: 'Every listing in one table.',
+			text: 'Publishing status, pricing and fees at a glance — edit, renew or add another place in a click.',
+		}
+	];
+</script>
+
+<!-- No `yPadding="lg"` here: a bare `pt-0` can't beat `sm:py-20` (the media-query block
+     lands after the base rule in the stylesheet) and tailwind-merge drops the whole
+     `py-16` on conflict, killing the mobile bottom padding. So the padding is explicit:
+     top dropped — Featured → this band is the only light-to-light pair, both paddings
+     stacked to a double gap — bottom kept at lg's rhythm (py-16 sm:py-20 lg:py-24). -->
+<Section id="become-host" class="scroll-mt-14 pt-0 pb-16 sm:pb-20 lg:pb-24" yPadding="none">
+	<div
+		class="rounded-4xl border border-primary/15 px-6 py-12 sm:px-10 lg:px-16 lg:py-16"
+		style="background: color-mix(in oklch, var(--primary) 5%, var(--card));"
+	>
+		<!-- Intro: the claim left, a decorative data motif right — the dashboard as a whisper,
+		     not a screenshot. -->
+		<div class="grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
+			<div class="max-w-2xl lg:col-span-5">
+				<p class="text-xs font-semibold tracking-[0.22em] text-primary uppercase">For hosts</p>
+				<h2
+					class="mt-3 font-serif text-3xl font-medium tracking-tight text-balance sm:text-4xl"
+				>
+					Everything that runs your hosting.
+				</h2>
+				<p class="mt-4 text-pretty text-muted-foreground">
+					Four screens do the whole job — here's what you get once your place is live.
+				</p>
+			</div>
+
+			<div class="lg:col-span-7">
+				<div
+					class="overflow-hidden rounded-2xl border border-border bg-card"
+					aria-hidden="true"
+				>
+					<div class="flex items-center justify-between border-b border-border px-4 py-2.5">
+						<span class="font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">Revenue · last 12 months</span>
+					</div>
+					<svg viewBox="0 0 560 240" preserveAspectRatio="none" class="h-auto w-full">
+						<defs>
+							<linearGradient id="become-host-area" x1="0" y1="0" x2="0" y2="1">
+								<stop offset="0%" stop-color="var(--primary)" stop-opacity="0.35" />
+								<stop offset="100%" stop-color="var(--primary)" stop-opacity="0" />
+							</linearGradient>
+						</defs>
+
+						<!-- hairline grid -->
+						<g class="text-foreground/10">
+							<line x1="0" y1="40" x2="560" y2="40" stroke="currentColor" stroke-width="1" />
+							<line x1="0" y1="90" x2="560" y2="90" stroke="currentColor" stroke-width="1" />
+							<line x1="0" y1="140" x2="560" y2="140" stroke="currentColor" stroke-width="1" />
+							<line x1="0" y1="190" x2="560" y2="190" stroke="currentColor" stroke-width="1" />
+						</g>
+
+						<!-- last period, dashed — the quiet rival -->
+						<path
+							d="M0 180 C70 176 90 158 130 155 C180 150 210 165 260 160 C310 155 340 135 390 132 C440 129 490 140 560 136"
+							fill="none"
+							stroke="currentColor"
+							class="text-foreground/25"
+							stroke-width="1.5"
+							stroke-dasharray="2 7"
+						/>
+
+						<!-- this period — the area and its edge -->
+						<path
+							d="M0 200 C70 192 90 160 130 152 C180 142 200 168 250 158 C300 148 320 128 370 122 C420 116 470 96 560 88 L560 240 L0 240 Z"
+							fill="url(#become-host-area)"
+						/>
+						<path
+							d="M0 200 C70 192 90 160 130 152 C180 142 200 168 250 158 C300 148 320 128 370 122 C420 116 470 96 560 88"
+							fill="none"
+							stroke="var(--primary)"
+							stroke-width="2.5"
+						/>
+
+						<!-- today -->
+						<circle cx="560" cy="88" r="10" fill="none" stroke="var(--primary)" stroke-opacity="0.35" />
+						<circle cx="560" cy="88" r="4" fill="var(--primary)" />
+					</svg>
+				</div>
+			</div>
+		</div>
+
+		<!-- The four tools — hairline-divided, one cell per instrument -->
+		<div
+			class="mt-12 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:mt-16"
+		>
+			{#each tools as tool (tool.title)}
+				<div
+					class="group flex flex-col gap-3 bg-card p-6 transition-colors duration-300 hover:bg-muted/40 sm:p-8"
+				>
+					<div class="flex items-start justify-between gap-4">
+						<span
+							class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-transform duration-300 group-hover:-translate-y-0.5"
+						>
+							<svelte:component this={tool.icon} class="size-5" aria-hidden="true" />
+						</span>
+						<span
+							class="font-serif text-3xl leading-none font-medium text-primary/20 tabular-nums transition-colors duration-300 group-hover:text-primary"
+						>
+							{tool.numeral}
+						</span>
+					</div>
+
+					<h3
+						class="mt-1 font-serif text-xl font-medium tracking-tight text-balance sm:text-2xl"
+					>
+						{tool.title}
+					</h3>
+					<p class="text-sm leading-relaxed text-pretty text-muted-foreground">{tool.text}</p>
+				</div>
+			{/each}
+		</div>
+	</div>
+</Section>
+
+
+===== src/components/pages/(unprotected)/root/hero-section/hero-section-search.svelte (HEAD, 240 lines) =====
+<script lang="ts">
+	// SVELTEKIT
+	import { goto } from '$app/navigation';
+
+	// LIBRARIES
+	import { getLocalTimeZone, today } from '@internationalized/date';
+	import { createSerializer, parseAsString } from 'nuqs-svelte';
+	import { toast } from 'svelte-sonner';
+	import { formatRegionLabel, type PlaceDetails } from '@/lib/google-maps/places';
+
+	// COMPONENTS
+	import { Button } from '@/components/ui/button/index.js';
+	import PlacesAutocomplete from '@/components/ui/places-autocomplete/places-autocomplete.svelte';
+	import { FieldError } from '@/components/ui/field/index.js';
+	import { NativePopover } from '@/components/ui/native-popover/index.js';
+	import { RangeCalendar } from '@/components/ui/range-calendar/index.js';
+	import { NativeSelect } from '@/components/ui/select/index.js';
+
+	// UTILS
+	import { cn } from '@/utils/utils.js';
+
+	// TYPES
+	import type { DateRange } from 'bits-ui';
+
+	// LUCIDE ICONS
+	import CalendarIcon from '@lucide/svelte/icons/calendar';
+	import SearchIcon from '@lucide/svelte/icons/search';
+
+	const guestOptions = [
+		{ value: 'any', label: 'Any' },
+		{ value: '1', label: '1 guest' },
+		{ value: '2', label: '2 guests' },
+		{ value: '3', label: '3 guests' },
+		{ value: '4+', label: '4+ guests' }
+	];
+
+	// Only the location is required — dates and guests narrow a search that can run without them.
+	const LOCATION_REQUIRED = 'Please enter a location to search.';
+
+	let location = $state('');
+	let locationPlaceId = $state('');
+	let locationLabel = $state('');
+	let locationError = $state('');
+	let dates = $state<DateRange | undefined>();
+	let guests = $state('any');
+
+	const tz = getLocalTimeZone();
+
+	const datesLabel = $derived.by(() => {
+		if (!dates?.start) return 'Add dates';
+		const opts = { month: 'short', day: 'numeric' } as const;
+		const start = dates.start.toDate(tz).toLocaleDateString(undefined, opts);
+		if (!dates.end) return start;
+		return `${start} – ${dates.end.toDate(tz).toLocaleDateString(undefined, opts)}`;
+	});
+
+	const serializeSearch = createSerializer({
+		location: parseAsString,
+		placeId: parseAsString,
+		checkIn: parseAsString,
+		checkOut: parseAsString,
+		guests: parseAsString
+	});
+
+	const filter = (value?: string) => (value && value !== 'any' ? value : null);
+
+	function handlePlaceSelect(place: PlaceDetails) {
+		locationPlaceId = place.placeId;
+		locationLabel = formatRegionLabel(place);
+	}
+
+	function handleSearch() {
+		const trimmed = location.trim();
+
+		if (!trimmed) {
+			locationError = LOCATION_REQUIRED;
+			toast.error(LOCATION_REQUIRED);
+			document.getElementById('hero-location')?.focus();
+			return;
+		}
+
+		locationError = '';
+		const placeId = trimmed === locationLabel ? locationPlaceId || null : null;
+
+		const url = serializeSearch('/search', {
+			location: trimmed || null,
+			placeId,
+			checkIn: dates?.start?.toString() ?? null,
+			checkOut: dates?.end?.toString() ?? null,
+			guests: filter(guests)
+		});
+
+		goto(url);
+	}
+</script>
+
+<div
+	class={cn(
+		'hero-card rounded-2xl bg-dark-elevated/90 p-4 shadow-2xl backdrop-blur-md lg:rounded-3xl lg:p-6',
+		// The error hangs out of flow on desktop, so the card makes the room for it instead of the row.
+		locationError && 'lg:pb-12'
+	)}
+>
+	<div class="grid gap-3 lg:grid-cols-4 lg:gap-4">
+		<!-- Where -->
+		<div class="relative">
+			<div
+				class={cn(
+					'hero-field h-full cursor-text rounded-xl bg-hero-overlay-foreground/5 px-3 py-2',
+					locationError && 'ring-2 ring-destructive/50'
+				)}
+			>
+				<span
+					class="mb-0.5 block text-[0.65rem] font-medium tracking-wider text-muted-foreground uppercase"
+				>
+					Where
+				</span>
+				<PlacesAutocomplete
+					id="hero-location"
+					variant="region"
+					placeholder="Where are you going?"
+					bind:value={location}
+					onSelect={handlePlaceSelect}
+					onInput={() => (locationError = '')}
+				/>
+			</div>
+
+			<!-- Stacked on mobile the error can push its siblings down; side by side on desktop it would
+			     instead grow the row and stretch them taller, so there it sits out of flow. -->
+			{#if locationError}
+				<FieldError class="mt-1.5 px-1 lg:absolute lg:inset-x-0 lg:top-full lg:mt-1">
+					{locationError}
+				</FieldError>
+			{/if}
+		</div>
+
+		<!-- When -->
+		<div class="rounded-xl bg-hero-overlay-foreground/5 px-3 py-2">
+			<span
+				class="mb-0.5 block text-[0.65rem] font-medium tracking-wider text-muted-foreground uppercase"
+			>
+				When
+			</span>
+			<NativePopover align="start" contentClass="w-auto overflow-hidden p-0">
+				{#snippet trigger({ props, anchorStyle })}
+					<Button
+						{...props}
+						style={anchorStyle}
+						variant="ghost"
+						class="h-auto w-full justify-between p-0 text-sm font-medium text-dark-elevated-foreground hover:bg-transparent hover:text-dark-elevated-foreground"
+					>
+						<span class={dates?.start ? '' : 'text-muted-foreground'}>{datesLabel}</span>
+						<CalendarIcon class="size-4 text-muted-foreground" />
+					</Button>
+				{/snippet}
+				{#snippet content({ close })}
+					<RangeCalendar
+						bind:value={dates}
+						minValue={today(tz)}
+						onValueChange={(range) => {
+							// Range complete → close the popover so the user doesn't have to click away.
+							if (range?.start && range?.end) close();
+						}}
+					/>
+				{/snippet}
+			</NativePopover>
+		</div>
+
+		<!-- Guests -->
+		<div class="rounded-xl bg-hero-overlay-foreground/5 px-3 py-2">
+			<span
+				class="mb-0.5 block text-[0.65rem] font-medium tracking-wider text-muted-foreground uppercase"
+			>
+				Guests
+			</span>
+			<NativeSelect
+				bind:value={guests}
+				options={guestOptions}
+				class="min-h-0 border-0 bg-transparent p-0 pr-8 text-sm font-medium text-dark-elevated-foreground focus-visible:border-0 focus-visible:ring-0"
+			/>
+		</div>
+
+		<!-- Search -->
+		<Button
+			class="flex h-full min-h-11 items-center justify-center gap-2 rounded-xl px-6 py-2 text-sm font-semibold transition-all hover:opacity-90 lg:min-h-0"
+			onclick={handleSearch}
+		>
+			<SearchIcon class="size-5" />
+			Search
+		</Button>
+	</div>
+</div>
+
+<style>
+	/* PlacesAutocomplete renders its own <Input>; strip its chrome so it reads as part of
+	   the field box rather than a nested control. Its leading search icon goes with the
+	   padding it sat in — the Search button already carries that affordance. */
+	.hero-field :global(div > svg:first-child) {
+		display: none;
+	}
+
+	.hero-field :global(input) {
+		height: auto;
+		min-height: 0;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		font-size: 0.875rem;
+		font-weight: 500;
+		color: var(--dark-elevated-foreground);
+		box-shadow: none;
+	}
+
+	.hero-field :global(input:focus-visible) {
+		outline: none;
+		box-shadow: none;
+	}
+
+	@keyframes heroCardUp {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	.hero-card {
+		animation: heroCardUp 0.6s ease-out 300ms both;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero-card {
+			animation: none;
+		}
+	}
+</style>
+
+
+===== src/components/pages/(unprotected)/root/hero-section/hero-section.svelte (HEAD, 93 lines) =====
+<script lang="ts">
+	// COMPONENTS
+	import HeroSectionSearch from './hero-section-search.svelte';
+</script>
+
+<section class="relative min-h-svh overflow-hidden bg-hero-overlay">
+	<!-- Background Image with Overlay -->
+	<div class="absolute inset-0">
+		<img
+			src="/root/hero-image.webp"
+			alt=""
+			fetchpriority="high"
+			class="h-full w-full object-cover opacity-40"
+		/>
+		<div
+			class="absolute inset-0 bg-linear-to-b from-hero-overlay/60 via-hero-overlay/40 to-hero-overlay"
+		></div>
+	</div>
+
+	<!-- Content -->
+	<div
+		class="relative z-10 flex min-h-svh flex-col justify-end px-4 pt-24 pb-8 sm:px-6 lg:justify-center lg:px-8 lg:pt-0 lg:pb-0"
+	>
+		<div class="mx-auto w-full max-w-7xl">
+			<!-- Trust Indicators -->
+			<div class="hero-item mb-6 flex flex-wrap items-center gap-4 lg:mb-8">
+				<div class="flex items-center gap-2 text-sm text-hero-overlay-foreground/90">
+					<span class="font-semibold">Handpicked</span>
+					<span class="text-hero-overlay-foreground/70">apartments</span>
+				</div>
+
+				<div class="hidden h-4 w-px bg-hero-overlay-foreground/30 sm:block"></div>
+
+				<div class="flex items-center gap-2 text-sm text-hero-overlay-foreground/90">
+					<span class="font-semibold">Simple</span>
+					<span class="text-hero-overlay-foreground/70">booking</span>
+				</div>
+
+				<div class="hidden h-4 w-px bg-hero-overlay-foreground/30 sm:block"></div>
+
+				<div class="flex items-center gap-2 text-sm text-hero-overlay-foreground/90">
+					<span class="font-semibold">Local</span>
+					<span class="text-hero-overlay-foreground/70">support</span>
+				</div>
+			</div>
+
+			<!-- Headline -->
+			<h1
+				class="hero-item mb-6 font-display text-4xl leading-[1.1] font-bold tracking-tight text-hero-overlay-foreground sm:text-5xl lg:mb-8 lg:max-w-3xl lg:text-7xl"
+				style="animation-delay: 100ms"
+			>
+				<span class="text-balance">
+					Feel at home, <span class="text-primary italic">wherever you stay.</span>
+				</span>
+			</h1>
+
+			<!-- Subheadline -->
+			<p
+				class="hero-item mb-8 max-w-xl text-base leading-relaxed text-hero-overlay-foreground/70 lg:mb-12 lg:text-lg"
+				style="animation-delay: 200ms"
+			>
+				Handpicked apartments for a night, a week, or a whole season — booked in minutes, no
+				back-and-forth.
+			</p>
+
+			<HeroSectionSearch />
+		</div>
+	</div>
+</section>
+
+<style>
+	@keyframes heroUp {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	.hero-item {
+		animation: heroUp 0.6s ease-out both;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero-item {
+			animation: none;
+		}
+	}
+</style>
+
+
+===== src/components/pages/(unprotected)/root/testimonials-section.svelte (HEAD, 191 lines) =====
+<script lang="ts">
+	// COMPONENTS
+	import Section from '@/components/ui/section/section.svelte';
+	import { QualityImage } from '@/components/ui/quality-image/index.js';
+
+	// DATA
+	import { testimonialsData } from '@/shared/data/testimonialsData';
+
+	// LUCIDE ICONS
+	import StarIcon from '@lucide/svelte/icons/star';
+	import BadgeCheckIcon from '@lucide/svelte/icons/badge-check';
+	import ShieldCheckIcon from '@lucide/svelte/icons/shield-check';
+	import CircleDollarSignIcon from '@lucide/svelte/icons/circle-dollar-sign';
+	import QuoteIcon from '@lucide/svelte/icons/quote';
+	import PlayIcon from '@lucide/svelte/icons/play';
+	import ExternalLinkIcon from '@lucide/svelte/icons/external-link';
+</script>
+
+<Section
+	id="testimonials"
+	class="scroll-mt-14 overflow-hidden [contain-intrinsic-size:auto_900px] [content-visibility:auto]"
+	yPadding="lg"
+	surface="background"
+	containerClass="flex flex-col gap-10 lg:gap-16"
+>
+	<!-- Section Header - left-aligned with trust badges on the right -->
+	<div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+		<div>
+			<p class="text-xs font-semibold tracking-[0.22em] text-primary uppercase">Testimonials</p>
+			<h2
+				class="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl"
+			>
+				Loved by guests<br class="hidden lg:block" />
+				<span class="text-primary">around the world</span>
+			</h2>
+		</div>
+
+		<!-- Trust Badges - compact, inline -->
+		<div class="flex flex-wrap gap-4 lg:gap-5 lg:pb-1">
+			<div class="flex items-center gap-2">
+				<BadgeCheckIcon class="h-5 w-5 text-primary" />
+				<span class="text-sm font-medium text-muted-foreground">Verified Reviews</span>
+			</div>
+			<div class="flex items-center gap-2">
+				<ShieldCheckIcon class="h-5 w-5 text-primary" />
+				<span class="text-sm font-medium text-muted-foreground">Secure Booking</span>
+			</div>
+			<div class="flex items-center gap-2">
+				<CircleDollarSignIcon class="h-5 w-5 text-primary" />
+				<span class="text-sm font-medium text-muted-foreground">Best Price</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- Bento Grid -->
+	<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+		{#each testimonialsData as testimonial, i (testimonial.id)}
+			{@const authorLink = testimonial.profileUrl ?? testimonial.reelUrl ?? testimonial.postUrl}
+			<!-- Card 0: featured (span 2), Card 3: featured (span 2), rest: regular -->
+			{@const isFeatured = i === 0 || i === 3}
+			<div
+				class="group relative rounded-2xl p-6 transition-shadow duration-300 lg:p-8
+					{isFeatured ? 'sm:col-span-2' : ''}
+					{i === 0
+					? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
+					: 'border border-border/50 bg-card shadow-sm hover:shadow-md'}"
+			>
+				<!-- Decorative quote icon -->
+				<QuoteIcon
+					class="absolute top-5 right-5 h-10 w-10 lg:h-12 lg:w-12
+						{i === 0 ? 'text-primary-foreground/10' : 'text-muted-foreground/10'}"
+				/>
+
+				<!-- Author (top) -->
+				<div class="mb-4 flex items-center gap-3">
+					{#if authorLink}
+						<a
+							href={authorLink}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="group/author flex items-center gap-3"
+						>
+							<QualityImage
+								src={testimonial.avatar96}
+								srcset="{testimonial.avatar96} 96w"
+								sizes="70px"
+								alt={testimonial.name}
+								class="h-10 w-10 rounded-full object-cover ring-2 transition-opacity group-hover/author:opacity-80
+									{i === 0 ? 'ring-primary-foreground/20' : 'ring-border'}"
+								width={70}
+								height={70}
+							/>
+							<div class="flex items-center gap-1.5">
+								<span
+									class="text-sm font-semibold group-hover/author:underline {i === 0
+										? 'text-primary-foreground'
+										: 'text-card-foreground'}"
+								>
+									{testimonial.name}
+								</span>
+								<ExternalLinkIcon
+									class="h-3 w-3 {i === 0 ? 'text-primary-foreground/50' : 'text-muted-foreground'}"
+								/>
+							</div>
+						</a>
+					{:else}
+						<QualityImage
+							src={testimonial.avatar96}
+							srcset="{testimonial.avatar96} 96w"
+							sizes="70px"
+							alt={testimonial.name}
+							class="h-10 w-10 rounded-full object-cover ring-2
+								{i === 0 ? 'ring-primary-foreground/20' : 'ring-border'}"
+							width={70}
+							height={70}
+						/>
+						<span
+							class="text-sm font-semibold {i === 0
+								? 'text-primary-foreground'
+								: 'text-card-foreground'}"
+						>
+							{testimonial.name}
+						</span>
+					{/if}
+					<span
+						class="ml-auto shrink-0 rounded-full px-2 py-0.5 text-xs font-medium
+							{i === 0
+							? 'bg-primary-foreground/15 text-primary-foreground'
+							: 'bg-secondary text-secondary-foreground'}"
+					>
+						{testimonial.destination}
+					</span>
+				</div>
+
+				<!-- Rating -->
+				<div class="mb-3 flex gap-0.5">
+					{#each Array.from({ length: testimonial.rating }, (_, k) => k) as starIndex (starIndex)}
+						<StarIcon
+							class="h-4 w-4
+								{i === 0 ? 'fill-primary-foreground/80 text-primary-foreground/80' : 'fill-warning text-warning'}"
+						/>
+					{/each}
+				</div>
+
+				<!-- Text -->
+				<p
+					class="leading-relaxed
+						{isFeatured ? 'text-base lg:text-lg' : 'text-sm lg:text-base'}
+						{i === 0 ? 'text-primary-foreground/90' : 'text-muted-foreground'}
+						{testimonial.thumbnail && testimonial.reelUrl ? 'mb-5' : ''}"
+				>
+					"{testimonial.text}"
+				</p>
+
+				<!-- Media preview (reel thumbnail only) -->
+				{#if testimonial.thumbnail && testimonial.reelUrl}
+					<a
+						href={testimonial.reelUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="group/media relative mt-auto block aspect-video overflow-hidden rounded-xl"
+					>
+						<QualityImage
+							src={testimonial.thumbnail480 ?? testimonial.thumbnail}
+							srcset={testimonial.thumbnail480 ? `${testimonial.thumbnail480} 480w` : undefined}
+							sizes="(max-width: 640px) 100vw, 33vw"
+							alt="Watch {testimonial.name}'s review"
+							class="h-full w-full object-cover transition-transform duration-500 group-hover/media:scale-105"
+							width={480}
+							height={270}
+						/>
+						<div
+							class="absolute inset-0 bg-black/30 transition-colors duration-300 group-hover/media:bg-black/40"
+						></div>
+						<div class="absolute inset-0 flex items-center justify-center">
+							<div
+								class="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 shadow-lg transition-transform duration-300 group-hover/media:scale-110"
+							>
+								<PlayIcon class="ml-0.5 h-5 w-5 fill-foreground text-foreground" />
+							</div>
+						</div>
+						<span class="absolute bottom-2.5 left-3 text-xs font-medium text-white/90">
+							Watch Review
+						</span>
+					</a>
+				{/if}
+			</div>
+		{/each}
+	</div>
+</Section>
+
+
+===== src/components/pages/(unprotected)/root/why-us-section.svelte (HEAD, 89 lines) =====
+<script lang="ts">
+	// COMPONENTS
+	import Section from '@/components/ui/section/section.svelte';
+
+	// LUCIDE ICONS
+	import BadgeCheckIcon from '@lucide/svelte/icons/badge-check';
+	import ReceiptTextIcon from '@lucide/svelte/icons/receipt-text';
+	import CalendarCheckIcon from '@lucide/svelte/icons/calendar-check';
+	import HeadsetIcon from '@lucide/svelte/icons/headset';
+
+	const reasons = [
+		{
+			icon: BadgeCheckIcon,
+			title: 'Handpicked apartments',
+			text: 'Every place is personally vetted — real photos, honest descriptions, no surprises at check-in.'
+		},
+		{
+			icon: ReceiptTextIcon,
+			title: 'Transparent pricing',
+			text: 'The price you see is the price you pay. No hidden fees, no cleaning-fee games.'
+		},
+		{
+			icon: CalendarCheckIcon,
+			title: 'Book in minutes',
+			text: 'Pick your dates, confirm, and get your booking details right away — no back-and-forth.'
+		},
+		{
+			icon: HeadsetIcon,
+			title: 'Local support',
+			text: "We're based in Belgrade. If anything comes up during your stay, a real person answers."
+		}
+	];
+</script>
+
+<Section
+	id="why-us"
+	class="scroll-mt-14 bg-foreground text-background"
+	yPadding="xl"
+	containerClass="grid gap-12 lg:grid-cols-12 lg:gap-16"
+>
+	<!-- Intro — sticks while the list scrolls on desktop -->
+	<div class="lg:col-span-5">
+		<div class="lg:sticky lg:top-28">
+			<p class="text-xs font-semibold tracking-[0.22em] text-primary uppercase">Why BGApartman</p>
+			<h2
+				class="mt-4 font-display text-3xl font-medium tracking-tight text-balance text-background sm:text-4xl lg:text-[2.75rem] lg:leading-[1.1]"
+			>
+				Booking a stay,<br class="hidden sm:block" /> without the guesswork
+			</h2>
+
+			<p class="mt-5 max-w-md text-pretty text-background/60">
+				We're the Belgrade team behind BGApartman — hands-on, accountable, and never out of reach. That's the standard below.
+			</p>
+
+			<p
+				class="mt-8 max-w-md border-l-2 border-primary pl-4 text-sm text-pretty text-background/80"
+			>
+				No apps to download, no drawn-out email threads — just a good place to stay and someone to
+				call if you need them.
+			</p>
+		</div>
+	</div>
+
+	<!-- Numbered list -->
+	<ol class="lg:col-span-7">
+		{#each reasons as reason, i (reason.title)}
+			<li
+				class="group grid grid-cols-[auto_1fr] items-start gap-x-5 border-t border-background/15 py-7 first:border-t-0 first:pt-0 sm:gap-x-8 sm:py-8"
+			>
+				<span
+					class="font-display text-4xl font-medium text-primary/30 tabular-nums transition-colors duration-300 group-hover:text-primary sm:text-5xl"
+				>
+					{(i + 1).toString().padStart(2, '0')}
+				</span>
+
+				<div class="min-w-0">
+					<div class="flex items-center gap-2.5">
+						<reason.icon class="size-4 shrink-0 text-primary" />
+						<h3 class="text-lg font-medium text-background">{reason.title}</h3>
+					</div>
+					<p class="mt-2 text-sm leading-relaxed text-pretty text-background/60">
+						{reason.text}
+					</p>
+				</div>
+			</li>
+		{/each}
+	</ol>
+</Section>
+
+
+===== src/features/uploadFile/components/upload-file-single/upload-file-item-single.svelte (HEAD, 75 lines) =====
+<script lang="ts">
+	// COMPONENTS
+	import { Button } from '@/components/ui/button/index.js';
+
+	// UTILS
+	import { cn } from '@/utils/utils.js';
+
+	// LUCIDE ICONS
+	import FileTextIcon from '@lucide/svelte/icons/file-text';
+
+	type Props = {
+		class?: string;
+		file: File;
+		files?: File[];
+		selectedFile?: File | null;
+		pickerInputId: string;
+		previewUrl?: string | null;
+	};
+
+	let {
+		class: className,
+		file,
+		files = $bindable<File[]>([]),
+		selectedFile = $bindable<File | null>(null),
+		pickerInputId,
+		previewUrl = null
+	}: Props = $props();
+
+	function formatBytes(bytes: number): string {
+		if (bytes === 0) return '0 B';
+		const k = 1024;
+		const sizes = ['B', 'KB', 'MB', 'GB'] as const;
+		const i = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), sizes.length - 1);
+		return `${parseFloat((bytes / Math.pow(k, i)).toFixed(i > 0 ? 1 : 0))} ${sizes[i]}`;
+	}
+
+	function replace() {
+		document.getElementById(pickerInputId)?.click();
+	}
+
+	function remove() {
+		selectedFile = null;
+	}
+</script>
+
+<div class={cn('flex gap-3 rounded-xl border border-input bg-card p-3 shadow-sm', className)}>
+	{#if previewUrl}
+		<div class="relative size-20 shrink-0 overflow-hidden rounded-lg border bg-muted/40">
+			<img src={previewUrl} alt="" class="size-full object-cover" draggable="false" />
+		</div>
+	{:else}
+		<div
+			class="flex size-20 shrink-0 items-center justify-center rounded-lg border bg-muted/50 text-muted-foreground"
+		>
+			<FileTextIcon class="size-8" aria-hidden="true" />
+		</div>
+	{/if}
+
+	<div class="min-w-0 flex-1 py-0.5">
+		<p class="truncate text-sm font-medium text-foreground" title={file.name}>
+			{file.name}
+		</p>
+
+		<p class="mt-0.5 text-xs text-muted-foreground">
+			{file.type || 'Unknown type'} · {formatBytes(file.size)}
+		</p>
+
+		<div class="mt-3 flex flex-wrap items-center gap-2">
+			<Button type="button" variant="outline" size="sm" onclick={replace}>Replace</Button>
+
+			<Button type="button" variant="destructive" size="sm" onclick={remove}>Remove</Button>
+		</div>
+	</div>
+</div>

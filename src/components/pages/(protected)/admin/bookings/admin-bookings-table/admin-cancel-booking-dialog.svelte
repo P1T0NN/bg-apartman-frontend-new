@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 
@@ -46,7 +49,11 @@
 	const reasonLength = $derived(values.cancelReason.trim().length);
 
 	const fields: MutationFormFieldDef[] = [
-		{ id: 'cancelReason', kind: 'textarea', label: 'Reason for cancelling' }
+		{
+			id: 'cancelReason',
+			kind: 'textarea',
+			label: m['AdminBookingsPage.AdminCancelBookingDialog.reasonForCancelling']()
+		}
 	];
 </script>
 
@@ -62,11 +69,8 @@
 	}}
 >
 	<div class="alert-dialog__header">
-		<h2 class="text-destructive">Cancel this booking?</h2>
-		<p>
-			Both the guest and the host will be notified by email with this reason. If the guest paid
-			online, they are refunded in full automatically. This cannot be undone.
-		</p>
+		<h2 class="text-destructive">{m['AdminBookingsPage.AdminCancelBookingDialog.cancelThisBooking']()}</h2>
+		<p>{m['AdminBookingsPage.AdminCancelBookingDialog.notificationBody']()}</p>
 	</div>
 
 	{#if booking}
@@ -102,7 +106,7 @@
 		oninput={(e) => setValue(e.currentTarget.value)}
 		maxlength={500}
 		rows={4}
-		placeholder="e.g. Guest and host agreed to cancel over email."
+		placeholder={m['AdminBookingsPage.AdminCancelBookingDialog.reasonPlaceholder']()}
 		aria-invalid={!!error}
 	/>
 	<span
@@ -118,7 +122,7 @@
 {#snippet formActions({ busy }: { busy: boolean })}
 	<div class="alert-dialog__footer">
 		<Button type="button" variant="outline" onclick={() => (open = false)} disabled={busy}>
-			Keep booking
+			{m['AdminBookingsPage.AdminCancelBookingDialog.keepBooking']()}
 		</Button>
 		<!-- Never disabled on validity: clicking must SAY what's wrong (the form's own
 		     field errors + toast), not silently refuse. -->
@@ -126,7 +130,7 @@
 			{#if busy}
 				<Loader class="h-3 w-3 animate-spin" />
 			{/if}
-			Cancel booking
+			{m['AdminBookingsPage.AdminCancelBookingDialog.cancelBooking']()}
 		</Button>
 	</div>
 {/snippet}

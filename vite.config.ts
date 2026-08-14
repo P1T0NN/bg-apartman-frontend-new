@@ -1,3 +1,4 @@
+import { paraglideVitePlugin } from '@inlang/paraglide-js';
 import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
@@ -33,5 +34,25 @@ export default defineConfig({
 	ssr: {
 		noExternal: ['layerchart', '@dagrejs/dagre', '@googlemaps/markerclusterer']
 	},
-	plugins: [tailwindcss(), sveltekit()]
+	plugins: [
+		paraglideVitePlugin({
+			project: './project.inlang',
+			outdir: './src/paraglide',
+			emitTsDeclarations: true,
+			strategy: ['url', 'cookie', 'baseLocale'],
+			// Public routes localize by URL prefix (/sr/...); the signed-in areas resolve the
+			// locale from the PARAGLIDE_LOCALE cookie only — no /sr/ prefix in their URLs.
+			routeStrategies: [
+				{ match: '/host/:path(.*)?', strategy: ['cookie', 'baseLocale'] },
+				{ match: '/guest/:path(.*)?', strategy: ['cookie', 'baseLocale'] },
+				{ match: '/admin/:path(.*)?', strategy: ['cookie', 'baseLocale'] },
+				// Non-page public assets must never be redirected to a localized URL.
+				{ match: '/api/:path(.*)?', exclude: true },
+				{ match: '/sitemap.xml', exclude: true },
+				{ match: '/robots.txt', exclude: true }
+			]
+		}),
+		tailwindcss(),
+		sveltekit()
+	]
 });

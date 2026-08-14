@@ -1,6 +1,7 @@
 // SVELTEKIT IMPORTS
 import { command, getRequestEvent } from '$app/server';
 import { error } from '@sveltejs/kit';
+import { m } from '@/paraglide/messages';
 
 // LIBRARIES
 import { checkBotId } from 'botid/server';
@@ -49,7 +50,7 @@ export const safeCommand = <S extends z.ZodType, R>(
 		});
 
 		if (verification.isBot) {
-			throw error(403, "You're not allowed to perform this action.");
+			throw error(403, m['remoteFunctionsUtils.actionForbidden']());
 		}
 
 		const data = schema.parse(raw) as z.output<S>;

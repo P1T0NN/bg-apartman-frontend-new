@@ -1,0 +1,212 @@
+[
+	{
+		"key": "adminAccommodations.AdminModerateAccommodationDialog.thisListing",
+		"file": "src/components/pages/(protected)/admin/accommodations/admin-moderate-accommodation-dialog.svelte",
+		"line": "\t\tconst listing = accommodation?.title ?? m['adminAccommodations.AdminModerateAccommodationDialog.thisListing']();"
+	},
+	{
+		"key": "adminBookings.AdminBookingDetailRow.nights",
+		"file": "src/components/pages/(protected)/admin/bookings/admin-bookings-table/admin-booking-detail-row.svelte",
+		"line": "\t\t\t\t\t: m['adminBookings.AdminBookingDetailRow.nights']({ count: booking.numberOfNights })}"
+	},
+	{
+		"key": "adminBookings.AdminBookingDetailRow.cancelledOn",
+		"file": "src/components/pages/(protected)/admin/bookings/admin-bookings-table/admin-booking-detail-row.svelte",
+		"line": "\t\t\t\t{m['adminBookings.AdminBookingDetailRow.cancelledOn']({"
+	},
+	{
+		"key": "adminReports.AdminReportsTableActions.resolve",
+		"file": "src/components/pages/(protected)/admin/reports/admin-reports-table/admin-reports-table-actions.svelte",
+		"line": "\t\t: m['adminReports.AdminReportsTableActions.resolve']()}"
+	},
+	{
+		"key": "adminReports.AdminReportsTableData.new",
+		"file": "src/components/pages/(protected)/admin/reports/admin-reports-table/adminReportsTableData.ts",
+		"line": "\t\t\t\t: m['adminReports.AdminReportsTableData.new'](),"
+	},
+	{
+		"key": "adminUsers.SuperhostButton.makeSuperhostTitle",
+		"file": "src/components/pages/(protected)/admin/users/[id]/superhost-button.svelte",
+		"line": "\t\t: m['adminUsers.SuperhostButton.makeSuperhostTitle']({ userEmail })}"
+	},
+	{
+		"key": "adminUsers.UserActivity.statusSuccess",
+		"file": "src/components/pages/(protected)/admin/users/[id]/user-activity.svelte",
+		"line": "\t\t\t\t\t: m['adminUsers.UserActivity.statusSuccess'](),"
+	},
+	{
+		"key": "adminUsers.ChangeRoleButton.promoteTitle",
+		"file": "src/components/pages/(protected)/admin/users/[id]/user-danger-zone/change-role-button.svelte",
+		"line": "\t\t: m['adminUsers.ChangeRoleButton.promoteTitle']({ userEmail })}"
+	},
+	{
+		"key": "adminUsers.DeleteUserDialog.deleteTitle",
+		"file": "src/components/pages/(protected)/admin/users/[id]/user-danger-zone/delete-user-dialog.svelte",
+		"line": "\t\t: m['adminUsers.DeleteUserDialog.deleteTitle']({ userEmail })}"
+	},
+	{
+		"key": "guestDashboard.DashboardHeader.welcomeBack",
+		"file": "src/components/pages/(protected)/guest/dashboard/dashboard-header.svelte",
+		"line": "\t\t\t: m['guestDashboard.DashboardHeader.welcomeBack']()}"
+	},
+	{
+		"key": "hostAddAccommodation.AddAccommodationForm.pickCityFirst",
+		"file": "src/components/pages/(protected)/host/add-accommodation/add-accommodation-form/add-accommodation-form.svelte",
+		"line": "\t\t\t\t: m['hostAddAccommodation.AddAccommodationForm.pickCityFirst']()"
+	},
+	{
+		"key": "hostEditAccommodation.EditAccommodationInformationTab.pickCityFirst",
+		"file": "src/components/pages/(protected)/host/edit-accommodation/edit-accommodation-information-tab/edit-accommodation-information-tab.svelte",
+		"line": "\t\t\t\t: m['hostEditAccommodation.EditAccommodationInformationTab.pickCityFirst']()"
+	},
+	{
+		"key": "hostMyAccommodations.MyAccommodationsTableChangePlan.switchBodyDaysMany",
+		"file": "src/components/pages/(protected)/host/my-accommodations/my-accommodations-table/my-accommodations-table-change-plan.svelte",
+		"line": "\t\t\t\t\t: m['hostMyAccommodations.MyAccommodationsTableChangePlan.switchBodyDaysMany']({"
+	},
+	{
+		"key": "hostMyAccommodations.MyAccommodationsTableListingFee.expiresInDays",
+		"file": "src/components/pages/(protected)/host/my-accommodations/my-accommodations-table/my-accommodations-table-listing-fee.svelte",
+		"line": "\t\t\t\t\t: m['hostMyAccommodations.MyAccommodationsTableListingFee.expiresInDays']({"
+	},
+	{
+		"key": "accommodation.AccommodationPoliciesSection.noPets",
+		"file": "src/components/pages/(unprotected)/accommodation/accommodation-policies-section/index.svelte.ts",
+		"line": "\t\t\t\t: m['accommodation.AccommodationPoliciesSection.noPets']()"
+	},
+	{
+		"key": "accommodation.AccommodationPoliciesSection.noSmoking",
+		"file": "src/components/pages/(unprotected)/accommodation/accommodation-policies-section/index.svelte.ts",
+		"line": "\t\t\t\t: m['accommodation.AccommodationPoliciesSection.noSmoking']()"
+	},
+	{
+		"key": "accommodation.AccommodationPoliciesSection.noPartiesOrEvents",
+		"file": "src/components/pages/(unprotected)/accommodation/accommodation-policies-section/index.svelte.ts",
+		"line": "\t\t\t\t: m['accommodation.AccommodationPoliciesSection.noPartiesOrEvents']()"
+	},
+	{
+		"key": "accommodation.AccommodationPoliciesSection.requestToBook",
+		"file": "src/components/pages/(unprotected)/accommodation/accommodation-policies-section/index.svelte.ts",
+		"line": "\t\t\t: m['accommodation.AccommodationPoliciesSection.requestToBook']()"
+	},
+	{
+		"key": "accommodation.AccommodationPoliciesSection.noSameDay",
+		"file": "src/components/pages/(unprotected)/accommodation/accommodation-policies-section/index.svelte.ts",
+		"line": "\t\t\t: m['accommodation.AccommodationPoliciesSection.noSameDay']()"
+	},
+	{
+		"key": "book.BookConfirmActionsField.requestToBook",
+		"file": "src/components/pages/(unprotected)/book/book-guest-form/book-confirm-actions-field.svelte",
+		"line": "\t\t\t: m['book.BookConfirmActionsField.requestToBook']()"
+	},
+	{
+		"key": "reservation.ReservationConfirmation.backToAccommodation",
+		"file": "src/components/pages/(unprotected)/reservation/reservation-confirmation.svelte",
+		"line": "\t\t\t\t\t: m['reservation.ReservationConfirmation.backToAccommodation']()}"
+	},
+	{
+		"key": "home.HeroSection.whereverYouStay",
+		"file": "src/components/pages/(unprotected)/root/hero-section/hero-section.svelte",
+		"line": "\t\t\t\t\t\t>{m['home.HeroSection.whereverYouStay']()}</span"
+	},
+	{
+		"key": "Footer.product",
+		"file": "src/components/ui/footer/footer.svelte.ts",
+		"line": "\t\t\theading: m['Footer.product'](),"
+	},
+	{
+		"key": "Footer.overview",
+		"file": "src/components/ui/footer/footer.svelte.ts",
+		"line": "\t\t\t\t{ href: UNPROTECTED_PAGE_ENDPOINTS.ROOT, label: m['Footer.overview']() },"
+	},
+	{
+		"key": "Footer.dashboard",
+		"file": "src/components/ui/footer/footer.svelte.ts",
+		"line": "\t\t\t\t{ href: PROTECTED_PAGE_ENDPOINTS.DASHBOARD, label: m['Footer.dashboard']() }"
+	},
+	{
+		"key": "Footer.support",
+		"file": "src/components/ui/footer/footer.svelte.ts",
+		"line": "\t\t\theading: m['Footer.support'](),"
+	},
+	{
+		"key": "Footer.contact",
+		"file": "src/components/ui/footer/footer.svelte.ts",
+		"line": "\t\t\t\t{ href: UNPROTECTED_PAGE_ENDPOINTS.CONTACT, label: m['Footer.contact']() },"
+	},
+	{
+		"key": "Footer.reportAnIssue",
+		"file": "src/components/ui/footer/footer.svelte.ts",
+		"line": "\t\t\t\t{ href: UNPROTECTED_PAGE_ENDPOINTS.REPORT, label: m['Footer.reportAnIssue']() }"
+	},
+	{
+		"key": "Footer.legal",
+		"file": "src/components/ui/footer/footer.svelte.ts",
+		"line": "\t\t\theading: m['Footer.legal'](),"
+	},
+	{
+		"key": "Footer.termsOfService",
+		"file": "src/components/ui/footer/footer.svelte.ts",
+		"line": "\t\t\t\t\tlabel: m['Footer.termsOfService']()"
+	},
+	{
+		"key": "Footer.account",
+		"file": "src/components/ui/footer/footer.svelte.ts",
+		"line": "\t\t\theading: m['Footer.account'](),"
+	},
+	{
+		"key": "Footer.signIn",
+		"file": "src/components/ui/footer/footer.svelte.ts",
+		"line": "\t\t\tlinks: [{ href: UNPROTECTED_PAGE_ENDPOINTS.LOGIN, label: m['Footer.signIn']() }]"
+	},
+	{
+		"key": "EmailVerificationResend.resend",
+		"file": "src/features/auth/components/email-verification-form/email-verification-resend.svelte",
+		"line": "\t\t\t\t: m['EmailVerificationResend.resend']()}"
+	},
+	{
+		"key": "AvailableBookingActions.bookingConfirmed",
+		"file": "src/features/bookings/utils/availableBookingActions.ts",
+		"line": "\t\t\ttoast: m['AvailableBookingActions.bookingConfirmed'](),"
+	},
+	{
+		"key": "AvailableBookingActions.requestDeclined",
+		"file": "src/features/bookings/utils/availableBookingActions.ts",
+		"line": "\t\t\ttoast: m['AvailableBookingActions.requestDeclined'](),"
+	},
+	{
+		"key": "AvailableBookingActions.bookingCancelled",
+		"file": "src/features/bookings/utils/availableBookingActions.ts",
+		"line": "\t\t\ttoast: m['AvailableBookingActions.bookingCancelled'](),"
+	},
+	{
+		"key": "AvailableBookingGuestActions.requestWithdrawn",
+		"file": "src/features/bookings/utils/availableBookingGuestActions.ts",
+		"line": "\t\t\t\t\ttoast: m['AvailableBookingGuestActions.requestWithdrawn'](),"
+	},
+	{
+		"key": "AvailableBookingGuestActions.bookingCancelled",
+		"file": "src/features/bookings/utils/availableBookingGuestActions.ts",
+		"line": "\t\t\t\t\ttoast: m['AvailableBookingGuestActions.bookingCancelled'](),"
+	},
+	{
+		"key": "SaveUploadedFile.file",
+		"file": "src/features/uploadFile/components/save-uploaded-file.svelte",
+		"line": "\t\t\t\t\t\t\tname: optimizedImages[0]?.name ?? m['SaveUploadedFile.file']()"
+	},
+	{
+		"key": "adminUsers.SEO.title",
+		"file": "src/routes/(protected)/admin/users/[id]/+page.svelte",
+		"line": "<SvelteHead title={m['adminUsers.SEO.title']()} description={m['adminUsers.SEO.description']()} noIndex />"
+	},
+	{
+		"key": "Formatters.upToGuests",
+		"file": "src/utils/formatters.ts",
+		"line": "\t\t: m['Formatters.upToGuests']({ count });"
+	},
+	{
+		"key": "Formatters.daysSelected",
+		"file": "src/utils/formatters.ts",
+		"line": "\t\t: m['Formatters.daysSelected']({ count });"
+	}
+]

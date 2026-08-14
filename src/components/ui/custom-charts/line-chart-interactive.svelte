@@ -15,6 +15,7 @@
 		getInteractiveSeriesKeys,
 		getNumericSeriesTotals
 	} from './utils/interactiveChartUtils';
+	import { getLocale } from '@/paraglide/runtime';
 
 	// TYPES
 	import type { Snippet } from 'svelte';
@@ -37,7 +38,7 @@
 		seriesKeys,
 		axis = 'x',
 		y,
-		locale = 'en-US',
+		locale = getLocale(),
 		xAxisFormat,
 		yAxisFormat,
 		valueFormatter,

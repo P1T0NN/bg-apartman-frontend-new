@@ -1,8 +1,11 @@
 <script lang="ts">
+	// PARAGLIDE
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useQuery, useConvexClient } from 'convex-svelte';
-	import { goto } from '$app/navigation';
+
 	import { authClient } from '@/features/auth/lib/auth-client';
 	import { SvelteSet } from 'svelte/reactivity';
 
@@ -17,6 +20,7 @@
 	import { Skeleton } from '@/components/ui/skeleton/index.js';
 
 	// UTILS
+	import { appGoto } from '@/utils/app-navigation.js';
 	import { safeMutation } from '@/utils/convexHelpers';
 	import { toastResult } from '@/utils/toastResult';
 	import { formatTs } from '@/utils/formatters';
@@ -55,7 +59,7 @@
 		const me = authClass.currentUser?._id;
 		if (!me || me !== userId) return;
 		await authClient.signOut().catch(() => {});
-		goto(UNPROTECTED_PAGE_ENDPOINTS.LOGIN);
+		appGoto(UNPROTECTED_PAGE_ENDPOINTS.LOGIN);
 	}
 
 	async function revokeOne(session: Doc<'session'>) {
@@ -92,9 +96,9 @@
 <div class="flex flex-col gap-4">
 	<header class="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center">
 		<div class="flex flex-col gap-0.5">
-			<h2 class="text-base font-semibold">Active sessions</h2>
+			<h2 class="text-base font-semibold">{m['AdminUsersPage.UserSessions.title']()}</h2>
 			<p class="text-sm text-muted-foreground">
-				Devices currently signed in. Revoking signs the device out immediately.
+				{m['AdminUsersPage.UserSessions.description']()}
 			</p>
 		</div>
 		<Button
@@ -102,19 +106,19 @@
 			onclick={revokeAll}
 			disabled={isRevokingAll || sessions.length === 0}
 		>
-			Revoke all
+			{m['AdminUsersPage.UserSessions.revokeAll']()}
 		</Button>
 	</header>
 
 	{#if sessionsQuery.error}
-		<p class="text-sm text-destructive">Failed to load sessions.</p>
+		<p class="text-sm text-destructive">{m['AdminUsersPage.UserSessions.loadFailed']()}</p>
 	{:else if sessionsQuery.data === undefined}
 		<div class="flex flex-col gap-2">
 			<Skeleton class="h-16 w-full" />
 			<Skeleton class="h-16 w-full" />
 		</div>
 	{:else if sessions.length === 0}
-		<p class="text-sm text-muted-foreground">No active sessions.</p>
+		<p class="text-sm text-muted-foreground">{m['AdminUsersPage.UserSessions.empty']()}</p>
 	{:else}
 		<ul class="flex flex-col gap-2">
 			{#each sessions as session (session.token)}
@@ -123,13 +127,23 @@
 				>
 					<div class="flex min-w-0 flex-1 flex-col gap-1">
 						<span class="text-sm font-medium break-all" title={session.userAgent ?? ''}>
-							{session.userAgent || 'Unknown device'}
+							{session.userAgent || m['AdminUsersPage.UserSessions.unknownDevice']()}
 						</span>
 
 						<div class="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
-							<span>IP: {session.ipAddress || '—'}</span>
-							<span>Created: {formatTs(session.createdAt)}</span>
-							<span>Expires: {formatTs(session.expiresAt)}</span>
+							<span
+								>{m['AdminUsersPage.UserSessions.ipLabel']({ ip: session.ipAddress || '—' })}</span
+							>
+							<span
+								>{m['AdminUsersPage.UserSessions.createdLabel']({
+									created: formatTs(session.createdAt)
+								})}</span
+							>
+							<span
+								>{m['AdminUsersPage.UserSessions.expiresLabel']({
+									expires: formatTs(session.expiresAt)
+								})}</span
+							>
 						</div>
 					</div>
 
@@ -139,7 +153,7 @@
 						onclick={() => revokeOne(session)}
 						disabled={revokingTokens.has(session.token)}
 					>
-						Revoke
+						{m['AdminUsersPage.UserSessions.revoke']()}
 					</Button>
 				</li>
 			{/each}

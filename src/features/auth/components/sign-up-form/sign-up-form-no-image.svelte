@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
@@ -23,29 +26,32 @@
 	const id = $props.id();
 
 	const form = createSignUpForm({
-		signUpFailed: () =>
-			"We couldn't create your account. Check your details and try again, or sign in if you already have one.",
-		accountCreatedToast: () => 'Account created successfully.'
+		signUpFailed: () => m['SignUpPage.SignUpFormNoImage.signUpFailed'](),
+		accountCreatedToast: () => m['SignUpPage.SignUpFormNoImage.accountCreatedToast']()
 	});
 </script>
 
 <Card.Root {...restProps}>
 	{#if form.step === 'signUp'}
 		<Card.Header>
-			<Card.Title>Create an account</Card.Title>
-			<Card.Description>Enter your information below to create your account</Card.Description>
+			<Card.Title>{m['SignUpPage.SignUpFormNoImage.createAccountTitle']()}</Card.Title>
+			<Card.Description>{m['SignUpPage.SignUpFormNoImage.createAccountDescription']()}</Card.Description>
 		</Card.Header>
 
 		<Card.Content>
 			<form onsubmit={form.onSignUpSubmit}>
 				<FieldGroup>
-					<FormField id="name-{id}" label="Full Name" error={form.fieldErrors.name}>
+					<FormField
+						id="name-{id}"
+						label={m['SignUpPage.SignUpFormNoImage.fullName']()}
+						error={form.fieldErrors.name}
+					>
 						<Input
 							id="name-{id}"
 							name="name"
 							type="text"
 							autocomplete="name"
-							placeholder="John Doe"
+							placeholder={m['SignUpPage.SignUpFormNoImage.fullNamePlaceholder']()}
 							autofocus
 							bind:value={form.nameDraft}
 							aria-invalid={form.fieldErrors.name ? 'true' : undefined}
@@ -54,16 +60,16 @@
 
 					<FormField
 						id="email-{id}"
-						label="Email"
+						label={m['SignUpPage.SignUpFormNoImage.email']()}
 						error={form.fieldErrors.email}
-						description="We'll use this to contact you. We will not share your email with anyone else."
+						description={m['SignUpPage.SignUpFormNoImage.emailDescription']()}
 					>
 						<Input
 							id="email-{id}"
 							name="email"
 							type="email"
 							autocomplete="email"
-							placeholder="m@example.com"
+							placeholder={m['SignUpPage.SignUpFormNoImage.emailPlaceholder']()}
 							bind:value={form.emailDraft}
 							aria-invalid={form.fieldErrors.email ? 'true' : undefined}
 						/>
@@ -71,9 +77,9 @@
 
 					<FormField
 						id="password-{id}"
-						label="Password"
+						label={m['SignUpPage.SignUpFormNoImage.password']()}
 						error={form.fieldErrors.password}
-						description="Must be at least 8 characters long."
+						description={m['SignUpPage.SignUpFormNoImage.passwordDescription']()}
 					>
 						<PasswordInput
 							id="password-{id}"
@@ -85,9 +91,9 @@
 
 					<FormField
 						id="confirm-password-{id}"
-						label="Confirm Password"
+						label={m['SignUpPage.SignUpFormNoImage.confirmPassword']()}
 						error={form.fieldErrors.confirmPassword}
-						description="Please confirm your password."
+						description={m['SignUpPage.SignUpFormNoImage.confirmPasswordDescription']()}
 					>
 						<PasswordInput
 							id="confirm-password-{id}"
@@ -104,12 +110,16 @@
 					{/if}
 
 					<Field>
-						<Button type="submit" class="w-full" disabled={form.busy}>Create Account</Button>
+						<Button type="submit" class="w-full" disabled={form.busy}>
+							{m['SignUpPage.SignUpFormNoImage.createAccount']()}
+						</Button>
 						<GoogleLoginButton class="w-full" />
 
 						<FieldDescription class="text-center">
-							Already have an account?
-							<Link href={UNPROTECTED_PAGE_ENDPOINTS.LOGIN}>Sign in</Link>
+							{m['SignUpPage.SignUpFormNoImage.alreadyHaveAccount']()}
+							<Link href={UNPROTECTED_PAGE_ENDPOINTS.LOGIN}>
+								{m['SignUpPage.SignUpFormNoImage.signIn']()}
+							</Link>
 						</FieldDescription>
 					</Field>
 				</FieldGroup>

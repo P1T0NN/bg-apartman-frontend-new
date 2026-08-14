@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// UTILS
 	import { paymentMethodLabel } from '@/features/bookings/utils/paymentMethodLabel';
 
@@ -22,7 +25,7 @@
 	{#if instantBooking}
 		<span class="flex items-center gap-1.5">
 			<ZapIcon class="size-3.5" aria-hidden="true" />
-			Instant booking
+			{m['AccommodationPage.BookingPanelFooter.instantBooking']()}
 		</span>
 	{/if}
 

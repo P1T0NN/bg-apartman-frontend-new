@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
@@ -40,7 +43,7 @@
 	>
 		<button
 			type="button"
-			aria-label="Close"
+			aria-label={m['SearchPage.SearchMarkerSelectedCard.close']()}
 			onclick={clearMapSelection}
 			class="absolute -top-2 -right-2 z-10 grid size-7 place-items-center rounded-full bg-background shadow-md"
 		>
@@ -63,7 +66,7 @@
 							href={appHref(
 								UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION.replace(':slug', selected.slug)
 							)}
-							size="sm">View</Button
+							size="sm">{m['SearchPage.SearchMarkerSelectedCard.view']()}</Button
 						>
 					{/snippet}
 				</AccommodationCardBody>

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// TYPES
 	import type { Attachment } from 'svelte/attachments';
 
@@ -29,7 +32,9 @@
 </script>
 
 <div class="space-y-3">
-	<h2 class="text-lg font-semibold tracking-tight">About this apartment</h2>
+	<h2 class="text-lg font-semibold tracking-tight">
+		{m['AccommodationPage.AccommodationSummaryDescription.title']()}
+	</h2>
 
 	<div class="space-y-2">
 		{#key description}
@@ -51,9 +56,9 @@
 				class="inline-flex items-center gap-1 text-sm font-medium underline underline-offset-4 hover:text-foreground"
 			>
 				{#if expanded}
-					Show less
+					{m['AccommodationPage.AccommodationSummaryDescription.showLess']()}
 				{:else}
-					Show more
+					{m['AccommodationPage.AccommodationSummaryDescription.showMore']()}
 				{/if}
 
 				<ChevronDownIcon

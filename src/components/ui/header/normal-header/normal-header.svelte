@@ -9,6 +9,10 @@
 	import { COMPANY_DATA } from '@/shared/config.js';
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
+	// I18N
+	import { deLocalizeHref } from '@/paraglide/runtime';
+	import { m } from '@/paraglide/messages';
+
 	// CLASSES
 	import {
 		isHeaderItemActive,
@@ -25,9 +29,11 @@
 	import Logo from '@/components/ui/logo/logo.svelte';
 	import NormalHeaderAuthActions from './normal-header-auth-actions.svelte';
 	import NormalHeaderMobile from './normal-header-mobile.svelte';
+	import LanguageSelector from '@/components/ui/language-selector/language-selector.svelte';
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
+	import { appHref } from '@/utils/app-navigation.js';
 
 	type Props = {
 		class?: string;
@@ -55,7 +61,9 @@
 	const auth = useAuth();
 	const isAuthenticated = $derived(auth.isAuthenticated);
 
-	const pathnameLogical = $derived(new URL(page.url.href).pathname);
+	// Logical (de-localized) pathname: on /sr the raw URL is `/sr/...` but the nav items
+	// compare against canonical app paths, so strip the locale prefix before matching.
+	const pathnameLogical = $derived(deLocalizeHref(new URL(page.url.href).pathname));
 
 	// Landing-page scroll-spy: observe the spied sections while on the root page.
 	// Re-runs on navigation (pathname change); the returned cleanup disconnects the observer.
@@ -97,10 +105,10 @@
 	<div class="mx-auto flex h-14 w-full max-w-7xl items-center gap-2 px-4 sm:gap-3 sm:px-6 lg:px-8">
 		<div class="flex min-w-0 shrink items-center gap-2 lg:shrink-0">
 			{#if hasLogo}
-				<Logo />
+				<Logo href={appHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT)} />
 			{:else}
 				<Link
-					href={UNPROTECTED_PAGE_ENDPOINTS.ROOT}
+					href={appHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT)}
 					class="truncate text-sm font-semibold tracking-tight text-hero-overlay-foreground sm:text-base"
 				>
 					{COMPANY_DATA.NAME}
@@ -108,9 +116,9 @@
 			{/if}
 		</div>
 
-		<nav class="hidden min-w-0 flex-1 justify-center lg:flex" aria-label="Main">
+		<nav class="hidden min-w-0 flex-1 justify-center lg:flex" aria-label={m['Header.main']()}>
 			<ul class="flex max-w-full min-w-0 flex-wrap items-center justify-center gap-1">
-				{#each navItems as item (item.href)}
+				{#each navItems() as item (item.href)}
 					{@const active = isHeaderItemActive(pathnameLogical, item)}
 					<li class="shrink-0">
 						<Link
@@ -126,15 +134,17 @@
 		</nav>
 
 		<div class="ml-auto flex shrink-0 items-center justify-end gap-1.5 sm:gap-2 lg:ml-0">
+			<LanguageSelector />
+
 			{#if isAuthenticated}
 				<NormalHeaderAuthActions />
 			{:else}
 				<Button
 					size="sm"
-					class="hidden rounded-full bg-primary text-primary-foreground hover:opacity-90 sm:inline-flex"
-					href={UNPROTECTED_PAGE_ENDPOINTS.LOGIN}
+					class="hidden h-8 shrink-0 rounded-full px-3 text-sm font-medium bg-primary text-primary-foreground hover:opacity-90 sm:inline-flex"
+					href={appHref(UNPROTECTED_PAGE_ENDPOINTS.LOGIN)}
 				>
-					Login
+					{m['Header.login']()}
 				</Button>
 			{/if}
 

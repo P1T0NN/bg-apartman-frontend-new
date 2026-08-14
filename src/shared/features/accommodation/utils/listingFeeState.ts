@@ -67,6 +67,7 @@ export function listingFeeState(
 	if (daysLeft <= REMINDER_DAYS_BEFORE) return { kind: 'expiring', expiresAt, daysLeft };
 	// A "forever" grant has no countdown — surface it as plain active so no UI shows
 	// "Until 2100". `daysLeft: null` is the forever marker; callers render "Forever".
-	if (expiresAt >= FREE_LISTING_FOREVER_EXPIRY) return { kind: 'active', expiresAt, daysLeft: null };
+	if (expiresAt >= FREE_LISTING_FOREVER_EXPIRY)
+		return { kind: 'active', expiresAt, daysLeft: null };
 	return { kind: 'active', expiresAt, daysLeft };
 }

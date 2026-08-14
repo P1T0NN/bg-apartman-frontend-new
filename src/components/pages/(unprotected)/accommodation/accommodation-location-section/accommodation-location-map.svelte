@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	let {
 		title,
 		mapSrc
@@ -10,7 +13,7 @@
 
 <div class="overflow-hidden rounded-2xl border bg-muted">
 	<iframe
-		title={`Map of ${title}`}
+		title={m['AccommodationPage.AccommodationLocationMap.mapTitle']({ title })}
 		src={mapSrc}
 		class="aspect-video w-full"
 		loading="lazy"

@@ -1,0 +1,13 @@
+$ svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+Loading svelte-check in workspace: d:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new
+Getting Svelte diagnostics...
+
+d:\Stvari\Programiranje\BGApartman\bg-apartman-frontend-new\[32msrc\components\ui\native-carousel\native-carousel.svelte[39m:159:4
+[33mWarn[39m: Unknown property: 'scroll-marker-group' (css)
+[36m		.carousel[data-dots='true'] .carousel__track {
+			[35mscroll-marker-group[36m: after;
+		}[39m
+
+====================================
+[33msvelte-check found 0 errors and 1 warning in 1 file
+[39m

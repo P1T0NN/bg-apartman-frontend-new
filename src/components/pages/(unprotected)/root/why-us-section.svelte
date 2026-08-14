@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import Section from '@/components/ui/section/section.svelte';
 
@@ -11,23 +14,23 @@
 	const reasons = [
 		{
 			icon: BadgeCheckIcon,
-			title: 'Handpicked apartments',
-			text: 'Every place is personally vetted — real photos, honest descriptions, no surprises at check-in.'
+			title: m['HomePage.WhyUsSection.reasonHandpickedTitle'](),
+			text: m['HomePage.WhyUsSection.reasonHandpickedText']()
 		},
 		{
 			icon: ReceiptTextIcon,
-			title: 'Transparent pricing',
-			text: 'The price you see is the price you pay. No hidden fees, no cleaning-fee games.'
+			title: m['HomePage.WhyUsSection.reasonTransparentTitle'](),
+			text: m['HomePage.WhyUsSection.reasonTransparentText']()
 		},
 		{
 			icon: CalendarCheckIcon,
-			title: 'Book in minutes',
-			text: 'Pick your dates, confirm, and get your booking details right away — no back-and-forth.'
+			title: m['HomePage.WhyUsSection.reasonBookTitle'](),
+			text: m['HomePage.WhyUsSection.reasonBookText']()
 		},
 		{
 			icon: HeadsetIcon,
-			title: 'Local support',
-			text: "We're based in Belgrade. If anything comes up during your stay, a real person answers."
+			title: m['HomePage.WhyUsSection.reasonLocalTitle'](),
+			text: m['HomePage.WhyUsSection.reasonLocalText']()
 		}
 	];
 </script>
@@ -41,22 +44,24 @@
 	<!-- Intro — sticks while the list scrolls on desktop -->
 	<div class="lg:col-span-5">
 		<div class="lg:sticky lg:top-28">
-			<p class="text-xs font-semibold tracking-[0.22em] text-primary uppercase">Why BGApartman</p>
+			<p class="text-xs font-semibold tracking-[0.22em] text-primary uppercase">
+				{m['HomePage.WhyUsSection.eyebrow']()}
+			</p>
 			<h2
 				class="mt-4 font-display text-3xl font-medium tracking-tight text-balance text-background sm:text-4xl lg:text-[2.75rem] lg:leading-[1.1]"
 			>
-				Booking a stay,<br class="hidden sm:block" /> without the guesswork
+				{m['HomePage.WhyUsSection.bookingAStay']()}<br class="hidden sm:block" />{' '}
+				{m['HomePage.WhyUsSection.withoutTheGuesswork']()}
 			</h2>
 
 			<p class="mt-5 max-w-md text-pretty text-background/60">
-				We're the Belgrade team behind BGApartman — hands-on, accountable, and never out of reach. That's the standard below.
+				{m['HomePage.WhyUsSection.intro']()}
 			</p>
 
 			<p
 				class="mt-8 max-w-md border-l-2 border-primary pl-4 text-sm text-pretty text-background/80"
 			>
-				No apps to download, no drawn-out email threads — just a good place to stay and someone to
-				call if you need them.
+				{m['HomePage.WhyUsSection.note']()}
 			</p>
 		</div>
 	</div>

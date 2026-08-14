@@ -1,3 +1,6 @@
+// I18N
+import { m } from '@/paraglide/messages';
+
 // UTILS
 import { isLateCancellation } from '@/shared/features/booking/utils/guestMayCancelConfirmedBooking';
 import { todayInPropertyZone } from '@/shared/features/booking/utils/daysUntilCheckIn';
@@ -22,9 +25,9 @@ export function guestCancelConsequence(
 
 	if (!isLate) {
 		return paymentMethod === 'online'
-			? `Free cancellation — you're at least ${policy.freeCancelDays} days before check-in, so you'll be refunded in full. The host is notified and the dates reopen straight away.`
-			: `Free cancellation — you're at least ${policy.freeCancelDays} days before check-in. Nothing was charged; the host is notified and the dates reopen straight away.`;
+			? m['guestCancelConsequence.freeCancelOnline']({ freeCancelDays: policy.freeCancelDays })
+			: m['guestCancelConsequence.freeCancelCash']({ freeCancelDays: policy.freeCancelDays });
 	}
 
-	return `This is less than ${policy.freeCancelDays} days before check-in, so it counts as a late cancellation and your payment won't be refunded.`;
+	return m['guestCancelConsequence.lateCancel']({ freeCancelDays: policy.freeCancelDays });
 }

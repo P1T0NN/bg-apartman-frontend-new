@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import * as DropdownMenu from '@/components/ui/dropdown-menu/index.js';
 	import Button from '@/components/ui/button/button.svelte';
@@ -53,7 +56,7 @@
 		{:else}
 			<LogOutIcon />
 		{/if}
-		<span>Logout</span>
+		<span>{m['AuthFeature.LogoutButton.logout']()}</span>
 	</DropdownMenu.Item>
 {:else}
 	<Button {variant} disabled={disabled || loggingOut} onclick={logout} class={cn(className)}>
@@ -62,6 +65,6 @@
 		{:else}
 			<LogOutIcon />
 		{/if}
-		<span>Logout</span>
+		<span>{m['AuthFeature.LogoutButton.logout']()}</span>
 	</Button>
 {/if}

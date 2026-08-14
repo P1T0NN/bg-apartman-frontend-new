@@ -87,9 +87,7 @@
 <div class="flex flex-col gap-4">
 	<BookingsTableFilters {activeFilter} {counts} onFilterChange={setFilter} />
 
-	<!-- realtime: the other party acts on a booking and the lifecycle cron advances it mid-view. -->
 	<ConvexDataTable
-		realtime
 		{query}
 		queryArgs={listArgs}
 		columns={BOOKINGS_TABLE_COLUMNS}

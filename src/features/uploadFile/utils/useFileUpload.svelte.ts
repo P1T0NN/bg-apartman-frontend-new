@@ -1,3 +1,5 @@
+import { m } from '@/paraglide/messages';
+
 // LIBRARIES
 import { SvelteSet } from 'svelte/reactivity';
 import { toast } from 'svelte-sonner';
@@ -123,7 +125,7 @@ export function useFileUpload(args: UseFileUploadArgs) {
 		const picked: File[] = [];
 		for (const f of Array.from(list)) {
 			if (accept && !matchesAccept(f, accept)) {
-				toast.error(`"${f.name}" is not an accepted format. Accepted: ${accept}.`);
+				toast.error(m['useFileUpload.notAccepted']({ name: f.name, format: accept }));
 				continue;
 			}
 			picked.push(f);

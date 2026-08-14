@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import DiscountedPrice from '@/shared/features/pricing/components/discounted-price.svelte';
 
@@ -43,7 +45,10 @@
 	</div>
 
 	<p class="truncate text-sm text-muted-foreground">
-		{accommodationTypeLabel(accommodation.type)} in {accommodation.city}
+		{m['AccommodationsFeature.AccommodationCard.AccommodationCardBody.typeInCity']({
+			type: accommodationTypeLabel(accommodation.type),
+			city: accommodation.city
+		})}
 	</p>
 
 	<p class="truncate text-sm text-muted-foreground">
@@ -59,18 +64,15 @@
 					original={accommodation.originalPrice}
 					price={accommodation.pricePerNight}
 				/>
-				<span class="text-muted-foreground">/ night</span>
+				<span class="text-muted-foreground">{m['AccommodationsFeature.AccommodationCard.AccommodationCardBody.night']()}</span>
 			</p>
 
 			{@render actions()}
 		</div>
 	{:else}
 		<p class="pt-0.5 text-sm">
-			<DiscountedPrice
-				original={accommodation.originalPrice}
-				price={accommodation.pricePerNight}
-			/>
-			<span class="text-muted-foreground">/ night</span>
+			<DiscountedPrice original={accommodation.originalPrice} price={accommodation.pricePerNight} />
+			<span class="text-muted-foreground">{m['AccommodationsFeature.AccommodationCard.AccommodationCardBody.night']()}</span>
 		</p>
 	{/if}
 </div>

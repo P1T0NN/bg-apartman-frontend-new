@@ -56,7 +56,7 @@ const optionalNonNegative = z.optional(
 	)
 );
 
-/** Minimum photos a accommodation must have before it can be created or saved. */
+/** Minimum photos an accommodation must have before it can be created or saved. */
 export const MIN_ACCOMMODATION_PHOTOS = 3;
 
 /** Minimum amenities a host must select. */
@@ -234,7 +234,7 @@ export const addAccommodationSchema = z
 
 /**
  * Edit-form validation. Same field rules, but the photo minimum counts the accommodation's
- * *existing* kept images plus newly uploaded ones, so a accommodation that already has
+ * *existing* kept images plus newly uploaded ones, so an accommodation that already has
  * photos doesn't need 3 brand-new uploads. The error is attached to `photos` so it surfaces
  * on the uploader.
  */

@@ -206,7 +206,7 @@ export const setApartmentStatus = authMutation('setApartmentStatus')({
 });
 
 /**
- * Admin moderation: publish, suspend or archive a accommodation. Hosts cannot set these
+ * Admin moderation: publish, suspend or archive an accommodation. Hosts cannot set these
  * statuses themselves — see {@link setApartmentStatus}.
  *
  * - `published` → host gets the "your accommodation is live" email.

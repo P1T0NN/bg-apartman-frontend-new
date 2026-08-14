@@ -1,0 +1,438 @@
+[
+	[
+		"$schema",
+		"https://inlang.com/schema/inlang-message-format"
+	],
+	[
+		"BreadcrumbEllipsis.more",
+		"<span class=\"sr-only\">More</span>"
+	],
+	[
+		"CancelBookingDialog.reasonForCancelling",
+		"id: 'cancelReason', kind: 'textarea', label: 'Reason for cancelling'"
+	],
+	[
+		"normalHeader.becomeAHost",
+		"href: '/#featured-stays', label: 'Featured', sectionId: 'featured-stays' },"
+	],
+	[
+		"normalHeader.contact",
+		"href: '/#newsletters', label: 'Newsletters', sectionId: 'newsletters' },"
+	],
+	[
+		"normalHeader.featured",
+		"href: UNPROTECTED_PAGE_ENDPOINTS.ROOT, label: 'Home' },"
+	],
+	[
+		"normalHeader.home",
+		"export const navItems: readonly NavItem[] = ["
+	],
+	[
+		"normalHeader.newsletters",
+		"href: '/#testimonials', label: 'Testimonials', sectionId: 'testimonials' },"
+	],
+	[
+		"normalHeader.testimonials",
+		"href: '/#become-host', label: 'Become a host', sectionId: 'become-host' },"
+	],
+	[
+		"PaginationNext.next",
+		"<span class=\"cn-pagination-next-text hidden sm:block\">Next</span>"
+	],
+	[
+		"PaginationPrevious.previous",
+		"<span class=\"cn-pagination-previous-text hidden sm:block\">Previous</span>"
+	],
+	[
+		"UploadFileItemSingle.unknownType",
+		"file.type || 'Unknown type'} · {formatBytes(file.size)"
+	],
+	[
+		"UploadFileSingleDropzone.remove",
+		"<strong class=\"font-medium text-foreground\">Remove</strong>"
+	],
+	[
+		"UploadFileSingleDropzone.replace",
+		"<strong class=\"font-medium text-foreground\">Replace</strong>"
+	],
+	[
+		"AccommodationPage.AccommodationAmenitiesSection.title",
+		"<h2 class=\"text-lg font-semibold tracking-tight\">What this place offers</h2>"
+	],
+	[
+		"AccommodationPage.AccommodationBookingPanel.notChargedYet",
+		"<p class=\"text-center text-xs text-muted-foreground\">You won’t be charged yet</p>"
+	],
+	[
+		"AccommodationPage.AccommodationLocationSection.title",
+		"<h2 class=\"text-lg font-semibold tracking-tight\">Where you’ll be</h2>"
+	],
+	[
+		"AccommodationPage.AccommodationMobileBar.from",
+		"<span class=\"text-muted-foreground\">from</span>"
+	],
+	[
+		"AccommodationPage.AccommodationMobileBar.night",
+		"<span class=\"text-muted-foreground\">night</span>"
+	],
+	[
+		"AccommodationPage.AccommodationPageEmpty.title",
+		"<h1 class=\"text-lg font-semibold\">Accommodation unavailable</h1>"
+	],
+	[
+		"AccommodationPage.AccommodationPoliciesSection.bookingRulesTitle",
+		"<h3 class=\"text-sm font-semibold\">Booking & stay</h3>"
+	],
+	[
+		"AccommodationPage.AccommodationPoliciesSection.houseRulesTitle",
+		"<h3 class=\"text-sm font-semibold\">House rules</h3>"
+	],
+	[
+		"AccommodationPage.AccommodationPoliciesSection.title",
+		"<h2 class=\"text-lg font-semibold tracking-tight\">Things to know</h2>"
+	],
+	[
+		"AccommodationPage.AccommodationSummaryDescription.title",
+		"<h2 class=\"text-lg font-semibold tracking-tight\">About this apartment</h2>"
+	],
+	[
+		"AccommodationPage.BookingPanelFacts.checkOut",
+		"// UTILS"
+	],
+	[
+		"AccommodationPage.BookingPanelFacts.minimumStay",
+		"// LUCIDE ICONS"
+	],
+	[
+		"AccommodationPage.BookingPanelFacts.nightsCount",
+		"import LogInIcon from '@lucide/svelte/icons/log-in';"
+	],
+	[
+		"AccommodationPage.BookingPanelFacts.weekendNights",
+		"// TYPES"
+	],
+	[
+		"AccommodationPage.BookingPanelPrice.perNight",
+		"<span class=\"text-sm text-muted-foreground\">/ night</span>"
+	],
+	[
+		"AdminBookingsPage.AdminBookingDetailRow.cleaning",
+		"<span class=\"text-muted-foreground\">Cleaning</span>"
+	],
+	[
+		"AdminBookingsPage.AdminBookingDetailRow.guest",
+		"<h3 class=\"text-xs font-semibold tracking-wide text-muted-foreground uppercase\">Guest</h3>"
+	],
+	[
+		"AdminBookingsPage.AdminBookingDetailRow.price",
+		"<h3 class=\"text-xs font-semibold tracking-wide text-muted-foreground uppercase\">Price</h3>"
+	],
+	[
+		"AdminBookingsPage.AdminBookingDetailRow.stay",
+		"<h3 class=\"text-xs font-semibold tracking-wide text-muted-foreground uppercase\">Stay</h3>"
+	],
+	[
+		"AdminBookingsPage.AdminBookingDetailRow.subtotal",
+		"<span class=\"text-muted-foreground\">Subtotal</span>"
+	],
+	[
+		"AdminBookingsPage.AdminBookingsFilters.code",
+		"value: 'code', label: 'Code' },"
+	],
+	[
+		"AdminBookingsPage.AdminBookingsFilters.email",
+		"value: 'email', label: 'Email'"
+	],
+	[
+		"AdminBookingsPage.AdminBookingsTable.guest",
+		"// SVELTEKIT"
+	],
+	[
+		"AdminBookingsPage.AdminBookingsTable.status",
+		"// CONFIG"
+	],
+	[
+		"AdminBookingsPage.AdminBookingsTable.stay",
+		"// LIBRARIES"
+	],
+	[
+		"AdminBookingsPage.AdminCancelBookingDialog.cancelThisBooking",
+		"<h2 class=\"text-destructive\">Cancel this booking?</h2>"
+	],
+	[
+		"AdminBookingsPage.AdminCancelBookingDialog.reasonForCancelling",
+		"id: 'cancelReason', kind: 'textarea', label: 'Reason for cancelling'"
+	],
+	[
+		"AdminBookingsPage.description",
+		"<p class=\"text-sm text-muted-foreground\">Look up a booking and see what happened with it.</p>"
+	],
+	[
+		"AdminBookingsPage.title",
+		"<h1 class=\"text-2xl font-semibold tracking-tight\">Bookings</h1>"
+	],
+	[
+		"AdminDashboardPage.AdminDashboardHeader.dashboard",
+		"<h1 class=\"text-2xl font-semibold tracking-tight\">Dashboard</h1>"
+	],
+	[
+		"AdminDashboardPage.AdminDashboardPageLoading.loadingDashboard",
+		"<span class=\"sr-only\">Loading the dashboard</span>"
+	],
+	[
+		"AdminDashboardPage.AdminDashboardStatCards.bookings",
+		"label: 'Bookings', value: String(data.bookingsThisMonth)"
+	],
+	[
+		"AdminDashboardPage.AdminDashboardStatCards.publishedListings",
+		"label: 'Published listings', value: String(data.publishedListings)"
+	],
+	[
+		"AdminDashboardPage.AdminDashboardStatCards.revenue",
+		"label: 'Revenue', value: formatCurrency(data.revenueThisMonth), lead: true },"
+	],
+	[
+		"AdminReportsPage.AdminReportDetail.resolvedSuffix",
+		"<span class=\"text-xs text-muted-foreground\">· Resolved</span>"
+	],
+	[
+		"AdminReportsPage.AdminReportsHeader.reports",
+		"<h1 class=\"text-2xl font-semibold tracking-tight\">Reports</h1>"
+	],
+	[
+		"AdminReportsPage.AdminReportsHeader.subtitle",
+		"<p class=\"text-sm text-muted-foreground\">What people are telling us, and what is unread.</p>"
+	],
+	[
+		"AdminReportsPage.AdminReportsTable.loadError",
+		"import AdminReportsTableFilters from './admin-reports-table-filters.svelte';"
+	],
+	[
+		"AdminReportsPage.AdminReportsTable.resolved",
+		"import ConvexDataTable from '@/components/ui/data-table/convex-data-table.svelte';"
+	],
+	[
+		"adminReportsPage.AdminReportsTableData.resolved",
+		"accessor: (row) => (row.status === 'resolved' ? 'Resolved' : 'New'),"
+	],
+	[
+		"AdminReportsPage.AdminReportsTableFilters.all",
+		"value: 'all' as const, label: 'All'"
+	],
+	[
+		"AdminReportsPage.AdminReportsTableFilters.new",
+		"value: 'new' as const, label: 'New' },"
+	],
+	[
+		"AdminUsersPage.description",
+		"<p class=\"text-sm text-muted-foreground\">Search, filter, and manage user accounts.</p>"
+	],
+	[
+		"AdminUsersPage.title",
+		"<h1 class=\"text-2xl font-semibold tracking-tight\">Users</h1>"
+	],
+	[
+		"BookPage.BookGuestDetails.dates",
+		"<dt class=\"text-muted-foreground\">Dates</dt>"
+	],
+	[
+		"BookPage.BookGuestDetails.guests",
+		"<dt class=\"text-muted-foreground\">Guests</dt>"
+	],
+	[
+		"BookPage.BookHeader.yourTrip",
+		"<span class=\"font-medium\">Your trip</span>"
+	],
+	[
+		"BookPage.BookPaymentField.title",
+		"<h2 class=\"text-lg font-semibold tracking-tight\">Payment</h2>"
+	],
+	[
+		"BookPage.BookPrice.total",
+		"// UTILS"
+	],
+	[
+		"HomePage.BecomeHostSection.eyebrow",
+		"import Building2Icon from '@lucide/svelte/icons/building-2';"
+	],
+	[
+		"HomePage.BecomeHostSection.listingsText",
+		"import CalendarCheckIcon from '@lucide/svelte/icons/calendar-check';"
+	],
+	[
+		"HomePage.BecomeHostSection.listingsTitle",
+		"import TrendingUpIcon from '@lucide/svelte/icons/trending-up';"
+	],
+	[
+		"HomePage.BecomeHostSection.numbersText",
+		"// COMPONENTS"
+	],
+	[
+		"HomePage.BecomeHostSection.requestsText",
+		"import LayoutDashboardIcon from '@lucide/svelte/icons/layout-dashboard';"
+	],
+	[
+		"HomePage.BecomeHostSection.requestsTitle",
+		"// LUCIDE ICONS"
+	],
+	[
+		"HomePage.BecomeHostSection.revenueLabel",
+		"// so every cell leads with a serif claim and closes with a mono micro-label that names"
+	],
+	[
+		"HomePage.BecomeHostSection.subtitle",
+		"// The host's four tools, one cell each. Copy is the whole sell here — no screenshots —"
+	],
+	[
+		"HomePage.FeaturedAccommodationsEmpty.emptyTitle",
+		"<h3 class=\"text-lg font-semibold\">No featured stays yet</h3>"
+	],
+	[
+		"HomePage.FeaturedAccommodationsSection.eyebrow",
+		"<p class=\"text-xs font-semibold tracking-[0.22em] text-primary uppercase\">Featured stays</p>"
+	],
+	[
+		"HomePage.HeroSection.apartments",
+		"<span class=\"text-hero-overlay-foreground/70\">apartments</span>"
+	],
+	[
+		"HomePage.HeroSection.booking",
+		"<span class=\"text-hero-overlay-foreground/70\">booking</span>"
+	],
+	[
+		"HomePage.HeroSection.feelAtHome",
+		"Feel at home, <span class=\"text-primary italic\">wherever you stay.</span>"
+	],
+	[
+		"HomePage.HeroSection.handpicked",
+		"<span class=\"font-semibold\">Handpicked</span>"
+	],
+	[
+		"HomePage.HeroSection.local",
+		"<span class=\"font-semibold\">Local</span>"
+	],
+	[
+		"HomePage.HeroSection.simple",
+		"<span class=\"font-semibold\">Simple</span>"
+	],
+	[
+		"HomePage.HeroSection.support",
+		"<span class=\"text-hero-overlay-foreground/70\">support</span>"
+	],
+	[
+		"HomePage.HeroSectionSearch.addDates",
+		"if (!dates?.start) return 'Add dates';"
+	],
+	[
+		"HomePage.HeroSectionSearch.any",
+		"value: 'any', label: 'Any' },"
+	],
+	[
+		"HomePage.HeroSectionSearch.fourPlusGuests",
+		"value: '4+', label: '4+ guests'"
+	],
+	[
+		"HomePage.HeroSectionSearch.oneGuest",
+		"value: '1', label: '1 guest' },"
+	],
+	[
+		"HomePage.HeroSectionSearch.threeGuests",
+		"value: '3', label: '3 guests' },"
+	],
+	[
+		"HomePage.HeroSectionSearch.twoGuests",
+		"value: '2', label: '2 guests' },"
+	],
+	[
+		"HomePage.NewslettersSection.eyebrow",
+		"<span class=\"text-xs font-medium tracking-[0.2em] text-primary/70 uppercase\">Newsletter</span>"
+	],
+	[
+		"HomePage.TestimonialsSection.aroundTheWorld",
+		"<span class=\"text-primary\">around the world</span>"
+	],
+	[
+		"HomePage.TestimonialsSection.bestPrice",
+		"<span class=\"text-sm font-medium text-muted-foreground\">Best Price</span>"
+	],
+	[
+		"HomePage.TestimonialsSection.eyebrow",
+		"<p class=\"text-xs font-semibold tracking-[0.22em] text-primary uppercase\">Testimonials</p>"
+	],
+	[
+		"HomePage.TestimonialsSection.lovedByGuests",
+		"Loved by guests<br class=\"hidden lg:block\" />"
+	],
+	[
+		"HomePage.TestimonialsSection.secureBooking",
+		"<span class=\"text-sm font-medium text-muted-foreground\">Secure Booking</span>"
+	],
+	[
+		"HomePage.TestimonialsSection.verifiedReviews",
+		"<span class=\"text-sm font-medium text-muted-foreground\">Verified Reviews</span>"
+	],
+	[
+		"HomePage.WhyUsSection.eyebrow",
+		"import HeadsetIcon from '@lucide/svelte/icons/headset';"
+	],
+	[
+		"HomePage.WhyUsSection.reasonBookText",
+		"import BadgeCheckIcon from '@lucide/svelte/icons/badge-check';"
+	],
+	[
+		"HomePage.WhyUsSection.reasonBookTitle",
+		"// LUCIDE ICONS"
+	],
+	[
+		"HomePage.WhyUsSection.reasonHandpickedText",
+		"// COMPONENTS"
+	],
+	[
+		"HomePage.WhyUsSection.reasonLocalText",
+		"import CalendarCheckIcon from '@lucide/svelte/icons/calendar-check';"
+	],
+	[
+		"HomePage.WhyUsSection.reasonLocalTitle",
+		"import ReceiptTextIcon from '@lucide/svelte/icons/receipt-text';"
+	],
+	[
+		"HostAnalyticsPage.HostAnalyticsEmpty.emptyTitle",
+		"<h2 class=\"text-base font-semibold tracking-tight\">Nothing here for this period</h2>"
+	],
+	[
+		"HostAnalyticsPage.HostAnalyticsHeader.title",
+		"<h1 class=\"text-2xl font-semibold tracking-tight\">Analytics</h1>"
+	],
+	[
+		"HostAnalyticsPage.HostAnalyticsPeriodPicker.custom",
+		"customRange?.start && customRange?.end ? formatDateRange(customRange) : 'Custom'"
+	],
+	[
+		"HostDashboardPage.HostDashboardHeader.title",
+		"<h1 class=\"text-2xl font-semibold tracking-tight md:text-3xl\">Dashboard</h1>"
+	],
+	[
+		"HostDashboardPage.HostDashboardNoBookingsEmpty.title",
+		"<h2 class=\"text-base font-semibold tracking-tight\">You're ready for your first booking</h2>"
+	],
+	[
+		"HostDashboardPage.HostDashboardPendingReservations.title",
+		"// LIBRARIES"
+	],
+	[
+		"HostDashboardPage.HostDashboardPendingReservationsLoading.loadingPending",
+		"<span class=\"sr-only\">Loading pending reservations</span>"
+	],
+	[
+		"HostDashboardPage.HostDashboardStatCards.vsLastMonth",
+		"<span class=\"text-muted-foreground\">vs last month</span>"
+	],
+	[
+		"HostDashboardPage.HostDashboardStatsSectionLoading.loading",
+		"<span class=\"sr-only\">Loading your dashboard</span>"
+	],
+	[
+		"HostDashboardPage.HostDashboardTodayOverview.nothingToday",
+		"<p class=\"text-xs text-muted-foreground\">Nothing today</p>"
+	]
+]

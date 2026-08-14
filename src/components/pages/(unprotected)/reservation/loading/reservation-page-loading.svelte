@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Separator } from '@/components/ui/separator/index.js';
 	import { Skeleton } from '@/components/ui/skeleton/index.js';
@@ -8,7 +11,7 @@
 <div
 	class="mx-auto max-w-lg py-10 text-center sm:py-16"
 	aria-busy="true"
-	aria-label="Loading your reservation"
+	aria-label={m['ReservationPage.ReservationPageLoading.loadingYourReservation']()}
 >
 	<Skeleton class="mx-auto size-14 rounded-full" />
 

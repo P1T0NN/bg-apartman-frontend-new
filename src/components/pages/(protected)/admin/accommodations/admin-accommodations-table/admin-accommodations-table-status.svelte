@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { FeatureStatus } from '@/components/ui/feature-status/index.js';
 
@@ -37,7 +40,7 @@
 		<span
 			class="inline-flex items-center rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-amber-500/20 ring-inset dark:text-amber-300"
 		>
-			Awaiting payment
+			{m['AdminAccommodationsPage.AdminAccommodationsTableStatus.awaitingPayment']()}
 		</span>
 	{/if}
 </div>

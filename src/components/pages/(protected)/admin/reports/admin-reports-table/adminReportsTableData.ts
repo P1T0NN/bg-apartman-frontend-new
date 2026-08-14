@@ -1,3 +1,6 @@
+// I18N
+import { m } from '@/paraglide/messages';
+
 // DATA
 import { REPORT_CATEGORY_TONE, reportAgo } from '@/features/reports/data/reportsData';
 
@@ -15,27 +18,30 @@ import type { AdminReportRow } from '@/convex/tables/reports/queries/listReports
 export const ADMIN_REPORTS_TABLE_COLUMNS: ColumnDef<AdminReportRow>[] = [
 	{
 		id: 'category',
-		header: 'Category',
+		header: m['AdminReportsPage.AdminReportsTableData.category'](),
 		accessor: (row) => REPORT_CATEGORY_TONE[row.category].label,
 		cellClass: 'w-40'
 	},
 	{
 		id: 'message',
-		header: 'Report',
+		header: m['AdminReportsPage.AdminReportsTableData.report'](),
 		accessor: (row) => row.message,
 		cellClass: 'min-w-[18rem]'
 	},
 	{
 		id: 'received',
-		header: 'Received',
+		header: m['AdminReportsPage.AdminReportsTableData.received'](),
 		accessor: (row) => reportAgo(row._creationTime),
 		hideBelow: 'md',
 		cellClass: 'w-32 text-muted-foreground'
 	},
 	{
 		id: 'status',
-		header: 'Status',
-		accessor: (row) => (row.status === 'resolved' ? 'Resolved' : 'New'),
+		header: m['AdminReportsPage.AdminReportsTableData.status'](),
+		accessor: (row) =>
+			row.status === 'resolved'
+				? m['AdminReportsPage.AdminReportsTableData.resolved']()
+				: m['AdminReportsPage.AdminReportsTableData.new'](),
 		hideBelow: 'sm',
 		cellClass: 'w-28'
 	},

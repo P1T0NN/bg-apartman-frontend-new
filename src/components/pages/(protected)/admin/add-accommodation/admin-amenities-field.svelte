@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// UTILS
 	import { cn } from '@/utils/utils.js';
 
@@ -32,7 +35,9 @@
 
 <!-- Progress counter: green once the minimum is met, red while it's still required + invalid. -->
 <div class="mb-3 flex items-center justify-between">
-	<span class="text-xs text-muted-foreground">Pick at least {MIN_ACCOMMODATION_AMENITIES}</span>
+	<span class="text-xs text-muted-foreground">
+		{m['AdminAddAccommodationPage.AdminAmenitiesField.pickAtLeast']({ count: MIN_ACCOMMODATION_AMENITIES })}
+	</span>
 	<span
 		class={cn(
 			'rounded-full px-2 py-0.5 text-xs font-medium tabular-nums',
@@ -44,7 +49,7 @@
 		)}
 	>
 		{count}/{MIN_ACCOMMODATION_AMENITIES}
-		{#if complete}selected{/if}
+		{#if complete}{m['AdminAddAccommodationPage.AdminAmenitiesField.selected']()}{/if}
 	</span>
 </div>
 

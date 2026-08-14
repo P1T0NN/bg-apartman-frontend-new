@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 	import { toast } from 'svelte-sonner';
@@ -18,8 +21,8 @@
 		url,
 		title,
 		text,
-		label = 'Share',
-		copiedMessage = 'Link copied to clipboard',
+		label = m['ShareButton.share'](),
+		copiedMessage = m['ShareButton.linkCopied'](),
 		layout = 'toolbar',
 		showLabel = true,
 		class: className,

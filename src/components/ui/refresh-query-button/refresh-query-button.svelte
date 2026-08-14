@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// SVELTEKIT IMPORTS
 	import { invalidateAll } from '$app/navigation';
 
@@ -9,7 +12,7 @@
 	import RefreshCwIcon from '@lucide/svelte/icons/refresh-cw';
 
 	let {
-		label = 'Try again',
+		label = m['RefreshQueryButton.tryAgain'](),
 		variant = 'default',
 		size = 'default',
 		class: className

@@ -180,21 +180,21 @@ The deferred upgrade below was taken: favorites are a `favorites` table (`userId
 What did NOT change is the reason favorites were local in the first place — saving must
 work **before** you have an account. So there are two backings behind one API:
 
-| Visitor    | Backing                            | Notes                                                              |
-| ---------- | ---------------------------------- | ------------------------------------------------------------------ |
-| Signed out | `localStorage`, exactly as before  | No account requirement, no query, no row.                          |
-| Signed in  | `favorites` table                  | ONE fetch per session, held in `favoritesClass`. No subscription.  |
+| Visitor    | Backing                           | Notes                                                  |
+| ---------- | --------------------------------- | ------------------------------------------------------ |
+| Signed out | `localStorage`, exactly as before | No account requirement, no query, no row.              |
+| Signed in  | `favorites` table                 | ONE live id feed in the layout feeds `favoritesClass`. |
 
 Rules that make it cheap and honest:
 
-- **One fetch, not one query per card — and not a subscription either.** `fetchMyFavoriteIdsSafe`
-  returns ids only and is read ONCE by the root layout when a session appears; every heart reads
-  the shared reactive set. A search page with 30 cards costs zero further queries. There is
-  nothing to subscribe to: the set changes only by this user's own clicks, and `toggleFavorite`
-  returns the resulting state, so the class stays authoritative without asking again
-  (`GeneralSystemDesignRule.md` § seeing your own writes). `getCurrentUser` stays the layout's
-  only live channel. Accepted consequence: a save in another tab or on another device shows up
-  on the next load — the same trade `/guest/favorites` already makes.
+- **One id feed, not one query per card.** `fetchMyFavoriteIdsSafe` returns ids only and is a
+  live subscription in the root layout; every heart reads the shared reactive set. A search page
+  with 30 cards costs zero further queries. Writes stay authoritative without asking again: an
+  optimistic `toggleFavorite` settles on the mutation's answer, and the feed UNIONS into the
+  class, so neither path clobbers the other (`GeneralSystemDesignRule.md` § seeing your own
+  writes). `getCurrentUser` and this feed are the layout's two live channels. Accepted
+  consequence: a removal on another device reflects on the next load — a union never un-sets an
+  id — the same trade `/guest/favorites` already makes.
 - **The read is the cap.** It `.take(FAVORITES_DATA.MAX_PER_USER)`, so the hot-path payload
   is bounded no matter how many rows a user accumulates — `toggleFavorite` deliberately does
   NOT count the set first (that would be a 200-row read per heart click).
@@ -210,20 +210,20 @@ Rules that make it cheap and honest:
 
 ## 7. Data-loading verdicts (per `GeneralSystemDesignRule.md` — decided here)
 
-| Surface                    | Verdict                       | Justification                                                                                                                                                                                               |
-| -------------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Booking form (`/book`)     | One-shot, streamed `+page.ts` | Already decided — `BookingSystemDesign.md` §9. Truth is the mutation's re-check.                                                                                                                            |
-| `/reservations/[id]`       | **Subscription**              | Already decided — `BookingSystemDesign.md` §9. The waiting page.                                                                                                                                            |
-| `/reservations` (recovery) | No load — it's a form         | Resolves on submit; nothing to fetch first.                                                                                                                                                                 |
-| `/guest/dashboard`         | One-shot, streamed `+page.ts` | Changes arrive by email first; remount refetch is fresh enough. One composed page query (existing `fetchGuestDashboardPageSafe`), status-sliced via `by_guest_status_checkin` — never a whole-history scan. |
-| `/guest/my-bookings`       | One-shot, streamed, paginated | Same; pager controls visible (rule §3 — never page 1 as the full set).                                                                                                                                      |
-| `/guest/favorites`         | One-shot, streamed            | Saved ids (from the layout's one-shot) → one whole-set resolve query, bounded by `FAVORITES_DATA.MAX_PER_USER`.                                                                                              |
+| Surface                    | Verdict                        | Justification                                                                                                                                                                            |
+| -------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Booking form (`/book`)     | **Subscription**               | Already decided — `BookingSystemDesign.md` §9. Live read keyed on the slug; availability truth is still the mutation's re-check.                                                         |
+| `/reservations/[id]`       | **Subscription**               | Already decided — `BookingSystemDesign.md` §9. The waiting page.                                                                                                                         |
+| `/reservations` (recovery) | No load — it's a form          | Resolves on submit; nothing to fetch first.                                                                                                                                              |
+| `/guest/dashboard`         | **Subscription**               | One composed page query (`fetchGuestDashboardPageSafe`), status-sliced via `by_guest_status_checkin` — never a whole-history scan. Live so a cron status flip reflects without a reload. |
+| `/guest/my-bookings`       | **Subscription** via DataTable | A live, paged view of the guest's own bookings — pager controls visible (rule §3 — never page 1 as the full set).                                                                        |
+| `/guest/favorites`         | **Subscription**               | Saved ids are a live feed in the layout → one whole-set resolve query on it, bounded by `FAVORITES_DATA.MAX_PER_USER`; a removed favorite drops off live.                                |
 
 Guest surfaces never lift fetches into the layout (rule: fetch where used), with ONE stated
 exception besides auth/session: the saved-listing id set (§6). It is lifted precisely because
 it is not "used" in one place — a heart can mount 30 times on one page, and "fetch where used"
-would mean 30 reads for one boolean each. One id-only fetch replaces all of them, and it is a
-one-shot: the layout keeps exactly one subscription (`getCurrentUser`).
+would mean 30 reads for one boolean each. One id-only feed replaces all of them, and it is a
+live subscription — the layout keeps exactly two: `getCurrentUser` and the saved-ids feed.
 
 ## 8. Cross-document consistency map
 
@@ -255,7 +255,7 @@ What this document consumes, so a change THERE is checked HERE:
 | Host tries to cancel an online booking inside 7 days            | Impossible — the paid stay is ironclad (`BookingSystemDesign.md` §4); only the guest or the admin brake can end it.                   |
 | Guest cancels on the free/late boundary day                     | The booking's policy **snapshot** decides, computed in the property timezone — never live config (`BookingSystemDesign.md` §0.3, §3). |
 | Signed-in guest books with a DIFFERENT email than their account | `guestId` stamps anyway (they were signed in); the email on the booking gets the notifications. Both views work.                      |
-| Favorites on a new device                                       | Present once signed in (§6). Empty only while signed out — that device's hearts are local until the next sign-in merges them.          |
+| Favorites on a new device                                       | Present once signed in (§6). Empty only while signed out — that device's hearts are local until the next sign-in merges them.         |
 | Saved listing becomes unavailable                               | Drops out of the favorites resolve silently (§6).                                                                                     |
 | Guest with zero bookings opens `/guest/**`                      | Designed empty states that route to search — never a blank table.                                                                     |
 
@@ -313,10 +313,10 @@ booking-system re-implementation pass, same PR window). Each independently shipp
 5. **Status coverage is closed**: every guest display must handle all eight statuses (§3
    table). A new status upstream (there shouldn't be one — `BookingSystemDesign.md` §7)
    fails loudly here, by design.
-6. **Data loading per §7** — the reservation page is the only guest subscription, and
-   `getCurrentUser` the only layout-level one. The saved-listing id set is a LAYOUT-LEVEL
-   ONE-SHOT (§6, §7's stated exception), not a second channel. Do not add live channels to
-   dashboard/lists without the general rule's written justification.
+6. **Data loading per §7** — guest surfaces subscribe in their own components (booking form,
+   dashboard, my-bookings, favorites, the reservation page). The saved-listing id set (§6) is
+   the ONE layout-level feed beside `getCurrentUser`, lifted so 30 hearts cost zero extra
+   reads. Do not add live channels without the general rule's written justification.
 7. **Favorites have two backings, one API** (§6). Read `favoritesClass.ids` /
    `isFavorite()` and call `toggle()` — never query the `favorites` table from a component,
    and never assume a signed-out visitor has no favorites.

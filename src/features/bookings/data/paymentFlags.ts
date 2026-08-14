@@ -1,3 +1,6 @@
+// I18N
+import { m } from '@/paraglide/messages';
+
 // TYPES
 import type { Doc } from '@/convex/_generated/dataModel';
 
@@ -14,23 +17,23 @@ type PaymentFlag = NonNullable<Doc<'bookings'>['paymentFlag']>;
  */
 export const PAYMENT_FLAG_COPY: Record<PaymentFlag, { title: string; body: string }> = {
 	capture_failed: {
-		title: "The guest's payment could not be taken",
-		body: 'The card hold is still in place and the booking is waiting on the host as a normal request. Check the payment in the provider dashboard; if it went through after all, mark this handled.'
+		title: m['paymentFlags.captureFailedTitle'](),
+		body: m['paymentFlags.captureFailedBody']()
 	},
 	refund_failed: {
-		title: 'The refund did not go through',
-		body: 'The booking is cancelled but the guest still has their money taken. Issue the refund in the provider dashboard, then mark this handled.'
+		title: m['paymentFlags.refundFailedTitle'](),
+		body: m['paymentFlags.refundFailedBody']()
 	},
 	release_failed: {
-		title: 'The card hold could not be released',
-		body: 'No money moved, but the hold may still show on the guest’s card. Release it in the provider dashboard, then mark this handled.'
+		title: m['paymentFlags.releaseFailedTitle'](),
+		body: m['paymentFlags.releaseFailedBody']()
 	},
 	transfer_failed: {
-		title: "The host's payout failed",
-		body: 'The earnings stay held and the payout sweep skips this row until the flag is cleared — usually a closed or rejected bank account. Sort it with the host, then mark this handled to let the next sweep retry.'
+		title: m['paymentFlags.transferFailedTitle'](),
+		body: m['paymentFlags.transferFailedBody']()
 	},
 	reconcile_mismatch: {
-		title: 'This payment has been stuck too long',
-		body: 'The daily reconciliation found a payment sitting in a non-final state past its window, or could not reach the provider to confirm it. Compare against the provider dashboard and finish whatever is outstanding.'
+		title: m['paymentFlags.reconcileMismatchTitle'](),
+		body: m['paymentFlags.reconcileMismatchBody']()
 	}
 };

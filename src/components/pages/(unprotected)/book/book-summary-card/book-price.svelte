@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Separator } from '@/components/ui/separator/index.js';
 
@@ -48,7 +51,7 @@
 </script>
 
 <div class="space-y-4">
-	<p class="text-sm font-semibold">Price details</p>
+	<p class="text-sm font-semibold">{m['BookPage.BookPrice.title']()}</p>
 
 	{#if hasDates}
 		<div class="space-y-3">
@@ -121,7 +124,9 @@
 					{#if quote.lengthDiscount > 0}
 						<div class="flex items-baseline justify-between gap-3">
 							<dt class="text-muted-foreground">
-								Weekly discount ({quote.lengthDiscountPercent}%)
+								{m['BookPage.BookPrice.weeklyDiscountPercent']({
+									percent: quote.lengthDiscountPercent
+								})}
 							</dt>
 							<dd class="font-medium tabular-nums">−{formatCurrency(quote.lengthDiscount)}</dd>
 						</div>
@@ -129,7 +134,7 @@
 
 					{#if quote.cleaningFee > 0}
 						<div class="flex items-baseline justify-between gap-3">
-							<dt class="text-muted-foreground">Cleaning fee</dt>
+							<dt class="text-muted-foreground">{m['BookPage.BookPrice.cleaningFee']()}</dt>
 							<dd class="font-medium tabular-nums">{formatCurrency(quote.cleaningFee)}</dd>
 						</div>
 					{/if}
@@ -139,7 +144,7 @@
 					     line simply isn't there — no empty row, no "€0 service fee". -->
 					{#if quote.platformFee > 0}
 						<div class="flex items-baseline justify-between gap-3">
-							<dt class="text-muted-foreground">Service fee</dt>
+							<dt class="text-muted-foreground">{m['BookPage.BookPrice.serviceFee']()}</dt>
 							<dd class="font-medium tabular-nums">{formatCurrency(quote.platformFee)}</dd>
 						</div>
 					{/if}
@@ -150,7 +155,7 @@
 
 			<!-- Total — the anchor of the card: biggest, boldest line so the eye lands here first. -->
 			<div class="flex items-baseline justify-between gap-3">
-				<span class="text-base font-semibold">Total</span>
+				<span class="text-base font-semibold">{m['BookPage.BookPrice.total']()}</span>
 				<span class="text-xl font-bold tracking-tight tabular-nums"
 					>{formatCurrency(quote.total)}</span
 				>
@@ -162,7 +167,7 @@
 		<div class="rounded-xl bg-muted/40 p-4">
 			<p class="flex items-center gap-2 text-sm text-muted-foreground">
 				<CalendarDaysIcon class="size-4 shrink-0" aria-hidden="true" />
-				Add your dates to see the full price — from
+				{m['BookPage.BookPrice.addDatesHint']()}
 			</p>
 			<!-- The actual nightly price leads and stays the anchor; the original is struck and
 			     muted so it reads as "old", and the badge quantifies the win. A guest's eye lands
@@ -172,7 +177,9 @@
 					<span class="text-2xl font-bold tracking-tight text-foreground">
 						{formatCurrency(quote.nightly)}
 					</span>
-					<span class="text-sm font-medium text-muted-foreground"> / night. </span>
+					<span class="text-sm font-medium text-muted-foreground"
+						>{' '}{m['BookPage.BookPrice.perNightPeriod']()}{' '}</span
+					>
 				</span>
 				{#if discounted}
 					<span class="text-sm text-muted-foreground/60 tabular-nums line-through">
@@ -199,36 +206,36 @@
 							class="size-3.5 shrink-0 text-muted-foreground/70"
 							aria-hidden="true"
 						/>
-						<dt class="flex-1 text-muted-foreground">Weekend rate (Fri–Sat)</dt>
-						<dd class="text-right font-medium tabular-nums"
-							>{formatCurrency(accommodation.weekendPremium)}/night</dd
-						>
+						<dt class="flex-1 text-muted-foreground">{m['BookPage.BookPrice.weekendRate']()}</dt>
+						<dd class="text-right font-medium tabular-nums">
+							{m['BookPage.BookPrice.weekendRatePerNight']({
+								price: formatCurrency(accommodation.weekendPremium)
+							})}
+						</dd>
 					</div>
 				{/if}
 
 				{#if accommodation.weeklyDiscount && accommodation.weeklyDiscount > 0}
 					<div class="flex items-center gap-2.5">
-						<PercentIcon
-							class="size-3.5 shrink-0 text-muted-foreground/70"
-							aria-hidden="true"
-						/>
-						<dt class="flex-1 text-muted-foreground">Weekly discount</dt>
-						<dd class="text-right font-medium tabular-nums"
-							>−{accommodation.weeklyDiscount}% off stays of 7+ nights</dd
-						>
+						<PercentIcon class="size-3.5 shrink-0 text-muted-foreground/70" aria-hidden="true" />
+						<dt class="flex-1 text-muted-foreground">{m['BookPage.BookPrice.weeklyDiscount']()}</dt>
+						<dd class="text-right font-medium tabular-nums">
+							{m['BookPage.BookPrice.weeklyDiscountOff']({
+								percent: accommodation.weeklyDiscount
+							})}
+						</dd>
 					</div>
 				{/if}
 
 				{#if accommodation.cleaningFee && accommodation.cleaningFee > 0}
 					<div class="flex items-center gap-2.5">
-						<SprayCanIcon
-							class="size-3.5 shrink-0 text-muted-foreground/70"
-							aria-hidden="true"
-						/>
-						<dt class="flex-1 text-muted-foreground">Cleaning fee</dt>
-						<dd class="text-right font-medium tabular-nums"
-							>{formatCurrency(accommodation.cleaningFee)}, once per stay</dd
-						>
+						<SprayCanIcon class="size-3.5 shrink-0 text-muted-foreground/70" aria-hidden="true" />
+						<dt class="flex-1 text-muted-foreground">{m['BookPage.BookPrice.cleaningFee']()}</dt>
+						<dd class="text-right font-medium tabular-nums">
+							{m['BookPage.BookPrice.cleaningFeeOnce']({
+								price: formatCurrency(accommodation.cleaningFee)
+							})}
+						</dd>
 					</div>
 				{/if}
 			</dl>

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { ACCOMMODATIONS_CONFIG } from '@/shared/config';
 
@@ -26,8 +29,9 @@
 		<!-- No "Change plan" control here — the switch is one-way (ASD §8), and a control
 		     that only says "you can't" is noise. The fact and the road are visible text. -->
 		<span class="text-sm text-muted-foreground">
-			Per-booking fee ({ACCOMMODATIONS_CONFIG.BOOKING_FEE.PERCENT}%) — permanent · new listing to
-			change plan
+			{m['HostMyAccommodationsPage.MyAccommodationsTableListingFee.perBookingFee']({
+				percent: ACCOMMODATIONS_CONFIG.BOOKING_FEE.PERCENT
+			})}
 		</span>
 	{:else if fee.kind === 'inactive'}
 		<!-- No model stamped: the flip backfill hasn't reached this row, and the sweep
@@ -36,9 +40,14 @@
 	{:else if fee.kind === 'unpaid'}
 		<!-- The first payment gates going live (ASD §8) — say so where the host looks. -->
 		<span class="text-sm font-medium text-foreground">
-			Listing fee not paid — pay €{ACCOMMODATIONS_CONFIG.LISTING_FEE.AMOUNT} to go live
+			{m['HostMyAccommodationsPage.MyAccommodationsTableListingFee.listingFeeNotPaid']({
+				amount: ACCOMMODATIONS_CONFIG.LISTING_FEE.AMOUNT
+			})}
 		</span>
-		<MyAccommodationsTableRenewButton apartmentId={row._id} label="Pay now" />
+		<MyAccommodationsTableRenewButton
+			apartmentId={row._id}
+			label={m['HostMyAccommodationsPage.MyAccommodationsTableListingFee.payNow']()}
+		/>
 	{:else}
 		<span
 			class={cn(
@@ -47,16 +56,22 @@
 			)}
 		>
 			{#if fee.kind === 'lapsed'}
-				Expired
+				{m['HostMyAccommodationsPage.MyAccommodationsTableListingFee.expired']()}
 			{:else if fee.kind === 'grace'}
-				Overdue — renew now
+				{m['HostMyAccommodationsPage.MyAccommodationsTableListingFee.overdueRenewNow']()}
 			{:else if fee.kind === 'expiring'}
-				{fee.daysLeft === 0 ? 'Expires today' : `Expires in ${fee.daysLeft} days`}
+				{fee.daysLeft === 0
+					? m['HostMyAccommodationsPage.MyAccommodationsTableListingFee.expiresToday']()
+					: m['HostMyAccommodationsPage.MyAccommodationsTableListingFee.expiresInDays']({
+							days: fee.daysLeft
+						})}
 			{:else if fee.daysLeft === null}
 				<!-- A "forever" grant: no countdown, and "Until 2100" would be noise. -->
-				Covered forever
+				{m['HostMyAccommodationsPage.MyAccommodationsTableListingFee.coveredForever']()}
 			{:else}
-				Until {formatDate(fee.expiresAt)}
+				{m['HostMyAccommodationsPage.MyAccommodationsTableListingFee.untilDate']({
+					date: formatDate(fee.expiresAt)
+				})}
 			{/if}
 		</span>
 

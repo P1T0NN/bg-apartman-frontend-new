@@ -1,3 +1,6 @@
+// I18N
+import { m } from '@/paraglide/messages';
+
 // CONFIG
 import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
@@ -16,49 +19,49 @@ import type {
  */
 export const BOOKING_STATUS_HELP: typesFeatureStatusHelp = {
 	href: UNPROTECTED_PAGE_ENDPOINTS.BOOKING_STATUS_EXPLANATION,
-	ariaLabel: 'Learn what each booking status means'
+	ariaLabel: m['bookingsData.statusHelpAria']()
 };
 
 export const BOOKING_STATUS_CONFIG: typesBookingStatusConfig = {
 	pending: {
-		label: 'Pending',
+		label: m['bookingsData.pending'](),
 		badgeClass: 'bg-amber-500/10 text-amber-700 ring-amber-500/20 dark:text-amber-300',
 		dotClass: 'bg-amber-500'
 	},
 	confirmed: {
-		label: 'Confirmed',
+		label: m['bookingsData.confirmed'](),
 		badgeClass: 'bg-blue-500/10 text-blue-700 ring-blue-500/20 dark:text-blue-300',
 		dotClass: 'bg-blue-500'
 	},
 	checked_in: {
-		label: 'Checked in',
+		label: m['bookingsData.checkedIn'](),
 		badgeClass: 'bg-emerald-500/10 text-emerald-700 ring-emerald-500/20 dark:text-emerald-300',
 		dotClass: 'bg-emerald-500'
 	},
 	checked_out: {
-		label: 'Checked out',
+		label: m['bookingsData.checkedOut'](),
 		badgeClass: 'bg-muted text-muted-foreground ring-border',
 		dotClass: 'bg-muted-foreground'
 	},
 	declined: {
-		label: 'Declined',
+		label: m['bookingsData.declined'](),
 		badgeClass: 'bg-destructive/10 text-destructive ring-destructive/20',
 		dotClass: 'bg-destructive'
 	},
 	auto_declined: {
-		label: 'Expired',
+		label: m['bookingsData.expired'](),
 		badgeClass: 'bg-muted text-muted-foreground ring-border',
 		dotClass: 'bg-muted-foreground'
 	},
 	// A guest pulling an unanswered request is a non-event — muted, never destructive
 	// styling, so it can't read as a loss (BookingSystemDesign.md §2).
 	withdrawn: {
-		label: 'Withdrawn',
+		label: m['bookingsData.withdrawn'](),
 		badgeClass: 'bg-muted text-muted-foreground ring-border',
 		dotClass: 'bg-muted-foreground'
 	},
 	cancelled: {
-		label: 'Cancelled',
+		label: m['bookingsData.cancelled'](),
 		badgeClass: 'bg-destructive/10 text-destructive ring-destructive/20',
 		dotClass: 'bg-destructive'
 	}
@@ -72,32 +75,32 @@ export const BOOKING_STATUS_CONFIG: typesBookingStatusConfig = {
  */
 export const PAYMENT_STATUS_CONFIG: typesPaymentStatusConfig = {
 	on_arrival: {
-		label: 'Cash on arrival',
+		label: m['bookingsData.cashOnArrival'](),
 		badgeClass: 'bg-amber-500/10 text-amber-700 ring-amber-500/20 dark:text-amber-300',
 		dotClass: 'bg-amber-500'
 	},
 	awaiting: {
-		label: 'Awaiting payment',
+		label: m['bookingsData.awaitingPayment'](),
 		badgeClass: 'bg-muted text-muted-foreground ring-border',
 		dotClass: 'bg-muted-foreground'
 	},
 	authorized: {
-		label: 'Card held',
+		label: m['bookingsData.cardHeld'](),
 		badgeClass: 'bg-blue-500/10 text-blue-700 ring-blue-500/20 dark:text-blue-300',
 		dotClass: 'bg-blue-500'
 	},
 	paid: {
-		label: 'Paid',
+		label: m['bookingsData.paid'](),
 		badgeClass: 'bg-emerald-500/10 text-emerald-700 ring-emerald-500/20 dark:text-emerald-300',
 		dotClass: 'bg-emerald-500'
 	},
 	released: {
-		label: 'Hold released',
+		label: m['bookingsData.holdReleased'](),
 		badgeClass: 'bg-muted text-muted-foreground ring-border',
 		dotClass: 'bg-muted-foreground'
 	},
 	refunded: {
-		label: 'Refunded',
+		label: m['bookingsData.refunded'](),
 		badgeClass: 'bg-muted text-muted-foreground ring-border',
 		dotClass: 'bg-muted-foreground'
 	}
@@ -105,10 +108,10 @@ export const PAYMENT_STATUS_CONFIG: typesPaymentStatusConfig = {
 
 /** Host workflow filters — each maps 1:1 to a booking status (plus "all"). */
 export const BOOKING_FILTERS: typesBookingFilterOption[] = [
-	{ value: 'all', label: 'All' },
-	{ value: 'pending', label: 'Requests' },
-	{ value: 'confirmed', label: 'Upcoming' },
-	{ value: 'checked_in', label: 'Hosting now' },
-	{ value: 'checked_out', label: 'Checked out' },
-	{ value: 'cancelled', label: 'Cancelled' }
+	{ value: 'all', label: m['bookingsData.all']() },
+	{ value: 'pending', label: m['bookingsData.requests']() },
+	{ value: 'confirmed', label: m['bookingsData.upcoming']() },
+	{ value: 'checked_in', label: m['bookingsData.hostingNow']() },
+	{ value: 'checked_out', label: m['bookingsData.checkedOut']() },
+	{ value: 'cancelled', label: m['bookingsData.cancelled']() }
 ];

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Card } from '@/components/ui/card/index.js';
 	import { cn } from '@/utils/utils.js';
@@ -21,17 +24,24 @@
 	type LedgerRow = { label: string; value: string; lead?: boolean };
 
 	const thisMonth = $derived<LedgerRow[]>([
-		{ label: 'Revenue', value: formatCurrency(data.revenueThisMonth), lead: true },
-		{ label: 'Bookings', value: String(data.bookingsThisMonth) }
+		{
+			label: m['AdminDashboardPage.AdminDashboardStatCards.revenue'](),
+			value: formatCurrency(data.revenueThisMonth),
+			lead: true
+		},
+		{ label: m['AdminDashboardPage.AdminDashboardStatCards.bookings'](), value: String(data.bookingsThisMonth) }
 	]);
 
 	const platform = $derived<LedgerRow[]>([
 		{
-			label: 'Users',
+			label: m['AdminDashboardPage.AdminDashboardStatCards.users'](),
 			value: data.usersTotalCapped ? `${data.usersTotal}+` : String(data.usersTotal),
 			lead: true
 		},
-		{ label: 'Published listings', value: String(data.publishedListings) }
+		{
+			label: m['AdminDashboardPage.AdminDashboardStatCards.publishedListings'](),
+			value: String(data.publishedListings)
+		}
 	]);
 </script>
 
@@ -61,7 +71,7 @@
 
 <Card class="gap-0 overflow-hidden p-0">
 	<div class="grid divide-y lg:grid-cols-2 lg:divide-x lg:divide-y-0">
-		{@render ledger('This month', thisMonth)}
-		{@render ledger('Platform', platform)}
+		{@render ledger(m['AdminDashboardPage.AdminDashboardStatCards.thisMonth'](), thisMonth)}
+		{@render ledger(m['AdminDashboardPage.AdminDashboardStatCards.platform'](), platform)}
 	</div>
 </Card>

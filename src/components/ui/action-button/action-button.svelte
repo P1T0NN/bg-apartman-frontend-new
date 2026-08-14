@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { AlertDialog } from '@/components/ui/alert-dialog/index.js';
 	import { Button } from '@/components/ui/button/index.js';
@@ -68,9 +71,9 @@
 
 	<div class="alert-dialog__header">
 		<h2 class={isDestructive ? 'text-destructive' : ''}>
-			{title ?? 'Action cannot be reversed'}
+			{title ?? m['ActionButton.cannotBeReversed']()}
 		</h2>
-		<p>{description ?? 'Are you sure you want to do this? This action cannot be undone.'}</p>
+		<p>{description ?? m['ActionButton.confirmDescription']()}</p>
 	</div>
 
 	{#if body}
@@ -81,7 +84,7 @@
 
 	<div class="alert-dialog__footer">
 		<Button type="button" variant="outline" onclick={() => (open = false)} disabled={isPending}>
-			Cancel
+			{m['ActionButton.cancel']()}
 		</Button>
 
 		{#if !hideProceed}
@@ -94,7 +97,7 @@
 				{#if isPending}
 					<Loader class="h-3 w-3 animate-spin" />
 				{/if}
-				Proceed
+				{m['ActionButton.proceed']()}
 			</Button>
 		{/if}
 	</div>

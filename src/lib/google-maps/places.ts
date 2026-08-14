@@ -48,7 +48,7 @@ export type PlaceDetails = {
 
 /**
  * Primary types the search box offers — only cities and countries. Kept in lockstep with
- * {@link resolveMergedRegionPlaceId} (which resolves a accommodation's city as a `locality` and its
+ * {@link resolveMergedRegionPlaceId} (which resolves an accommodation's city as a `locality` and its
  * country as a `country`), so the place id the box yields equals the id stored on the accommodation.
  */
 export const REGION_PRIMARY_TYPES = ['locality', 'country'] as const;
@@ -134,7 +134,11 @@ export async function resolveRegionPlaceId(
  */
 export async function resolveMergedRegionPlaceId(place: PlaceDetails): Promise<string> {
 	const [cityId, countryId] = await Promise.all([
-		resolveRegionPlaceId(place.city, 'locality', place.countryCode ? [place.countryCode] : undefined),
+		resolveRegionPlaceId(
+			place.city,
+			'locality',
+			place.countryCode ? [place.countryCode] : undefined
+		),
 		resolveRegionPlaceId(place.country, 'country')
 	]);
 	const merged = [cityId, countryId].filter(Boolean).join(' ');
@@ -309,11 +313,19 @@ async function toPlaceDetails(place: google.maps.places.Place): Promise<PlaceDet
 	// is NOT the locality/postal_town itself counts as a signal.
 	const municipality =
 		components?.find(
-			(c) => c.types.includes('political') && !c.types.includes('locality') && !c.types.includes('postal_town')
+			(c) =>
+				c.types.includes('political') &&
+				!c.types.includes('locality') &&
+				!c.types.includes('postal_town')
 		)?.longText ?? '';
 	// Compare latinized names: Google mixes scripts (locality "Савски Венац" + political
 	// "Savski Venac") so a raw comparison misses the match.
-	if (city && (MUNICIPALITY_RE.test(toLatin(city)) || toLatin(city).toLowerCase() === toLatin(municipality).toLowerCase())) city = '';
+	if (
+		city &&
+		(MUNICIPALITY_RE.test(toLatin(city)) ||
+			toLatin(city).toLowerCase() === toLatin(municipality).toLowerCase())
+	)
+		city = '';
 
 	const country = component(components, 'country');
 	const countryCode = components?.find((c) => c.types.includes('country'))?.shortText ?? '';

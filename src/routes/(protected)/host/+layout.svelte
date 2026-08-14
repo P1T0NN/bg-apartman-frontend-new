@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// SVELTEKIT
 	import { page } from '$app/state';
 
@@ -8,6 +11,8 @@
 	// CONFIG
 	import { ADMIN_PAGE_ENDPOINTS, PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 	// COMPONENTS
 	import * as Sidebar from '@/components/ui/sidebar/index.js';
 	import AppSidebar from '@/components/ui/app-sidebar/app-sidebar.svelte';
@@ -43,14 +48,14 @@
 		// nav-secondary.svelte renders it, nav-main never sees it.
 		const navSecondary = [
 			{
-				name: 'Add Accommodation',
-				url: PROTECTED_PAGE_ENDPOINTS.ADD_ACCOMMODATION,
+				name: m['HostLayout.navAddAccommodation'](),
+				url: appHref(PROTECTED_PAGE_ENDPOINTS.ADD_ACCOMMODATION),
 				icon: CirclePlusIcon,
 				highlight: true
 			},
 			{
-				name: 'Switch to traveling',
-				url: PROTECTED_PAGE_ENDPOINTS.GUEST_DASHBOARD,
+				name: m['HostLayout.navSwitchToTraveling'](),
+				url: appHref(PROTECTED_PAGE_ENDPOINTS.GUEST_DASHBOARD),
 				icon: LuggageIcon
 			}
 		];
@@ -58,8 +63,8 @@
 		// Admins only — the sidebar entry is UX; every admin function re-checks the role server-side.
 		if (authClass.currentUser?.role === 'admin') {
 			navSecondary.push({
-				name: 'Admin Page',
-				url: ADMIN_PAGE_ENDPOINTS.DASHBOARD,
+				name: m['HostLayout.navAdminPage'](),
+				url: appHref(ADMIN_PAGE_ENDPOINTS.DASHBOARD),
 				icon: ShieldIcon
 			});
 		}
@@ -67,38 +72,38 @@
 		return {
 			navMain: [
 				{
-					label: 'Overview',
+					label: m['HostLayout.navOverview'](),
 					items: [
 						{
-							name: 'Dashboard',
-							url: PROTECTED_PAGE_ENDPOINTS.HOST_DASHBOARD,
+							name: m['HostLayout.navDashboard'](),
+							url: appHref(PROTECTED_PAGE_ENDPOINTS.HOST_DASHBOARD),
 							icon: LayoutDashboardIcon
 						},
 						{
-							name: 'Reservations',
-							url: PROTECTED_PAGE_ENDPOINTS.RESERVATIONS,
+							name: m['HostLayout.navReservations'](),
+							url: appHref(PROTECTED_PAGE_ENDPOINTS.RESERVATIONS),
 							icon: CalendarCheckIcon
 						}
 					]
 				},
 				{
-					label: 'Accommodations',
+					label: m['HostLayout.navAccommodations'](),
 					items: [
 						{
-							name: 'My Accommodations',
-							url: PROTECTED_PAGE_ENDPOINTS.MY_ACCOMMODATIONS,
+							name: m['HostLayout.navMyAccommodations'](),
+							url: appHref(PROTECTED_PAGE_ENDPOINTS.MY_ACCOMMODATIONS),
 							icon: BuildingIcon
 						}
 					]
 				},
 				{
-					label: 'Analytics',
+					label: m['HostLayout.navAnalytics'](),
 					items: [
 						// Performance depth lives here, not on the dashboard — a page a host
 						// opens on purpose, so its heavy reads run only then (HSD §2b).
 						{
-							name: 'Analytics',
-							url: PROTECTED_PAGE_ENDPOINTS.HOST_ANALYTICS,
+							name: m['HostLayout.navAnalytics'](),
+							url: appHref(PROTECTED_PAGE_ENDPOINTS.HOST_ANALYTICS),
 							icon: ChartLineIcon
 						}
 					]

@@ -234,7 +234,7 @@ export const createApartment = authMutation('createApartment')({
 });
 
 /**
- * Admin creates a accommodation on behalf of a user (`hostId` — mandatory). The admin
+ * Admin creates an accommodation on behalf of a user (`hostId` — mandatory). The admin
  * is the moderator, so the accommodation goes straight to `published` (no self-review
  * round-trip) and the owner gets the "your accommodation is live" email.
  */

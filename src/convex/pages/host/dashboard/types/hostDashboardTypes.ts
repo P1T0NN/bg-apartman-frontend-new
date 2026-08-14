@@ -1,15 +1,14 @@
 // Payloads for the host dashboard (`/host/dashboard`), split into TWO reads that match
-// how the data actually behaves (GeneralSystemDesignRule.md — realtime is opt-in):
+// how the data actually behaves (GeneralSystemDesignRule.md):
 //
-//   1. `HostPendingReservations` — SUBSCRIPTION. Requests arrive from guests and the
-//      lifecycle cron expires them while the host watches; the strip must move on its own.
-//   2. `HostDashboardStats`      — one-shot. Changes only when the host acts elsewhere
-//      (adds a listing, confirms a booking) or a day boundary passes.
+//   1. `HostPendingReservations` — its own subscription. Requests arrive from guests and
+//      the lifecycle cron expires them while the host watches; the strip must move on its own.
+//   2. `HostDashboardStats`      — one live read for everything else below the strip.
 //
-// They were one query once. Splitting them means the expensive leg is paid for once per
-// visit instead of re-running on every write to this host's rows. The 12-month trend chart
-// and the per-listing table moved to `/host/analytics` — performance depth got its own
-// page (HostSystemDesign.md §2b).
+// They were one query once. Splitting them means each leg re-runs only on writes to the rows
+// it reads, instead of one subscription re-running on every write to this host. The 12-month
+// trend chart and the per-listing table moved to `/host/analytics` — performance depth got its
+// own page (HostSystemDesign.md §2b).
 
 // TYPES
 import type { Id } from '@/convex/_generated/dataModel';

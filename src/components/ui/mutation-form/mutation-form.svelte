@@ -1,4 +1,7 @@
 <script lang="ts" generics="T extends Record<string, unknown>">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { tick } from 'svelte';
 	import { fade } from 'svelte/transition';
@@ -66,7 +69,7 @@
 		prepareSubmit,
 		schema,
 		onSuccess,
-		submitLabel = 'Submit',
+		submitLabel = m['MutationForm.submit'](),
 		resetOnSuccess = true,
 		customFields,
 		header,
@@ -77,8 +80,8 @@
 		wizard = false,
 		/** Header for the trailing `extraFields` step (wizard only). */
 		extraStepMeta,
-		backLabel = 'Back',
-		continueLabel = 'Continue'
+		backLabel = m['MutationForm.back'](),
+		continueLabel = m['MutationForm.continue']()
 	}: {
 		/** Flat field list. Renders as a single plain section. Mutually exclusive with `sections`. */
 		fields?: MutationFormFieldDef[];
@@ -202,7 +205,7 @@
 		const stepErrors = pickErrors(computeFieldErrors(snapshot), stepFieldIds(currentStep));
 		if (Object.keys(stepErrors).length > 0) {
 			fieldErrors = stepErrors;
-			toast.error('You need to correct form errors');
+			toast.error(m['MutationForm.correctFormErrors']());
 			void focusFirstError(formEl);
 			return;
 		}
@@ -234,7 +237,7 @@
 		const validation = schema.safeParse(valueSnapshot);
 		if (!validation.success) {
 			fieldErrors = zodIssuesToFieldErrors<keyof T & string>(validation.error.issues);
-			toast.error('You need to correct form errors');
+			toast.error(m['MutationForm.correctFormErrors']());
 			// In wizard mode, jump back to the first step that still has an error.
 			if (wizard) {
 				const firstBad = wizardSteps.findIndex(
@@ -459,14 +462,14 @@
 		<div class="flex flex-col gap-2">
 			<div class="flex items-center justify-end">
 				<span class="text-xs font-medium text-muted-foreground tabular-nums">
-					Step {currentStep + 1} of {wizardSteps.length}
+					{m['MutationForm.stepOf']({ step: currentStep + 1, total: wizardSteps.length })}
 				</span>
 			</div>
-			<div class="flex items-center gap-1.5" role="group" aria-label="Progress">
+			<div class="flex items-center gap-1.5" role="group" aria-label={m['MutationForm.progress']()}>
 				{#each wizardSteps, i (i)}
 					<button
 						type="button"
-						aria-label={`Go to step ${i + 1}`}
+						aria-label={m['MutationForm.goToStep']({ step: i + 1 })}
 						aria-current={i === currentStep ? 'step' : undefined}
 						disabled={i >= currentStep}
 						onclick={() => goToStep(i)}

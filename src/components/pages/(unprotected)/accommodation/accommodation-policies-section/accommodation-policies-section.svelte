@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CLASSES
 	import { createAccommodationPoliciesRules } from './index.svelte.js';
 
@@ -14,11 +17,15 @@
 </script>
 
 <section class="space-y-5">
-	<h2 class="text-lg font-semibold tracking-tight">Things to know</h2>
+	<h2 class="text-lg font-semibold tracking-tight">
+		{m['AccommodationPage.AccommodationPoliciesSection.title']()}
+	</h2>
 
 	<div class="grid gap-8 sm:grid-cols-2">
 		<div class="space-y-3">
-			<h3 class="text-sm font-semibold">House rules</h3>
+			<h3 class="text-sm font-semibold">
+				{m['AccommodationPage.AccommodationPoliciesSection.houseRulesTitle']()}
+			</h3>
 			<ul class="space-y-3">
 				{#each houseRules as rule (rule.label)}
 					<AccommodationPoliciesItem icon={rule.icon} label={rule.label} />
@@ -27,7 +34,9 @@
 		</div>
 
 		<div class="space-y-3">
-			<h3 class="text-sm font-semibold">Booking & stay</h3>
+			<h3 class="text-sm font-semibold">
+				{m['AccommodationPage.AccommodationPoliciesSection.bookingRulesTitle']()}
+			</h3>
 			<ul class="space-y-3">
 				{#each bookingRules as rule (rule.label)}
 					<AccommodationPoliciesItem icon={rule.icon} label={rule.label} />

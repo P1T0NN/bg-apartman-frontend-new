@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useConvexClient } from 'convex-svelte';
@@ -47,26 +50,27 @@
 	const canSubmit = $derived(!needsReason || reason.trim().length >= 4);
 
 	const copy = $derived.by(() => {
+		const listing = accommodation?.title ?? m['AdminAccommodationsPage.AdminModerateAccommodationDialog.thisListing']();
 		switch (action) {
 			case 'published':
 				return {
-					title: 'Publish this listing?',
-					body: `${accommodation?.title ?? 'This listing'} goes live and becomes bookable by guests. The host is notified by email.`,
-					confirm: 'Publish listing',
+					title: m['AdminAccommodationsPage.AdminModerateAccommodationDialog.publishTitle'](),
+					body: m['AdminAccommodationsPage.AdminModerateAccommodationDialog.publishBody']({ listing }),
+					confirm: m['AdminAccommodationsPage.AdminModerateAccommodationDialog.publishListing'](),
 					destructive: false
 				};
 			case 'suspended':
 				return {
-					title: 'Suspend this listing?',
-					body: `${accommodation?.title ?? 'This listing'} is pulled from search and can no longer be booked. Bookings already confirmed go ahead as planned. The host will receive this explanation by email, and only an admin can put the listing back.`,
-					confirm: 'Suspend listing',
+					title: m['AdminAccommodationsPage.AdminModerateAccommodationDialog.suspendTitle'](),
+					body: m['AdminAccommodationsPage.AdminModerateAccommodationDialog.suspendBody']({ listing }),
+					confirm: m['AdminAccommodationsPage.AdminModerateAccommodationDialog.suspendListing'](),
 					destructive: true
 				};
 			case 'archived':
 				return {
-					title: 'Archive this listing?',
-					body: `${accommodation?.title ?? 'This listing'} is hidden from guests. No email is sent — archiving is tidy-up, not moderation. The host can resubmit it for review.`,
-					confirm: 'Archive listing',
+					title: m['AdminAccommodationsPage.AdminModerateAccommodationDialog.archiveTitle'](),
+					body: m['AdminAccommodationsPage.AdminModerateAccommodationDialog.archiveBody']({ listing }),
+					confirm: m['AdminAccommodationsPage.AdminModerateAccommodationDialog.archiveListing'](),
 					destructive: true
 				};
 		}
@@ -109,13 +113,15 @@
 
 	{#if needsReason}
 		<div class="flex flex-col gap-1.5">
-			<label for="suspend-reason" class="text-sm font-medium">Reason for suspending</label>
+			<label for="suspend-reason" class="text-sm font-medium">
+				{m['AdminAccommodationsPage.AdminModerateAccommodationDialog.reasonForSuspending']()}
+			</label>
 			<Textarea
 				id="suspend-reason"
 				bind:value={reason}
 				maxlength={500}
 				rows={4}
-				placeholder="e.g. The photos don't match the address given."
+				placeholder={m['AdminAccommodationsPage.AdminModerateAccommodationDialog.suspendReasonPlaceholder']()}
 			/>
 			<span
 				class="self-end text-xs tabular-nums {reason.trim().length >= 4
@@ -130,7 +136,7 @@
 
 	<div class="alert-dialog__footer">
 		<Button type="button" variant="outline" onclick={() => (open = false)} disabled={isPending}>
-			Cancel
+			{m['AdminAccommodationsPage.AdminModerateAccommodationDialog.cancel']()}
 		</Button>
 		<Button
 			type="button"

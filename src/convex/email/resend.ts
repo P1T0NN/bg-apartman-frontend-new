@@ -15,7 +15,7 @@ export type EmailCtx = MutationCtx | ActionCtx;
  * Convex table with retries + rate-limiting, so a failed Resend API call doesn't drop the email
  * (unlike a fire-and-forget `fetch`). Triggered from the mutation/action that owns the data.
  *
- * `testMode: false` â†’ real delivery. In test mode the component only sends to Resend-approved test
+ * `testMode: false` → real delivery. In test mode the component only sends to Resend-approved test
  * addresses, so production mail would silently not arrive.
  */
 export const resend = new Resend(components.resend, { testMode: false });

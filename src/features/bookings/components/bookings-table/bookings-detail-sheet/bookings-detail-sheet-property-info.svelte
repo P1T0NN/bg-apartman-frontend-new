@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// TYPES
 	import type { typesBookingSafe } from '@/shared/features/booking/types/bookingTypes';
 
@@ -16,7 +19,9 @@
 </script>
 
 <section class="space-y-2">
-	<h3 class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Property</h3>
+	<h3 class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+		{m['BookingsFeature.BookingsDetailSheet.BookingsDetailSheetPropertyInfo.title']()}
+	</h3>
 	<div class="flex items-center gap-3">
 		<img
 			src={apartment.imageUrl}
@@ -34,7 +39,9 @@
 			</p>
 
 			{#if hostName}
-				<p class="truncate text-xs text-muted-foreground">Host: {hostName}</p>
+				<p class="truncate text-xs text-muted-foreground">
+					{m['BookingsFeature.BookingsDetailSheet.BookingsDetailSheetPropertyInfo.hostLabel']({ host: hostName })}
+				</p>
 			{/if}
 		</div>
 	</div>

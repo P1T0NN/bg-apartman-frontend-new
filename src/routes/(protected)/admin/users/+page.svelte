@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 
@@ -13,6 +16,7 @@
 
 	// UTILS
 	import { capitalizeFirst } from '@/shared/utils/stringUtils';
+	import { getLocale } from '@/paraglide/runtime';
 
 	// TYPES
 	import type { ColumnDef, DataTableCellSnippetProps } from '@/components/ui/data-table/types.js';
@@ -38,38 +42,38 @@
 	const columns: ColumnDef<Doc<'user'>>[] = [
 		{
 			id: 'name',
-			header: 'User',
+			header: m['AdminUsersPage.colUser'](),
 			accessor: (r) => capitalizeFirst(r.name || r.email),
 			sortable: true
 		},
 		{
 			id: 'email',
-			header: 'Email',
+			header: m['AdminUsersPage.colEmail'](),
 			accessor: (r) => r.email,
 			hideBelow: 'md'
 		},
 		{
 			id: 'role',
-			header: 'Role',
+			header: m['AdminUsersPage.colRole'](),
 			accessor: (r) => capitalizeFirst(r.role),
 			hideBelow: 'md'
 		},
 		{
 			id: 'emailVerified',
-			header: 'Verified',
-			accessor: (r) => (r.emailVerified ? 'Yes' : 'No'),
+			header: m['AdminUsersPage.colVerified'](),
+			accessor: (r) => (r.emailVerified ? m['AdminUsersPage.yes']() : m['AdminUsersPage.no']()),
 			hideBelow: 'lg'
 		},
 		{
 			id: 'banned',
-			header: 'Status',
-			accessor: (r) => (r.banned ? 'Banned' : 'Active'),
+			header: m['AdminUsersPage.colStatus'](),
+			accessor: (r) => (r.banned ? m['AdminUsersPage.banned']() : m['AdminUsersPage.active']()),
 			hideBelow: 'md'
 		},
 		{
 			id: 'createdAt',
-			header: 'Created',
-			accessor: (r) => new Date(r._creationTime).toLocaleDateString(),
+			header: m['AdminUsersPage.colCreated'](),
+			accessor: (r) => new Date(r._creationTime).toLocaleDateString(getLocale()),
 			sortable: true,
 			hideBelow: 'lg'
 		}
@@ -80,13 +84,12 @@
 
 <section class="flex w-full flex-col gap-4 p-4 md:p-6">
 	<header class="flex flex-col gap-1">
-		<h1 class="text-2xl font-semibold tracking-tight">Users</h1>
-		<p class="text-sm text-muted-foreground">Search, filter, and manage user accounts.</p>
+		<h1 class="text-2xl font-semibold tracking-tight">{m['AdminUsersPage.title']()}</h1>
+		<p class="text-sm text-muted-foreground">{m['AdminUsersPage.description']()}</p>
 	</header>
 
-	<!-- one-shot: every user mutation lives on the [id] detail page, so nothing moves here. -->
 	<ConvexDataTable
-		caption="Users"
+		caption={m['AdminUsersPage.title']()}
 		query={api.tables.users.userQueries.listUsers}
 		controlsPlace="top"
 		{queryArgs}
@@ -97,7 +100,7 @@
 		bind:sortDirection
 		searchable
 		bind:search
-		searchPlaceholder={`Search by ${capitalizeFirst(searchField)}…`}
+		searchPlaceholder={m['AdminUsersPage.searchPlaceholder']({ field: capitalizeFirst(searchField) })}
 		{filters}
 	/>
 </section>

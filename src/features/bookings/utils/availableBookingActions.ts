@@ -1,3 +1,6 @@
+// I18N
+import { m } from '@/paraglide/messages';
+
 // UTILS
 import { hostMayPerform } from '@/shared/features/booking/utils/hostMayPerform';
 
@@ -8,15 +11,27 @@ import type { typesBookingActionOption } from '@/features/bookings/types/booking
 const ACTION_META: Record<'confirm' | 'decline' | 'cancel', typesBookingActionOption> = {
 	confirm: {
 		action: 'confirm',
-		meta: { label: 'Confirm booking', toast: 'Booking confirmed', variant: 'default' }
+		meta: {
+			label: m['availableBookingActions.confirmBooking'](),
+			toast: m['availableBookingActions.bookingConfirmed'](),
+			variant: 'default'
+		}
 	},
 	decline: {
 		action: 'decline',
-		meta: { label: 'Decline', toast: 'Request declined', variant: 'destructive' }
+		meta: {
+			label: m['availableBookingActions.decline'](),
+			toast: m['availableBookingActions.requestDeclined'](),
+			variant: 'destructive'
+		}
 	},
 	cancel: {
 		action: 'cancel',
-		meta: { label: 'Cancel booking', toast: 'Booking cancelled', variant: 'destructive' }
+		meta: {
+			label: m['availableBookingActions.cancelBooking'](),
+			toast: m['availableBookingActions.bookingCancelled'](),
+			variant: 'destructive'
+		}
 	}
 };
 

@@ -157,7 +157,7 @@ built as `/admin/analytics` by miscommunication, fully reverted the same day —
 to five pages and its analytics rejection stands, now pointing at the host page.)
 
 - [x] New page `/host/analytics` — host sidebar group "Analytics" → item "Analytics" (no badge: analytics is a place you go, never a place that needs you). Host-scoped 12-month trend chart + per-listing performance table, best occupancy first, edit-page links (HSD §2/§2b)
-- [x] `fetchHostAnalyticsSafe` (one-shot): series from host-scoped pre-aggregated rollups; table from `by_host_status_checkin` slices clipped to the month via `nightsWithinWindow`. No "≥ 2 listings" gate, unlike the old dashboard table — on a page opened to study performance, one row is still the answer (HSD §2b)
+- [x] `fetchHostAnalyticsSafe` (live subscription): series from host-scoped pre-aggregated rollups; table from `by_host_status_checkin` slices clipped to the month via `nightsWithinWindow`. No "≥ 2 listings" gate, unlike the old dashboard table — on a page opened to study performance, one row is still the answer (HSD §2b)
 - [x] Host dashboard slimmed to pending → earnings → today → tiles: chart + per-listing table removed from the dashboard (`fetchHostDashboardCharts` deleted, `perAccommodation` dropped from `fetchHostDashboardStats`); tiles keep their two-month occupancy/revenue math (HSD §2 revision note)
 - [x] Admin side fully reverted: no `/admin/analytics` route/query/components/sidebar entry; `AdminDashboardPageSystemDesign` Band 3 keeps its own platform chart as originally designed
 - [x] Dev preview data lives in `host/analytics/dev/` (same tree-shaking gate; delete at launch)
@@ -237,13 +237,12 @@ four gaps. Three are fixed here; the fourth is listed under the launch checklist
 - [x] **Dev seeds deleted** — see the launch checklist's first item.
 - [x] **Favorites are account-synced** (GuestSystemDesign.md §6, rewritten): new `favorites`
       table, `toggleFavorite` / `mergeFavorites` / `fetchMyFavoriteIdsSafe`. ONE layout-level
-      ONE-SHOT returning ids only feeds `favoritesClass` (not a subscription — `getCurrentUser`
-      stays the layout's only live channel; the set changes only by this user's clicks and
-      `toggleFavorite` returns the resulting state, so nothing needs to push). 30 hearts on a
-      search page cost zero further queries; the read's `.take(MAX_PER_USER)` bounds the hot
-      path with no per-click count; writes are optimistic and settle on the mutation's answer;
-      signing in merges the device's anonymous saves, and signed-out visitors keep working
-      exactly as before. Cascades on listing- and user-delete.
+      live feed of ids only feeds `favoritesClass` (a subscription alongside `getCurrentUser`;
+      the resolved set follows it, so a cross-device removal reflects on the next feed). 30
+      hearts on a search page cost zero further queries; the read's `.take(MAX_PER_USER)` bounds
+      the hot path with no per-click count; writes are optimistic and settle on the mutation's
+      answer; signing in merges the device's anonymous saves, and signed-out visitors keep
+      working exactly as before. Cascades on listing- and user-delete.
 
 > **Still open from the same audit** (not code — decisions):
 > **no Terms of Service / Privacy Policy pages** (the footer's "Terms of service" links to

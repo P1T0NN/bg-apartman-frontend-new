@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CLASSES
 	import { authClass } from '@/features/auth/classes/authClass.svelte';
 
@@ -8,6 +11,9 @@
 		PROTECTED_PAGE_ENDPOINTS,
 		UNPROTECTED_PAGE_ENDPOINTS
 	} from '@/config/routeEndpoints.js';
+
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 
 	// COMPONENTS
 	import * as Sidebar from '@/components/ui/sidebar/index.js';
@@ -38,29 +44,43 @@
 			{
 				items: [
 					{
-						name: 'Dashboard',
-						url: PROTECTED_PAGE_ENDPOINTS.GUEST_DASHBOARD,
+						name: m['GuestLayout.navDashboard'](),
+						url: appHref(PROTECTED_PAGE_ENDPOINTS.GUEST_DASHBOARD),
 						icon: LayoutDashboardIcon
 					},
 					{
-						name: 'My bookings',
-						url: PROTECTED_PAGE_ENDPOINTS.GUEST_MY_BOOKINGS,
+						name: m['GuestLayout.navMyBookings'](),
+						url: appHref(PROTECTED_PAGE_ENDPOINTS.GUEST_MY_BOOKINGS),
 						icon: CalendarCheckIcon
 					},
-					{ name: 'Saved', url: PROTECTED_PAGE_ENDPOINTS.GUEST_FAVORITES, icon: HeartIcon }
+					{
+						name: m['GuestLayout.navSaved'](),
+						url: appHref(PROTECTED_PAGE_ENDPOINTS.GUEST_FAVORITES),
+						icon: HeartIcon
+					}
 				]
 			}
 		],
 		navSecondary: [
-			{ name: 'Browse stays', url: UNPROTECTED_PAGE_ENDPOINTS.ROOT, icon: SearchIcon },
 			{
-				name: isHost ? 'Switch to hosting' : 'Become a host',
-				url: PROTECTED_PAGE_ENDPOINTS.HOST_DASHBOARD,
+				name: m['GuestLayout.navBrowseStays'](),
+				url: appHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT),
+				icon: SearchIcon
+			},
+			{
+				name: isHost ? m['GuestLayout.navSwitchToHosting']() : m['GuestLayout.navBecomeAHost'](),
+				url: appHref(PROTECTED_PAGE_ENDPOINTS.HOST_DASHBOARD),
 				icon: StoreIcon,
 				highlight: true
 			},
 			...(isAdmin
-				? [{ name: 'Admin Page', url: ADMIN_PAGE_ENDPOINTS.DASHBOARD, icon: ShieldIcon }]
+				? [
+						{
+							name: m['GuestLayout.navAdminPage'](),
+							url: appHref(ADMIN_PAGE_ENDPOINTS.DASHBOARD),
+							icon: ShieldIcon
+						}
+					]
 				: [])
 		]
 	});

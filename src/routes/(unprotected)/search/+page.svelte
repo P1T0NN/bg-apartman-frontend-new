@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CLASSES
 	import {
 		useSearchState,
@@ -8,12 +11,10 @@
 
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
+	import { usePaginatedQuery } from 'convex-svelte';
 
 	// CONFIG
 	import { PAGINATION_DATA, SEARCH_DATA } from '@/shared/config';
-
-	// UTILS
-	import { convexOneShotPaginatedQuery } from '@/utils/convexOneShot.svelte';
 
 	// COMPONENTS
 	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
@@ -24,10 +25,6 @@
 	// TYPES
 	import type { GoogleMapHandle } from '@/components/ui/google-map/types.js';
 	import type { Id } from '@/convex/_generated/dataModel';
-	import type {
-		SearchAccommodation,
-		SearchMarker
-	} from '@/shared/features/accommodation/types/accommodationTypes';
 
 	// LUCIDE ICONS
 	import MapIcon from '@lucide/svelte/icons/map';
@@ -65,29 +62,29 @@
 	});
 
 	/**
-	 * TWO reads of the same matching set, because the two panes need different things and used
-	 * to be forced into one shape:
+	 * TWO live reads of the same matching set, because the two panes need different things and
+	 * used to be forced into one shape:
 	 *
 	 *  - the LIST pages in as you scroll — 12 cards per request, server-side, so a region with
 	 *    100,000 listings costs the same first page as one with 12;
 	 *  - the MAP needs every pin, so it streams the lean 4-field marker shape and keeps asking
 	 *    for the next page until the set is exhausted (the effect below). ~60 bytes a pin.
 	 *
-	 * Both are ONE-SHOT (`GeneralSystemDesignRule.md` — realtime is opt-in). Search results do
-	 * not move under the viewer, and a subscription over a whole region's listings would re-run
-	 * on every unrelated booking or listing edit in it. Changing a filter changes the args, and
-	 * an args change refetches — which is the only freshness this page owes anyone.
+	 * Both are live subscriptions (`GeneralSystemDesignRule.md`); a filter change swaps the
+	 * args and re-runs them. Search results barely move under the viewer, so the subscription
+	 * mostly replaces a manual refetch — but it is the same `usePaginatedQuery` every list
+	 * page uses now, and a listing the user just created or moderated lands in the results.
 	 */
-	const list = convexOneShotPaginatedQuery<SearchAccommodation>(
+	const list = usePaginatedQuery(
 		api.tables.accommodations.queries.fetchSearchAccommodationsSafe.fetchSearchAccommodationsSafe,
 		() => queryArgs,
-		() => ({ initialNumItems: PAGINATION_DATA.INFINITE_SCROLL_PAGE_SIZE })
+		{ initialNumItems: PAGINATION_DATA.INFINITE_SCROLL_PAGE_SIZE }
 	);
 
-	const markers = convexOneShotPaginatedQuery<SearchMarker>(
+	const markers = usePaginatedQuery(
 		api.tables.accommodations.queries.fetchSearchMapMarkersSafe.fetchSearchMapMarkersSafe,
 		() => queryArgs,
-		() => ({ initialNumItems: SEARCH_DATA.MAP_MARKER_PAGE_SIZE })
+		{ initialNumItems: SEARCH_DATA.MAP_MARKER_PAGE_SIZE }
 	);
 
 	/**
@@ -115,7 +112,10 @@
 	const isEmpty = $derived(list.results.length === 0 && !listLoading);
 </script>
 
-<SvelteHead title={`Stays in ${location}`} description={`Browse places to stay in ${location}.`} />
+<SvelteHead
+	title={m['SearchPage.SEO.title']({ location: location ?? '' })}
+	description={m['SearchPage.SEO.description']({ location: location ?? '' })}
+/>
 
 <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,42%)] xl:grid-cols-[minmax(0,1fr)_38rem]">
 	<SearchLeftContent
@@ -144,8 +144,8 @@
 	onclick={() => (mobileView = mobileView === 'map' ? 'list' : 'map')}
 >
 	{#if mobileView === 'map'}
-		<ListIcon class="size-4" aria-hidden="true" /> Show list
+		<ListIcon class="size-4" aria-hidden="true" /> {m['SearchPage.showList']()}
 	{:else}
-		<MapIcon class="size-4" aria-hidden="true" /> Show map
+		<MapIcon class="size-4" aria-hidden="true" /> {m['SearchPage.showMap']()}
 	{/if}
 </Button>

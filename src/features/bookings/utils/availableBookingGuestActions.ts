@@ -1,3 +1,6 @@
+// I18N
+import { m } from '@/paraglide/messages';
+
 // UTILS
 import { guestMayCancelConfirmed } from '@/shared/features/booking/utils/guestMayCancelConfirmedBooking';
 import { todayInPropertyZone } from '@/shared/features/booking/utils/daysUntilCheckIn';
@@ -19,7 +22,11 @@ export function availableBookingGuestActions(b: typesBookingSafe): typesBookingG
 		return [
 			{
 				action: 'withdraw',
-				meta: { label: 'Withdraw request', toast: 'Request withdrawn', variant: 'outline' }
+				meta: {
+					label: m['availableBookingGuestActions.withdrawRequest'](),
+					toast: m['availableBookingGuestActions.requestWithdrawn'](),
+					variant: 'outline'
+				}
 			}
 		];
 	}
@@ -30,7 +37,11 @@ export function availableBookingGuestActions(b: typesBookingSafe): typesBookingG
 		return [
 			{
 				action: 'cancel',
-				meta: { label: 'Cancel booking', toast: 'Booking cancelled', variant: 'destructive' }
+				meta: {
+					label: m['availableBookingGuestActions.cancelBooking'](),
+					toast: m['availableBookingGuestActions.bookingCancelled'](),
+					variant: 'destructive'
+				}
 			}
 		];
 	}

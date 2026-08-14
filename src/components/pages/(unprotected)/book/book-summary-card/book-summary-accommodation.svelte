@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import SuperhostBadge from '@/features/accommodations/components/superhost-badge.svelte';
 
@@ -22,7 +25,9 @@
 	/>
 	<div class="min-w-0 space-y-0.5">
 		<p class="text-xs text-muted-foreground">
-			{accommodationTypeLabel(accommodation.type)} in {accommodation.city}
+			{accommodationTypeLabel(accommodation.type)}{' '}
+			{m['BookPage.BookSummaryAccommodation.in']()}{' '}
+			{accommodation.city}
 		</p>
 		<p class="truncate font-medium">{accommodation.title}</p>
 		{#if accommodation.host.isSuperhost}

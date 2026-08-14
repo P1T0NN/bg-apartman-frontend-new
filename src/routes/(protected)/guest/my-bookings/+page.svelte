@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 
@@ -18,7 +21,7 @@
 	let sheetOpen = $state(false);
 </script>
 
-<SvelteHead title="My bookings" description="Your trips, reservations and past stays." noIndex />
+<SvelteHead title={m['GuestMyBookingsPage.SEO.title']()} description={m['GuestMyBookingsPage.SEO.description']()} noIndex />
 
 <section class="flex w-full flex-col gap-6 p-4 md:p-6">
 	<MyBookingsHeader />
@@ -36,7 +39,7 @@
 {#snippet errorContent()}
 	<ErrorComponent
 		variant="alert"
-		title="Couldn't load your bookings"
-		description="Something went wrong while loading your reservations. Please try again in a moment."
+		title={m['GuestMyBookingsPage.loadBookingsErrorTitle']()}
+		description={m['GuestMyBookingsPage.loadBookingsErrorDescription']()}
 	/>
 {/snippet}

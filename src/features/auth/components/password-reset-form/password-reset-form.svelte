@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 	import * as Card from '@/components/ui/card/index.js';
@@ -28,22 +31,23 @@
 {#if form.step === 'forgot'}
 	<Card.Root class="mx-auto w-full max-w-sm">
 		<Card.Header>
-			<Card.Title class="text-2xl">Reset your password</Card.Title>
-			<Card.Description
-				>Enter the email for your account. We will send you a one-time code you can use to choose a
-				new password.</Card.Description
-			>
+			<Card.Title class="text-2xl">{m['AuthFeature.PasswordResetForm.resetPassword']()}</Card.Title>
+			<Card.Description>{m['AuthFeature.PasswordResetForm.resetDescription']()}</Card.Description>
 		</Card.Header>
 		<Card.Content>
 			<form onsubmit={form.onForgotSubmit}>
 				<FieldGroup>
-					<FormField id="pr-email-{id}" label="Email" error={form.fieldErrors.email}>
+					<FormField
+						id="pr-email-{id}"
+						label={m['AuthFeature.PasswordResetForm.email']()}
+						error={form.fieldErrors.email}
+					>
 						<Input
 							id="pr-email-{id}"
 							name="email"
 							type="email"
 							autocomplete="email"
-							placeholder="m@example.com"
+							placeholder={m['AuthFeature.PasswordResetForm.emailPlaceholder']()}
 							autofocus
 							bind:value={form.emailDraft}
 							aria-invalid={form.fieldErrors.email ? 'true' : undefined}
@@ -56,7 +60,9 @@
 					{/if}
 
 					<Field>
-						<Button type="submit" class="w-full" disabled={form.busy}>Send code</Button>
+						<Button type="submit" class="w-full" disabled={form.busy}>
+							{m['AuthFeature.PasswordResetForm.sendCode']()}
+						</Button>
 					</Field>
 				</FieldGroup>
 			</form>
@@ -65,17 +71,16 @@
 {:else}
 	<Card.Root class="mx-auto w-full max-w-sm">
 		<Card.Header>
-			<Card.Title class="text-2xl">Choose a new password</Card.Title>
+			<Card.Title class="text-2xl">{m['AuthFeature.PasswordResetForm.chooseNewPassword']()}</Card.Title>
 			<Card.Description class="text-balance">
-				We sent a code to {form.step.email}. Enter it below along with your new password. The code
-				is valid for 5 minutes.
+				{m['AuthFeature.PasswordResetForm.codeSent']({ email: form.step.email })}
 			</Card.Description>
 		</Card.Header>
 		<Card.Content>
 			<form onsubmit={form.onResetSubmit}>
 				<FieldGroup>
 					<Field>
-						<FieldLabel for="pr-code-{id}">Code</FieldLabel>
+						<FieldLabel for="pr-code-{id}">{m['AuthFeature.PasswordResetForm.code']()}</FieldLabel>
 						<InputOTP.Root
 							id="pr-otp-{id}"
 							inputId="pr-code-{id}"
@@ -96,13 +101,17 @@
 								</InputOTP.Group>
 							{/snippet}
 						</InputOTP.Root>
-						<FieldDescription>Enter the 8-digit code from your email.</FieldDescription>
+						<FieldDescription>{m['AuthFeature.PasswordResetForm.codeDescription']()}</FieldDescription>
 						{#if form.fieldErrors.code}
 							<FieldError>{form.fieldErrors.code}</FieldError>
 						{/if}
 					</Field>
 
-					<FormField id="pr-new-pw-{id}" label="New password" error={form.fieldErrors.newPassword}>
+					<FormField
+						id="pr-new-pw-{id}"
+						label={m['AuthFeature.PasswordResetForm.newPassword']()}
+						error={form.fieldErrors.newPassword}
+					>
 						<PasswordInput
 							id="pr-new-pw-{id}"
 							name="newPassword"
@@ -114,7 +123,7 @@
 
 					<FormField
 						id="pr-confirm-pw-{id}"
-						label="Confirm new password"
+						label={m['AuthFeature.PasswordResetForm.confirmNewPassword']()}
 						error={form.fieldErrors.confirmPassword}
 					>
 						<PasswordInput
@@ -133,7 +142,9 @@
 					{/if}
 
 					<Field>
-						<Button type="submit" class="w-full" disabled={form.busy}>Continue</Button>
+						<Button type="submit" class="w-full" disabled={form.busy}>
+							{m['AuthFeature.PasswordResetForm.continue']()}
+						</Button>
 						<Button
 							type="button"
 							variant="outline"
@@ -141,7 +152,7 @@
 							disabled={form.busy}
 							onclick={form.backToForgot}
 						>
-							Cancel
+							{m['AuthFeature.PasswordResetForm.cancel']()}
 						</Button>
 					</Field>
 

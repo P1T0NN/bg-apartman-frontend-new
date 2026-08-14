@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import UploadFileItemMultiple from '@/features/uploadFile/components/upload-file-multiple/upload-file-item-multiple.svelte';
 
@@ -45,7 +48,7 @@
 		)}
 	>
 		<ImageOffIcon class="size-4" aria-hidden="true" />
-		No current photos. Upload some below.
+		{m['HostEditAccommodationPage.EditAccommodationExistingPhotos.noCurrentPhotos']()}
 	</div>
 {:else}
 	<div class={cn('rounded-xl', invalid && 'p-2 ring-2 ring-destructive/60')}>
@@ -53,7 +56,7 @@
 			{#each visible as image, i (image.key)}
 				<UploadFileItemMultiple
 					previewUrl={image.url}
-					name={image.alt ?? 'photo'}
+					name={image.alt ?? m['HostEditAccommodationPage.EditAccommodationExistingPhotos.photoName']()}
 					hasCoverImage
 					isCover={i === 0}
 					onSetCover={() => setValue([image.key, ...keepKeys.filter((k) => k !== image.key)])}

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
 	import ReservationsHeader from '@/components/pages/(protected)/host/reservations/reservations-header.svelte';
@@ -6,8 +9,8 @@
 </script>
 
 <SvelteHead
-	title="Reservations"
-	description="Review booking requests, track upcoming stays and manage your guests."
+	title={m['HostReservationsPage.SEO.title']()}
+	description={m['HostReservationsPage.SEO.description']()}
 	noIndex
 />
 

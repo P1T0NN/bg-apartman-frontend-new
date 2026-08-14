@@ -1,3 +1,5 @@
+import { m } from '@/paraglide/messages';
+
 // FORMS
 import { addAccommodationForm } from '@/features/accommodations/forms/addAccommodationForm';
 
@@ -14,10 +16,10 @@ import UserRoundCheckIcon from '@lucide/svelte/icons/user-round-check';
 export const adminAddAccommodationForm: MutationFormSection[] = [
 	{
 		id: 'owner',
-		title: 'Owner',
-		description: 'Search for the user this accommodation belongs to — they become its host.',
+		title: m['AdminAddAccommodationPage.AdminAddAccommodationForm.owner'](),
+		description: m['AdminAddAccommodationPage.AdminAddAccommodationForm.ownerDescription'](),
 		icon: UserRoundCheckIcon,
-		fields: [{ id: 'hostId', label: 'Owner', kind: 'input', required: true, colSpan: 2 }]
+		fields: [{ id: 'hostId', label: m['AdminAddAccommodationPage.AdminAddAccommodationForm.owner'](), kind: 'input', required: true, colSpan: 2 }]
 	},
 	...addAccommodationForm
 ];

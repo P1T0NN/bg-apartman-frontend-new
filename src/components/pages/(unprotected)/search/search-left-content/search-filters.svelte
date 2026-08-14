@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { NativePopover } from '@/components/ui/native-popover/index.js';
 	import { Button } from '@/components/ui/button/index.js';
@@ -27,7 +30,7 @@
 	{#snippet trigger({ props, anchorStyle })}
 		<Button {...props} style={anchorStyle} variant="outline" size="sm" class="shrink-0 gap-1.5">
 			<SlidersHorizontalIcon class="size-4" aria-hidden="true" />
-			Filters
+			{m['SearchPage.SearchFilters.filters']()}
 			{#if activeCount > 0}
 				<span
 					class="ml-0.5 grid size-5 place-items-center rounded-full bg-primary text-xs font-semibold text-primary-foreground"
@@ -54,7 +57,7 @@
 									: 'text-muted-foreground hover:text-foreground'
 							)}
 						>
-							{option === 'any' ? 'Any' : option}
+							{option === 'any' ? m['SearchPage.SearchFilters.any']() : option}
 						</button>
 					{/each}
 				</div>
@@ -63,10 +66,10 @@
 
 		<div class="flex items-center justify-between pt-1">
 			<SearchFiltersClearButton {search} variant="ghost" size="sm" disabled={activeCount === 0}>
-				Clear
+				{m['SearchPage.SearchFilters.clear']()}
 			</SearchFiltersClearButton>
 
-			<Button size="sm" onclick={close}>Done</Button>
+			<Button size="sm" onclick={close}>{m['SearchPage.SearchFilters.done']()}</Button>
 		</div>
 	{/snippet}
 </NativePopover>

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
 	import AddAccommodationHeader from '@/components/pages/(protected)/host/add-accommodation/add-accommodation-header.svelte';
@@ -6,8 +9,8 @@
 </script>
 
 <SvelteHead
-	title="List your accommodation"
-	description="Fill in the details below. Everything can be edited later — your accommodation goes live after a quick review."
+	title={m['HostAddAccommodationPage.SEO.title']()}
+	description={m['HostAddAccommodationPage.SEO.description']()}
 />
 
 <section class="flex w-full flex-col gap-6 p-4 md:p-6">

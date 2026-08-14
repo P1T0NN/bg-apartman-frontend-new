@@ -2,6 +2,8 @@
 import { sequence } from '@sveltejs/kit/hooks';
 
 // LIBRARIES
+import { paraglideMiddleware } from '@/paraglide/server';
+import { getTextDirection } from '@/paraglide/runtime';
 import { getToken } from '@mmailaender/convex-better-auth-svelte/sveltekit';
 import { withServerConvexToken } from 'convex-svelte/sveltekit/server';
 
@@ -41,5 +43,16 @@ const convexAuthHandle: Handle = ({ event, resolve }) => {
 	return withServerConvexToken(token, () => resolve(event));
 };
 
-// Convex auth first (token on locals), then security headers
-export const handle: Handle = sequence(convexAuthHandle, securityHeadersHandle);
+// Paraglide handle - resolves the active locale (url → cookie → baseLocale) and stamps
+// `lang`/`dir` on the rendered `%lang%`/`%dir%` placeholders in app.html.
+const paraglideHandle: Handle = ({ event, resolve }) =>
+	paraglideMiddleware(event.request, ({ request: localizedRequest, locale }) => {
+		event.request = localizedRequest;
+		return resolve(event, {
+			transformPageChunk: ({ html }) =>
+				html.replace('%lang%', locale).replace('%dir%', getTextDirection(locale))
+		});
+	});
+
+// Paraglide (locale) outermost, then Convex auth (token on locals), then security headers
+export const handle: Handle = sequence(paraglideHandle, convexAuthHandle, securityHeadersHandle);

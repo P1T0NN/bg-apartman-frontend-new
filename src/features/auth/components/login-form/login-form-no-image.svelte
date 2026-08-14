@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
@@ -24,28 +27,28 @@
 	const id = $props.id();
 
 	const form = createLoginForm({
-		signInFailed: () => 'Sign in failed. Please check your credentials and try again.',
-		signedInToast: () => 'Signed in successfully.'
+		signInFailed: () => m['LoginPage.LoginFormNoImage.signInFailed'](),
+		signedInToast: () => m['LoginPage.LoginFormNoImage.signedInToast']()
 	});
 </script>
 
 <Card.Root class="mx-auto w-full max-w-sm">
 	{#if form.step === 'signIn'}
 		<Card.Header>
-			<Card.Title class="text-2xl">Login</Card.Title>
-			<Card.Description>Enter your email below to login to your account</Card.Description>
+			<Card.Title class="text-2xl">{m['LoginPage.LoginFormNoImage.login']()}</Card.Title>
+			<Card.Description>{m['LoginPage.LoginFormNoImage.loginDescription']()}</Card.Description>
 		</Card.Header>
 
 		<Card.Content>
 			<form onsubmit={form.onSignInSubmit}>
 				<FieldGroup>
-					<FormField id="email-{id}" label="Email" error={form.fieldErrors.email}>
+					<FormField id="email-{id}" label={m['LoginPage.LoginFormNoImage.email']()} error={form.fieldErrors.email}>
 						<Input
 							id="email-{id}"
 							name="email"
 							type="email"
 							autocomplete="email"
-							placeholder="m@example.com"
+							placeholder={m['LoginPage.LoginFormNoImage.emailPlaceholder']()}
 							autofocus
 							bind:value={form.emailDraft}
 							aria-invalid={form.fieldErrors.email ? 'true' : undefined}
@@ -54,13 +57,13 @@
 
 					<Field>
 						<div class="flex items-center">
-							<FieldLabel for="password-{id}">Password</FieldLabel>
+							<FieldLabel for="password-{id}">{m['LoginPage.LoginFormNoImage.password']()}</FieldLabel>
 
 							<Link
 								href={UNPROTECTED_PAGE_ENDPOINTS.FORGOT_PASSWORD}
 								class="ms-auto inline-block text-sm underline"
 							>
-								Forgot your password?
+								{m['LoginPage.LoginFormNoImage.forgotPassword']()}
 							</Link>
 						</div>
 
@@ -82,12 +85,16 @@
 					{/if}
 
 					<Field>
-						<Button type="submit" class="w-full" disabled={form.busy}>Login</Button>
+						<Button type="submit" class="w-full" disabled={form.busy}>
+							{m['LoginPage.LoginFormNoImage.login']()}
+						</Button>
 						<GoogleLoginButton class="w-full" />
 
 						<FieldDescription class="text-center">
-							Don't have an account?
-							<Link href={UNPROTECTED_PAGE_ENDPOINTS.SIGNUP}>Sign up</Link>
+							{m['LoginPage.LoginFormNoImage.noAccount']()}
+							<Link href={UNPROTECTED_PAGE_ENDPOINTS.SIGNUP}>
+								{m['LoginPage.LoginFormNoImage.signUp']()}
+							</Link>
 						</FieldDescription>
 					</Field>
 				</FieldGroup>

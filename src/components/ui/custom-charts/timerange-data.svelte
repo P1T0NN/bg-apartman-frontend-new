@@ -174,6 +174,7 @@
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
+	import { getLocale } from '@/paraglide/runtime';
 
 	// LUCIDE ICONS
 	import CalendarIcon from '@lucide/svelte/icons/calendar';
@@ -186,7 +187,7 @@
 		customLabel = 'Custom',
 		selectAriaLabel = 'Select time range',
 		calendarAriaLabel = 'Select custom date range',
-		locale = 'en-US',
+		locale = getLocale(),
 		timeZone = getLocalTimeZone(),
 		minValue,
 		maxValue,

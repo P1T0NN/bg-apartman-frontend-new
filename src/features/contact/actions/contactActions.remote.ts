@@ -1,6 +1,7 @@
 // SVELTEKIT IMPORTS
 import { RESEND_API_KEY, SEARCH_INPUT_RATE_LIMIT_SECRET } from '$env/static/private';
 import { getRequestEvent } from '$app/server';
+import { m } from '@/paraglide/messages';
 
 // LIBRARIES
 import { Resend } from 'resend';
@@ -32,7 +33,7 @@ import { sendContactFormEmailSchema } from '@/shared/features/contact/schemas/co
  */
 async function chargeContactFormLimit(): Promise<{ ok: true } | { ok: false; message: string }> {
 	const ip = resolveClientAddress(getRequestEvent());
-	if (!ip) return { ok: false, message: 'Could not verify your request. Please try again.' };
+	if (!ip) return { ok: false, message: m['contactActionsRemote.couldNotVerifyRequest']() };
 
 	try {
 		await createConvexHttpClient().mutation(
@@ -51,9 +52,9 @@ async function chargeContactFormLimit(): Promise<{ ok: true } | { ok: false; mes
 		return { ok: true };
 	} catch (cause) {
 		if (isRateLimitError(cause)) {
-			return { ok: false, message: 'Too many messages. Please try again later.' };
+			return { ok: false, message: m['contactActionsRemote.tooManyMessages']() };
 		}
-		return { ok: false, message: 'Could not send your message. Please try again.' };
+		return { ok: false, message: m['contactActionsRemote.couldNotSendMessage']() };
 	}
 }
 
@@ -78,5 +79,5 @@ export const sendContactFormEmail = safeCommand(sendContactFormEmailSchema, asyn
 		return { success: false, message: error.message, data: null };
 	}
 
-	return { success: true, message: 'Email sent successfully.', data: null };
+	return { success: true, message: m['contactActionsRemote.emailSentSuccessfully'](), data: null };
 });

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import BookPaymentFieldItem from './book-payment-field-item.svelte';
 
@@ -28,7 +31,7 @@
 </script>
 
 <section class="space-y-4">
-	<h2 class="text-lg font-semibold tracking-tight">Payment</h2>
+	<h2 class="text-lg font-semibold tracking-tight">{m['BookPage.BookPaymentField.title']()}</h2>
 
 	<div class="space-y-3">
 		{#each options as option (option.value)}

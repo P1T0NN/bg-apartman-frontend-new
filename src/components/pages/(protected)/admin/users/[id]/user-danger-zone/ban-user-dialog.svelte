@@ -1,4 +1,7 @@
 <script lang="ts">
+	// PARAGLIDE
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useConvexClient } from 'convex-svelte';
@@ -53,20 +56,20 @@
 {#snippet banForm()}
 	<div class="flex flex-col gap-3">
 		<label class="flex flex-col gap-1 text-sm">
-			<span>Reason (optional)</span>
-			<Input bind:value={reason} placeholder="Violation of terms…" disabled={isPending} />
+			<span>{m['AdminUsersPage.BanUserDialog.reasonLabel']()}</span>
+			<Input bind:value={reason} placeholder={m['AdminUsersPage.BanUserDialog.reasonPlaceholder']()} disabled={isPending} />
 		</label>
 
 		<label class="flex flex-col gap-1 text-sm">
-			<span>Expires</span>
+			<span>{m['AdminUsersPage.BanUserDialog.expiresLabel']()}</span>
 			<NativeSelect
 				bind:value={expiresIn}
 				disabled={isPending}
 				options={[
-					{ value: '', label: 'Permanent' },
-					{ value: '86400', label: '1 day' },
-					{ value: '604800', label: '7 days' },
-					{ value: '2592000', label: '30 days' }
+					{ value: '', label: m['AdminUsersPage.BanUserDialog.expiresPermanent']() },
+					{ value: '86400', label: m['AdminUsersPage.BanUserDialog.expires1Day']() },
+					{ value: '604800', label: m['AdminUsersPage.BanUserDialog.expires7Days']() },
+					{ value: '2592000', label: m['AdminUsersPage.BanUserDialog.expires30Days']() }
 				]}
 			/>
 		</label>
@@ -77,9 +80,9 @@
 	function={confirm}
 	variant="destructive"
 	{isPending}
-	title={`Ban ${userEmail}`}
-	description="The user is signed out and cannot sign in again until unbanned. The optional reason is shown on next sign-in attempt."
+	title={m['AdminUsersPage.BanUserDialog.title']({ userEmail })}
+	description={m['AdminUsersPage.BanUserDialog.description']()}
 	body={banForm}
 >
-	Ban
+	{m['AdminUsersPage.BanUserDialog.trigger']()}
 </ActionButton>

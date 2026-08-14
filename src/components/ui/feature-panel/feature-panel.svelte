@@ -40,7 +40,7 @@
 	<div class={reversed ? 'lg:order-2' : 'lg:order-1'}>
 		<p class="text-xs font-semibold tracking-[0.22em] text-primary uppercase">
 			{#if numeral}
-				<span class="font-serif text-sm normal-case text-primary/60">{numeral}</span>
+				<span class="font-serif text-sm text-primary/60 normal-case">{numeral}</span>
 			{/if}
 			{eyebrow}
 		</p>
@@ -54,7 +54,7 @@
 		</h3>
 		<p
 			class={cn(
-				'mt-3 max-w-md text-pretty leading-relaxed',
+				'mt-3 max-w-md leading-relaxed text-pretty',
 				dark ? 'text-background/60' : 'text-muted-foreground'
 			)}
 		>
@@ -67,10 +67,7 @@
 			{@render media()}
 		{:else if image}
 			<div class="relative">
-				<div
-					aria-hidden="true"
-					class="absolute -inset-5 rounded-4xl bg-primary/10 blur-2xl"
-				></div>
+				<div aria-hidden="true" class="absolute -inset-5 rounded-4xl bg-primary/10 blur-2xl"></div>
 				<figure
 					class={cn(
 						'group/frame relative overflow-hidden rounded-xl bg-card shadow-xl transition-transform duration-500 hover:-translate-y-1',

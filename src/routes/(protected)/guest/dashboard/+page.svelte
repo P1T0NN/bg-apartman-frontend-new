@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useQuery } from 'convex-svelte';
@@ -39,12 +42,12 @@
 
 	const subtitle = $derived(
 		nextTrip
-			? `Your next stay is ${countdownLabel(nextTrip.checkInDate).toLowerCase()}.`
-			: "No trips booked yet — let's find your next one."
+			? m['GuestDashboardPage.nextStay']({ countdown: countdownLabel(nextTrip.checkInDate).toLowerCase() })
+			: m['GuestDashboardPage.noTripsBooked']()
 	);
 </script>
 
-<SvelteHead title="Guest dashboard" description="Your trips at a glance." noIndex />
+<SvelteHead title={m['GuestDashboardPage.SEO.title']()} description={m['GuestDashboardPage.SEO.description']()} noIndex />
 
 <section class="flex w-full flex-col gap-6 p-4 md:p-6">
 	{#if isLoading}
@@ -52,8 +55,8 @@
 	{:else if dashboardQuery.error}
 		<ErrorComponent
 			variant="alert"
-			title="Couldn't load your dashboard"
-			description="Something went wrong while loading your trips. Please try again in a moment."
+			title={m['GuestDashboardPage.loadDashboardErrorTitle']()}
+			description={m['GuestDashboardPage.loadDashboardErrorDescription']()}
 		/>
 	{:else}
 		<DashboardHeader {subtitle} />

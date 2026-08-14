@@ -1,9 +1,12 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useQuery } from 'convex-svelte';
 	import { page } from '$app/state';
-	import { goto } from '$app/navigation';
+
 	import { authClient } from '@/features/auth/lib/auth-client';
 
 	// CLASSES
@@ -12,7 +15,10 @@
 	// CONFIG
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
+	// UTILS
+	import { appGoto } from '@/utils/app-navigation.js';
 	// COMPONENTS
+	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
 	import UserTabs from '@/components/pages/(protected)/admin/users/[id]/user-tabs.svelte';
 	import UserPageLoading from '@/components/pages/(protected)/admin/users/[id]/loading/user-page-loading.svelte';
 	import UserPageEmpty from '@/components/pages/(protected)/admin/users/[id]/empty/user-page-empty.svelte';
@@ -50,17 +56,23 @@
 		if (authClass.currentUser !== null) return;
 		hasRedirected = true;
 		void authClient.signOut().finally(() => {
-			goto(UNPROTECTED_PAGE_ENDPOINTS.LOGIN);
+			appGoto(UNPROTECTED_PAGE_ENDPOINTS.LOGIN);
 		});
 	});
 </script>
+
+<SvelteHead
+	title={m['AdminUsersPage.SEO.title']()}
+	description={m['AdminUsersPage.SEO.description']()}
+	noIndex
+/>
 
 <section class="flex w-full flex-col gap-4 p-4 md:p-6">
 	{#if userQuery.error}
 		<ErrorComponent
 			variant="alert"
-			title="Failed to load user"
-			description="Something went wrong while fetching this user. Please try again."
+			title={m['AdminUsersPage.loadUserErrorTitle']()}
+			description={m['AdminUsersPage.loadUserErrorDescription']()}
 		/>
 	{:else if user === null}
 		<UserPageEmpty />

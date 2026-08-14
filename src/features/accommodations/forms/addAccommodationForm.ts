@@ -1,3 +1,5 @@
+import { m } from '@/paraglide/messages';
+
 // DATA
 import { ACCOMMODATION_PAYMENT_METHOD_OPTIONS } from '@/features/bookings/data/paymentMethods';
 import { ACCOMMODATION_TYPES } from '@/shared/data/accommodationsData';
@@ -45,25 +47,25 @@ export const PAYMENTS_SECTION_ID = 'payments-plan';
 
 const paymentsSection: MutationFormSection = {
 	id: PAYMENTS_SECTION_ID,
-	title: 'Payments & plan',
+	title: m['HostAddAccommodationPage.AddAccommodationForm.paymentsAndPlan'](),
 	description: monetizationActive()
-		? 'How guests pay you, and how this listing pays for being on the platform. The per-booking plan is permanent for this listing — pick carefully.'
-		: 'How guests pay you for their stay.',
+		? m['HostAddAccommodationPage.AddAccommodationForm.paymentsAndPlanDescription']()
+		: m['HostAddAccommodationPage.AddAccommodationForm.paymentsDescription'](),
 	icon: WalletIcon,
 	fields: [
 		{
 			id: 'paymentMethod',
-			label: 'Guest payment method',
+			label: m['HostAddAccommodationPage.AddAccommodationForm.guestPaymentMethod'](),
 			kind: 'radio',
 			options: ACCOMMODATION_PAYMENT_METHOD_OPTIONS,
-			description: 'Choose how guests pay for their stay.',
+			description: m['HostAddAccommodationPage.AddAccommodationForm.choosePaymentMethodDescription'](),
 			colSpan: 2
 		},
 		...(monetizationActive()
 			? [
 					{
 						id: 'monetization',
-						label: 'Your plan',
+						label: m['HostAddAccommodationPage.AddAccommodationForm.yourPlan'](),
 						kind: 'input' as const,
 						required: true,
 						colSpan: 2 as const
@@ -82,34 +84,34 @@ const HOUR_OPTIONS = Array.from({ length: 11 }, (_, i) => {
 export const addAccommodationForm: MutationFormSection[] = [
 	{
 		id: 'basics',
-		title: 'The basics',
-		description: 'Tell guests what kind of place they are booking.',
+		title: m['HostAddAccommodationPage.AddAccommodationForm.theBasics'](),
+		description: m['HostAddAccommodationPage.AddAccommodationForm.basicsDescription'](),
 		icon: HouseIcon,
 		fields: [
 			{
 				id: 'title',
-				label: 'Accommodation title',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.accommodationTitle'](),
 				kind: 'input',
-				placeholder: 'Sunny one-bedroom near the river',
+				placeholder: m['HostAddAccommodationPage.AddAccommodationForm.titlePlaceholder'](),
 				autofocus: true,
 				required: true,
 				colSpan: 1
 			},
 			{
 				id: 'type',
-				label: 'Property type',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.propertyType'](),
 				kind: 'select',
 				options: ACCOMMODATION_TYPES,
-				selectPlaceholder: 'Select type',
+				selectPlaceholder: m['HostAddAccommodationPage.AddAccommodationForm.selectType'](),
 				required: true,
 				colSpan: 1
 			},
 			{
 				id: 'description',
-				label: 'Description',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.descriptionLabel'](),
 				kind: 'textarea',
 				rows: 5,
-				placeholder: 'Describe the space, the neighbourhood and what makes it special…',
+				placeholder: m['HostAddAccommodationPage.AddAccommodationForm.descriptionPlaceholder'](),
 				required: true,
 				colSpan: 2
 			}
@@ -117,78 +119,77 @@ export const addAccommodationForm: MutationFormSection[] = [
 	},
 	{
 		id: 'location',
-		title: 'Location',
-		description: 'Where will guests be staying?',
+		title: m['HostAddAccommodationPage.AddAccommodationForm.location'](),
+		description: m['HostAddAccommodationPage.AddAccommodationForm.locationDescription'](),
 		icon: MapPinIcon,
 		fields: [
 			{
 				id: 'placeId',
-				label: 'City',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.city'](),
 				kind: 'input',
-				description:
-					'Search for your city and pick it from the list — we set the country automatically and unlock the street search below.',
+				description: m['HostAddAccommodationPage.AddAccommodationForm.cityDescription'](),
 				required: true,
 				colSpan: 2
 			},
 			{
 				id: 'country',
-				label: 'Country',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.country'](),
 				kind: 'input',
-				placeholder: 'Set automatically from your city',
+				placeholder: m['HostAddAccommodationPage.AddAccommodationForm.countryPlaceholder'](),
 				disabled: true,
 				colSpan: 2
 			},
 			{
 				id: 'address',
-				label: 'Street name',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.streetName'](),
 				kind: 'input',
-				description: 'Pick your country or city first, then search for the street.',
+				description: m['HostAddAccommodationPage.AddAccommodationForm.streetNameDescription'](),
 				colSpan: 2
 			},
 			{
 				id: 'addressNumber',
-				label: 'Street number',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.streetNumber'](),
 				kind: 'input',
-				placeholder: 'e.g. 12a',
+				placeholder: m['HostAddAccommodationPage.AddAccommodationForm.streetNumberPlaceholder'](),
 				colSpan: 1
 			},
-			{ id: 'coordinates', label: 'Pin on map', kind: 'input', colSpan: 2 }
+			{ id: 'coordinates', label: m['HostAddAccommodationPage.AddAccommodationForm.pinOnMap'](), kind: 'input', colSpan: 2 }
 		]
 	},
 	{
 		id: 'capacity',
-		title: 'Space & capacity',
-		description: 'How many guests can comfortably stay?',
+		title: m['HostAddAccommodationPage.AddAccommodationForm.spaceAndCapacity'](),
+		description: m['HostAddAccommodationPage.AddAccommodationForm.spaceAndCapacityDescription'](),
 		icon: UsersIcon,
 		fields: [
 			{
 				id: 'bedrooms',
-				label: 'Bedrooms',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.bedrooms'](),
 				kind: 'counter',
-				placeholder: 'Number of bedrooms',
-				description: 'Pick a number, or use Custom (e.g. 0 for a studio).',
+				placeholder: m['HostAddAccommodationPage.AddAccommodationForm.bedroomsPlaceholder'](),
+				description: m['HostAddAccommodationPage.AddAccommodationForm.bedroomsDescription'](),
 				required: true,
 				colSpan: 1
 			},
 			{
 				id: 'bathrooms',
-				label: 'Bathrooms',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.bathrooms'](),
 				kind: 'counter',
-				placeholder: 'Number of bathrooms',
+				placeholder: m['HostAddAccommodationPage.AddAccommodationForm.bathroomsPlaceholder'](),
 				required: true,
 				colSpan: 1
 			},
 			{
 				id: 'maxGuests',
-				label: 'Max guests',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.maxGuests'](),
 				kind: 'counter',
-				placeholder: 'Number of guests',
+				placeholder: m['HostAddAccommodationPage.AddAccommodationForm.maxGuestsPlaceholder'](),
 				required: true,
 				colSpan: 1
 			},
 			{
 				id: 'squareMeters',
-				label: 'Size (m²)',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.sizeM2'](),
 				kind: 'input',
 				type: 'number',
 				placeholder: '50',
@@ -199,29 +200,27 @@ export const addAccommodationForm: MutationFormSection[] = [
 	},
 	{
 		id: 'pricing',
-		title: 'Pricing',
-		description:
-			'Set your nightly price below. Every other field is optional — leave it empty to skip it. All amounts are in whole euros (€).',
+		title: m['HostAddAccommodationPage.AddAccommodationForm.pricing'](),
+		description: m['HostAddAccommodationPage.AddAccommodationForm.pricingDescription'](),
 		icon: BanknoteIcon,
 		fields: [
 			{
 				id: 'pricePerNight',
-				label: 'Price per night',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.pricePerNight'](),
 				kind: 'input',
 				type: 'number',
 				placeholder: '80',
-				description: 'The standard rate a guest pays for one night.',
+				description: m['HostAddAccommodationPage.AddAccommodationForm.pricePerNightDescription'](),
 				required: true,
 				colSpan: 1
 			},
 			{
 				id: 'discountAmount',
-				label: 'Discount',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.discount'](),
 				kind: 'input',
 				type: 'number',
-				placeholder: 'Leave empty for none',
-				description:
-					'A lower nightly price shown to guests, with the regular price crossed out beside it. Leave empty for no discount.',
+				placeholder: m['HostAddAccommodationPage.AddAccommodationForm.leaveEmptyForNone'](),
+				description: m['HostAddAccommodationPage.AddAccommodationForm.discountDescription'](),
 				colSpan: 1
 			},
 			{
@@ -229,193 +228,189 @@ export const addAccommodationForm: MutationFormSection[] = [
 				// adjustments below — same step, clearly separated (mutation-form divider).
 				id: 'pricingDivider',
 				kind: 'divider',
-				label: 'Optional',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.optional'](),
 				colSpan: 2
 			},
 			{
 				id: 'weekendPremium',
-				label: 'Weekend price (Fri–Sat)',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.weekendPrice'](),
 				kind: 'input',
 				type: 'number',
-				placeholder: 'Leave empty for none',
-				description:
-					'Charged instead of the nightly price on Friday & Saturday nights. Leave empty to keep one price all week.',
+				placeholder: m['HostAddAccommodationPage.AddAccommodationForm.leaveEmptyForNone'](),
+				description: m['HostAddAccommodationPage.AddAccommodationForm.weekendPremiumDescription'](),
 				colSpan: 1
 			},
 			{
 				id: 'weeklyDiscount',
-				label: 'Weekly discount (%)',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.weeklyDiscount'](),
 				kind: 'input',
 				type: 'number',
-				placeholder: 'Leave empty for none',
-				description:
-					'Percent off the total for stays of 7+ nights (e.g. 10 = 10% off). Leave empty for none.',
+				placeholder: m['HostAddAccommodationPage.AddAccommodationForm.leaveEmptyForNone'](),
+				description: m['HostAddAccommodationPage.AddAccommodationForm.weeklyDiscountDescription'](),
 				colSpan: 1
 			},
 			{
 				id: 'cleaningFee',
-				label: 'Cleaning fee',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.cleaningFee'](),
 				kind: 'input',
 				type: 'number',
-				placeholder: 'Leave empty for none',
-				description:
-					'A one-time fee added once per booking, on top of the nightly price. Leave empty if you don’t charge one.',
+				placeholder: m['HostAddAccommodationPage.AddAccommodationForm.leaveEmptyForNone'](),
+				description: m['HostAddAccommodationPage.AddAccommodationForm.cleaningFeeDescription'](),
 				colSpan: 1
 			}
 		]
 	},
 	{
 		id: 'times-limits',
-		title: 'Times & limits',
-		description: 'Check-in and out, how long guests can stay, and quiet hours.',
+		title: m['HostAddAccommodationPage.AddAccommodationForm.timesAndLimits'](),
+		description: m['HostAddAccommodationPage.AddAccommodationForm.timesAndLimitsDescription'](),
 		icon: ClockIcon,
 		fields: [
 			{
 				id: 'checkInTime',
-				label: 'Check-in time',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.checkInTime'](),
 				kind: 'select',
 				options: HOUR_OPTIONS,
-				selectPlaceholder: 'Select time',
+				selectPlaceholder: m['HostAddAccommodationPage.AddAccommodationForm.selectTime'](),
 				required: true,
 				colSpan: 1
 			},
 			{
 				id: 'checkOutTime',
-				label: 'Check-out time',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.checkOutTime'](),
 				kind: 'select',
 				options: HOUR_OPTIONS,
-				selectPlaceholder: 'Select time',
+				selectPlaceholder: m['HostAddAccommodationPage.AddAccommodationForm.selectTime'](),
 				required: true,
 				colSpan: 1
 			},
 			{
 				id: 'minReservationDays',
-				label: 'Minimum nights',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.minimumNights'](),
 				kind: 'input',
 				type: 'number',
 				placeholder: '1',
-				description: 'The fewest nights a guest can book in a single stay.',
+				description: m['HostAddAccommodationPage.AddAccommodationForm.minimumNightsDescription'](),
 				required: true,
 				colSpan: 1
 			},
 			{
 				id: 'maxReservationDays',
-				label: 'Maximum nights',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.maximumNights'](),
 				kind: 'input',
 				type: 'number',
-				placeholder: 'No limit',
-				description: 'The most nights a guest can book in a single stay. Leave empty for no limit.',
+				placeholder: m['HostAddAccommodationPage.AddAccommodationForm.noLimit'](),
+				description: m['HostAddAccommodationPage.AddAccommodationForm.maximumNightsDescription'](),
 				colSpan: 1
 			},
 			{
 				id: 'quietHoursStart',
-				label: 'Quiet hours start',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.quietHoursStart'](),
 				kind: 'time',
 				placeholder: 'HH:MM',
-				description:
-					'When guests should start keeping noise down (e.g. 22:00). Leave empty for none.',
+				description: m['HostAddAccommodationPage.AddAccommodationForm.quietHoursStartDescription'](),
 				colSpan: 1
 			},
 			{
 				id: 'quietHoursEnd',
-				label: 'Quiet hours end',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.quietHoursEnd'](),
 				kind: 'time',
 				placeholder: 'HH:MM',
-				description: 'When quiet hours end the next morning (e.g. 08:00). Leave empty for none.',
+				description: m['HostAddAccommodationPage.AddAccommodationForm.quietHoursEndDescription'](),
 				colSpan: 1
 			}
 		]
 	},
 	{
 		id: 'house-policies',
-		title: 'House policies',
-		description: 'How guests can book, and what’s allowed on the property.',
+		title: m['HostAddAccommodationPage.AddAccommodationForm.housePolicies'](),
+		description: m['HostAddAccommodationPage.AddAccommodationForm.housePoliciesDescription'](),
 		icon: ShieldCheckIcon,
 		fields: [
 			// `paymentMethod` moved to the final "Payments & plan" step — it belongs with the
 			// plan it is coupled to, not among the property's house rules.
 			{
 				id: 'instantBooking',
-				label: 'Instant booking',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.instantBooking'](),
 				kind: 'toggle',
 				icon: ZapIcon,
-				description: 'Guests can book without waiting for your approval.',
+				description: m['HostAddAccommodationPage.AddAccommodationForm.instantBookingDescription'](),
 				colSpan: 2
 			},
 			{
 				id: 'sameDayReservation',
-				label: 'Same-day reservations',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.sameDayReservations'](),
 				kind: 'toggle',
 				icon: CalendarClockIcon,
-				description: 'Allow stays that start today.',
+				description: m['HostAddAccommodationPage.AddAccommodationForm.sameDayReservationsDescription'](),
 				colSpan: 1
 			},
 			{
 				id: 'singleDayReservation',
-				label: 'Single-day stays',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.singleDayStays'](),
 				kind: 'toggle',
 				icon: SunIcon,
-				description: 'Check-in and check-out on the same day.',
+				description: m['HostAddAccommodationPage.AddAccommodationForm.singleDayStaysDescription'](),
 				colSpan: 1
 			},
 			{
 				id: 'petsAllowed',
-				label: 'Pets',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.pets'](),
 				kind: 'toggle',
 				icon: PawPrintIcon,
-				description: 'Guests can bring pets.',
+				description: m['HostAddAccommodationPage.AddAccommodationForm.petsDescription'](),
 				colSpan: 1
 			},
 			{
 				id: 'smokingAllowed',
-				label: 'Smoking',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.smoking'](),
 				kind: 'toggle',
 				icon: CigaretteIcon,
-				description: 'Smoking is allowed on the property.',
+				description: m['HostAddAccommodationPage.AddAccommodationForm.smokingDescription'](),
 				colSpan: 1
 			},
 			{
 				id: 'partiesAllowed',
-				label: 'Parties & events',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.partiesAndEvents'](),
 				kind: 'toggle',
 				icon: PartyPopperIcon,
-				description: 'Events and gatherings are allowed.',
+				description: m['HostAddAccommodationPage.AddAccommodationForm.partiesAndEventsDescription'](),
 				colSpan: 1
 			}
 		]
 	},
 	{
 		id: 'amenities',
-		title: 'Amenities',
-		description: 'Select everything your place offers — pick at least 5 to continue.',
+		title: m['HostAddAccommodationPage.AddAccommodationForm.amenities'](),
+		description: m['HostAddAccommodationPage.AddAccommodationForm.amenitiesDescription'](),
 		icon: SparklesIcon,
-		fields: [{ id: 'amenities', label: 'What this place offers', kind: 'input', colSpan: 2 }]
+		fields: [{ id: 'amenities', label: m['HostAddAccommodationPage.AddAccommodationForm.whatThisPlaceOffers'](), kind: 'input', colSpan: 2 }]
 	},
 	{
 		id: 'house-rules',
-		title: 'House rules',
-		description: 'Anything guests should know before they book.',
+		title: m['HostAddAccommodationPage.AddAccommodationForm.houseRules'](),
+		description: m['HostAddAccommodationPage.AddAccommodationForm.houseRulesDescription'](),
 		icon: ScrollTextIcon,
 		fields: [
 			{
 				id: 'houseRules',
-				label: 'Additional house rules',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.additionalHouseRules'](),
 				kind: 'textarea',
 				rows: 4,
-				placeholder: 'Anything else guests should know? (optional)',
+				placeholder: m['HostAddAccommodationPage.AddAccommodationForm.houseRulesPlaceholder'](),
 				colSpan: 2
 			}
 		]
 	},
 	{
 		id: 'photos',
-		title: 'Photos',
-		description: 'Accommodations with great photos get more bookings. Add a few to finish.',
+		title: m['HostAddAccommodationPage.AddAccommodationForm.photos'](),
+		description: m['HostAddAccommodationPage.AddAccommodationForm.photosDescription'](),
 		icon: ImagesIcon,
 		fields: [
 			{
 				id: 'photos',
-				label: 'Upload photos',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.uploadPhotos'](),
 				kind: 'upload-multiple',
 				accept: 'image/*',
 				hasCoverImage: true,
@@ -437,15 +432,15 @@ export const addAccommodationForm: MutationFormSection[] = [
 export const adminAddAccommodationForm: MutationFormSection[] = [
 	{
 		id: 'owner',
-		title: 'Owner of apartment',
-		description: 'Create this listing on behalf of its owner.',
+		title: m['HostAddAccommodationPage.AddAccommodationForm.ownerOfApartment'](),
+		description: m['HostAddAccommodationPage.AddAccommodationForm.ownerOfApartmentDescription'](),
 		icon: UserIcon,
 		fields: [
 			{
 				id: 'hostId',
-				label: 'Owner',
+				label: m['HostAddAccommodationPage.AddAccommodationForm.owner'](),
 				kind: 'input',
-				description: 'Find the owner by name or email.',
+				description: m['HostAddAccommodationPage.AddAccommodationForm.findOwnerDescription'](),
 				required: true,
 				colSpan: 2
 			}

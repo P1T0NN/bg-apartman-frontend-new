@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useConvexClient } from 'convex-svelte';
@@ -79,13 +82,17 @@
 				<p class="font-medium">{flagCopy.title}</p>
 				<p class="text-xs text-muted-foreground">{flagCopy.body}</p>
 			</div>
-			<Button variant="outline" size="sm" class="shrink-0" onclick={clearFlag}>Mark handled</Button>
+			<Button variant="outline" size="sm" class="shrink-0" onclick={clearFlag}>
+				{m['AdminBookingsPage.AdminBookingDetailRow.markHandled']()}
+			</Button>
 		</div>
 	{/if}
 
 	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 		<section class="flex flex-col gap-1.5">
-			<h3 class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Guest</h3>
+			<h3 class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+				{m['AdminBookingsPage.AdminBookingDetailRow.guest']()}
+			</h3>
 			<p class="font-medium">{booking.guestFirstName} {booking.guestLastName}</p>
 			<a href={`mailto:${booking.guestEmail}`} class="text-primary hover:underline">
 				{booking.guestEmail}
@@ -96,33 +103,44 @@
 		</section>
 
 		<section class="flex flex-col gap-1.5">
-			<h3 class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Stay</h3>
+			<h3 class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+				{m['AdminBookingsPage.AdminBookingDetailRow.stay']()}
+			</h3>
 			<p>{formatDate(booking.checkInDate)} → {formatDate(booking.checkOutDate)}</p>
 			<p class="text-muted-foreground">
-				{booking.numberOfNights} night{booking.numberOfNights === 1 ? '' : 's'} ·
+				{booking.numberOfNights === 1
+					? m['AdminBookingsPage.AdminBookingDetailRow.night']({ count: booking.numberOfNights })
+					: m['AdminBookingsPage.AdminBookingDetailRow.nights']({ count: booking.numberOfNights })}
+				·
 				{formatGuestsShort(booking.numberOfAdults, booking.numberOfChildren)}
 			</p>
-			<p class="text-muted-foreground">Host: {booking.hostName}</p>
+			<p class="text-muted-foreground">
+				{m['AdminBookingsPage.AdminBookingDetailRow.hostLabel']({ host: booking.hostName })}
+			</p>
 		</section>
 
 		<section class="flex flex-col gap-1">
-			<h3 class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Price</h3>
+			<h3 class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+				{m['AdminBookingsPage.AdminBookingDetailRow.price']()}
+			</h3>
 			<div class="flex justify-between gap-3">
-				<span class="text-muted-foreground">Subtotal</span>
+				<span class="text-muted-foreground">{m['AdminBookingsPage.AdminBookingDetailRow.subtotal']()}</span>
 				<span class="tabular-nums">{formatCurrency(booking.subtotal)}</span>
 			</div>
 			<div class="flex justify-between gap-3">
-				<span class="text-muted-foreground">Cleaning</span>
+				<span class="text-muted-foreground">{m['AdminBookingsPage.AdminBookingDetailRow.cleaning']()}</span>
 				<span class="tabular-nums">{formatCurrency(booking.cleaningFee)}</span>
 			</div>
 			{#if booking.platformFee > 0}
 				<div class="flex justify-between gap-3">
-					<span class="text-muted-foreground">Service fee</span>
+					<span class="text-muted-foreground">
+						{m['AdminBookingsPage.AdminBookingDetailRow.serviceFee']()}
+					</span>
 					<span class="tabular-nums">{formatCurrency(booking.platformFee)}</span>
 				</div>
 			{/if}
 			<div class="flex justify-between gap-3 border-t pt-1 font-semibold">
-				<span>Total</span>
+				<span>{m['AdminBookingsPage.AdminBookingDetailRow.total']()}</span>
 				<span class="tabular-nums">{formatCurrency(booking.total)}</span>
 			</div>
 		</section>
@@ -131,7 +149,7 @@
 	{#if booking.specialRequests}
 		<section class="flex flex-col gap-1">
 			<h3 class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-				Special requests
+				{m['AdminBookingsPage.AdminBookingDetailRow.specialRequests']()}
 			</h3>
 			<p class="wrap-break-word text-muted-foreground">{booking.specialRequests}</p>
 		</section>
@@ -140,13 +158,17 @@
 	{#if booking.cancelledAt}
 		<section class="flex flex-col gap-1">
 			<h3 class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-				Cancellation
+				{m['AdminBookingsPage.AdminBookingDetailRow.cancellation']()}
 			</h3>
 			<p class="text-muted-foreground">
-				{booking.cancelledBy === 'system' ? 'Automatic' : `By the ${booking.cancelledBy}`}
-				on {formatDate(new Date(booking.cancelledAt).toISOString().slice(0, 10))}
+				{booking.cancelledBy === 'system'
+					? m['AdminBookingsPage.AdminBookingDetailRow.automatic']()
+					: m['AdminBookingsPage.AdminBookingDetailRow.byThe']({ actor: booking.cancelledBy ?? '' })}
+				{m['AdminBookingsPage.AdminBookingDetailRow.cancelledOn']({
+					date: formatDate(new Date(booking.cancelledAt).toISOString().slice(0, 10))
+				})}
 				{#if booking.lateCancellation}
-					· late cancellation (payment kept by the host)
+					· {m['AdminBookingsPage.AdminBookingDetailRow.lateCancellation']()}
 				{/if}
 			</p>
 			{#if booking.cancelReason}
@@ -163,14 +185,14 @@
 			variant="outline"
 			size="sm"
 		>
-			Open guest reservation page
+			{m['AdminBookingsPage.AdminBookingDetailRow.openGuestReservationPage']()}
 		</Button>
 
 		<!-- The emergency brake. Terminal bookings are past intervening with — nothing
 		     transitions out of a terminal state, including admins (BSD §2). -->
 		{#if !isTerminal}
 			<Button variant="destructive" size="sm" onclick={() => onCancel(booking)}>
-				Cancel booking
+				{m['AdminBookingsPage.AdminBookingDetailRow.cancelBooking']()}
 			</Button>
 		{/if}
 	</div>

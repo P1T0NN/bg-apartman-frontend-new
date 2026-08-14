@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { m } from '@/paraglide/messages';
 	import { NativeSheet } from '@/components/ui/native-sheet/index.js';
 	import { cn, type WithElementRef } from '@/utils/utils.js';
 	import type { HTMLAttributes } from 'svelte/elements';
@@ -37,7 +38,7 @@
 	<NativeSheet
 		bind:open={() => sidebar.openMobile, (v) => sidebar.setOpenMobile(v)}
 		{side}
-		title="Sidebar"
+		title={m['Sidebar.title']()}
 		showCloseButton={false}
 		class={cn('w-(--sidebar-width) max-w-none bg-sidebar p-0 text-sidebar-foreground', className)}
 		style="--sidebar-width: {SIDEBAR_WIDTH_MOBILE};"

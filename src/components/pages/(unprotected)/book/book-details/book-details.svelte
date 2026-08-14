@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import BookingCalendar from '@/components/pages/(unprotected)/accommodation/accommodation-booking-panel/booking-calendar.svelte';
 	import GuestStepper from '@/components/pages/(unprotected)/accommodation/accommodation-booking-panel/guest-stepper.svelte';
@@ -25,7 +28,7 @@
 <section class="space-y-8">
 	<Card>
 		<CardHeader>
-			<CardTitle>Your dates</CardTitle>
+			<CardTitle>{m['BookPage.BookDetails.yourDates']()}</CardTitle>
 		</CardHeader>
 		<CardContent class="space-y-4">
 			<BookingCalendar
@@ -42,7 +45,7 @@
 
 	<Card>
 		<CardHeader>
-			<CardTitle>Guests</CardTitle>
+			<CardTitle>{m['BookPage.BookDetails.guests']()}</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<GuestStepper maxGuests={accommodation.maxGuests} bind:adults bind:children />

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 	import { NativeSelect } from '@/components/ui/select/index.js';
@@ -28,7 +31,7 @@
 	} = $props();
 
 	const statusOptions = [
-		{ value: '', label: 'Any status' },
+		{ value: '', label: m['HostMyAccommodationsPage.MyAccommodationsTableFilters.anyStatus']() },
 		...Object.entries(ACCOMMODATION_STATUS_CONFIG).map(([value, tone]) => ({
 			value,
 			label: tone.label
@@ -41,9 +44,11 @@
 	value={status ?? ''}
 	onChange={(v) => (status = v === '' ? undefined : (v as typesAccommodationStatus))}
 	options={statusOptions}
-	ariaLabel="Filter by status"
+	ariaLabel={m['HostMyAccommodationsPage.MyAccommodationsTableFilters.filterByStatus']()}
 />
 
 {#if status !== undefined}
-	<Button variant="ghost" size="sm" onclick={() => (status = undefined)}>Clear</Button>
+	<Button variant="ghost" size="sm" onclick={() => (status = undefined)}>
+		{m['HostMyAccommodationsPage.MyAccommodationsTableFilters.clear']()}
+	</Button>
 {/if}

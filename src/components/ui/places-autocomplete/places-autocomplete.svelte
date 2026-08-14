@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import {
 		createPlacesSession,
@@ -69,7 +72,9 @@
 
 	const resolvedPlaceholder = $derived(
 		placeholder ??
-			(variant === 'address' ? 'Start typing an address...' : 'Search for a city or country...')
+			(variant === 'address'
+				? m['PlacesAutocomplete.startTypingAddress']()
+				: m['PlacesAutocomplete.searchCityOrCountry']())
 	);
 
 	let suggestions = $state<PlaceSuggestion[]>([]);
@@ -139,7 +144,8 @@
 			if (seq !== requestSeq) return;
 			console.error('[places-autocomplete] suggestion fetch failed:', err);
 			suggestions = [];
-			errorMsg = err instanceof Error ? err.message : 'Could not load address suggestions.';
+			errorMsg =
+				err instanceof Error ? err.message : m['PlacesAutocomplete.loadSuggestionsError']();
 		} finally {
 			if (seq === requestSeq) loading = false;
 		}
@@ -159,13 +165,13 @@
 					variant === 'address'
 						? details.formattedAddress || value
 						: variant === 'city'
-							// The city field shows only the city; the country lands in its own field.
-							? details.city || formatRegionLabel(details)
+							? // The city field shows only the city; the country lands in its own field.
+								details.city || formatRegionLabel(details)
 							: formatRegionLabel(details);
 				onSelect?.(details);
 			}
 		} catch (err) {
-			errorMsg = err instanceof Error ? err.message : 'Could not load the selected place.';
+			errorMsg = err instanceof Error ? err.message : m['PlacesAutocomplete.loadSelectedError']();
 		}
 	}
 
@@ -241,7 +247,9 @@
 			{:else if suggestions.length === 0 && loading}
 				<li class="px-3 py-2 text-sm text-muted-foreground"><Spinner /></li>
 			{:else if suggestions.length === 0}
-				<li class="px-3 py-2 text-sm text-muted-foreground">No matches found.</li>
+				<li class="px-3 py-2 text-sm text-muted-foreground">
+					{m['PlacesAutocomplete.noMatches']()}
+				</li>
 			{:else}
 				{#each suggestions as suggestion, i (suggestion.placeId)}
 					<li role="option" aria-selected={i === activeIndex}>

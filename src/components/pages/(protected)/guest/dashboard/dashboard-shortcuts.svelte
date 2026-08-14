@@ -1,7 +1,12 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 	// COMPONENTS
 	import * as Card from '@/components/ui/card/index.js';
 
@@ -31,23 +36,23 @@
 	};
 
 	const myBookingsHref = (status: string) =>
-		`${PROTECTED_PAGE_ENDPOINTS.GUEST_MY_BOOKINGS}?status=${status}`;
+		`${appHref(PROTECTED_PAGE_ENDPOINTS.GUEST_MY_BOOKINGS)}?status=${status}`;
 
 	const tiles = $derived<Tile[]>([
 		{
-			label: 'Upcoming trips',
+			label: m['GuestDashboardPage.DashboardShortcuts.upcomingTrips'](),
 			value: upcomingCount,
 			icon: CalendarCheckIcon,
 			href: myBookingsHref('confirmed')
 		},
 		{
-			label: 'Saved places',
+			label: m['GuestDashboardPage.DashboardShortcuts.savedPlaces'](),
 			value: savedCount,
 			icon: HeartIcon,
-			href: PROTECTED_PAGE_ENDPOINTS.GUEST_FAVORITES
+			href: appHref(PROTECTED_PAGE_ENDPOINTS.GUEST_FAVORITES)
 		},
 		{
-			label: 'Checked out',
+			label: m['GuestDashboardPage.DashboardShortcuts.checkedOut'](),
 			value: checkedOutCount > 99 ? '99+' : checkedOutCount,
 			icon: CircleCheckIcon,
 			href: myBookingsHref('checked_out')

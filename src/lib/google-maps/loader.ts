@@ -1,5 +1,6 @@
 // LIBRARIES
 import { env } from '$env/dynamic/public';
+import { m } from '@/paraglide/messages';
 
 /**
  * Shared loader for the **Google Maps JS API**. Injects the official bootstrap
@@ -32,12 +33,12 @@ let scriptPromise: Promise<void> | null = null;
  */
 export async function importGoogleLibrary<T>(name: string): Promise<T> {
 	if (typeof window === 'undefined') {
-		throw new Error('Google Maps can only be loaded in the browser.');
+		throw new Error(m['loader.browserOnly']());
 	}
 
 	const apiKey = env.PUBLIC_GOOGLE_MAPS_API_KEY;
 	if (!apiKey) {
-		throw new Error('Maps are unavailable: PUBLIC_GOOGLE_MAPS_API_KEY is not set.');
+		throw new Error(m['loader.mapsUnavailable']());
 	}
 
 	const w = window;
@@ -80,7 +81,7 @@ function injectMapsScript(w: Window, apiKey: string): Promise<void> {
 		const script = document.createElement('script');
 		script.src = `https://maps.googleapis.com/maps/api/js?${params.toString()}`;
 		script.async = true;
-		script.onerror = () => reject(new Error('Failed to load the Google Maps script.'));
+		script.onerror = () => reject(new Error(m['loader.loadFailed']()));
 		document.head.append(script);
 	});
 }

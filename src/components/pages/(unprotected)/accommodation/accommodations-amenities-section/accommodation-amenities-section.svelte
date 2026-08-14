@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import AccommodationAmenitiesItem from './accommodation-amenities-item.svelte';
 
@@ -17,7 +20,9 @@
 </script>
 
 <section class="space-y-4">
-	<h2 class="text-lg font-semibold tracking-tight">What this place offers</h2>
+	<h2 class="text-lg font-semibold tracking-tight">
+		{m['AccommodationPage.AccommodationAmenitiesSection.title']()}
+	</h2>
 
 	<ul class="grid grid-cols-1 gap-x-6 gap-y-3.5 sm:grid-cols-2">
 		{#each visible as id (id)}
@@ -31,7 +36,7 @@
 			onclick={() => (showAll = true)}
 			class="rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors hover:bg-muted"
 		>
-			Show all {amenities.length} amenities
+			{m['AccommodationPage.AccommodationAmenitiesSection.showAll']({ count: amenities.length })}
 		</button>
 	{/if}
 </section>

@@ -1,3 +1,6 @@
+// UTILS
+import { getLocale } from '@/paraglide/runtime';
+
 // DATA
 import { ACCOMMODATION_STATUS_CONFIG } from '@/features/accommodations/data/accommodationsData';
 
@@ -35,7 +38,7 @@ export const ADMIN_ACCOMMODATIONS_TABLE_COLUMNS: ColumnDef<AdminAccommodationRow
 	{
 		id: 'createdAt',
 		header: 'Created',
-		accessor: (r) => new Date(r._creationTime).toLocaleDateString(),
+		accessor: (r) => new Date(r._creationTime).toLocaleDateString(getLocale()),
 		sortable: true,
 		hideBelow: 'lg'
 	},

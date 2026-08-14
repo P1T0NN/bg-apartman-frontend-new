@@ -1,3 +1,6 @@
+// I18N
+import { m } from '@/paraglide/messages';
+
 // DATA
 import { ACCOMMODATION_STATUS_CONFIG } from '@/features/accommodations/data/accommodationsData';
 
@@ -15,13 +18,13 @@ const MONETIZATION_ON = monetizationActive();
 export const MY_ACCOMMODATIONS_TABLE_COLUMNS: ColumnDef<typesAccommodation>[] = [
 	{
 		id: 'title',
-		header: 'Accommodation',
+		header: m['HostMyAccommodationsPage.MyAccommodationsTableData.accommodation'](),
 		accessor: (row) => row.title,
 		cellClass: 'min-w-64'
 	},
 	{
 		id: 'status',
-		header: 'Status',
+		header: m['HostMyAccommodationsPage.MyAccommodationsTableData.status'](),
 		accessor: (row) => ACCOMMODATION_STATUS_CONFIG[row.status].label,
 		hideBelow: 'md'
 	},
@@ -34,7 +37,7 @@ export const MY_ACCOMMODATIONS_TABLE_COLUMNS: ColumnDef<typesAccommodation>[] = 
 		? ([
 				{
 					id: 'listingFee',
-					header: 'Plan',
+					header: m['HostMyAccommodationsPage.MyAccommodationsTableData.plan'](),
 					accessor: (row) => row.apartmentSubscriptionExpiryDate ?? 0,
 					hideBelow: 'lg'
 				}
@@ -42,19 +45,19 @@ export const MY_ACCOMMODATIONS_TABLE_COLUMNS: ColumnDef<typesAccommodation>[] = 
 		: []),
 	{
 		id: 'price',
-		header: 'Price',
+		header: m['HostMyAccommodationsPage.MyAccommodationsTableData.price'](),
 		accessor: (row) => row.discountAmount || row.pricePerNight,
 		hideBelow: 'md'
 	},
 	{
 		id: 'capacity',
-		header: 'Capacity',
+		header: m['HostMyAccommodationsPage.MyAccommodationsTableData.capacity'](),
 		accessor: (row) => row.maxGuests,
 		hideBelow: 'lg'
 	},
 	{
 		id: 'createdAt',
-		header: 'Created',
+		header: m['HostMyAccommodationsPage.MyAccommodationsTableData.created'](),
 		accessor: (row) => formatDate(row._creationTime),
 		sortable: true,
 		hideBelow: 'lg'

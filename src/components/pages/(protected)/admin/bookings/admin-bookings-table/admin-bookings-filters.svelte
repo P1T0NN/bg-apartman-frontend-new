@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 	import { Input } from '@/components/ui/input/index.js';
@@ -40,7 +43,7 @@
 	} = $props();
 
 	const statusOptions = [
-		{ value: '', label: 'Any status' },
+		{ value: '', label: m['AdminBookingsPage.AdminBookingsFilters.anyStatus']() },
 		...Object.entries(BOOKING_STATUS_CONFIG).map(([value, tone]) => ({
 			value,
 			label: tone.label
@@ -48,7 +51,7 @@
 	];
 
 	const paymentOptions = [
-		{ value: '', label: 'Any payment' },
+		{ value: '', label: m['AdminBookingsPage.AdminBookingsFilters.anyPayment']() },
 		...Object.entries(PAYMENT_STATUS_CONFIG).map(([value, tone]) => ({
 			value,
 			label: tone.label
@@ -77,10 +80,10 @@
 	value={searchField}
 	onChange={(v) => (searchField = (v as 'code' | 'email') || 'code')}
 	options={[
-		{ value: 'code', label: 'Code' },
-		{ value: 'email', label: 'Email' }
+		{ value: 'code', label: m['AdminBookingsPage.AdminBookingsFilters.code']() },
+		{ value: 'email', label: m['AdminBookingsPage.AdminBookingsFilters.email']() }
 	]}
-	ariaLabel="Search field"
+	ariaLabel={m['AdminBookingsPage.AdminBookingsFilters.searchField']()}
 />
 
 <NativeSelect
@@ -88,7 +91,7 @@
 	value={status ?? ''}
 	onChange={(v) => (status = v === '' ? undefined : (v as typesBookingStatus))}
 	options={statusOptions}
-	ariaLabel="Filter by booking status"
+	ariaLabel={m['AdminBookingsPage.AdminBookingsFilters.filterByBookingStatus']()}
 />
 
 <NativeSelect
@@ -96,7 +99,7 @@
 	value={paymentStatus ?? ''}
 	onChange={(v) => (paymentStatus = v === '' ? undefined : (v as typesPaymentStatus))}
 	options={paymentOptions}
-	ariaLabel="Filter by payment status"
+	ariaLabel={m['AdminBookingsPage.AdminBookingsFilters.filterByPaymentStatus']()}
 />
 
 <!-- Native date inputs: the platform feature beats a picker component for two bounds. -->
@@ -104,15 +107,15 @@
 	type="date"
 	class="w-40"
 	bind:value={checkInFrom}
-	aria-label="Check-in from"
-	title="Check-in from"
+	aria-label={m['AdminBookingsPage.AdminBookingsFilters.checkInFrom']()}
+	title={m['AdminBookingsPage.AdminBookingsFilters.checkInFrom']()}
 />
 <Input
 	type="date"
 	class="w-40"
 	bind:value={checkInTo}
-	aria-label="Check-in to"
-	title="Check-in to"
+	aria-label={m['AdminBookingsPage.AdminBookingsFilters.checkInTo']()}
+	title={m['AdminBookingsPage.AdminBookingsFilters.checkInTo']()}
 />
 
 <!--
@@ -126,9 +129,11 @@
 	aria-pressed={flagged}
 	onclick={() => (flagged = !flagged)}
 >
-	Needs attention
+	{m['AdminBookingsPage.AdminBookingsFilters.needsAttention']()}
 </Button>
 
 {#if hasActiveFilter}
-	<Button variant="ghost" size="sm" onclick={clearFilters}>Clear</Button>
+	<Button variant="ghost" size="sm" onclick={clearFilters}>
+		{m['AdminBookingsPage.AdminBookingsFilters.clear']()}
+	</Button>
 {/if}

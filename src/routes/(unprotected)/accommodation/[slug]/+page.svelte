@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useQuery } from 'convex-svelte';
@@ -41,10 +44,14 @@
 	);
 
 	const headTitle = $derived(
-		accommodation ? `${accommodation.title} — ${accommodation.city}` : 'Accommodation'
+		accommodation
+			? m['AccommodationPage.SEO.title']({ title: accommodation.title, city: accommodation.city })
+			: m['AccommodationPage.SEO.fallbackTitle']()
 	);
 	const headDescription = $derived(
-		accommodation ? accommodation.description.slice(0, 155) : 'View accommodation details.'
+		accommodation
+			? accommodation.description.slice(0, 155)
+			: m['AccommodationPage.SEO.fallbackDescription']()
 	);
 </script>
 
@@ -53,8 +60,8 @@
 {#if accommodationQuery.error}
 	<ErrorComponent
 		variant="alert"
-		title="Couldn't load this accommodation"
-		description="Something went wrong while loading this accommodation. Please try again in a moment."
+		title={m['AccommodationPage.loadErrorTitle']()}
+		description={m['AccommodationPage.loadErrorDescription']()}
 	/>
 {:else if accommodation === null}
 	<AccommodationPageEmpty />

@@ -12,6 +12,10 @@
 	import { COMPANY_DATA } from '@/shared/config.js';
 	import { PROTECTED_PAGE_ENDPOINTS, UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
+	// I18N
+	import { deLocalizeHref } from '@/paraglide/runtime';
+	import { m } from '@/paraglide/messages';
+
 	// CLASSES
 	import {
 		isHeaderItemActive,
@@ -31,6 +35,7 @@
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
+	import { appHref } from '@/utils/app-navigation.js';
 
 	// LUCIDE ICONS
 	import MenuIcon from '@lucide/svelte/icons/menu';
@@ -44,20 +49,23 @@
 	const isAuthenticated = $derived(auth.isAuthenticated);
 	const isHost = $derived(authClass.currentUser?.isHost === true);
 
-	const pathnameLogical = $derived(new URL(page.url.href).pathname);
+	// De-localize like the desktop header: /sr/... must compare against canonical app paths.
+	const pathnameLogical = $derived(deLocalizeHref(new URL(page.url.href).pathname));
 </script>
 
 <NativeDrawer
 	bind:open={normalHeader.menuOpen}
 	direction="right"
-	title="Menu"
+	title={m['Header.NormalHeaderMobile.menu']()}
 	class="flex h-full max-h-dvh w-full max-w-80 flex-col gap-4 overflow-x-hidden overflow-y-auto border-hero-overlay-foreground/10 bg-dark-elevated p-4 text-dark-elevated-foreground"
 >
 	{#snippet trigger({ props })}
 		<button
 			{...props}
 			class="flex size-10 touch-manipulation items-center justify-center rounded-full bg-hero-overlay-foreground/10 text-hero-overlay-foreground transition-colors outline-none hover:bg-hero-overlay-foreground/20 focus-visible:ring-[3px] focus-visible:ring-hero-overlay-foreground/40 lg:hidden"
-			aria-label={normalHeader.menuOpen ? 'Close menu' : 'Open menu'}
+			aria-label={normalHeader.menuOpen
+				? m['Header.NormalHeaderMobile.closeMenu']()
+				: m['Header.NormalHeaderMobile.openMenu']()}
 		>
 			{#if normalHeader.menuOpen}
 				<XIcon class="size-5" />
@@ -71,7 +79,11 @@
 		<div class="flex min-w-0 items-center justify-between gap-2">
 			<div class="min-w-0">
 				{#if hasLogo}
-					<Logo size="sm" onclick={normalHeader.closeMenu} />
+					<Logo
+						size="sm"
+						onclick={normalHeader.closeMenu}
+						href={appHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT)}
+					/>
 				{:else}
 					<span class="truncate text-sm font-semibold text-dark-elevated-foreground">
 						{COMPANY_DATA.NAME}
@@ -84,16 +96,16 @@
 				variant="ghost"
 				size="icon"
 				class="shrink-0 touch-manipulation text-dark-elevated-foreground hover:bg-hero-overlay-foreground/10 hover:text-dark-elevated-foreground"
-				aria-label="Close menu"
+				aria-label={m['Header.NormalHeaderMobile.closeMenu']()}
 				onclick={close}
 			>
 				<XIcon class="size-5" />
 			</Button>
 		</div>
 
-		<nav aria-label="Mobile main">
+		<nav aria-label={m['Header.NormalHeaderMobile.mobileMain']()}>
 			<ul class="flex flex-col gap-1">
-				{#each navItems as item, i (item.href)}
+				{#each navItems() as item, i (item.href)}
 					{@const active = isHeaderItemActive(pathnameLogical, item)}
 					<li>
 						<Link
@@ -119,31 +131,33 @@
 						<Button
 							variant="outline"
 							class="w-full justify-start border-hero-overlay-foreground/20 bg-hero-overlay-foreground/10 text-dark-elevated-foreground hover:bg-hero-overlay-foreground/20 hover:text-dark-elevated-foreground"
-							href={PROTECTED_PAGE_ENDPOINTS.GUEST_DASHBOARD}
+							href={appHref(PROTECTED_PAGE_ENDPOINTS.GUEST_DASHBOARD)}
 							onclick={normalHeader.closeMenu}
 						>
 							<LayoutDashboardIcon />
-							Guest Dashboard
+							{m['Header.NormalHeaderMobile.guestDashboard']()}
 						</Button>
 
 						<Button
 							variant="outline"
 							class="w-full justify-start border-hero-overlay-foreground/20 bg-hero-overlay-foreground/10 text-dark-elevated-foreground hover:bg-hero-overlay-foreground/20 hover:text-dark-elevated-foreground"
-							href={PROTECTED_PAGE_ENDPOINTS.HOST_DASHBOARD}
+							href={appHref(PROTECTED_PAGE_ENDPOINTS.HOST_DASHBOARD)}
 							onclick={normalHeader.closeMenu}
 						>
 							<StoreIcon />
-							{isHost ? 'Switch to hosting' : 'Become a host'}
+							{isHost
+								? m['Header.NormalHeaderMobile.switchToHosting']()
+								: m['Header.NormalHeaderMobile.becomeAHost']()}
 						</Button>
 						<LogoutButton class="w-full" />
 					</div>
 				{:else}
 					<Link
-						href={UNPROTECTED_PAGE_ENDPOINTS.LOGIN}
+						href={appHref(UNPROTECTED_PAGE_ENDPOINTS.LOGIN)}
 						class="block w-full rounded-md bg-primary px-4 py-2.5 text-center text-sm font-medium text-primary-foreground transition-all hover:opacity-90"
 						onclick={normalHeader.closeMenu}
 					>
-						Login
+						{m['Header.NormalHeaderMobile.login']()}
 					</Link>
 				{/if}
 			</div>

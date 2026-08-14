@@ -4,6 +4,9 @@ import { redirect } from '@sveltejs/kit';
 // CONFIG
 import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
+// UTILS
+import { appHref } from '@/utils/app-navigation';
+
 // TYPES
 import type { PageLoad } from './$types';
 
@@ -18,6 +21,6 @@ export const load: PageLoad = ({ url }) => {
 	const hasBlankParam = [...url.searchParams.values()].some((value) => !value.trim());
 
 	if (!location || hasBlankParam) {
-		redirect(307, UNPROTECTED_PAGE_ENDPOINTS.ROOT);
+		redirect(307, appHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT));
 	}
 };

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Card } from '@/components/ui/card/index.js';
 	import { Skeleton } from '@/components/ui/skeleton/index.js';
@@ -18,7 +21,7 @@
 </script>
 
 <div class="flex flex-col gap-6" role="status" aria-busy="true">
-	<span class="sr-only">Loading your dashboard</span>
+	<span class="sr-only">{m['HostDashboardPage.HostDashboardStatsSectionLoading.loading']()}</span>
 
 	<!-- Earnings card: icon, two lines of copy, one action. -->
 	<Card class="gap-0 p-4 sm:p-5">

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useConvexClient } from 'convex-svelte';
@@ -14,8 +17,10 @@
 	// TYPES
 	import type { Id } from '@/convex/_generated/dataModel';
 
-	let { apartmentId, label = 'Renew' }: { apartmentId: Id<'apartments'>; label?: string } =
-		$props();
+	let {
+		apartmentId,
+		label = m['HostMyAccommodationsPage.MyAccommodationsTableRenewButton.renew']()
+	}: { apartmentId: Id<'apartments'>; label?: string } = $props();
 
 	const convex = useConvexClient();
 

@@ -1,4 +1,10 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
+
 	// COMPONENTS
 	import ReservationsHeader from '@/components/pages/(unprotected)/reservations/reservations-header.svelte';
 	import ReservationsForm from '@/components/pages/(unprotected)/reservations/reservations-form.svelte';
@@ -7,8 +13,8 @@
 </script>
 
 <SvelteHead
-	title="Find your reservation"
-	description="Lost the email? Look your booking up with your booking code and email address."
+	title={m['ReservationsPage.SEO.title']()}
+	description={m['ReservationsPage.SEO.description']()}
 	noIndex
 />
 
@@ -19,8 +25,10 @@
 	<ReservationsForm />
 
 	<p class="mt-6 text-sm text-muted-foreground">
-		Still stuck? <a href="/contact" class="text-foreground underline underline-offset-4">
-			Contact us
-		</a> and we'll look it up for you.
+		{m['ReservationsPage.stillStuck']()}
+		<a href={appHref('/contact')} class="text-foreground underline underline-offset-4">
+			{m['ReservationsPage.contactUs']()}
+		</a>
+		{m['ReservationsPage.wellLookItUp']()}
 	</p>
 </Section>

@@ -1,6 +1,9 @@
 // LIBRARIES
 import { toast } from 'svelte-sonner';
 
+// I18N
+import { m } from '@/paraglide/messages';
+
 // CONFIG
 import { PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
@@ -102,12 +105,12 @@ export function createPasswordResetForm() {
 				console.error('Password reset: verification failed:', error);
 				if (/password/i.test(error.message ?? '')) {
 					fieldErrors = {
-						newPassword: error.message ?? 'Invalid or expired code. Please try again.'
+						newPassword: error.message ?? m['ForgotPasswordPage.PasswordResetFormModel.invalidOrExpiredCode']()
 					};
 				} else {
 					errorMessage = rateLimitMessage(
 						error.message,
-						'Invalid or expired code. Please try again.'
+						m['ForgotPasswordPage.PasswordResetFormModel.invalidOrExpiredCode']()
 					);
 				}
 				busy = false;
@@ -115,12 +118,12 @@ export function createPasswordResetForm() {
 			}
 		} catch (error) {
 			console.error('Password reset: verification failed:', error);
-			errorMessage = 'Invalid or expired code. Please try again.';
+			errorMessage = m['ForgotPasswordPage.PasswordResetFormModel.invalidOrExpiredCode']();
 			busy = false;
 			return;
 		}
 
-		toast.success('Password reset successfully.');
+		toast.success(m['ForgotPasswordPage.PasswordResetFormModel.passwordResetSuccess']());
 		await appGoto(PROTECTED_PAGE_ENDPOINTS.DASHBOARD);
 		busy = false;
 	}

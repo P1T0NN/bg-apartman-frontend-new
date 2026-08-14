@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import SearchDropdownItem from './search-dropdown-item.svelte';
 	import SearchEmpty from './search-empty.svelte';
@@ -17,7 +20,7 @@
 		dropdownClass,
 		loading = false,
 		error = null,
-		loadingText = 'Searching...',
+		loadingText = m['SearchInput.SearchDropdown.searching'](),
 		emptyTitle,
 		emptyDescription,
 		onActiveIndexChange,
@@ -51,7 +54,7 @@
 		<ul
 			id={listboxId}
 			role="listbox"
-			aria-label="Search results"
+			aria-label={m['SearchInput.SearchDropdown.searchResults']()}
 			class="max-h-80 overflow-y-auto p-1"
 		>
 			{#each items as item, index (item.id)}

@@ -1,5 +1,8 @@
 // TYPES
-import type { SearchCountFilters, SearchFilterableAccommodation } from '../types/accommodationTypes';
+import type {
+	SearchCountFilters,
+	SearchFilterableAccommodation
+} from '../types/accommodationTypes';
 
 /**
  * Does this listing satisfy the caller's `/search` filters — everything decidable without

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LUCIDE ICONS
 	import ChartColumnIcon from '@lucide/svelte/icons/chart-column';
 </script>
@@ -11,10 +14,10 @@
 	</div>
 
 	<div class="flex flex-col gap-1.5">
-		<h2 class="text-base font-semibold tracking-tight">Nothing here for this period</h2>
+		<h2 class="text-base font-semibold tracking-tight">{m['HostAnalyticsPage.HostAnalyticsEmpty.emptyTitle']()}</h2>
 
 		<p class="mx-auto max-w-sm text-sm text-muted-foreground">
-			Try a longer range — numbers appear with your first confirmed booking.
+			{m['HostAnalyticsPage.HostAnalyticsEmpty.emptyDescription']()}
 		</p>
 	</div>
 </div>

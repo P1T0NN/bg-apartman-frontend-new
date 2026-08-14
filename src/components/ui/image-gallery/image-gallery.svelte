@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Carousel, CarouselContent, CarouselItem } from '@/shared/components/ui/carousel';
 	import { Button } from '@/components/ui/button/index.js';
@@ -79,7 +82,7 @@
 							type="button"
 							onclick={() => (lightboxOpen = true)}
 							class="group relative block aspect-4/3 w-full overflow-hidden rounded-2xl bg-muted md:aspect-video"
-							aria-label={`Open photo ${i + 1} fullscreen`}
+							aria-label={m['ImageGallery.openPhotoFullscreen']({ index: i + 1 })}
 						>
 							<img
 								src={image.url}
@@ -88,8 +91,7 @@
 								fetchpriority={i === 0 ? 'high' : 'auto'}
 								loading={i === 0 ? 'eager' : 'lazy'}
 							/>
-							<span
-								class="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/10"
+							<span class="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/10"
 							></span>
 						</button>
 					</CarouselItem>
@@ -109,7 +111,7 @@
 				size="icon"
 				class="absolute inset-y-0 start-3 z-10 my-auto hidden rounded-full bg-background/90 shadow-sm active:translate-y-0 md:inline-flex"
 				onclick={() => api?.scrollPrev(true)}
-				aria-label="Previous slide"
+				aria-label={m['ImageGallery.previousSlide']()}
 			>
 				<ChevronLeftIcon class="size-4" />
 			</Button>
@@ -119,7 +121,7 @@
 				size="icon"
 				class="absolute inset-y-0 end-3 z-10 my-auto hidden rounded-full bg-background/90 shadow-sm active:translate-y-0 md:inline-flex"
 				onclick={() => api?.scrollNext(true)}
-				aria-label="Next slide"
+				aria-label={m['ImageGallery.nextSlide']()}
 			>
 				<ChevronRightIcon class="size-4" />
 			</Button>
@@ -131,7 +133,7 @@
 				onclick={() => (lightboxOpen = true)}
 			>
 				<Grid3x3Icon class="size-4" aria-hidden="true" />
-				Show all photos
+				{m['ImageGallery.showAllPhotos']()}
 			</Button>
 		{/if}
 	</div>
@@ -150,10 +152,15 @@
 						'aspect-4/3 w-16 shrink-0 overflow-hidden rounded-lg bg-muted ring-2 transition md:w-28',
 						i === selectedIndex ? 'ring-foreground' : 'ring-transparent hover:ring-border'
 					]}
-					aria-label={`View photo ${i + 1} of ${images.length}`}
+					aria-label={m['ImageGallery.viewPhotoOf']({ index: i + 1, total: images.length })}
 					aria-current={i === selectedIndex}
 				>
-					<img src={image.url} alt={image.alt ?? title} class="size-full object-cover" loading="lazy" />
+					<img
+						src={image.url}
+						alt={image.alt ?? title}
+						class="size-full object-cover"
+						loading="lazy"
+					/>
 				</button>
 			{/each}
 		</div>
@@ -165,7 +172,7 @@
 		class="fixed inset-0 z-100 flex flex-col bg-background"
 		role="dialog"
 		aria-modal="true"
-		aria-label={`${title} — photo gallery`}
+		aria-label={m['ImageGallery.photoGallery']({ title })}
 	>
 		<div
 			class="sticky top-0 z-10 flex items-center justify-between border-b bg-background/95 px-4 py-3 backdrop-blur"
@@ -174,7 +181,7 @@
 				variant="ghost"
 				size="icon-sm"
 				onclick={() => (lightboxOpen = false)}
-				aria-label="Close gallery"
+				aria-label={m['ImageGallery.closeGallery']()}
 			>
 				<XIcon />
 			</Button>

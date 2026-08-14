@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { m } from '@/paraglide/messages';
+
 	// UTILS
 	import { cn } from '@/utils/utils.js';
 
@@ -22,15 +24,15 @@
 			className
 		)}
 	>
-		Superhost
+		{m['AccommodationsFeature.SuperhostBadge.superhost']()}
 	</span>
 {:else if variant === 'subtitle'}
 	<p class={cn('flex items-center gap-1.5 text-sm text-muted-foreground', className)}>
 		<AwardIcon class="size-4" aria-hidden="true" />
-		Superhost
+		{m['AccommodationsFeature.SuperhostBadge.superhost']()}
 	</p>
 {:else if variant === 'inline'}
-	<span class={cn('inline', className)}>Superhost</span>
+	<span class={cn('inline', className)}>{m['AccommodationsFeature.SuperhostBadge.superhost']()}</span>
 {:else}
 	<span
 		class={cn(
@@ -39,6 +41,6 @@
 		)}
 	>
 		<AwardIcon class="size-3.5" aria-hidden="true" />
-		Superhost
+		{m['AccommodationsFeature.SuperhostBadge.superhost']()}
 	</span>
 {/if}

@@ -60,16 +60,24 @@
 		authClass.syncFromCurrentUserQuery(user, currentUserResponse.isLoading);
 	});
 
-	/**
-	 * Saved listings. NOT a subscription — `getCurrentUser` above is the only live channel the
-	 * layout is willing to pay for, and this set has nothing to subscribe to: it changes only
-	 * by this user's own clicks, and `toggleFavorite` returns the resulting state, so the class
-	 * is already authoritative after every write (GeneralSystemDesignRule.md § seeing your own
-	 * writes). So: one fetch when a session appears, then the class owns it.
-	 *
-	 * Signed out it needs no fetch at all — the class falls back to localStorage on its own.
-	 */
+	// Saved listings: the layout owns one live `fetchMyFavoriteIdsSafe` subscription and feeds
+	// it into the class as a UNION (`favoritesClass.setServerIds`). The class stays the single
+	// source of truth — optimistic toggles write to the set and their mutations confirm them, so
+	// the feed is just the cross-device/other-tab baseline (GeneralSystemDesignRule.md § seeing
+	// your own writes). Signed out the subscription is skipped and the class falls back to
+	// localStorage on its own.
 	favoritesClass.connect(useConvexClient());
+
+	const favoriteIdsQuery = useQuery(
+		api.tables.favorites.queries.fetchMyFavoriteIdsSafe.fetchMyFavoriteIdsSafe,
+		() => (auth.isAuthenticated ? {} : 'skip')
+	);
+
+	$effect(() => {
+		if (auth.isAuthenticated && favoriteIdsQuery.data) {
+			favoritesClass.setServerIds(favoriteIdsQuery.data as string[]);
+		}
+	});
 
 	$effect(() => {
 		favoritesClass.syncAuth(auth.isAuthenticated);

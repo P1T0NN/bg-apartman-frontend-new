@@ -80,7 +80,7 @@ const schema = defineSchema({
 		// "<cityId> <countryId>"). Resolved via Places Autocomplete at save — the same source the
 		// search box uses — so the ids are identical and language-independent ("Beograd" and
 		// "Belgrade" share a place id). Search matches when the picked place id is one of the parts,
-		// so a accommodation surfaces for a city search AND a country search.
+		// so an accommodation surfaces for a city search AND a country search.
 		placeId: v.optional(v.string()),
 		/**
 		 * The two halves of `placeId`, derived server-side on every write via

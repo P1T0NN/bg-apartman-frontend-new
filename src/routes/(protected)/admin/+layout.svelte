@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useQuery } from 'convex-svelte';
@@ -6,6 +9,8 @@
 	// CONFIG
 	import { ADMIN_PAGE_ENDPOINTS, PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 	// COMPONENTS
 	import * as Sidebar from '@/components/ui/sidebar/index.js';
 	import AppSidebar from '@/components/ui/app-sidebar/app-sidebar.svelte';
@@ -42,30 +47,42 @@
 	const navItems: AppSidebarNavItems = $derived({
 		navMain: [
 			{
-				label: 'General',
+				label: m['AdminLayout.navGeneral'](),
 				items: [
-					{ name: 'Dashboard', url: ADMIN_PAGE_ENDPOINTS.DASHBOARD, icon: LayoutDashboardIcon },
-					{ name: 'Users', url: ADMIN_PAGE_ENDPOINTS.USERS, icon: UsersIcon }
+					{
+						name: m['AdminLayout.navDashboard'](),
+						url: appHref(ADMIN_PAGE_ENDPOINTS.DASHBOARD),
+						icon: LayoutDashboardIcon
+					},
+					{
+						name: m['AdminLayout.navUsers'](),
+						url: appHref(ADMIN_PAGE_ENDPOINTS.USERS),
+						icon: UsersIcon
+					}
 				]
 			},
 			{
-				label: 'Accommodations',
+				label: m['AdminLayout.navAccommodations'](),
 				items: [
 					{
-						name: 'Accommodations',
-						url: ADMIN_PAGE_ENDPOINTS.ACCOMMODATIONS,
+						name: m['AdminLayout.navAccommodations'](),
+						url: appHref(ADMIN_PAGE_ENDPOINTS.ACCOMMODATIONS),
 						icon: Building2Icon,
 						badge: badgeFor(badges.data?.pendingReview)
 					},
-					{ name: 'Bookings', url: ADMIN_PAGE_ENDPOINTS.BOOKINGS, icon: CalendarDaysIcon }
+					{
+						name: m['AdminLayout.navBookings'](),
+						url: appHref(ADMIN_PAGE_ENDPOINTS.BOOKINGS),
+						icon: CalendarDaysIcon
+					}
 				]
 			},
 			{
-				label: 'Feedback',
+				label: m['AdminLayout.navFeedback'](),
 				items: [
 					{
-						name: 'Reports',
-						url: ADMIN_PAGE_ENDPOINTS.REPORTS,
+						name: m['AdminLayout.navReports'](),
+						url: appHref(ADMIN_PAGE_ENDPOINTS.REPORTS),
 						icon: MessageSquareWarningIcon,
 						badge: badgeFor(badges.data?.newReports)
 					}
@@ -74,8 +91,8 @@
 		],
 		navSecondary: [
 			{
-				name: 'Back to User',
-				url: PROTECTED_PAGE_ENDPOINTS.GUEST_DASHBOARD,
+				name: m['AdminLayout.navBackToUser'](),
+				url: appHref(PROTECTED_PAGE_ENDPOINTS.GUEST_DASHBOARD),
 				icon: ArrowLeftIcon
 			}
 		]

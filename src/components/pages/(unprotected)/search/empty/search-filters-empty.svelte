@@ -1,6 +1,12 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
+
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 
 	// CLASSES
 	import { activeFilters } from '../search-state';
@@ -28,8 +34,8 @@
 
 	const description = $derived(
 		location
-			? `We couldn't find any stays in ${location}. Try loosening your filters or searching nearby.`
-			: 'Nothing matches your current filters. Try removing some to see more places.'
+			? m['SearchPage.SearchFiltersEmpty.noStaysInLocation']({ location })
+			: m['SearchPage.SearchFiltersEmpty.nothingMatches']()
 	);
 </script>
 
@@ -41,20 +47,22 @@
 	</div>
 
 	<div class="flex max-w-md flex-col gap-1.5">
-		<h2 class="text-lg font-semibold tracking-tight">No stays found</h2>
+		<h2 class="text-lg font-semibold tracking-tight">
+			{m['SearchPage.SearchFiltersEmpty.noStaysFound']()}
+		</h2>
 		<p class="text-sm text-muted-foreground">{description}</p>
 	</div>
 
 	<div class="flex flex-wrap items-center justify-center gap-2">
 		{#if hasCountFilters}
 			<SearchFiltersClearButton {search} variant="outline" size="sm">
-				Clear filters
+				{m['SearchPage.SearchFiltersEmpty.clearFilters']()}
 			</SearchFiltersClearButton>
 		{/if}
 
-		<Button href={UNPROTECTED_PAGE_ENDPOINTS.ROOT} variant="outline" size="sm">
+		<Button href={appHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT)} variant="outline" size="sm">
 			<SearchIcon class="size-4" aria-hidden="true" />
-			New search
+			{m['SearchPage.SearchFiltersEmpty.newSearch']()}
 		</Button>
 	</div>
 </div>

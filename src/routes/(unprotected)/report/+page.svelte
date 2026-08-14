@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 
@@ -32,9 +35,9 @@
 	import SendIcon from '@lucide/svelte/icons/send';
 
 	const categories = $derived([
-		{ id: 'bug' as const, label: 'Something is broken', icon: BugIcon },
-		{ id: 'idea' as const, label: 'I have an idea', icon: LightbulbIcon },
-		{ id: 'other' as const, label: 'Something else', icon: MessageCircleIcon }
+		{ id: 'bug' as const, label: m['ReportPage.categoryBroken'](), icon: BugIcon },
+		{ id: 'idea' as const, label: m['ReportPage.categoryIdea'](), icon: LightbulbIcon },
+		{ id: 'other' as const, label: m['ReportPage.categoryOther'](), icon: MessageCircleIcon }
 	]);
 
 	const sections = $derived<MutationFormSection[]>([
@@ -45,24 +48,23 @@
 				{
 					id: 'category',
 					kind: 'radio',
-					label: "What's this about?"
+					label: m['ReportPage.whatsThisAbout']()
 				},
 				{
 					id: 'message',
 					kind: 'textarea',
 					rows: 6,
-					label: 'Details',
-					placeholder:
-						'Describe what you were doing and what went wrong. The more detail, the faster we can fix it.',
+					label: m['ReportPage.details'](),
+					placeholder: m['ReportPage.detailsPlaceholder'](),
 					required: true
 				},
 				{
 					id: 'email',
 					kind: 'input',
 					type: 'email',
-					label: 'Email (optional)',
-					placeholder: 'you@example.com',
-					description: "Leave your email if you'd like us to follow up.",
+					label: m['ReportPage.emailOptional'](),
+					placeholder: m['ReportPage.emailPlaceholder'](),
+					description: m['ReportPage.emailDescription'](),
 					autocomplete: 'email'
 				}
 			]
@@ -76,10 +78,7 @@
 	});
 </script>
 
-<SvelteHead
-	title="Report an issue"
-	description="Tell us about a bug or anything else you ran into."
-/>
+<SvelteHead title={m['ReportPage.SEO.title']()} description={m['ReportPage.SEO.description']()} />
 
 <!-- min-h-dvh: the page fills the viewport on its own, so the footer only appears once the
      visitor scrolls (a percentage min-h-full can't resolve inside the layout's flex wrapper). -->
@@ -97,7 +96,7 @@
 		{#snippet actions({ busy }: { busy: boolean })}
 			<Button type="submit" size="lg" class="w-full gap-2" disabled={busy}>
 				<SendIcon class="size-4" />
-				Send report
+				{m['ReportPage.sendReport']()}
 			</Button>
 		{/snippet}
 	</ConvexMutationForm>

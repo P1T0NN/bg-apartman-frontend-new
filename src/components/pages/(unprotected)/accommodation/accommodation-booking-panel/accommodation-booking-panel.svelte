@@ -1,6 +1,12 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
+
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
@@ -15,7 +21,7 @@
 
 	// Dates + guests are chosen on the book page now; this box is just the entry point.
 	const bookHref = $derived(
-		UNPROTECTED_PAGE_ENDPOINTS.BOOK_ACCOMMODATION.replace(':slug', accommodation.slug)
+		appHref(UNPROTECTED_PAGE_ENDPOINTS.BOOK_ACCOMMODATION.replace(':slug', accommodation.slug))
 	);
 </script>
 
@@ -24,9 +30,13 @@
 
 	<BookingPanelFacts {accommodation} />
 
-	<Button href={bookHref} size="lg" class="h-11 w-full text-base">Check availability</Button>
+	<Button href={bookHref} size="lg" class="h-11 w-full text-base"
+		>{m['AccommodationPage.AccommodationBookingPanel.checkAvailability']()}</Button
+	>
 
-	<p class="text-center text-xs text-muted-foreground">You won’t be charged yet</p>
+	<p class="text-center text-xs text-muted-foreground">
+		{m['AccommodationPage.AccommodationBookingPanel.notChargedYet']()}
+	</p>
 
 	<BookingPanelFooter
 		instantBooking={accommodation.instantBooking}

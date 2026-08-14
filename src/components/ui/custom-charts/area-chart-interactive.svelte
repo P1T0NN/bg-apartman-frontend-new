@@ -15,6 +15,7 @@
 		type TimeRangeOption,
 		type TimeRangeValue
 	} from './timerange-data.svelte';
+	import { getLocale } from '@/paraglide/runtime';
 
 	// TYPES
 	import type { DateRange } from 'bits-ui';
@@ -80,7 +81,7 @@
 		referenceDate,
 		minDate,
 		maxDate,
-		locale = 'en-US',
+		locale = getLocale(),
 		timeZone,
 		// Chart
 		series: seriesOverride,

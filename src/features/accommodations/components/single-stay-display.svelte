@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { m } from '@/paraglide/messages';
+
 	// UTILS
 	import { cn } from '@/utils/utils.js';
 
@@ -14,8 +16,8 @@
 
 <p class={cn(className)}>
 	{#if allowed}
-		Single-night stays available
+		{m['AccommodationsFeature.SingleStayDisplay.singleNightStaysAvailable']()}
 	{:else}
-		No single-night stays
+		{m['AccommodationsFeature.SingleStayDisplay.noSingleNightStays']()}
 	{/if}
 </p>

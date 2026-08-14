@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import SearchFilters from './search-filters.svelte';
 	import SearchFiltersClearButton from './search-filters-clear-button.svelte';
@@ -37,12 +40,14 @@
 		<div>
 			<h1 class="text-lg font-semibold tracking-tight">
 				{#if loading}
-					<Spinner /> Searching stays in {location}
+					<Spinner /> {m['SearchPage.SearchLeftContentHeader.searchingStaysIn']({ location })}
 				{:else}
-					{count}{counting ? '+' : ''} stays in {location}
+					{m['SearchPage.SearchLeftContentHeader.staysIn']({ count, location })}{counting ? '+' : ''}
 				{/if}
 			</h1>
-			<p class="text-sm text-muted-foreground">Prices include all fees</p>
+			<p class="text-sm text-muted-foreground">
+				{m['SearchPage.SearchLeftContentHeader.pricesIncludeAllFees']()}
+			</p>
 		</div>
 
 		<SearchFilters {search} />
@@ -59,7 +64,7 @@
 				variant="link"
 				class="h-auto p-0 text-xs font-medium text-muted-foreground underline-offset-2"
 			>
-				Clear all
+				{m['SearchPage.SearchLeftContentHeader.clearAll']()}
 			</SearchFiltersClearButton>
 		</div>
 	{/if}

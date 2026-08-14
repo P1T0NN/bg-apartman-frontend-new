@@ -1,4 +1,7 @@
 <script lang="ts">
+	// PARAGLIDE
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 	import { NativeSelect } from '@/components/ui/select/index.js';
@@ -38,8 +41,8 @@
 	value={searchField}
 	onChange={(v) => (searchField = (v as 'email' | 'name') || 'email')}
 	options={[
-		{ value: 'email', label: 'Email' },
-		{ value: 'name', label: 'Name' }
+		{ value: 'email', label: m['AdminUsersPage.UsersFilters.searchFieldEmail']() },
+		{ value: 'name', label: m['AdminUsersPage.UsersFilters.searchFieldName']() }
 	]}
 />
 
@@ -48,9 +51,9 @@
 	value={role ?? ''}
 	onChange={(v) => (role = v === '' ? undefined : (v as 'user' | 'admin'))}
 	options={[
-		{ value: '', label: 'Any role' },
-		{ value: 'user', label: 'User' },
-		{ value: 'admin', label: 'Admin' }
+		{ value: '', label: m['AdminUsersPage.UsersFilters.anyRole']() },
+		{ value: 'user', label: m['AdminUsersPage.UsersFilters.roleUser']() },
+		{ value: 'admin', label: m['AdminUsersPage.UsersFilters.roleAdmin']() }
 	]}
 />
 
@@ -59,9 +62,9 @@
 	value={banned === undefined ? '' : String(banned)}
 	onChange={(v) => (banned = v === '' ? undefined : v === 'true')}
 	options={[
-		{ value: '', label: 'Any status' },
-		{ value: 'true', label: 'Banned' },
-		{ value: 'false', label: 'Active' }
+		{ value: '', label: m['AdminUsersPage.UsersFilters.anyStatus']() },
+		{ value: 'true', label: m['AdminUsersPage.UsersFilters.statusBanned']() },
+		{ value: 'false', label: m['AdminUsersPage.UsersFilters.statusActive']() }
 	]}
 />
 
@@ -70,12 +73,12 @@
 	value={emailVerified === undefined ? '' : String(emailVerified)}
 	onChange={(v) => (emailVerified = v === '' ? undefined : v === 'true')}
 	options={[
-		{ value: '', label: 'Any verification' },
-		{ value: 'true', label: 'Verified' },
-		{ value: 'false', label: 'Unverified' }
+		{ value: '', label: m['AdminUsersPage.UsersFilters.anyVerification']() },
+		{ value: 'true', label: m['AdminUsersPage.UsersFilters.verified']() },
+		{ value: 'false', label: m['AdminUsersPage.UsersFilters.unverified']() }
 	]}
 />
 
 {#if hasActiveFilter}
-	<Button variant="ghost" size="sm" onclick={clearFilters}>Clear</Button>
+	<Button variant="ghost" size="sm" onclick={clearFilters}>{m['AdminUsersPage.UsersFilters.clear']()}</Button>
 {/if}

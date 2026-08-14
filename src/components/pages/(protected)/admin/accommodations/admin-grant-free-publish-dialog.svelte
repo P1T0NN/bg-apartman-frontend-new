@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useConvexClient } from 'convex-svelte';
@@ -76,46 +79,53 @@
 	}}
 >
 	<div class="alert-dialog__header">
-		<h2>Grant free publish?</h2>
+		<h2>{m['AdminAccommodationsPage.AdminGrantFreePublishDialog.title']()}</h2>
 		<p>
-			Waives the listing fee for the chosen duration — {accommodation?.title ?? 'this listing'}
-			behaves exactly as if it had paid, but no payment is recorded and nothing counts as
-			revenue. The grant is audit-logged.
+			{m['AdminAccommodationsPage.AdminGrantFreePublishDialog.body']({
+				listing:
+					accommodation?.title ?? m['AdminAccommodationsPage.AdminGrantFreePublishDialog.thisListing']()
+			})}
 		</p>
 	</div>
 
 	{#if fee}
 		<p class="text-sm text-muted-foreground">
 			{#if accommodation?.status === 'suspended'}
-				This listing is suspended — the grant covers the fee but does not unpublish it;
-				Publish stays a moderation step.
+				{m['AdminAccommodationsPage.AdminGrantFreePublishDialog.suspendedNote']()}
 			{:else if fee.kind === 'unpaid'}
-				This listing has never had a paid period — the grant covers the fee and publishes
-				it immediately, no re-review.
+				{m['AdminAccommodationsPage.AdminGrantFreePublishDialog.unpaidNote']()}
 			{:else if fee.kind === 'lapsed'}
-				This listing expired — the grant revives it to live immediately, no re-review.
+				{m['AdminAccommodationsPage.AdminGrantFreePublishDialog.lapsedNote']()}
 			{:else if fee.kind === 'active' && fee.daysLeft === null}
-				Currently covered forever — the grant keeps it that way.
+				{m['AdminAccommodationsPage.AdminGrantFreePublishDialog.coveredForeverNote']()}
 			{:else if fee.kind === 'active' || fee.kind === 'expiring'}
-				Currently covered until {coveredUntil} — the grant extends it from there.
+				{m['AdminAccommodationsPage.AdminGrantFreePublishDialog.coveredUntilNote']({
+					date: coveredUntil ?? ''
+				})}
 			{:else if fee.kind === 'grace'}
-				Currently in the overdue grace window — the grant extends from the current expiry.
+				{m['AdminAccommodationsPage.AdminGrantFreePublishDialog.graceNote']()}
 			{/if}
 		</p>
 	{/if}
 
 	<div class="flex flex-col gap-3">
 		<label class="flex flex-col gap-1 text-sm">
-			<span>Duration</span>
+			<span>{m['AdminAccommodationsPage.AdminGrantFreePublishDialog.duration']()}</span>
 			<NativeSelect
 				bind:value={duration}
 				disabled={isPending}
 				options={[
-					{ value: '1m', label: '1 month' },
-					{ value: '3m', label: '3 months' },
-					{ value: '6m', label: '6 months' },
-					{ value: '1y', label: '1 year' },
-					{ value: 'forever', label: 'Forever' }
+					{ value: '1m', label: m['AdminAccommodationsPage.AdminGrantFreePublishDialog.oneMonth']() },
+					{
+						value: '3m',
+						label: m['AdminAccommodationsPage.AdminGrantFreePublishDialog.threeMonths']()
+					},
+					{ value: '6m', label: m['AdminAccommodationsPage.AdminGrantFreePublishDialog.sixMonths']() },
+					{ value: '1y', label: m['AdminAccommodationsPage.AdminGrantFreePublishDialog.oneYear']() },
+					{
+						value: 'forever',
+						label: m['AdminAccommodationsPage.AdminGrantFreePublishDialog.forever']()
+					}
 				]}
 			/>
 		</label>
@@ -123,13 +133,13 @@
 
 	<div class="alert-dialog__footer">
 		<Button type="button" variant="outline" onclick={() => (open = false)} disabled={isPending}>
-			Cancel
+			{m['AdminAccommodationsPage.AdminGrantFreePublishDialog.cancel']()}
 		</Button>
 		<Button type="button" onclick={submit} disabled={isPending}>
 			{#if isPending}
 				<Loader class="h-3 w-3 animate-spin" />
 			{/if}
-			Grant free publish
+			{m['AdminAccommodationsPage.AdminGrantFreePublishDialog.confirm']()}
 		</Button>
 	</div>
 </AlertDialog>

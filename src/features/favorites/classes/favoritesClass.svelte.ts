@@ -9,7 +9,7 @@ import { api } from '@/convex/_generated/api';
 import { LOCAL_STORAGE_KEYS } from '@/shared/config';
 
 // UTILS
-import { safeMutation, safeQuery } from '@/utils/convexHelpers';
+import { safeMutation } from '@/utils/convexHelpers';
 
 // TYPES
 import type { ConvexClient } from 'convex/browser';
@@ -24,17 +24,17 @@ import type { Id } from '@/convex/_generated/dataModel';
  * — reads {@link ids} / {@link isFavorite} and calls {@link toggle}, exactly as they did when
  * this was localStorage-only.
  *
- * ## No subscription, and no query per card
+ * ## One live feed, no query per card
  * "Is this listing saved?" is asked once per rendered card — as a query that would be 30
- * subscriptions on a search page. It is instead one reactive set, filled by ONE fetch when a
- * session appears ({@link syncAuth}) and kept correct after that by the writes themselves:
- * `toggleFavorite` returns the state the row ended in, so the class never has to ask again
- * (GeneralSystemDesignRule.md § seeing your own writes). Mounting a heart costs nothing, and
- * the layout pays for no second live channel — `getCurrentUser` remains its only one.
+ * subscriptions on a search page. It is instead one reactive set, fed by the root layout's
+ * live `fetchMyFavoriteIdsSafe` subscription ({@link setServerIds}) and kept correct after
+ * that by the writes themselves: `toggleFavorite` returns the state the row ended in, so the
+ * class never has to ask again (GeneralSystemDesignRule.md § seeing your own writes). Mounting
+ * a heart costs nothing.
  *
- * Accepted consequence: a save made in ANOTHER tab or on another device isn't reflected until
- * the next load. Same trade `/guest/favorites` already makes — a saved-places list does not
- * move under the viewer.
+ * The feed is unioned into the set rather than replacing it, so a save made in another tab
+ * shows up on the next feed while an in-flight optimistic toggle is never clobbered. A
+ * cross-device *removal* reflects on the next feed the same way.
  *
  * ## Writes are optimistic
  * {@link toggle} flips the set and returns the new state synchronously — the heart never waits
@@ -50,7 +50,6 @@ class FavoritesClass {
 	/** Which backing {@link toggle} writes to. Flipped by {@link syncAuth}. */
 	private backing: 'local' | 'server' = 'local';
 	private hydrated = false;
-	private loaded = false;
 
 	isFavorite(apartmentId: string): boolean {
 		return this.ids.has(apartmentId);
@@ -75,9 +74,10 @@ class FavoritesClass {
 	/**
 	 * React to the session state (root layout `$effect`).
 	 *
-	 * Signing in flips the backing immediately — before the fetch resolves, so a click in that
+	 * Signing in flips the backing immediately — before the merge resolves, so a click in that
 	 * window is written to the account instead of to localStorage where the load would bury it
-	 * — then merges whatever this device saved anonymously and fetches the account's set ONCE.
+	 * — then folds whatever this device saved anonymously into the account. The saved-id set
+	 * itself is fed by the layout's live subscription, not fetched here.
 	 *
 	 * Signing out hands the set back to localStorage: the previous account's saves must not
 	 * stay on screen.
@@ -89,7 +89,6 @@ class FavoritesClass {
 			if (this.backing === 'server') {
 				this.backing = 'local';
 				this.hydrated = false;
-				this.loaded = false;
 				this.ids.clear();
 				this.hydrate();
 			}
@@ -97,7 +96,10 @@ class FavoritesClass {
 		}
 
 		this.backing = 'server';
-		void this.loadOnce();
+		// Merge this device's anonymous saves into the account (idempotent — clears the
+		// localStorage key on success). The layout's live feed unioning into {@link setServerIds}
+		// keeps the set correct after that; there is no one-shot fetch here anymore.
+		void this.mergeLocal();
 	}
 
 	/**
@@ -146,35 +148,19 @@ class FavoritesClass {
 	}
 
 	/**
-	 * Merge this device's anonymous saves, then read the account's set. Once per session.
+	 * Union a freshly-fetched server set into the reactive ids. Called by the root layout's live
+	 * `fetchMyFavoriteIdsSafe` subscription on every change.
 	 *
-	 * Merge BEFORE the read, so the fetched set already contains them — one round trip each, in
-	 * the only order that doesn't need a third. The result is UNIONED into the set rather than
-	 * replacing it: an id toggled while this was in flight has its own mutation as the
-	 * authority, and this fetch was issued before that landed.
+	 * Union, not replace — deliberately. The first feed lands right after {@link syncAuth}
+	 * merged this device's anonymous saves into the account, so a replace would have to wait on
+	 * that merge; and an optimistic toggle made while a feed is in flight is never clobbered,
+	 * because the mutation that follows it is the authority. Guarded on the server backing so a
+	 * stale feed can't re-add the previous account's ids after a sign-out. Accepted consequence
+	 * (same as always): a cross-device removal reflects on the next feed.
 	 */
-	private async loadOnce() {
-		if (this.loaded || !this.client) return;
-		this.loaded = true;
-
-		// A failed call leaves `loaded` false so the next auth tick (or navigation) retries,
-		// rather than stranding the user on a half-loaded set for the session.
-		if (!(await this.mergeLocal())) {
-			this.loaded = false;
-			return;
-		}
-
-		const serverIds = await safeQuery(
-			this.client,
-			api.tables.favorites.queries.fetchMyFavoriteIdsSafe.fetchMyFavoriteIdsSafe,
-			{}
-		);
-		if (serverIds === null) {
-			this.loaded = false;
-			return;
-		}
-
-		for (const id of serverIds) this.ids.add(id);
+	setServerIds(ids: string[]) {
+		if (this.backing !== 'server') return;
+		for (const id of ids) this.ids.add(id);
 	}
 
 	/**

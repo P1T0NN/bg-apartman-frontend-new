@@ -3,6 +3,9 @@
 
 	import { cn } from '@/utils/utils.js';
 
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -18,7 +21,7 @@
 	bind:ref
 	bind:page
 	role="navigation"
-	aria-label="pagination"
+	aria-label={m['Pagination.pagination']()}
 	data-slot="pagination"
 	{count}
 	{perPage}

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 	import { NativeSelect } from '@/components/ui/select/index.js';
@@ -30,7 +33,7 @@
 	} = $props();
 
 	const statusOptions = [
-		{ value: '', label: 'Any status' },
+		{ value: '', label: m['AdminAccommodationsPage.AdminAccommodationsFilters.anyStatus']() },
 		...Object.entries(ACCOMMODATION_STATUS_CONFIG).map(([value, tone]) => ({
 			value,
 			label: tone.label
@@ -38,7 +41,7 @@
 	];
 
 	const typeOptions = [
-		{ value: '', label: 'Any type' },
+		{ value: '', label: m['AdminAccommodationsPage.AdminAccommodationsFilters.anyType']() },
 		...ACCOMMODATION_TYPES.map((t) => ({ value: t.value, label: t.label }))
 	];
 
@@ -55,7 +58,7 @@
 	value={status ?? ''}
 	onChange={(v) => (status = v === '' ? undefined : (v as typesAccommodationStatus))}
 	options={statusOptions}
-	ariaLabel="Filter by status"
+	ariaLabel={m['AdminAccommodationsPage.AdminAccommodationsFilters.filterByStatus']()}
 />
 
 <NativeSelect
@@ -63,9 +66,11 @@
 	value={type ?? ''}
 	onChange={(v) => (type = v === '' ? undefined : (v as typesAccommodationType))}
 	options={typeOptions}
-	ariaLabel="Filter by type"
+	ariaLabel={m['AdminAccommodationsPage.AdminAccommodationsFilters.filterByType']()}
 />
 
 {#if hasActiveFilter}
-	<Button variant="ghost" size="sm" onclick={clearFilters}>Clear</Button>
+	<Button variant="ghost" size="sm" onclick={clearFilters}>
+		{m['AdminAccommodationsPage.AdminAccommodationsFilters.clear']()}
+	</Button>
 {/if}

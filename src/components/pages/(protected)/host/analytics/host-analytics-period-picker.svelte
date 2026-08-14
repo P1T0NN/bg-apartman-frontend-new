@@ -4,6 +4,9 @@
 </script>
 
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { getLocalTimeZone, parseDate, today } from '@internationalized/date';
 	import { parseAsString, parseAsStringLiteral, useQueryStates } from 'nuqs-svelte';
@@ -123,7 +126,7 @@
 
 		// `compare` on calendar dates returns the difference in days; +1 = inclusive span.
 		if (range.end.compare(range.start) + 1 < MIN_CUSTOM_DAYS) {
-			toast.error(`Select at least ${MIN_CUSTOM_DAYS} days.`);
+			toast.error(m['HostAnalyticsPage.HostAnalyticsPeriodPicker.minDaysError']({ days: MIN_CUSTOM_DAYS }));
 			customRange = undefined; // popover stays open for a re-pick
 			return;
 		}
@@ -164,7 +167,7 @@
 	});
 
 	const customLabel = $derived(
-		customRange?.start && customRange?.end ? formatDateRange(customRange) : 'Custom'
+		customRange?.start && customRange?.end ? formatDateRange(customRange) : m['HostAnalyticsPage.HostAnalyticsPeriodPicker.custom']()
 	);
 </script>
 
@@ -197,7 +200,7 @@
 					: 'text-muted-foreground hover:text-foreground'
 			)}
 		>
-			Custom
+			{m['HostAnalyticsPage.HostAnalyticsPeriodPicker.custom']()}
 		</button>
 	</div>
 
@@ -209,7 +212,7 @@
 					style={anchorStyle}
 					variant="outline"
 					class="justify-start rounded-lg font-normal"
-					aria-label="Select custom date range"
+					aria-label={m['HostAnalyticsPage.HostAnalyticsPeriodPicker.selectCustomRange']()}
 				>
 					<CalendarIcon />
 					<span>{customLabel}</span>

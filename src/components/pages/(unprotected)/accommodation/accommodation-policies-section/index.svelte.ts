@@ -1,3 +1,6 @@
+// I18N
+import { m } from '@/paraglide/messages';
+
 // UTILS
 import { formatTime12 } from '@/shared/utils/dateUtils';
 import { formatUpToGuests } from '@/utils/formatters';
@@ -21,31 +24,44 @@ function buildHouseRules(accommodation: typesAccommodationEnriched): Accommodati
 	const rules: AccommodationPolicyRule[] = [
 		{
 			icon: ClockIcon,
-			label: `Check-in after ${formatTime12(accommodation.checkInTime)}`
+			label: m['AccommodationPage.AccommodationPoliciesSection.checkInAfter']({
+				time: formatTime12(accommodation.checkInTime)
+			})
 		},
 		{
 			icon: ClockIcon,
-			label: `Checkout before ${formatTime12(accommodation.checkOutTime)}`
+			label: m['AccommodationPage.AccommodationPoliciesSection.checkoutBefore']({
+				time: formatTime12(accommodation.checkOutTime)
+			})
 		},
 		{ icon: UsersIcon, label: formatUpToGuests(accommodation.maxGuests) },
 		{
 			icon: DogIcon,
-			label: accommodation.petsAllowed ? 'Pets allowed' : 'No pets'
+			label: accommodation.petsAllowed
+				? m['AccommodationPage.AccommodationPoliciesSection.petsAllowed']()
+				: m['AccommodationPage.AccommodationPoliciesSection.noPets']()
 		},
 		{
 			icon: accommodation.smokingAllowed ? CigaretteIcon : CigaretteOffIcon,
-			label: accommodation.smokingAllowed ? 'Smoking allowed' : 'No smoking'
+			label: accommodation.smokingAllowed
+				? m['AccommodationPage.AccommodationPoliciesSection.smokingAllowed']()
+				: m['AccommodationPage.AccommodationPoliciesSection.noSmoking']()
 		},
 		{
 			icon: PartyPopperIcon,
-			label: accommodation.partiesAllowed ? 'Events allowed' : 'No parties or events'
+			label: accommodation.partiesAllowed
+				? m['AccommodationPage.AccommodationPoliciesSection.eventsAllowed']()
+				: m['AccommodationPage.AccommodationPoliciesSection.noPartiesOrEvents']()
 		}
 	];
 
 	if (accommodation.quietHoursStart && accommodation.quietHoursEnd) {
 		rules.push({
 			icon: MoonIcon,
-			label: `Quiet hours ${accommodation.quietHoursStart}–${accommodation.quietHoursEnd}`
+			label: m['AccommodationPage.AccommodationPoliciesSection.quietHours']({
+				start: accommodation.quietHoursStart,
+				end: accommodation.quietHoursEnd
+			})
 		});
 	}
 
@@ -56,25 +72,33 @@ function buildBookingRules(accommodation: typesAccommodationEnriched): Accommoda
 	const rules: AccommodationPolicyRule[] = [
 		{
 			icon: CalendarIcon,
-			label: `Minimum stay ${accommodation.minReservationDays} nights`
+			label: m['AccommodationPage.AccommodationPoliciesSection.minimumStayNights']({
+				days: accommodation.minReservationDays
+			})
 		}
 	];
 
 	if (accommodation.maxReservationDays) {
 		rules.push({
 			icon: CalendarIcon,
-			label: `Maximum stay ${accommodation.maxReservationDays} nights`
+			label: m['AccommodationPage.AccommodationPoliciesSection.maximumStayNights']({
+				days: accommodation.maxReservationDays
+			})
 		});
 	}
 
 	rules.push({
 		icon: ZapIcon,
-		label: accommodation.instantBooking ? 'Instant booking' : 'Request to book'
+		label: accommodation.instantBooking
+			? m['AccommodationPage.AccommodationPoliciesSection.instantBooking']()
+			: m['AccommodationPage.AccommodationPoliciesSection.requestToBook']()
 	});
 
 	rules.push({
 		icon: ClockIcon,
-		label: accommodation.sameDayReservation ? 'Same-day bookings accepted' : 'No same-day bookings'
+		label: accommodation.sameDayReservation
+			? m['AccommodationPage.AccommodationPoliciesSection.sameDayAccepted']()
+			: m['AccommodationPage.AccommodationPoliciesSection.noSameDay']()
 	});
 
 	return rules;

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 
@@ -47,8 +50,14 @@
 
 	const reasonLength = $derived(values.declineReason.trim().length);
 
+	const guestName = $derived(
+		booking
+			? `${booking.guestFirstName} ${booking.guestLastName}`
+			: m['BookingsFeature.BookingsDetailSheet.DeclineBookingDialog.theGuest']()
+	);
+
 	const fields: MutationFormFieldDef[] = [
-		{ id: 'declineReason', kind: 'textarea', label: 'Reason for declining' }
+		{ id: 'declineReason', kind: 'textarea', label: m['BookingsFeature.BookingsDetailSheet.DeclineBookingDialog.reasonForDeclining']() }
 	];
 </script>
 
@@ -65,12 +74,8 @@
 	}}
 >
 	<div class="alert-dialog__header">
-		<h2 class="text-destructive">Decline this reservation request?</h2>
-		<p>
-			This declines {booking ? `${booking.guestFirstName} ${booking.guestLastName}` : ''}s request
-			and emails them your reason. It can't be undone, so please explain your decision briefly and
-			courteously.
-		</p>
+		<h2 class="text-destructive">{m['BookingsFeature.BookingsDetailSheet.DeclineBookingDialog.title']()}</h2>
+		<p>{m['BookingsFeature.BookingsDetailSheet.DeclineBookingDialog.body']({ guest: guestName })}</p>
 	</div>
 
 	{#if booking}
@@ -106,7 +111,7 @@
 		oninput={(e) => setValue(e.currentTarget.value)}
 		maxlength={500}
 		rows={4}
-		placeholder="e.g. These dates are no longer available for booking."
+		placeholder={m['BookingsFeature.BookingsDetailSheet.DeclineBookingDialog.reasonPlaceholder']()}
 		aria-invalid={!!error}
 	/>
 	<span
@@ -122,7 +127,7 @@
 {#snippet formActions({ busy }: { busy: boolean })}
 	<div class="alert-dialog__footer">
 		<Button type="button" variant="outline" onclick={() => (open = false)} disabled={busy}>
-			Keep request
+			{m['BookingsFeature.BookingsDetailSheet.DeclineBookingDialog.keepRequest']()}
 		</Button>
 
 		<!-- Never disabled on validity: clicking must SAY what's wrong (the form's own
@@ -131,7 +136,7 @@
 			{#if busy}
 				<Loader class="h-3 w-3 animate-spin" />
 			{/if}
-			Decline request
+			{m['BookingsFeature.BookingsDetailSheet.DeclineBookingDialog.declineRequest']()}
 		</Button>
 	</div>
 {/snippet}

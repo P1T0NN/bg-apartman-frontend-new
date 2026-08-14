@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LUCIDE ICONS
 	import PartyPopperIcon from '@lucide/svelte/icons/party-popper';
 </script>
@@ -11,10 +14,12 @@
 	</div>
 
 	<div class="flex flex-col gap-1.5">
-		<h2 class="text-base font-semibold tracking-tight">You're ready for your first booking</h2>
+		<h2 class="text-base font-semibold tracking-tight">
+			{m['HostDashboardPage.HostDashboardNoBookingsEmpty.title']()}
+		</h2>
 
 		<p class="mx-auto max-w-sm text-sm text-muted-foreground">
-			Your accommodations are live. Share them to start receiving requests.
+			{m['HostDashboardPage.HostDashboardNoBookingsEmpty.description']()}
 		</p>
 	</div>
 </div>

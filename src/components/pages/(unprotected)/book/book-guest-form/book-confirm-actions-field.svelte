@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 
@@ -22,20 +25,24 @@
 		busy?: boolean;
 	} = $props();
 
-	const confirmLabel = $derived(instantBooking ? 'Confirm reservation' : 'Request to book');
+	const confirmLabel = $derived(
+		instantBooking
+			? m['BookPage.BookConfirmActionsField.confirmReservation']()
+			: m['BookPage.BookConfirmActionsField.requestToBook']()
+	);
 </script>
 
 <div class="space-y-3">
 	<p class="text-xs leading-relaxed text-muted-foreground">
-		By selecting {confirmLabel}
-		you agree to the host’s house rules and to pay the full amount by {paymentMethodLabel(
-			paymentMethod
-		)}.
+		{m['BookPage.BookConfirmActionsField.agreement']({
+			action: confirmLabel,
+			paymentMethod: paymentMethodLabel(paymentMethod)
+		})}
 	</p>
 
 	{#if attempted && datesMissing}
 		<p class="text-sm text-destructive" role="alert" aria-live="polite">
-			Please pick your dates at the top of the page before you continue.
+			{m['BookPage.BookConfirmActionsField.pickDates']()}
 		</p>
 	{/if}
 

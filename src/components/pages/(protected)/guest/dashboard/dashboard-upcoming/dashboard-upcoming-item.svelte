@@ -2,6 +2,8 @@
 	// CONFIG
 	import { PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 	// COMPONENTS
 	import * as Card from '@/components/ui/card/index.js';
 	import { FeatureStatus } from '@/components/ui/feature-status/index.js';
@@ -25,7 +27,7 @@
 </script>
 
 <a
-	href={PROTECTED_PAGE_ENDPOINTS.GUEST_MY_BOOKINGS}
+	href={appHref(PROTECTED_PAGE_ENDPOINTS.GUEST_MY_BOOKINGS)}
 	class="rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring"
 >
 	<Card.Root class="flex-row items-center gap-4 p-3 transition hover:bg-muted/40">

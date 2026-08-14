@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { NativeSelect } from '@/components/ui/select/index.js';
 
@@ -28,17 +31,17 @@
 	} = $props();
 
 	const viewOptions = [
-		{ value: 'new' as const, label: 'New' },
-		{ value: 'all' as const, label: 'All' }
+		{ value: 'new' as const, label: m['AdminReportsPage.AdminReportsTableFilters.new']() },
+		{ value: 'all' as const, label: m['AdminReportsPage.AdminReportsTableFilters.all']() }
 	];
 
 	const categoryOptions = [
-		{ value: '', label: 'Any category' },
+		{ value: '', label: m['AdminReportsPage.AdminReportsTableFilters.anyCategory']() },
 		...REPORT_CATEGORIES.map((c) => ({ value: c, label: REPORT_CATEGORY_TONE[c].label }))
 	];
 </script>
 
-<div class="inline-flex rounded-lg border p-0.5" role="group" aria-label="Report view">
+<div class="inline-flex rounded-lg border p-0.5" role="group" aria-label={m['AdminReportsPage.AdminReportsTableFilters.reportView']()}>
 	{#each viewOptions as option (option.value)}
 		<button
 			type="button"
@@ -61,5 +64,5 @@
 	value={category ?? ''}
 	onChange={(v) => (category = v === '' ? undefined : (v as ReportCategory))}
 	options={categoryOptions}
-	ariaLabel="Filter by category"
+	ariaLabel={m['AdminReportsPage.AdminReportsTableFilters.filterByCategory']()}
 />

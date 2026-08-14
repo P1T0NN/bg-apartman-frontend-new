@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import DiscountedPrice from '@/shared/features/pricing/components/discounted-price.svelte';
 
@@ -24,5 +27,5 @@
 		strikeFirst={false}
 		class="text-2xl"
 	/>
-	<span class="text-sm text-muted-foreground">/ night</span>
+	<span class="text-sm text-muted-foreground">{m['AccommodationPage.BookingPanelPrice.perNight']()}</span>
 </div>

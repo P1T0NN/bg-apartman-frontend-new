@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Card } from '@/components/ui/card/index.js';
 
@@ -63,23 +66,23 @@
 	 * alone (PRODUCT.md's a11y contract) — the row still reads correctly in greyscale.
 	 */
 	function trendOf(delta: number, text: string): Trend {
-		if (delta === 0) return { dir: 'flat', text: 'No change' };
+		if (delta === 0) return { dir: 'flat', text: m['HostDashboardPage.HostDashboardStatCards.noChange']() };
 		return { dir: delta > 0 ? 'up' : 'down', text };
 	}
 
 	const thisMonth = $derived<LedgerRow[]>([
 		{
-			label: 'Occupancy',
+			label: m['HostDashboardPage.HostDashboardStatCards.occupancy'](),
 			value: `${Math.round(stats.tiles.occupancy.pct)}%`,
 			trend: trendOf(
 				stats.tiles.occupancy.deltaPts,
-				`${formatSignedCount(Math.round(stats.tiles.occupancy.deltaPts))} pts`
+				m['HostDashboardPage.HostDashboardStatCards.pts']({ count: formatSignedCount(Math.round(stats.tiles.occupancy.deltaPts)) })
 			),
 			meter: Math.min(100, Math.max(0, stats.tiles.occupancy.pct)),
 			lead: true
 		},
 		{
-			label: 'Revenue',
+			label: m['HostDashboardPage.HostDashboardStatCards.revenue'](),
 			value: formatCurrency(stats.tiles.revenue.amount),
 			trend: trendOf(
 				stats.tiles.revenue.deltaAmount,
@@ -90,22 +93,22 @@
 
 	const ahead = $derived<LedgerRow[]>([
 		{
-			label: 'Check-ins',
+			label: m['HostDashboardPage.HostDashboardStatCards.checkIns'](),
 			value: String(stats.tiles.upcomingCheckIns.count),
 			note: stats.tiles.upcomingCheckIns.nextDate
-				? `Next ${formatDateShort(stats.tiles.upcomingCheckIns.nextDate)}`
-				: 'None in the next 7 days',
+				? m['HostDashboardPage.HostDashboardStatCards.nextDate']({ date: formatDateShort(stats.tiles.upcomingCheckIns.nextDate) })
+				: m['HostDashboardPage.HostDashboardStatCards.noneInNext7Days'](),
 			lead: true
 		},
 		{
-			label: 'Published',
+			label: m['HostDashboardPage.HostDashboardStatCards.published'](),
 			value: String(stats.accommodations.published),
 			note:
 				stats.accommodations.pendingReview > 0
-					? `${stats.accommodations.pendingReview} in review`
+					? m['HostDashboardPage.HostDashboardStatCards.inReview']({ count: stats.accommodations.pendingReview })
 					: stats.accommodations.published > 0
-						? 'All live'
-						: 'Nothing live yet'
+						? m['HostDashboardPage.HostDashboardStatCards.allLive']()
+						: m['HostDashboardPage.HostDashboardStatCards.nothingLiveYet']()
 		}
 	]);
 
@@ -152,7 +155,7 @@
 								<span class={cn('tabular-nums', trendClass[row.trend.dir])}>
 									{row.trend.text}
 								</span>
-								<span class="text-muted-foreground">vs last month</span>
+								<span class="text-muted-foreground">{m['HostDashboardPage.HostDashboardStatCards.vsLastMonth']()}</span>
 							{:else if row.note}
 								<span class="truncate text-muted-foreground">{row.note}</span>
 							{/if}
@@ -181,7 +184,7 @@
 -->
 <Card class="gap-0 overflow-hidden p-0">
 	<div class="grid divide-y lg:grid-cols-[1.25fr_1fr] lg:divide-x lg:divide-y-0">
-		{@render ledger('This month', thisMonth)}
-		{@render ledger('Ahead', ahead)}
+		{@render ledger(m['HostDashboardPage.HostDashboardStatCards.thisMonth'](), thisMonth)}
+		{@render ledger(m['HostDashboardPage.HostDashboardStatCards.ahead'](), ahead)}
 	</div>
 </Card>

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// UTILS
 	import { authClient } from '@/features/auth/lib/auth-client';
 
@@ -86,14 +89,14 @@
 				console.error('Email verification: verifyEmail failed:', error);
 				errorMessage = rateLimitMessage(
 					error.message,
-					'Invalid or expired code. Please try again.'
+					m['AuthFeature.EmailVerificationForm.invalidOrExpiredCode']()
 				);
 				busy = false;
 				return;
 			}
 		} catch (error) {
 			console.error('Email verification: verifyEmail failed:', error);
-			errorMessage = 'Invalid or expired code. Please try again.';
+			errorMessage = m['AuthFeature.EmailVerificationForm.invalidOrExpiredCode']();
 			busy = false;
 			return;
 		}
@@ -112,10 +115,10 @@
 
 {#if variant === 'card'}
 	<Card.Header>
-		<Card.Title class="text-2xl">Check your email</Card.Title>
+		<Card.Title class="text-2xl">{m['AuthFeature.EmailVerificationForm.checkYourEmail']()}</Card.Title>
 
 		<Card.Description>
-			We sent a verification code to {email}. Enter it below to continue.
+			{m['AuthFeature.EmailVerificationForm.verificationCodeSent']({ email })}
 		</Card.Description>
 	</Card.Header>
 
@@ -123,7 +126,7 @@
 		<form class="w-full" onsubmit={onVerifySubmit}>
 			<FieldGroup>
 				<Field>
-					<FieldLabel for="ev-code-{id}">Verification code</FieldLabel>
+					<FieldLabel for="ev-code-{id}">{m['AuthFeature.EmailVerificationForm.verificationCode']()}</FieldLabel>
 					<InputOTP.Root
 						id="ev-otp-{id}"
 						inputId="ev-code-{id}"
@@ -158,7 +161,7 @@
 
 				<Field>
 					<Button type="submit" class={fullWidthButtons ? 'w-full' : ''} disabled={busy}>
-						Continue
+						{m['AuthFeature.EmailVerificationForm.continue']()}
 					</Button>
 					<Button
 						type="button"
@@ -167,7 +170,7 @@
 						disabled={busy}
 						onclick={handleCancel}
 					>
-						Cancel
+						{m['AuthFeature.EmailVerificationForm.cancel']()}
 					</Button>
 				</Field>
 				{#if resend}
@@ -185,14 +188,14 @@
 	>
 		<FieldGroup>
 			<div class="flex flex-col items-center gap-1 text-center">
-				<h1 class="text-2xl font-bold">Check your email</h1>
+				<h1 class="text-2xl font-bold">{m['AuthFeature.EmailVerificationForm.checkYourEmail']()}</h1>
 				<p class="text-sm text-balance text-muted-foreground">
-					We sent a verification code to {email}. Enter it below to continue.
+					{m['AuthFeature.EmailVerificationForm.verificationCodeSent']({ email })}
 				</p>
 			</div>
 
 			<Field>
-				<FieldLabel for="ev-code-{id}-stacked">Verification code</FieldLabel>
+				<FieldLabel for="ev-code-{id}-stacked">{m['AuthFeature.EmailVerificationForm.verificationCode']()}</FieldLabel>
 				<InputOTP.Root
 					id="ev-otp-{id}-stacked"
 					inputId="ev-code-{id}-stacked"
@@ -227,7 +230,7 @@
 
 			<Field>
 				<Button type="submit" class={fullWidthButtons ? 'w-full' : ''} disabled={busy}>
-					Continue
+					{m['AuthFeature.EmailVerificationForm.continue']()}
 				</Button>
 				<Button
 					type="button"
@@ -236,7 +239,7 @@
 					disabled={busy}
 					onclick={handleCancel}
 				>
-					Cancel
+					{m['AuthFeature.EmailVerificationForm.cancel']()}
 				</Button>
 			</Field>
 			{#if resend}

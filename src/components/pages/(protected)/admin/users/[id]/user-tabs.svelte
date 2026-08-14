@@ -1,4 +1,7 @@
 <script lang="ts">
+	// PARAGLIDE
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs/index.js';
 	import UserOverview from '@/components/pages/(protected)/admin/users/[id]/user-overview.svelte';
@@ -21,11 +24,11 @@
 
 <Tabs bind:value={activeTab}>
 	<TabsList>
-		<TabsTrigger value="overview">Overview</TabsTrigger>
-		<TabsTrigger value="sessions">Sessions</TabsTrigger>
-		<TabsTrigger value="accounts">Accounts</TabsTrigger>
-		<TabsTrigger value="activity">Activity</TabsTrigger>
-		<TabsTrigger value="danger">Danger zone</TabsTrigger>
+		<TabsTrigger value="overview">{m['AdminUsersPage.UserTabs.overview']()}</TabsTrigger>
+		<TabsTrigger value="sessions">{m['AdminUsersPage.UserTabs.sessions']()}</TabsTrigger>
+		<TabsTrigger value="accounts">{m['AdminUsersPage.UserTabs.accounts']()}</TabsTrigger>
+		<TabsTrigger value="activity">{m['AdminUsersPage.UserTabs.activity']()}</TabsTrigger>
+		<TabsTrigger value="danger">{m['AdminUsersPage.UserTabs.dangerZone']()}</TabsTrigger>
 	</TabsList>
 
 	<TabsContent value="overview" class="pt-2">

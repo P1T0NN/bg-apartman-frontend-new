@@ -2,6 +2,7 @@
 	import { cn, type WithElementRef, type WithoutChildren } from '@/utils/utils.js';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { getPayloadConfigFromPayload, useChart, type TooltipPayload } from './chart-utils.js';
+	import { getLocale } from '@/paraglide/runtime';
 	import { getChartContext, Tooltip as TooltipPrimitive } from 'layerchart';
 	import type { Snippet } from 'svelte';
 
@@ -168,7 +169,7 @@
 							</div>
 							{#if item.value !== undefined}
 								<span class="font-mono font-medium text-foreground tabular-nums">
-									{item.value.toLocaleString()}
+									{item.value.toLocaleString(getLocale())}
 								</span>
 							{/if}
 						</div>

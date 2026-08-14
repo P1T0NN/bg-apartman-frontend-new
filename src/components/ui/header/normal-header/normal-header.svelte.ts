@@ -3,6 +3,11 @@ import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
 // UTILS
 import { isNavItemActive } from '@/utils/isNavItemActive.js';
+import { appHref } from '@/utils/app-navigation.js';
+
+// I18N
+import { deLocalizeHref } from '@/paraglide/runtime';
+import { m } from '@/paraglide/messages';
 
 export type NavItem = {
 	href: string;
@@ -14,14 +19,32 @@ export type NavItem = {
 	sectionId?: string;
 };
 
-export const navItems: readonly NavItem[] = [
-	{ href: UNPROTECTED_PAGE_ENDPOINTS.ROOT, label: 'Home' },
-	{ href: '/#featured-stays', label: 'Featured', sectionId: 'featured-stays' },
-	{ href: '/#become-host', label: 'Become a host', sectionId: 'become-host' },
-	{ href: '/#testimonials', label: 'Testimonials', sectionId: 'testimonials' },
-	{ href: '/#newsletters', label: 'Newsletters', sectionId: 'newsletters' },
-	{ href: UNPROTECTED_PAGE_ENDPOINTS.CONTACT, label: 'Contact' }
-] as const;
+export function navItems(): readonly NavItem[] {
+	return [
+		{ href: appHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT), label: m['Header.home']() },
+		{
+			href: appHref('/#featured-stays'),
+			label: m['Header.featured'](),
+			sectionId: 'featured-stays'
+		},
+		{
+			href: appHref('/#become-host'),
+			label: m['Header.becomeAHost'](),
+			sectionId: 'become-host'
+		},
+		{
+			href: appHref('/#testimonials'),
+			label: m['Header.testimonials'](),
+			sectionId: 'testimonials'
+		},
+		{
+			href: appHref('/#newsletters'),
+			label: m['Header.newsletters'](),
+			sectionId: 'newsletters'
+		},
+		{ href: appHref(UNPROTECTED_PAGE_ENDPOINTS.CONTACT), label: m['Header.contact']() }
+	];
+}
 
 export const navLinkClass =
 	'text-hero-overlay-foreground/80 hover:text-hero-overlay-foreground rounded-md px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-hero-overlay-foreground/40';
@@ -76,7 +99,7 @@ class SectionSpy {
 export const sectionSpy = new SectionSpy();
 
 /** Section ids the header should spy on — derived straight from `navItems`. */
-export const spiedSectionIds: readonly string[] = navItems.flatMap((item) =>
+export const spiedSectionIds: readonly string[] = navItems().flatMap((item) =>
 	item.sectionId ? [item.sectionId] : []
 );
 
@@ -87,8 +110,11 @@ export const spiedSectionIds: readonly string[] = navItems.flatMap((item) =>
  * - Route items: the usual `isNavItemActive` path match.
  */
 export function isHeaderItemActive(pathnameLogical: string, item: NavItem): boolean {
+	// `navItems()` builds hrefs through `appHref`, which localizes them (`/sr/...` on sr);
+	// de-localize so both sides of every comparison are canonical app paths.
+	const hrefLogical = deLocalizeHref(item.href);
 	const onRoot = pathnameLogical === UNPROTECTED_PAGE_ENDPOINTS.ROOT;
 	if (item.sectionId) return onRoot && sectionSpy.activeId === item.sectionId;
-	if (item.href === UNPROTECTED_PAGE_ENDPOINTS.ROOT) return onRoot && sectionSpy.activeId === null;
-	return isNavItemActive(pathnameLogical, item.href);
+	if (hrefLogical === UNPROTECTED_PAGE_ENDPOINTS.ROOT) return onRoot && sectionSpy.activeId === null;
+	return isNavItemActive(pathnameLogical, hrefLogical);
 }

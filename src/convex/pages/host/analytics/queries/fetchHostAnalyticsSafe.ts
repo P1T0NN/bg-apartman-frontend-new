@@ -76,9 +76,9 @@ function bucketStarts(from: number, to: number, unit: 'day' | 'month'): number[]
  * The server picks the bucket size (`day` up to ~3 months, `month` beyond) and returns it,
  * so the chart's axis labels follow the data instead of guessing.
  *
- * Realtime verdict: **one-shot** (GeneralSystemDesignRule.md). Aggregates over a chosen
- * window don't visibly move while a host looks at them — the page refetches on every
- * window change, which is always fresh enough.
+ * Realtime verdict: **live subscription** (GeneralSystemDesignRule.md), keyed on the chosen
+ * window — the page's `useQuery` swaps args when the picker changes, and skipped while a
+ * custom range is still being dragged.
  *
  * Cost shape — nothing here may grow with the host's booking VOLUME, because this query
  * refires on every click of the period picker:

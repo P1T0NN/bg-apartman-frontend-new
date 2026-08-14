@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Separator } from '@/components/ui/separator/index.js';
 	import AccommodationSummaryItem from './accommodation-summary-item.svelte';
@@ -26,36 +29,38 @@
 		if (accommodation.instantBooking) {
 			out.push({
 				icon: ZapIcon,
-				title: 'Instant booking',
-				text: 'Your dates are confirmed straight away — no waiting for approval.'
+				title: m['AccommodationPage.AccommodationSummarySection.instantBookingTitle'](),
+				text: m['AccommodationPage.AccommodationSummarySection.instantBookingText']()
 			});
 		}
 		if (accommodation.amenities.includes('self_checkin')) {
 			out.push({
 				icon: KeyRoundIcon,
-				title: 'Self check-in',
-				text: 'Let yourself in any time with the keypad — no meet-up needed.'
+				title: m['AccommodationPage.AccommodationSummarySection.selfCheckInTitle'](),
+				text: m['AccommodationPage.AccommodationSummarySection.selfCheckInText']()
 			});
 		}
 		if (accommodation.host.isSuperhost) {
 			out.push({
 				icon: AwardIcon,
-				title: `${accommodation.host.name} is a Superhost`,
-				text: 'Superhosts are experienced, highly rated hosts committed to great stays.'
+				title: m['AccommodationPage.AccommodationSummarySection.superhostTitle']({
+					name: accommodation.host.name
+				}),
+				text: m['AccommodationPage.AccommodationSummarySection.superhostText']()
 			});
 		}
 		if (accommodation.petsAllowed) {
 			out.push({
 				icon: DogIcon,
-				title: 'Pets are welcome',
-				text: 'Travelling with a furry friend? Just let the host know in advance.'
+				title: m['AccommodationPage.AccommodationSummarySection.petsTitle'](),
+				text: m['AccommodationPage.AccommodationSummarySection.petsText']()
 			});
 		}
 		if (accommodation.amenities.includes('free_parking')) {
 			out.push({
 				icon: CarIcon,
-				title: 'Free parking on site',
-				text: 'Leave the car right outside, at no extra cost.'
+				title: m['AccommodationPage.AccommodationSummarySection.parkingTitle'](),
+				text: m['AccommodationPage.AccommodationSummarySection.parkingText']()
 			});
 		}
 		return out.slice(0, 3);

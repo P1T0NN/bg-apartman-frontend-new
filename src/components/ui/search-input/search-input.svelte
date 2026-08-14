@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import SearchDropdown from './search-dropdown.svelte';
 	import { Input } from '@/components/ui/input/index.js';
@@ -20,7 +23,7 @@
 		error = null,
 		showEmpty = true,
 		minQueryLength = 1,
-		placeholder = 'Search...',
+		placeholder = m['SearchInput.placeholder'](),
 		class: className,
 		dropdownClass,
 		loadingText,
@@ -31,7 +34,7 @@
 		onClick,
 		id,
 		disabled,
-		'aria-label': ariaLabel = 'Search',
+		'aria-label': ariaLabel = m['SearchInput.ariaLabel'](),
 		...restProps
 	}: SearchInputProps = $props();
 

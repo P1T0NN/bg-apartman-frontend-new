@@ -1,3 +1,6 @@
+// I18N
+import { m } from '@/paraglide/messages';
+
 // CONFIG
 import { PAYMENTS_CONFIG } from '@/shared/config';
 
@@ -16,19 +19,19 @@ export const ONLINE_PAYMENTS_ENABLED = PAYMENTS_CONFIG.PROVIDER !== 'none';
 export const PAYMENT_METHOD_OPTIONS: typesPaymentMethodOption[] = [
 	{
 		value: 'cash',
-		label: 'Cash at check-in',
-		description: 'No card needed — settle the full amount with your host on arrival.'
+		label: m['paymentMethods.cashAtCheckIn'](),
+		description: m['paymentMethods.cashDescription']()
 	},
 	{
 		value: 'online',
-		label: 'Pay online',
-		description: 'Pay securely online — your card is charged when the booking is confirmed.'
+		label: m['paymentMethods.payOnline'](),
+		description: m['paymentMethods.payOnlineDescription']()
 	}
 ];
 
 /** Appended to an online option's copy while the provider is dark — the same sentence the
  *  per-booking plan card uses, so one section never explains the same gate two ways. */
-const COMING_SOON = ' Available once online payments launch.';
+const COMING_SOON = m['paymentMethods.comingSoon']();
 
 /**
  * Host-facing options for what an accommodation accepts — includes letting guests choose.
@@ -44,22 +47,22 @@ const COMING_SOON = ' Available once online payments launch.';
 export const ACCOMMODATION_PAYMENT_METHOD_OPTIONS: typesPaymentMethodOption[] = [
 	{
 		value: 'cash',
-		label: 'Cash at check-in',
-		description: 'Guests settle the full amount with you on arrival.'
+		label: m['paymentMethods.cashAtCheckIn'](),
+		description: m['paymentMethods.accommodationCashDescription']()
 	},
 	{
 		value: 'online',
-		label: 'Pay online',
+		label: m['paymentMethods.payOnline'](),
 		description:
-			'Guests pay online when the booking is confirmed.' +
+			m['paymentMethods.accommodationPayOnlineDescription']() +
 			(ONLINE_PAYMENTS_ENABLED ? '' : COMING_SOON),
 		disabled: !ONLINE_PAYMENTS_ENABLED
 	},
 	{
 		value: 'both',
-		label: 'Both — let guests choose',
+		label: m['paymentMethods.both'](),
 		description:
-			'Guests pick between cash at check-in and paying online at checkout.' +
+			m['paymentMethods.bothDescription']() +
 			(ONLINE_PAYMENTS_ENABLED ? '' : COMING_SOON),
 		disabled: !ONLINE_PAYMENTS_ENABLED
 	}

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Card } from '@/components/ui/card/index.js';
 	import { Skeleton } from '@/components/ui/skeleton/index.js';
@@ -17,7 +20,7 @@
 </script>
 
 <Card class="gap-0 border-primary/30 bg-primary/3 p-4 sm:p-5" role="status" aria-busy="true">
-	<span class="sr-only">Loading pending reservations</span>
+	<span class="sr-only">{m['HostDashboardPage.HostDashboardPendingReservationsLoading.loadingPending']()}</span>
 
 	<div class="mb-4 flex items-start gap-3">
 		<Skeleton class="size-9 shrink-0 rounded-lg" />

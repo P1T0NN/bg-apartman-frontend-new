@@ -1,22 +1,29 @@
-// The layer that turns backend message CODES into words. Resolution table is
-// `BACKEND_MESSAGES` (hardcoded English) — deliberately NOT an i18n catalog, so no file in
-// the app imports a message runtime and adding i18n stays a one-file change.
-//
-// To introduce i18n: swap the two `BACKEND_MESSAGES[...]` lookups below for `m[key](params)`.
-// That is the only change needed — every call site stays identical.
+// The layer that turns backend message CODES into words. Convex returns `{ key, params? }`
+// descriptors (never display text — see `TranslatableMessage`); the words live in
+// messages/en.json as top-level `GenericMessages.` / `ValidationMessages.` keys and are
+// resolved here through Paraglide. Unknown keys fall back to the key literal (visible in
+// dev), which is exactly what you want for missing-message debugging.
+
+// LIBRARIES
+import { m } from '@/paraglide/messages';
 
 // HELPERS
 import {
 	parseTranslatableMessage,
 	rateLimitDescriptor
 } from '@/shared/features/validations/utils/translatableMessage';
-import {
-	BACKEND_MESSAGES,
-	formatMessage
-} from '@/shared/features/validations/data/backendMessages';
 
 // TYPES
 import type { TranslatableMessage } from '@/shared/features/validations/types/validationsTypes';
+
+/** The generated `m` namespace maps every en.json key to its message function. */
+type BackendMessageFn = (inputs?: Record<string, string | number | boolean>) => string;
+
+// Convex emits keys at runtime, so the lookup is dynamic: the runtime key is the full
+// en.json id (`GenericMessages.X` / `ValidationMessages.X`) and is reached through the
+// generated namespace (typed via `unknown` because the key set isn't statically known at
+// this call site).
+const messages = m as unknown as Record<string, BackendMessageFn>;
 
 /**
  * Resolve a backend-issued {@link TranslatableMessage} to display text.
@@ -31,8 +38,8 @@ import type { TranslatableMessage } from '@/shared/features/validations/types/va
  */
 export function translateFromBackend(message: TranslatableMessage | string): string {
 	const descriptor: TranslatableMessage = typeof message === 'string' ? { key: message } : message;
-	const template = BACKEND_MESSAGES[descriptor.key];
-	return template === undefined ? descriptor.key : formatMessage(template, descriptor.params);
+	const fn = messages[descriptor.key];
+	return fn ? fn(descriptor.params) : descriptor.key;
 }
 
 /**

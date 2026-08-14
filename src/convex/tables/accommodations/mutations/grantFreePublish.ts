@@ -18,7 +18,9 @@ import {
 
 // SCHEMAS
 import { grantFreePublishSchema } from '@/shared/features/accommodation/schemas/accommodationsSchemas';
-import { mutationResult, type MutationResult } from '@/convex/schemas/schemas';
+
+// TYYPES
+import type { MutationResult } from '@/convex/schemas/schemas';
 
 /**
  * Calendar lengths an admin can grant, in days (3m = 90 == `LISTING_FEE.PERIOD_DAYS`, so a

@@ -29,7 +29,8 @@ export const BACKEND_MESSAGES: Record<string, string> = {
 	'GenericMessages.ACCOMMODATION_FEATURED': 'Accommodation added to the homepage strip.',
 	'GenericMessages.ACCOMMODATION_UNFEATURED': 'Accommodation removed from the homepage strip.',
 	'GenericMessages.LISTING_FEE_PAID': 'Listing renewed — it stays live for another period.',
-	'GenericMessages.FREE_PUBLISH_GRANTED': 'Free publish granted — the listing is live with no payment recorded.',
+	'GenericMessages.FREE_PUBLISH_GRANTED':
+		'Free publish granted — the listing is live with no payment recorded.',
 	'GenericMessages.LISTING_FEE_UNPAID':
 		"This listing's fee hasn't been paid yet, so it can't go live. Record the payment first.",
 	'GenericMessages.MONETIZATION_CHOICE_REQUIRED':
@@ -67,7 +68,7 @@ export const BACKEND_MESSAGES: Record<string, string> = {
 	'GenericMessages.FAVORITE_SAVED': 'Saved to your list.',
 	'GenericMessages.FORBIDDEN': "You're not allowed to perform this action.",
 	'GenericMessages.INVALID_BOOKING_DATES': 'Check-out must be after check-in.',
-	'GenericMessages.MODERATION_REASON_REQUIRED': 'A reason is required to suspend a accommodation.',
+	'GenericMessages.MODERATION_REASON_REQUIRED': 'A reason is required to suspend an accommodation.',
 	'GenericMessages.NEWSLETTER_SUBSCRIBED':
 		'Thanks for subscribing! Check your inbox for the best stays and deals.',
 	'GenericMessages.NOT_AUTHENTICATED': 'Please sign in to continue.',

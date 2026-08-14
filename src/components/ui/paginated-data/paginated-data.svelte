@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { buttonVariants } from '@/components/ui/button/index.js';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
@@ -130,7 +133,7 @@
   which fights one-off page updates and can reset the parent to page 1.
 -->
 <nav
-	aria-label="pagination"
+	aria-label={m['PaginatedData.ariaLabel']()}
 	data-slot="paginated-data"
 	class={cn('flex w-full items-center justify-between gap-2', className)}
 >
@@ -138,9 +141,9 @@
 		{#if isLoading}
 			<span class="inline-block min-w-[8ch]" aria-busy="true">…</span>
 		{:else if totalPages !== undefined}
-			Page {page} of {totalPages}
+			{m['PaginatedData.pageOf']({ page, total: totalPages })}
 		{:else}
-			Page {page}
+			{m['PaginatedData.page']({ page })}
 		{/if}
 	</span>
 
@@ -148,7 +151,7 @@
 		{@render control(
 			Math.max(1, page - 1),
 			!canGoPrev || isLoading,
-			'Go to previous page',
+			m['PaginatedData.goToPreviousPage'](),
 			'prev',
 			false,
 			controlClass,
@@ -162,7 +165,7 @@
 				{@render control(
 					slot,
 					isLoading,
-					`Go to page ${slot}`,
+					m['PaginatedData.goToPage']({ page: slot }),
 					undefined,
 					slot === page,
 					cn(
@@ -178,7 +181,7 @@
 		{@render control(
 			totalPages !== undefined ? Math.min(totalPages, page + 1) : page + 1,
 			!canGoNext || isLoading,
-			'Go to next page',
+			m['PaginatedData.goToNextPage'](),
 			'next',
 			false,
 			controlClass,

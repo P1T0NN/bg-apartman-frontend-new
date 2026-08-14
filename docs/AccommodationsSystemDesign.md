@@ -421,16 +421,16 @@ becomes the platform's:
 
 ## 9. Data-loading verdicts (per `GeneralSystemDesignRule.md` — decided here)
 
-| Surface                                        | Verdict                               | Justification                                                                                                                                  |
-| ---------------------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| Search page (`/`, `/search`)                   | One-shot, **cursor-paginated** (§9.1) | Listings change by host/admin action elsewhere; remount is fresh enough. Two reads — cards page in, markers stream — never one whole-set read. |
-| Accommodation detail (`/accommodation/[slug]`) | One-shot, streamed                    | Same. The booking panel's availability truth is the mutation's re-check, not the page read.                                                    |
-| Host `my-accommodations`                       | **Subscription**                      | Moves under the viewer without their action: admin moderates, the listing-fee cron expires — both while the host watches.                      |
-| Add / edit accommodation form                  | One-shot, **awaited** loader          | Single-entity edit form → Pattern B dirty-state (the rule's worked case).                                                                      |
-| Favorites                                      | One-shot, streamed                    | Changes only by this user's own actions elsewhere.                                                                                             |
-| Admin `/admin/accommodations`                  | Subscription via DataTable            | Already decided — `AdminPagesSystemDesign.md` §2.                                                                                              |
-| Counts (badges, dashboard tiles)               | `counters.apartments`                 | NOW-questions; namespace = status ⇒ **adding `expired` requires the re-backfill ritual**.                                                      |
-| Created/published/expired trends               | analytics events                      | HAPPENED-questions.                                                                                                                            |
+| Surface                                        | Verdict                                   | Justification                                                                                                                                                                           |
+| ---------------------------------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Search page (`/`, `/search`)                   | **Subscription**, cursor-paginated (§9.1) | `usePaginatedQuery` keeps both panes live — a host editing or unpublishing a listing updates it under the viewer. Two reads — cards page in, markers stream — never one whole-set read. |
+| Accommodation detail (`/accommodation/[slug]`) | **Subscription**                          | Live keyed on the slug — a host's edit or unpublish reflects instantly. The booking panel's availability truth is still the mutation's re-check, not the page read.                     |
+| Host `my-accommodations`                       | **Subscription**                          | Moves under the viewer without their action: admin moderates, the listing-fee cron expires — both while the host watches.                                                               |
+| Add / edit accommodation form                  | **Subscription**                          | Single-entity form loads its record live, so a host's own edits and admin moderation show up mid-session; dirty-state stays client-side.                                                |
+| Favorites                                      | **Subscription**                          | Saved-ids feed in the layout; the resolved set follows it live, so a removal drops off without a reload.                                                                                |
+| Admin `/admin/accommodations`                  | Subscription via DataTable                | Already decided — `AdminPagesSystemDesign.md` §2.                                                                                                                                       |
+| Counts (badges, dashboard tiles)               | `counters.apartments`                     | NOW-questions; namespace = status ⇒ **adding `expired` requires the re-backfill ritual**.                                                                                               |
+| Created/published/expired trends               | analytics events                          | HAPPENED-questions.                                                                                                                                                                     |
 
 ### 9.1 `/search` reads (revised 2026-08-09)
 
@@ -461,8 +461,9 @@ Rules this establishes, and why:
 - **The count is exact, for free.** The marker stream walks the whole set, so its length IS the
   result count once drained — no aggregate, no second scan. The header shows `120+` while that is
   still a lower bound.
-- **Both are one-shot.** Search results do not move under the viewer, and a subscription over a
-  region's listings would re-run on every unrelated write in it.
+- **Both are live.** Each pane is a `usePaginatedQuery` subscription over the shared,
+  lazily-filtered stream. The stream reads only matching rows, so a host editing or unpublishing
+  a listing shows up without a reload — and an unrelated write never re-runs it.
 - **Ceiling, named:** progressive markers are right into the tens of thousands. Past that the
   answer is server-side cluster COUNTS (a geo-cell column + one aggregate namespaced by cell,
   individual pins only at high zoom), not more pins. Not built — the marker endpoint is the shape

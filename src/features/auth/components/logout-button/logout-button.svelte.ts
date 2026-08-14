@@ -1,6 +1,9 @@
 // LIBRARIES
 import { authClient } from '@/features/auth/lib/auth-client';
 
+// I18N
+import { m } from '@/paraglide/messages';
+
 // CONFIG
 import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
@@ -25,7 +28,7 @@ export function useLogout() {
 				return;
 			}
 
-			toast.success('Logged out successfully.');
+			toast.success(m['AuthFeature.LogoutButton.loggedOutToast']());
 			await appGoto(UNPROTECTED_PAGE_ENDPOINTS.LOGIN);
 		} finally {
 			isLoggingOut = false;

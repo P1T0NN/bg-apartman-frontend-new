@@ -1,14 +1,17 @@
 <script lang="ts">
+	import { getLocale } from '@/paraglide/runtime';
+	import { m } from '@/paraglide/messages';
+
 	const todayLabel = $derived(
-		new Intl.DateTimeFormat('en', { weekday: 'long', month: 'long', day: 'numeric' }).format(
+		new Intl.DateTimeFormat(getLocale(), { weekday: 'long', month: 'long', day: 'numeric' }).format(
 			new Date()
 		)
 	);
 </script>
 
 <header class="flex flex-col gap-1">
-	<h1 class="text-2xl font-semibold tracking-tight md:text-3xl">Dashboard</h1>
+	<h1 class="text-2xl font-semibold tracking-tight md:text-3xl">{m['HostDashboardPage.HostDashboardHeader.title']()}</h1>
 	<p class="text-sm text-muted-foreground">
-		Your accommodations at a glance. · {todayLabel}
+		{m['HostDashboardPage.HostDashboardHeader.subtitle']({ date: todayLabel })}
 	</p>
 </header>

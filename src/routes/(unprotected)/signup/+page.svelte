@@ -1,9 +1,13 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { COMPANY_DATA } from '@/shared/config';
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
 	// COMPONENTS
+	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
 	import SignUpFormNoImage from '@/features/auth/components/sign-up-form/sign-up-form-no-image.svelte';
 	import SignUpFormWithImage from '@/features/auth/components/sign-up-form/sign-up-form-with-image.svelte';
 	import Link from '@/components/ui/link/link.svelte';
@@ -11,6 +15,8 @@
 	// LUCIDE ICONS
 	import GalleryVerticalEndIcon from '@lucide/svelte/icons/gallery-vertical-end';
 </script>
+
+<SvelteHead title={m['SignUpPage.SEO.title']()} description={m['SignUpPage.SEO.description']()} noIndex />
 
 <div class="flex h-screen w-full items-center justify-center px-4 lg:hidden">
 	<div class="w-full max-w-sm">

@@ -1,10 +1,16 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useQuery } from 'convex-svelte';
 
 	// CONFIG
 	import { PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
+
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 
 	// COMPONENTS
 	import { Card } from '@/components/ui/card/index.js';
@@ -23,8 +29,8 @@
 	/**
 	 * Subscription, justified (GeneralSystemDesignRule.md): requests arrive from guests and
 	 * the lifecycle cron expires them while the host watches — the rule's admin-orders case
-	 * verbatim. The ONLY live channel on this page; the stats and chart legs are one-shot,
-	 * so a new request re-runs this small bounded read and nothing else.
+	 * verbatim. Its own read on purpose: a new request re-runs this small bounded query and
+	 * NOT the heavier dashboard-stats one, which is page-wide.
 	 *
 	 * Fetched here rather than passed in, so the page file stays a layout of bands.
 	 */
@@ -38,7 +44,7 @@
 
 	// Pending reservations are read-only here — confirming/declining happens on the reservations
 	// page. This card just surfaces what's waiting and links across.
-	const pendingHref = `${PROTECTED_PAGE_ENDPOINTS.RESERVATIONS}?status=pending`;
+	const pendingHref = `${appHref(PROTECTED_PAGE_ENDPOINTS.RESERVATIONS)}?status=pending`;
 </script>
 
 <!--
@@ -50,10 +56,12 @@
 {#if pendingQuery.error}
 	<ErrorComponent
 		variant="content"
-		title="Couldn't load pending requests"
-		description="Open your reservations to answer them."
+		title={m['HostDashboardPage.HostDashboardPendingReservations.loadErrorTitle']()}
+		description={m['HostDashboardPage.HostDashboardPendingReservations.loadErrorDescription']()}
 	>
-		<Button href={pendingHref} variant="ghost" size="sm">Reservations</Button>
+		<Button href={pendingHref} variant="ghost" size="sm"
+			>{m['HostDashboardPage.HostDashboardPendingReservations.reservationsLink']()}</Button
+		>
 	</ErrorComponent>
 {:else if data === undefined}
 	<HostDashboardPendingReservationsLoading />
@@ -66,9 +74,11 @@
 				<InboxIcon class="size-5" aria-hidden="true" />
 			</span>
 			<div class="min-w-0 flex-1">
-				<h2 class="text-base font-semibold tracking-tight">Pending reservations</h2>
+				<h2 class="text-base font-semibold tracking-tight">
+					{m['HostDashboardPage.HostDashboardPendingReservations.title']()}
+				</h2>
 				<p class="text-xs text-muted-foreground">
-					Requests waiting for your response — they expire automatically.
+					{m['HostDashboardPage.HostDashboardPendingReservations.description']()}
 				</p>
 			</div>
 		</div>
@@ -80,7 +90,7 @@
 		</ul>
 
 		<Button href={pendingHref} variant="outline" size="sm" class="mt-4 self-start">
-			View
+			{m['HostDashboardPage.HostDashboardPendingReservations.view']()}
 			<ArrowRightIcon class="size-4" aria-hidden="true" />
 		</Button>
 	</Card>

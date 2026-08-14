@@ -24,8 +24,8 @@ import type { HostPendingReservations } from '@/convex/pages/host/dashboard/type
  *
  * Deliberately small so re-running it is cheap: one `by_host_status_checkin` slice bounded
  * by `QUEUE_COUNT_CAP`, and apartment joins paid only for the handful of rows displayed.
- * The expensive dashboard legs (stats, charts) are separate one-shot queries precisely so
- * they do NOT re-run every time this one is invalidated.
+ * The other dashboard legs (stats) are their own separate query precisely so they do NOT
+ * re-run every time this one is invalidated.
  */
 export const fetchHostDashboardPendingBookings = query({
 	args: {},

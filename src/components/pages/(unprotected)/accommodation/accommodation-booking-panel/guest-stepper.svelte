@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Separator } from '@/components/ui/separator/index.js';
 	import { NumberStepper } from '@/components/ui/increment-decrement-component/index.js';
@@ -21,25 +24,25 @@
 
 <div class="space-y-4">
 	<NumberStepper
-		label="Adults"
-		hint="Age 13+"
+		label={m['AccommodationPage.GuestStepper.adults']()}
+		hint={m['AccommodationPage.GuestStepper.ageHint']()}
 		bind:value={adults}
 		min={1}
 		incrementDisabled={totalGuests >= maxGuests}
-		decrementLabel="Decrease adults"
-		incrementLabel="Increase adults"
+		decrementLabel={m['AccommodationPage.GuestStepper.decreaseAdults']()}
+		incrementLabel={m['AccommodationPage.GuestStepper.increaseAdults']()}
 	/>
 
 	<Separator />
 
 	<NumberStepper
-		label="Children"
-		hint="Ages 2–12"
+		label={m['AccommodationPage.GuestStepper.children']()}
+		hint={m['AccommodationPage.GuestStepper.agesHint']()}
 		bind:value={children}
 		min={0}
 		incrementDisabled={totalGuests >= maxGuests}
-		decrementLabel="Decrease children"
-		incrementLabel="Increase children"
+		decrementLabel={m['AccommodationPage.GuestStepper.decreaseChildren']()}
+		incrementLabel={m['AccommodationPage.GuestStepper.increaseChildren']()}
 	/>
 	<p class="text-xs text-muted-foreground">
 		{formatMaxGuestsAllowed(maxGuests)}

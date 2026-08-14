@@ -1,39 +1,47 @@
 // CONFIG
 import { PROTECTED_PAGE_ENDPOINTS, UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
-export const footerLinkGroups = [
-	{
-		id: 'product',
-		heading: 'Product',
-		links: [
-			{ href: UNPROTECTED_PAGE_ENDPOINTS.ROOT, label: 'Overview' },
-			{ href: PROTECTED_PAGE_ENDPOINTS.DASHBOARD, label: 'Dashboard' }
-		]
-	},
-	{
-		id: 'support',
-		heading: 'Support',
-		links: [
-			{ href: UNPROTECTED_PAGE_ENDPOINTS.CONTACT, label: 'Contact' },
-			{ href: UNPROTECTED_PAGE_ENDPOINTS.REPORT, label: 'Report an issue' }
-		]
-	},
-	{
-		id: 'legal',
-		heading: 'Legal',
-		links: [
-			{
-				href: UNPROTECTED_PAGE_ENDPOINTS.ROOT,
-				label: 'Terms of service'
-			}
-		]
-	},
-	{
-		id: 'account',
-		heading: 'Account',
-		links: [{ href: UNPROTECTED_PAGE_ENDPOINTS.LOGIN, label: 'Sign in' }]
-	}
-] as const;
+// UTILS
+import { appHref } from '@/utils/app-navigation.js';
+
+// I18N
+import { m } from '@/paraglide/messages';
+
+export function footerLinkGroups() {
+	return [
+		{
+			id: 'product',
+			heading: m['Footer.product'](),
+			links: [
+				{ href: appHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT), label: m['Footer.overview']() },
+				{ href: appHref(PROTECTED_PAGE_ENDPOINTS.DASHBOARD), label: m['Footer.dashboard']() }
+			]
+		},
+		{
+			id: 'support',
+			heading: m['Footer.support'](),
+			links: [
+				{ href: appHref(UNPROTECTED_PAGE_ENDPOINTS.CONTACT), label: m['Footer.contact']() },
+				{ href: appHref(UNPROTECTED_PAGE_ENDPOINTS.REPORT), label: m['Footer.reportAnIssue']() }
+			]
+		},
+		{
+			id: 'legal',
+			heading: m['Footer.legal'](),
+			links: [
+				{
+					href: appHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT),
+					label: m['Footer.termsOfService']()
+				}
+			]
+		},
+		{
+			id: 'account',
+			heading: m['Footer.account'](),
+			links: [{ href: appHref(UNPROTECTED_PAGE_ENDPOINTS.LOGIN), label: m['Footer.signIn']() }]
+		}
+	] as const;
+}
 
 /** Inline footer links — no pill chrome; matches enterprise site footers. */
 export const footerLinkClass =

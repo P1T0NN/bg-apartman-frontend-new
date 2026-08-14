@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Separator } from '@/components/ui/separator/index.js';
 
@@ -18,7 +21,7 @@
 
 <section class="space-y-2">
 	<h3 class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-		Price breakdown
+		{m['BookingsFeature.BookingsDetailSheet.BookingsDetailSheetPriceBreakdown.title']()}
 	</h3>
 
 	<div class="rounded-lg border p-3 text-sm">
@@ -33,7 +36,7 @@
 		</div>
 
 		<div class="flex items-center justify-between py-1 text-muted-foreground">
-			<span>Cleaning fee</span>
+			<span>{m['BookingsFeature.BookingsDetailSheet.BookingsDetailSheetPriceBreakdown.cleaningFee']()}</span>
 			<span class="text-foreground tabular-nums">{formatCurrency(booking.cleaningFee)}</span>
 		</div>
 
@@ -42,7 +45,7 @@
 		     (AccommodationsSystemDesign.md §8's "money facts are snapshots"). -->
 		{#if booking.platformFee > 0}
 			<div class="flex items-center justify-between py-1 text-muted-foreground">
-				<span>Service fee</span>
+				<span>{m['BookingsFeature.BookingsDetailSheet.BookingsDetailSheetPriceBreakdown.serviceFee']()}</span>
 				<span class="text-foreground tabular-nums">{formatCurrency(booking.platformFee)}</span>
 			</div>
 		{/if}
@@ -50,7 +53,11 @@
 		<Separator class="my-2" />
 
 		<div class="flex items-center justify-between py-1 font-semibold">
-			<span>Total ({payment.label.toLowerCase()})</span>
+			<span
+				>{m['BookingsFeature.BookingsDetailSheet.BookingsDetailSheetPriceBreakdown.total']({
+					payment: payment.label.toLowerCase()
+				})}</span
+			>
 			<span class="tabular-nums">{formatCurrency(booking.total)}</span>
 		</div>
 	</div>

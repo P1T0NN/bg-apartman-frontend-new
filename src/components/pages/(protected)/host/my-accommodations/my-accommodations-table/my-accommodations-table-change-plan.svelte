@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useConvexClient } from 'convex-svelte';
@@ -61,37 +64,45 @@
 	onclick={() => (open = true)}
 	variant="ghost"
 	size="icon-sm"
-	aria-label="Change plan"
-	title="Change plan"
+	aria-label={m['HostMyAccommodationsPage.MyAccommodationsTableChangePlan.changePlan']()}
+	title={m['HostMyAccommodationsPage.MyAccommodationsTableChangePlan.changePlan']()}
 >
 	<ArrowRightLeftIcon class="size-4" aria-hidden="true" />
 </Button>
 
 <AlertDialog bind:open hideTrigger>
 	<div class="alert-dialog__header">
-		<h2>Switch to the per-booking fee?</h2>
+		<h2>{m['HostMyAccommodationsPage.MyAccommodationsTableChangePlan.switchTitle']()}</h2>
 		<p>
-			{row.title} becomes free to list — guests pay a {PERCENT}% service fee (min €{MIN_EUROS}) on
-			each booking, and the listing accepts online payments only.
+			{m['HostMyAccommodationsPage.MyAccommodationsTableChangePlan.switchBodyIntro']({
+				title: row.title,
+				percent: PERCENT,
+				minEuros: MIN_EUROS
+			})}
 			{#if daysLeft > 0}
-				You have {daysLeft} paid {daysLeft === 1 ? 'day' : 'days'} left; switching gives them up.
+				{daysLeft === 1
+					? m['HostMyAccommodationsPage.MyAccommodationsTableChangePlan.switchBodyDaysOne']({
+							daysLeft
+						})
+					: m['HostMyAccommodationsPage.MyAccommodationsTableChangePlan.switchBodyDaysMany']({
+							daysLeft
+						})}
 			{:else if fee.kind === 'active' && fee.daysLeft === null}
-				Your listing is covered forever; switching gives that up.
+				{m['HostMyAccommodationsPage.MyAccommodationsTableChangePlan.switchBodyCoveredForever']()}
 			{/if}
-			This cannot be reversed for this listing — going back to a listing fee would mean creating a new
-			listing. No refunds.
+			{m['HostMyAccommodationsPage.MyAccommodationsTableChangePlan.switchBodyNoRefund']()}
 		</p>
 	</div>
 
 	<div class="alert-dialog__footer">
 		<Button type="button" variant="outline" onclick={() => (open = false)} disabled={isPending}>
-			Keep my listing fee
+			{m['HostMyAccommodationsPage.MyAccommodationsTableChangePlan.keepListingFee']()}
 		</Button>
 		<Button type="button" variant="destructive" onclick={submit} disabled={isPending}>
 			{#if isPending}
 				<Loader class="h-3 w-3 animate-spin" />
 			{/if}
-			Switch permanently
+			{m['HostMyAccommodationsPage.MyAccommodationsTableChangePlan.switchPermanently']()}
 		</Button>
 	</div>
 </AlertDialog>

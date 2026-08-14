@@ -1,6 +1,12 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { ADMIN_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
+
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 
 	// COMPONENTS
 	import { Card } from '@/components/ui/card/index.js';
@@ -11,6 +17,7 @@
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
+	import { getLocale } from '@/paraglide/runtime';
 
 	// TYPES
 	import type { AdminDashboardPage } from '@/convex/pages/admin/dashboard/types/adminDashboardTypes';
@@ -36,17 +43,17 @@
 				<h2
 					class="text-[0.6875rem] font-semibold tracking-[0.22em] text-muted-foreground uppercase"
 				>
-					Needs attention
+					{m['AdminDashboardPage.AdminDashboardReportsQueue.needsAttention']()}
 				</h2>
 				<span
 					class="inline-flex items-center rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive tabular-nums ring-1 ring-destructive/20 ring-inset"
 				>
-					{countChip} new
+					{m['AdminDashboardPage.AdminDashboardReportsQueue.newCount']({ count: countChip })}
 				</span>
 			</div>
 
-			<Button href={ADMIN_PAGE_ENDPOINTS.REPORTS} variant="ghost" size="sm">
-				All reports
+			<Button href={appHref(ADMIN_PAGE_ENDPOINTS.REPORTS)} variant="ghost" size="sm">
+				{m['AdminDashboardPage.AdminDashboardReportsQueue.allReports']()}
 				<ArrowRightIcon class="size-4" aria-hidden="true" />
 			</Button>
 		</div>
@@ -68,7 +75,7 @@
 
 					<span
 						class="shrink-0 text-xs text-muted-foreground tabular-nums"
-						title={new Date(report._creationTime).toLocaleString()}
+						title={new Date(report._creationTime).toLocaleString(getLocale())}
 					>
 						{reportAgo(report._creationTime)}
 					</span>
@@ -79,7 +86,7 @@
 							class="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-primary hover:underline"
 						>
 							<MailIcon class="size-3.5" aria-hidden="true" />
-							Reply
+							{m['AdminDashboardPage.AdminDashboardReportsQueue.reply']()}
 						</a>
 					{/if}
 				</li>

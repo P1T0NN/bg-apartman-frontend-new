@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
@@ -32,8 +35,8 @@
 	const id = $props.id();
 
 	const form = createLoginForm({
-		signInFailed: () => 'Sign in failed. Please check your credentials and try again.',
-		signedInToast: () => 'Signed in successfully.'
+		signInFailed: () => m['LoginPage.LoginFormWithImage.signInFailed'](),
+		signedInToast: () => m['LoginPage.LoginFormWithImage.signedInToast']()
 	});
 </script>
 
@@ -46,19 +49,23 @@
 	>
 		<FieldGroup>
 			<div class="flex flex-col items-center gap-1 text-center">
-				<h1 class="text-2xl font-bold">Login to your account</h1>
+				<h1 class="text-2xl font-bold">{m['LoginPage.LoginFormWithImage.loginTitle']()}</h1>
 				<p class="text-sm text-balance text-muted-foreground">
-					Enter your email below to login to your account
+					{m['LoginPage.LoginFormWithImage.loginDescription']()}
 				</p>
 			</div>
 
-			<FormField id="email-{id}" label="Email" error={form.fieldErrors.email}>
+			<FormField
+				id="email-{id}"
+				label={m['LoginPage.LoginFormWithImage.email']()}
+				error={form.fieldErrors.email}
+			>
 				<Input
 					id="email-{id}"
 					name="email"
 					type="email"
 					autocomplete="email"
-					placeholder="m@example.com"
+					placeholder={m['LoginPage.LoginFormWithImage.emailPlaceholder']()}
 					autofocus
 					bind:value={form.emailDraft}
 					aria-invalid={form.fieldErrors.email ? 'true' : undefined}
@@ -67,12 +74,12 @@
 
 			<Field>
 				<div class="flex items-center">
-					<FieldLabel for="password-{id}">Password</FieldLabel>
+					<FieldLabel for="password-{id}">{m['LoginPage.LoginFormWithImage.password']()}</FieldLabel>
 					<Link
 						href={UNPROTECTED_PAGE_ENDPOINTS.FORGOT_PASSWORD}
 						class="ms-auto text-sm underline-offset-4 hover:underline"
 					>
-						Forgot your password?
+						{m['LoginPage.LoginFormWithImage.forgotPassword']()}
 					</Link>
 				</div>
 				<PasswordInput
@@ -93,19 +100,19 @@
 			{/if}
 
 			<Field>
-				<Button type="submit" disabled={form.busy}>Login</Button>
+				<Button type="submit" disabled={form.busy}>{m['LoginPage.LoginFormWithImage.login']()}</Button>
 			</Field>
 
-			<FieldSeparator>Or continue with</FieldSeparator>
+			<FieldSeparator>{m['LoginPage.LoginFormWithImage.orContinueWith']()}</FieldSeparator>
 
 			<Field>
 				<GoogleLoginButton />
 
 				<FieldDescription class="text-center">
-					Don't have an account?
+					{m['LoginPage.LoginFormWithImage.noAccount']()}
 
 					<Link href={UNPROTECTED_PAGE_ENDPOINTS.SIGNUP} class="underline underline-offset-4">
-						Sign up
+						{m['LoginPage.LoginFormWithImage.signUp']()}
 					</Link>
 				</FieldDescription>
 			</Field>

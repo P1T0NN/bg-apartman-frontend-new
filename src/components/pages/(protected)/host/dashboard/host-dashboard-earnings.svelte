@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useConvexClient } from 'convex-svelte';
@@ -63,14 +66,13 @@
 				<div class="min-w-0">
 					<h2 class="text-base font-semibold tracking-tight">
 						{formatCurrency(data.heldEuros)}
-						{data.payable ? 'on the way' : 'waiting for you'}
+						{data.payable ? m['HostDashboardPage.HostDashboardEarnings.onTheWay']() : m['HostDashboardPage.HostDashboardEarnings.waitingForYou']()}
 					</h2>
 					<p class="text-xs text-muted-foreground">
 						{#if data.payable}
-							Your payout details are set. We send your earnings once each stay is complete.
+							{m['HostDashboardPage.HostDashboardEarnings.payoutSet']()}
 						{:else}
-							Add your payout details — about 3 minutes — and we'll send it your way. Nothing
-							expires, so there's no rush.
+							{m['HostDashboardPage.HostDashboardEarnings.payoutPending']()}
 						{/if}
 					</p>
 				</div>
@@ -81,7 +83,7 @@
 					{#if isPending}
 						<Loader class="h-3 w-3 animate-spin" />
 					{/if}
-					Add payout details
+					{m['HostDashboardPage.HostDashboardEarnings.addPayoutDetails']()}
 				</Button>
 			{/if}
 		</div>

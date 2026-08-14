@@ -137,10 +137,7 @@
 </script>
 
 {#snippet paymentFields()}
-	<BookPaymentField
-		bind:paymentMethod={values.paymentMethod}
-		{accepted}
-	/>
+	<BookPaymentField bind:paymentMethod={values.paymentMethod} {accepted} />
 {/snippet}
 
 {#snippet confirmActions({ busy }: { busy: boolean })}

@@ -1,6 +1,11 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
+	// UTILS
+	import { appGoto } from '@/utils/app-navigation.js';
+
 	// SVELTEKIT
-	import { goto } from '$app/navigation';
 
 	// LIBRARIES
 	import { getLocalTimeZone, today } from '@internationalized/date';
@@ -18,6 +23,7 @@
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
+	import { getLocale } from '@/paraglide/runtime';
 
 	// TYPES
 	import type { DateRange } from 'bits-ui';
@@ -27,15 +33,15 @@
 	import SearchIcon from '@lucide/svelte/icons/search';
 
 	const guestOptions = [
-		{ value: 'any', label: 'Any' },
-		{ value: '1', label: '1 guest' },
-		{ value: '2', label: '2 guests' },
-		{ value: '3', label: '3 guests' },
-		{ value: '4+', label: '4+ guests' }
+		{ value: 'any', label: m['HomePage.HeroSectionSearch.any']() },
+		{ value: '1', label: m['HomePage.HeroSectionSearch.oneGuest']() },
+		{ value: '2', label: m['HomePage.HeroSectionSearch.twoGuests']() },
+		{ value: '3', label: m['HomePage.HeroSectionSearch.threeGuests']() },
+		{ value: '4+', label: m['HomePage.HeroSectionSearch.fourPlusGuests']() }
 	];
 
 	// Only the location is required — dates and guests narrow a search that can run without them.
-	const LOCATION_REQUIRED = 'Please enter a location to search.';
+	const LOCATION_REQUIRED = m['HomePage.HeroSectionSearch.locationRequired']();
 
 	let location = $state('');
 	let locationPlaceId = $state('');
@@ -47,11 +53,11 @@
 	const tz = getLocalTimeZone();
 
 	const datesLabel = $derived.by(() => {
-		if (!dates?.start) return 'Add dates';
+		if (!dates?.start) return m['HomePage.HeroSectionSearch.addDates']();
 		const opts = { month: 'short', day: 'numeric' } as const;
-		const start = dates.start.toDate(tz).toLocaleDateString(undefined, opts);
+		const start = dates.start.toDate(tz).toLocaleDateString(getLocale(), opts);
 		if (!dates.end) return start;
-		return `${start} – ${dates.end.toDate(tz).toLocaleDateString(undefined, opts)}`;
+		return `${start} – ${dates.end.toDate(tz).toLocaleDateString(getLocale(), opts)}`;
 	});
 
 	const serializeSearch = createSerializer({
@@ -90,7 +96,7 @@
 			guests: filter(guests)
 		});
 
-		goto(url);
+		appGoto(url);
 	}
 </script>
 
@@ -113,12 +119,12 @@
 				<span
 					class="mb-0.5 block text-[0.65rem] font-medium tracking-wider text-muted-foreground uppercase"
 				>
-					Where
+					{m['HomePage.HeroSectionSearch.where']()}
 				</span>
 				<PlacesAutocomplete
 					id="hero-location"
 					variant="region"
-					placeholder="Where are you going?"
+					placeholder={m['HomePage.HeroSectionSearch.wherePlaceholder']()}
 					bind:value={location}
 					onSelect={handlePlaceSelect}
 					onInput={() => (locationError = '')}
@@ -139,7 +145,7 @@
 			<span
 				class="mb-0.5 block text-[0.65rem] font-medium tracking-wider text-muted-foreground uppercase"
 			>
-				When
+				{m['HomePage.HeroSectionSearch.when']()}
 			</span>
 			<NativePopover align="start" contentClass="w-auto overflow-hidden p-0">
 				{#snippet trigger({ props, anchorStyle })}
@@ -171,7 +177,7 @@
 			<span
 				class="mb-0.5 block text-[0.65rem] font-medium tracking-wider text-muted-foreground uppercase"
 			>
-				Guests
+				{m['HomePage.HeroSectionSearch.guests']()}
 			</span>
 			<NativeSelect
 				bind:value={guests}
@@ -186,7 +192,7 @@
 			onclick={handleSearch}
 		>
 			<SearchIcon class="size-5" />
-			Search
+			{m['HomePage.HeroSectionSearch.search']()}
 		</Button>
 	</div>
 </div>

@@ -1,11 +1,13 @@
 <script lang="ts">
-	// LIBRARIES
+	// I18N
+	import { m } from '@/paraglide/messages';
 </script>
 
 <header class="flex flex-col gap-1 border-b pb-5">
-	<h1 class="text-2xl font-semibold tracking-tight md:text-3xl">List your accommodation</h1>
+	<h1 class="text-2xl font-semibold tracking-tight md:text-3xl">
+		{m['HostAddAccommodationPage.AddAccommodationHeader.title']()}
+	</h1>
 	<p class="max-w-2xl text-sm leading-relaxed text-muted-foreground">
-		Fill in the details below. Everything can be edited later — your accommodation goes live after a
-		quick review.
+		{m['HostAddAccommodationPage.AddAccommodationHeader.description']()}
 	</p>
 </header>

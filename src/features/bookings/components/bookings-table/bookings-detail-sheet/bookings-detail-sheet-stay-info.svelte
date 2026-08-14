@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Separator } from '@/components/ui/separator/index.js';
 
@@ -18,7 +21,7 @@
 <section class="rounded-lg border bg-muted/30 p-3">
 	<div class="flex items-center justify-between gap-2">
 		<div>
-			<p class="text-xs text-muted-foreground">Check-in</p>
+			<p class="text-xs text-muted-foreground">{m['BookingsFeature.BookingsDetailSheet.BookingsDetailSheetStayInfo.checkIn']()}</p>
 			<p class="text-sm font-semibold">{formatDateWithWeekday(booking.checkInDate)}</p>
 		</div>
 		<div class="flex flex-col items-center text-muted-foreground">
@@ -26,7 +29,7 @@
 			<ArrowRightIcon class="size-4" aria-hidden="true" />
 		</div>
 		<div class="text-right">
-			<p class="text-xs text-muted-foreground">Check-out</p>
+			<p class="text-xs text-muted-foreground">{m['BookingsFeature.BookingsDetailSheet.BookingsDetailSheetStayInfo.checkOut']()}</p>
 			<p class="text-sm font-semibold">{formatDateWithWeekday(booking.checkOutDate)}</p>
 		</div>
 	</div>

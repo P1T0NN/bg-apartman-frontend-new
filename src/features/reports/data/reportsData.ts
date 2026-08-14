@@ -1,3 +1,6 @@
+// I18N
+import { m } from '@/paraglide/messages';
+
 // TYPES
 import type { ReportCategory } from '@/shared/features/report/schemas/reportsSchemas';
 
@@ -10,15 +13,15 @@ import type { ReportCategory } from '@/shared/features/report/schemas/reportsSch
  */
 export const REPORT_CATEGORY_TONE: Record<ReportCategory, { label: string; badgeClass: string }> = {
 	bug: {
-		label: 'Bug',
+		label: m['reportsData.bug'](),
 		badgeClass: 'bg-destructive/10 text-destructive ring-destructive/20'
 	},
 	idea: {
-		label: 'Idea',
+		label: m['reportsData.idea'](),
 		badgeClass: 'bg-blue-500/10 text-blue-700 ring-blue-500/20 dark:text-blue-300'
 	},
 	other: {
-		label: 'Other',
+		label: m['reportsData.other'](),
 		badgeClass: 'bg-muted text-muted-foreground ring-border'
 	}
 };
@@ -27,10 +30,10 @@ export const REPORT_CATEGORY_TONE: Record<ReportCategory, { label: string; badge
 export function reportAgo(creationTime: number): string {
 	const ms = Date.now() - creationTime;
 	const minutes = Math.floor(ms / 60_000);
-	if (minutes < 1) return 'just now';
-	if (minutes < 60) return `${minutes}m ago`;
+	if (minutes < 1) return m['reportsData.justNow']();
+	if (minutes < 60) return m['reportsData.minutesAgo']({ minutes });
 	const hours = Math.floor(minutes / 60);
-	if (hours < 24) return `${hours}h ago`;
+	if (hours < 24) return m['reportsData.hoursAgo']({ hours });
 	const days = Math.floor(hours / 24);
-	return `${days}d ago`;
+	return m['reportsData.daysAgo']({ days });
 }

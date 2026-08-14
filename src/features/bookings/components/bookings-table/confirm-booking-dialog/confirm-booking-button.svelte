@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useConvexClient } from 'convex-svelte';
@@ -53,5 +56,5 @@
 		<Spinner />
 	{/if}
 
-	Confirm booking
+	{m['BookingsFeature.BookingsDetailSheet.ConfirmBookingDialog.ConfirmBookingButton.confirm']()}
 </Button>

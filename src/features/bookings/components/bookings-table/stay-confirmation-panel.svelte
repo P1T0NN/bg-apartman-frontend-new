@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useConvexClient } from 'convex-svelte';
@@ -60,7 +63,7 @@
 
 <section class="space-y-2">
 	<h3 class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-		Stay confirmation
+		{m['BookingsFeature.BookingsDetailSheet.StayConfirmationPanel.title']()}
 	</h3>
 
 	{#if answered}
@@ -71,8 +74,9 @@
 			/>
 
 			<p>
-				Guest confirmed they're coming ({formatTs(booking.stayConfirmedAt ?? 0)}). You can re-ask
-				closer to the date if plans might change.
+				{m['BookingsFeature.BookingsDetailSheet.StayConfirmationPanel.guestConfirmed']({
+					time: formatTs(booking.stayConfirmedAt ?? 0)
+				})}
 			</p>
 		</div>
 	{:else if unlocked}
@@ -85,17 +89,20 @@
 			/>
 
 			<p>
-				No reply for over {BOOKING_POLICY.STAY_CONFIRMATION_UNLOCK_HOURS} hours (asked
-				{formatTs(booking.stayConfirmationRequestedAt ?? 0)}). Cancelling is now available below if
-				you need the dates back.
+				{m['BookingsFeature.BookingsDetailSheet.StayConfirmationPanel.noReplyUnlocked']({
+					hours: BOOKING_POLICY.STAY_CONFIRMATION_UNLOCK_HOURS,
+					time: formatTs(booking.stayConfirmationRequestedAt ?? 0)
+				})}
 			</p>
 		</div>
 	{:else if pending}
 		<div class="flex items-start gap-2.5 rounded-lg border bg-muted/30 p-3 text-sm">
 			<BellRingIcon class="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
 			<p>
-				Asked {formatTs(booking.stayConfirmationRequestedAt ?? 0)} — no reply yet. If the guest doesn't
-				respond within {BOOKING_POLICY.STAY_CONFIRMATION_UNLOCK_HOURS} hours, cancelling unlocks.
+				{m['BookingsFeature.BookingsDetailSheet.StayConfirmationPanel.askedNoReply']({
+					time: formatTs(booking.stayConfirmationRequestedAt ?? 0),
+					hours: BOOKING_POLICY.STAY_CONFIRMATION_UNLOCK_HOURS
+				})}
 			</p>
 		</div>
 	{:else}
@@ -103,15 +110,14 @@
 			class="flex flex-col gap-2 rounded-lg border p-3 text-sm sm:flex-row sm:items-center sm:justify-between"
 		>
 			<p class="text-muted-foreground">
-				Not sure the guest is coming? Ask for a one-click confirmation — they get an email, and
-				you'll see the answer here.
+				{m['BookingsFeature.BookingsDetailSheet.StayConfirmationPanel.notSureGuestComing']()}
 			</p>
 
 			<Button variant="outline" size="sm" class="shrink-0" onclick={request} disabled={isPending}>
 				{#if isPending}
 					<Loader class="h-3 w-3 animate-spin" />
 				{/if}
-				Ask guest to confirm
+				{m['BookingsFeature.BookingsDetailSheet.StayConfirmationPanel.askGuestToConfirm']()}
 			</Button>
 		</div>
 	{/if}

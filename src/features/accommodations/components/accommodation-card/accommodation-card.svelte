@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
@@ -92,7 +94,7 @@
 					class="absolute top-3 left-3 flex items-center gap-1 rounded-full bg-amber-500 px-2 py-0.5 text-xs font-semibold text-white shadow-sm"
 				>
 					<StarIcon class="size-3 fill-current" aria-hidden="true" />
-					Featured
+					{m['AccommodationsFeature.AccommodationCard.featured']()}
 				</span>
 			{:else if accommodation.isSuperhost}
 				<SuperhostBadge variant="overlay" />

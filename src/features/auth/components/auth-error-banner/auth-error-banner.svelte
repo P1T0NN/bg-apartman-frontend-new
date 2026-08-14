@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// SVELTEKIT IMPORTS
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
@@ -22,15 +25,15 @@
 
 	/** Map of known BA error codes → human-readable titles. Unknown codes fall back to a generic title. */
 	const TITLES: Record<string, string> = {
-		banned: 'Account banned',
-		access_denied: 'Access denied',
-		unauthorized: 'Sign-in required'
+		banned: m['AuthFeature.AuthErrorBanner.accountBanned'](),
+		access_denied: m['AuthFeature.AuthErrorBanner.accessDenied'](),
+		unauthorized: m['AuthFeature.AuthErrorBanner.signInRequired']()
 	};
 
 	const error = $derived(page.url.searchParams.get('error'));
 	const description = $derived(page.url.searchParams.get('error_description'));
 	const open = $derived(error !== null);
-	const title = $derived(error ? (TITLES[error] ?? 'Sign-in error') : '');
+	const title = $derived(error ? (TITLES[error] ?? m['AuthFeature.AuthErrorBanner.signInError']()) : '');
 
 	function dismiss() {
 		const url = new URL(page.url);
@@ -62,6 +65,6 @@
 	</div>
 
 	<div class="alert-dialog__footer">
-		<Button onclick={dismiss}>Got it</Button>
+		<Button onclick={dismiss}>{m['AuthFeature.AuthErrorBanner.gotIt']()}</Button>
 	</div>
 </AlertDialog>

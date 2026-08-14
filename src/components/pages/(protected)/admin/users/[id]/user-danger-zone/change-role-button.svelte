@@ -1,4 +1,7 @@
 <script lang="ts">
+	// PARAGLIDE
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useConvexClient } from 'convex-svelte';
@@ -49,10 +52,12 @@
 	function={confirmRoleChange}
 	variant="outline"
 	{isPending}
-	title={demoting ? `Demote ${userEmail} to user?` : `Promote ${userEmail} to admin?`}
+	title={demoting
+		? m['AdminUsersPage.ChangeRoleButton.demoteTitle']({ userEmail })
+		: m['AdminUsersPage.ChangeRoleButton.promoteTitle']({ userEmail })}
 	description={demoting
-		? 'Are you sure you want to do this? The user will immediately lose admin privileges.'
-		: 'Are you sure you want to do this? The user will gain full admin privileges, including the ability to ban and delete other accounts.'}
+		? m['AdminUsersPage.ChangeRoleButton.demoteDescription']()
+		: m['AdminUsersPage.ChangeRoleButton.promoteDescription']()}
 >
-	{demoting ? 'Demote to user' : 'Promote to admin'}
+	{demoting ? m['AdminUsersPage.ChangeRoleButton.demote']() : m['AdminUsersPage.ChangeRoleButton.promote']()}
 </ActionButton>

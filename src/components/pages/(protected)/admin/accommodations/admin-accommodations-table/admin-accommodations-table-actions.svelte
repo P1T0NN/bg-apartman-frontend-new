@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useConvexClient } from 'convex-svelte';
@@ -99,74 +102,76 @@
 					{...props}
 					variant="ghost"
 					size="icon-sm"
-					aria-label="More actions"
-					title="More actions"
+					aria-label={m['AdminAccommodationsPage.AdminAccommodationsTableActions.moreActions']()}
+					title={m['AdminAccommodationsPage.AdminAccommodationsTableActions.moreActions']()}
 				>
 					<MoreHorizontalIcon class="size-4" aria-hidden="true" />
 				</Button>
 			{/snippet}
 		</DropdownMenuTrigger>
 
-	<DropdownMenuContent align="end" class="w-56">
-		<!-- The public page in a new tab: admins review a listing exactly as guests see it,
+		<DropdownMenuContent align="end" class="w-56">
+			<!-- The public page in a new tab: admins review a listing exactly as guests see it,
 		     which is why no separate admin preview surface exists to keep in sync. -->
-		<DropdownMenuItem
-			onclick={() =>
-				window.open(
-					appHref(UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION.replace(':slug', row.slug)),
-					'_blank',
-					'noopener'
-				)}
-		>
-			<ExternalLinkIcon aria-hidden="true" />
-			Open public page
-		</DropdownMenuItem>
+			<DropdownMenuItem
+				onclick={() =>
+					window.open(
+						appHref(UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION.replace(':slug', row.slug)),
+						'_blank',
+						'noopener'
+					)}
+			>
+				<ExternalLinkIcon aria-hidden="true" />
+				{m['AdminAccommodationsPage.AdminAccommodationsTableActions.openPublicPage']()}
+			</DropdownMenuItem>
 
-		<DropdownMenuItem onclick={toggleFeatured} disabled={featuring}>
-			<StarIcon
-				class={row.isFeatured ? 'fill-amber-500 text-amber-500' : ''}
-				aria-hidden="true"
-			/>
-			{row.isFeatured ? 'Remove from homepage' : 'Feature on homepage'}
-		</DropdownMenuItem>
+			<DropdownMenuItem onclick={toggleFeatured} disabled={featuring}>
+				<StarIcon
+					class={row.isFeatured ? 'fill-amber-500 text-amber-500' : ''}
+					aria-hidden="true"
+				/>
+				{row.isFeatured
+					? m['AdminAccommodationsPage.AdminAccommodationsTableActions.removeFromHomepage']()
+					: m['AdminAccommodationsPage.AdminAccommodationsTableActions.featureOnHomepage']()}
+			</DropdownMenuItem>
 
-		{#if listingIsListingFee(row) && !coveredForever}
-			<DropdownMenuSeparator />
-			<!-- Billing is not moderation: the grant and the bank-transfer stamp sit in their own
+			{#if listingIsListingFee(row) && !coveredForever}
+				<DropdownMenuSeparator />
+				<!-- Billing is not moderation: the grant and the bank-transfer stamp sit in their own
 			     group, above the status actions. Hidden once covered forever — see `coveredForever`. -->
-			<DropdownMenuItem onclick={() => (freePublishOpen = true)}>
-				<GiftIcon aria-hidden="true" />
-				Grant free publish
-			</DropdownMenuItem>
-			<DropdownMenuItem onclick={() => (feeOpen = true)}>
-				<ReceiptIcon aria-hidden="true" />
-				Record fee payment
-			</DropdownMenuItem>
-		{/if}
+				<DropdownMenuItem onclick={() => (freePublishOpen = true)}>
+					<GiftIcon aria-hidden="true" />
+					{m['AdminAccommodationsPage.AdminAccommodationsTableActions.grantFreePublish']()}
+				</DropdownMenuItem>
+				<DropdownMenuItem onclick={() => (feeOpen = true)}>
+					<ReceiptIcon aria-hidden="true" />
+					{m['AdminAccommodationsPage.AdminAccommodationsTableActions.recordFeePayment']()}
+				</DropdownMenuItem>
+			{/if}
 
-		<DropdownMenuSeparator />
+			<DropdownMenuSeparator />
 
-		<!-- Publish only from the two statuses §1's transition set allows. An `expired` listing
+			<!-- Publish only from the two statuses §1's transition set allows. An `expired` listing
 		     is NOT publishable here: its road back is a payment — the host renews, or an admin
 		     records a bank transfer or grants free publish above (AccommodationsSystemDesign.md §1/§8). -->
-		{#if row.status === 'pending_review' || row.status === 'suspended'}
-			<DropdownMenuItem onclick={() => openModeration('published')}>
-				<CheckIcon aria-hidden="true" />
-				Publish
-			</DropdownMenuItem>
-		{/if}
-		{#if row.status === 'published' || row.status === 'pending_review'}
-			<DropdownMenuItem onclick={() => openModeration('suspended')}>
-				<BanIcon aria-hidden="true" />
-				Suspend
-			</DropdownMenuItem>
-		{/if}
-		{#if row.status !== 'archived'}
-			<DropdownMenuItem onclick={() => openModeration('archived')}>
-				<ArchiveIcon aria-hidden="true" />
-				Archive
-			</DropdownMenuItem>
-		{/if}
+			{#if row.status === 'pending_review' || row.status === 'suspended'}
+				<DropdownMenuItem onclick={() => openModeration('published')}>
+					<CheckIcon aria-hidden="true" />
+					{m['AdminAccommodationsPage.AdminAccommodationsTableActions.publish']()}
+				</DropdownMenuItem>
+			{/if}
+			{#if row.status === 'published' || row.status === 'pending_review'}
+				<DropdownMenuItem onclick={() => openModeration('suspended')}>
+					<BanIcon aria-hidden="true" />
+					{m['AdminAccommodationsPage.AdminAccommodationsTableActions.suspend']()}
+				</DropdownMenuItem>
+			{/if}
+			{#if row.status !== 'archived'}
+				<DropdownMenuItem onclick={() => openModeration('archived')}>
+					<ArchiveIcon aria-hidden="true" />
+					{m['AdminAccommodationsPage.AdminAccommodationsTableActions.archive']()}
+				</DropdownMenuItem>
+			{/if}
 		</DropdownMenuContent>
 	</DropdownMenu>
 </div>

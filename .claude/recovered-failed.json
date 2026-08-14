@@ -1,0 +1,140 @@
+[
+	{
+		"key": "adminBookings.AdminBookingsTable.host",
+		"file": "src/components/pages/(protected)/admin/bookings/admin-bookings-table/admin-bookings-table.svelte",
+		"line": "\t\t{ id: 'host', header: m['adminBookings.AdminBookingsTable.host'](), accessor: (r) => r.hostName, hideBelow: 'md' },\r",
+		"removed": ""
+	},
+	{
+		"key": "adminBookings.AdminBookingsTable.payment",
+		"file": "src/components/pages/(protected)/admin/bookings/admin-bookings-table/admin-bookings-table.svelte",
+		"line": "\t\t\theader: m['adminBookings.AdminBookingsTable.payment'](),\r",
+		"removed": ""
+	},
+	{
+		"key": "adminBookings.AdminBookingsTable.searchByGuestEmail",
+		"file": "src/components/pages/(protected)/admin/bookings/admin-bookings-table/admin-bookings-table.svelte",
+		"line": "\t\t: m['adminBookings.AdminBookingsTable.searchByGuestEmail']()}\r",
+		"removed": ""
+	},
+	{
+		"key": "adminReports.AdminReportsTable.newReportsLandHere",
+		"file": "src/components/pages/(protected)/admin/reports/admin-reports-table/admin-reports-table.svelte",
+		"line": "\t\t? m['adminReports.AdminReportsTable.newReportsLandHere']()\r",
+		"removed": ""
+	},
+	{
+		"key": "accommodation.BookingPanelFacts.noCleaningFee",
+		"file": "src/components/pages/(unprotected)/accommodation/accommodation-booking-panel/booking-panel-facts.svelte",
+		"line": "\t\t\t\t{m['accommodation.BookingPanelFacts.noCleaningFee']()}\r",
+		"removed": ""
+	},
+	{
+		"key": "accommodation.BookingPanelFacts.weeklyDiscountOff",
+		"file": "src/components/pages/(unprotected)/accommodation/accommodation-booking-panel/booking-panel-facts.svelte",
+		"line": "\t\t\t\t{m['accommodation.BookingPanelFacts.weeklyDiscountOff']({\r",
+		"removed": ""
+	},
+	{
+		"key": "book.BookPrice.serviceFee",
+		"file": "src/components/pages/(unprotected)/book/book-summary-card/book-price.svelte",
+		"line": "\t\t\t\t\t\t\t<dt class=\"text-muted-foreground\">{m['book.BookPrice.serviceFee']()}</dt>\r",
+		"removed": ""
+	},
+	{
+		"key": "book.BookPrice.weeklyDiscount",
+		"file": "src/components/pages/(unprotected)/book/book-summary-card/book-price.svelte",
+		"line": "\t\t\t\t\t\t<dt class=\"flex-1 text-muted-foreground\">{m['book.BookPrice.weeklyDiscount']()}</dt>\r",
+		"removed": ""
+	},
+	{
+		"key": "reservation.ReservationConfirmation.nothingCharged",
+		"file": "src/components/pages/(unprotected)/reservation/reservation-confirmation.svelte",
+		"line": "\t\t\t\t\tdescription: `${booking.cancelReason ?? m['reservation.ReservationConfirmation.hostDidNotRespond']()} ${m['reservation.ReservationConfirmation.nothingCharged']()}`",
+		"removed": "\t\t\t\t\tdescription: `${booking.cancelReason ?? \"The host didn't respond in time.\"} Nothing was charged — you can request other dates any time.`"
+	},
+	{
+		"key": "home.BecomeHostSection.trendsText",
+		"file": "src/components/pages/(unprotected)/root/become-host-section.svelte",
+		"line": "\t\t\ttext: m['home.BecomeHostSection.trendsText']()\r",
+		"removed": ""
+	},
+	{
+		"key": "home.BecomeHostSection.title",
+		"file": "src/components/pages/(unprotected)/root/become-host-section.svelte",
+		"line": "\t\t\t\t\t{m['home.BecomeHostSection.title']()}\r",
+		"removed": ""
+	},
+	{
+		"key": "home.WhyUsSection.reasonTransparentText",
+		"file": "src/components/pages/(unprotected)/root/why-us-section.svelte",
+		"line": "\t\t\ttext: m['home.WhyUsSection.reasonTransparentText']()\r",
+		"removed": ""
+	},
+	{
+		"key": "home.WhyUsSection.bookingAStay",
+		"file": "src/components/pages/(unprotected)/root/why-us-section.svelte",
+		"line": "\t\t\t\t{m['home.WhyUsSection.bookingAStay']()}<br class=\"hidden sm:block\" />{' '}\r",
+		"removed": ""
+	},
+	{
+		"key": "home.WhyUsSection.intro",
+		"file": "src/components/pages/(unprotected)/root/why-us-section.svelte",
+		"line": "\t\t\t\t{m['home.WhyUsSection.intro']()}\r",
+		"removed": "\t\t{"
+	},
+	{
+		"key": "search.SearchState.guests",
+		"file": "src/components/pages/(unprotected)/search/search-state.ts",
+		"line": "\t{ key: 'guests', label: m['search.SearchState.guests'](), noun: m['search.SearchState.guestsNoun']() }",
+		"removed": "] as const;"
+	},
+	{
+		"key": "search.SearchState.guestsNoun",
+		"file": "src/components/pages/(unprotected)/search/search-state.ts",
+		"line": "\t{ key: 'guests', label: m['search.SearchState.guests'](), noun: m['search.SearchState.guestsNoun']() }",
+		"removed": "] as const;"
+	},
+	{
+		"key": "Footer.copyright",
+		"file": "src/components/ui/footer/footer.svelte",
+		"line": "\t\t\t\t\t{m['Footer.copyright']({ year, brand: COMPANY_DATA.NAME })}\r",
+		"removed": ""
+	},
+	{
+		"key": "UploadFileEmpty.choosePlural",
+		"file": "src/features/uploadFile/components/upload-file-empty.svelte",
+		"line": "\t\t\t\t\t>{multipleFiles ? m['UploadFileEmpty.choosePlural']() : m['UploadFileEmpty.chooseSingular']()}</span",
+		"removed": "\t\t\t\t\t>Choose"
+	},
+	{
+		"key": "UploadFileEmpty.chooseSingular",
+		"file": "src/features/uploadFile/components/upload-file-empty.svelte",
+		"line": "\t\t\t\t\t>{multipleFiles ? m['UploadFileEmpty.choosePlural']() : m['UploadFileEmpty.chooseSingular']()}</span",
+		"removed": "\t\t\t\t\t>Choose"
+	},
+	{
+		"key": "UploadFileEmpty.dragPlural",
+		"file": "src/features/uploadFile/components/upload-file-empty.svelte",
+		"line": "\t\t\t\t\t{multipleFiles ? m['UploadFileEmpty.dragPlural']() : m['UploadFileEmpty.dragSingular']()}",
+		"removed": "\t\t\t\t\tor drag"
+	},
+	{
+		"key": "UploadFileEmpty.dragSingular",
+		"file": "src/features/uploadFile/components/upload-file-empty.svelte",
+		"line": "\t\t\t\t\t{multipleFiles ? m['UploadFileEmpty.dragPlural']() : m['UploadFileEmpty.dragSingular']()}",
+		"removed": "\t\t\t\t\tor drag"
+	},
+	{
+		"key": "error.linkOutdated",
+		"file": "src/routes/+error.svelte",
+		"line": "\t\t\t\t{isNotFound ? m['error.linkOutdated']() : m['error.unexpectedError']()}",
+		"removed": "\t\t\t\t{isNotFound"
+	},
+	{
+		"key": "error.unexpectedError",
+		"file": "src/routes/+error.svelte",
+		"line": "\t\t\t\t{isNotFound ? m['error.linkOutdated']() : m['error.unexpectedError']()}",
+		"removed": "\t\t\t\t{isNotFound"
+	}
+]

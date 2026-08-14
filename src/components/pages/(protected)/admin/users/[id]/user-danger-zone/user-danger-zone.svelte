@@ -1,4 +1,7 @@
 <script lang="ts">
+	// PARAGLIDE
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { ADMIN_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
@@ -20,26 +23,26 @@
 
 <div class="flex flex-col gap-4 rounded-lg border border-destructive/40 p-4">
 	<header class="flex flex-col gap-1">
-		<h2 class="text-base font-semibold text-destructive">Danger zone</h2>
+		<h2 class="text-base font-semibold text-destructive">{m['AdminUsersPage.UserDangerZone.title']()}</h2>
 		<p class="text-sm text-muted-foreground">
-			Account-level actions. Changes here are audited and may be irreversible.
+			{m['AdminUsersPage.UserDangerZone.description']()}
 		</p>
 	</header>
 
 	<UserDangerZoneItem
-		title={`Role: ${capitalizeFirst(user.role)}`}
+		title={m['AdminUsersPage.UserDangerZone.roleTitle']({ role: capitalizeFirst(user.role) })}
 		description={user.role === 'admin'
-			? 'Remove admin privileges from this account.'
-			: 'Grant admin privileges to this account.'}
+			? m['AdminUsersPage.UserDangerZone.removeAdminDescription']()
+			: m['AdminUsersPage.UserDangerZone.grantAdminDescription']()}
 	>
 		<ChangeRoleButton userId={user._id} userEmail={user.email} role={user.role} />
 	</UserDangerZoneItem>
 
 	<UserDangerZoneItem
-		title={user.banned ? 'Banned' : 'Active'}
+		title={user.banned ? m['AdminUsersPage.UserDangerZone.statusBanned']() : m['AdminUsersPage.UserDangerZone.statusActive']()}
 		description={user.banned
-			? 'Lift the ban so the user can sign in again.'
-			: 'Sign the user out and prevent further sign-ins.'}
+			? m['AdminUsersPage.UserDangerZone.unbanDescription']()
+			: m['AdminUsersPage.UserDangerZone.banDescription']()}
 	>
 		{#if user.banned}
 			<UnbanUserButton userId={user._id} />

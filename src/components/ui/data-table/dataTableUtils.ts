@@ -1,3 +1,6 @@
+// UTILS
+import { getLocale } from '@/paraglide/runtime';
+
 // TYPES
 import type { ColumnDef, ColumnHideBelow } from './types.js';
 
@@ -17,7 +20,7 @@ export function formatCellValue(value: unknown): string {
 	if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
 		return String(value);
 	}
-	if (value instanceof Date) return value.toLocaleString();
+	if (value instanceof Date) return value.toLocaleString(getLocale());
 	try {
 		return JSON.stringify(value);
 	} catch {

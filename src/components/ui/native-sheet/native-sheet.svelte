@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 
@@ -136,7 +139,7 @@
 				popovertargetaction="hide"
 			>
 				<XIcon />
-				<span class="sr-only">Close</span>
+				<span class="sr-only">{m['NativeSheet.close']()}</span>
 			</Button>
 		{/if}
 	</div>

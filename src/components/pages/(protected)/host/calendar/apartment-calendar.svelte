@@ -1,6 +1,8 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// SVELTEKIT
-	import { goto } from '$app/navigation';
 
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
@@ -21,6 +23,8 @@
 	import { DEFAULT_TIME_ZONE } from '@/shared/config';
 	import { PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
+	// UTILS
+	import { appGoto } from '@/utils/app-navigation.js';
 	// UTILS
 	import { safeMutation } from '@/utils/convexHelpers';
 	import { toastResult } from '@/utils/toastResult';
@@ -106,7 +110,9 @@
 	<AvailabilityCalendarLegend variant="host" />
 
 	{#if calendarQuery.error}
-		<p class="text-sm text-destructive">Could not load this calendar. Refresh to try again.</p>
+		<p class="text-sm text-destructive">
+			{m['HostCalendarPage.ApartmentCalendar.loadError']()}
+		</p>
 	{:else}
 		<AvailabilityCalendar
 			bind:value
@@ -114,12 +120,12 @@
 			{timeZone}
 			onInvalidSelection={(message) => toast.error(message)}
 			onBookedClick={(bookingId) =>
-				goto(`${PROTECTED_PAGE_ENDPOINTS.RESERVATIONS}?booking=${bookingId}`)}
+				appGoto(`${PROTECTED_PAGE_ENDPOINTS.RESERVATIONS}?booking=${bookingId}`)}
 		>
 			{#snippet selectionActions(selection: AvailabilityCalendarSelection)}
 				<Button variant="ghost" size="sm" disabled={pending} onclick={selection.clearSelection}>
 					<XIcon class="size-4" aria-hidden="true" />
-					Clear
+					{m['HostCalendarPage.ApartmentCalendar.clear']()}
 				</Button>
 
 				<Button
@@ -129,7 +135,7 @@
 					onclick={() => runCalendarAction(selection, 'unblock')}
 				>
 					<CalendarCheckIcon class="size-4" aria-hidden="true" />
-					Unblock
+					{m['HostCalendarPage.ApartmentCalendar.unblock']()}
 				</Button>
 
 				<Button
@@ -139,7 +145,7 @@
 					onclick={() => runCalendarAction(selection, 'block')}
 				>
 					<BanIcon class="size-4" aria-hidden="true" />
-					Block
+					{m['HostCalendarPage.ApartmentCalendar.block']()}
 				</Button>
 			{/snippet}
 		</AvailabilityCalendar>

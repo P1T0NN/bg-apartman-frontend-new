@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { loadMapLibrary, type GoogleMap, type GoogleMarker } from '@/lib/google-maps/maps';
 
@@ -60,7 +63,7 @@
 			.catch((err) => {
 				if (cancelled) return;
 				console.error('[location-map] failed to load map:', err);
-				errorMsg = err instanceof Error ? err.message : 'Could not load the map.';
+				errorMsg = err instanceof Error ? err.message : m['LocationMap.loadError']();
 			})
 			.finally(() => {
 				if (!cancelled) loading = false;
@@ -80,9 +83,9 @@
 		)}
 	>
 		<MapPinIcon class="size-7 text-muted-foreground" />
-		<p class="text-sm font-medium">Map location picker</p>
+		<p class="text-sm font-medium">{m['LocationMap.title']()}</p>
 		<p class="max-w-xs text-xs text-muted-foreground">
-			The pin and coordinates appear here automatically once you select an address above.
+			{m['LocationMap.description']()}
 		</p>
 	</div>
 {:else}

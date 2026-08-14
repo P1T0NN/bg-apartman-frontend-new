@@ -1,7 +1,13 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
-	import { useConvexClient } from 'convex-svelte';
+	import { useQuery } from 'convex-svelte';
+
+	// TYPES
+	import type { HostAnalyticsData } from '@/convex/pages/host/analytics/types/hostAnalyticsTypes';
 
 	// COMPONENTS
 	import SvelteHead from '@/components/ui/svelte-head/svelte-head.svelte';
@@ -13,21 +19,15 @@
 	import HostAnalyticsLoading from '@/components/pages/(protected)/host/analytics/loading/host-analytics-loading.svelte';
 	import HostAnalyticsEmpty from '@/components/pages/(protected)/host/analytics/empty/host-analytics-empty.svelte';
 
-	// UTILS
-	import { safeQuery } from '@/utils/convexHelpers';
-
-	// TYPES
-	import type { HostAnalyticsData } from '@/convex/pages/host/analytics/types/hostAnalyticsTypes';
-
 	/**
 	 * "How's business, really?" (HostSystemDesign.md §2b) — the host's trend and per-listing
 	 * performance over ONE page-wide period, chosen top-right (7d/30d/90d/custom). The
-	 * picker resolves the choice to a `[from, to]` window; ONE fetch answers for the whole
+	 * picker resolves the choice to a `[from, to]` window; ONE read answers for the whole
 	 * page, so the chart and the table can never describe different periods.
 	 *
-	 * One-shot per window (GeneralSystemDesignRule.md): window aggregates don't move under
-	 * a viewer — switching periods refetches, which is always fresh enough, and the
-	 * heaviest host reads run only when a host actually asks.
+	 * A live subscription per window (GeneralSystemDesignRule.md), skipped until the picker
+	 * resolves a complete range. Switching periods swaps the args and re-runs it; the heaviest
+	 * host reads still run only while a host has this page open.
 	 *
 	 * Zero-listing visitors never get here — the host layout swaps in the become-host state
 	 * for the whole area (HostSystemDesign.md §1).
@@ -36,34 +36,17 @@
 	 * a host with no history. (The dev seeder that used to fill this page was deleted before
 	 * launch; real bookings are the only source of numbers now.)
 	 */
-	const convex = useConvexClient();
-
 	let analyticsWindow = $state<AnalyticsWindow>(null);
-	let data = $state<HostAnalyticsData | undefined>();
-	let failed = $state(false);
 
-	// Refetches whenever the picker resolves a new window. The token drops stale responses:
-	// with two switches in flight, only the latest lands (`data = undefined` shows the
-	// skeletons in between — the loading state a period change deserves).
-	let fetchToken = 0;
-	$effect(() => {
-		if (!analyticsWindow) return; // custom picked but range not complete yet — keep what's shown
+	const analyticsQuery = useQuery(
+		api.pages.host.analytics.queries.fetchHostAnalyticsSafe.fetchHostAnalyticsSafe,
+		() => (analyticsWindow ? { from: analyticsWindow.from, to: analyticsWindow.to } : 'skip')
+	);
 
-		const args = { from: analyticsWindow.from, to: analyticsWindow.to };
-		const token = ++fetchToken;
-		data = undefined;
-		failed = false;
-
-		safeQuery(
-			convex,
-			api.pages.host.analytics.queries.fetchHostAnalyticsSafe.fetchHostAnalyticsSafe,
-			args
-		).then((payload) => {
-			if (token !== fetchToken) return;
-			if (payload) data = payload;
-			else failed = true;
-		});
-	});
+	// `undefined` while skipped or loading → the page shows the loading skeletons, the state a
+	// period change deserves. A window switch swaps the args and clears the previous data.
+	const data = $derived(analyticsQuery.data as HostAnalyticsData | undefined);
+	const failed = $derived(!!analyticsQuery.error);
 
 	const hasAnything = $derived(
 		data !== undefined &&
@@ -71,7 +54,7 @@
 	);
 </script>
 
-<SvelteHead title="Analytics" description="How your accommodations are performing." noIndex />
+<SvelteHead title={m['HostAnalyticsPage.SEO.title']()} description={m['HostAnalyticsPage.SEO.description']()} noIndex />
 
 <section class="flex w-full flex-col gap-6 p-4 md:p-6">
 	<HostAnalyticsHeader bind:analyticsWindow />
@@ -79,8 +62,8 @@
 	{#if failed}
 		<ErrorComponent
 			variant="plain"
-			title="Could not load analytics"
-			description="Try refreshing the page."
+			title={m['HostAnalyticsPage.loadAnalyticsErrorTitle']()}
+			description={m['HostAnalyticsPage.refreshPage']()}
 			showRetry={false}
 		/>
 	{:else if data === undefined}

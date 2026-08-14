@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 
@@ -105,7 +108,7 @@
 	<PlacesAutocomplete
 		id={inputId}
 		variant="city"
-		placeholder="Search your city"
+		placeholder={m['HostAddAccommodationPage.AddAccommodationForm.searchCityPlaceholder']()}
 		onInput={() => setValue('')}
 		onSelect={(place) => {
 			void applyRegionToValues(values, place, setValue);
@@ -128,7 +131,11 @@
 		variant="address"
 		disabled={!regionSelected}
 		regionName={values.city}
-		placeholder={regionSelected ? 'Search street name' : 'Pick a city first'}
+		placeholder={
+			regionSelected
+				? m['HostAddAccommodationPage.AddAccommodationForm.searchStreetPlaceholder']()
+				: m['HostAddAccommodationPage.AddAccommodationForm.pickCityFirst']()
+		}
 		bind:value={values.address}
 		onSelect={(place) => applyStreetToValues(values, place, setValue)}
 	/>
@@ -192,7 +199,7 @@
 	runFunction={api.tables.accommodations.mutations.createAccommodation.createApartment}
 	mapArgs={(_formValues, args) => createAccommodationSchema.parse({ ...args, locale: 'en' })}
 	onSuccess={goToMyAccommodations}
-	submitLabel="Submit for review"
+	submitLabel={m['HostAddAccommodationPage.AddAccommodationForm.submitForReview']()}
 	{uploadFolder}
 	customFields={{
 		placeId: regionField,

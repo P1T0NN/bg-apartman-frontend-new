@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { useConvexClient } from 'convex-svelte';
 	import { toast } from 'svelte-sonner';
@@ -66,8 +68,10 @@
 
 			toast.success(
 				multipleFiles
-					? `Saved ${uploaded.length} file(s) to storage`
-					: `Saved: ${optimizedImages[0]?.name ?? 'file'}`
+					? m['UploadFileFeature.SaveUploadedFile.savedMultiple']({ count: uploaded.length })
+					: m['UploadFileFeature.SaveUploadedFile.savedSingle']({
+							name: optimizedImages[0]?.name ?? m['UploadFileFeature.SaveUploadedFile.file']()
+						})
 			);
 		} finally {
 			saving = false;
@@ -87,5 +91,5 @@
 	{#if saving}
 		<Spinner />
 	{/if}
-	Save
+	{m['UploadFileFeature.SaveUploadedFile.save']()}
 </Button>

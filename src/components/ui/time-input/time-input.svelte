@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Input } from '@/components/ui/input/index.js';
 
@@ -6,7 +9,7 @@
 		id,
 		value = '',
 		setValue,
-		placeholder = 'HH:MM',
+		placeholder = m['TimeInput.placeholder'](),
 		disabled = false,
 		invalid = false
 	}: {

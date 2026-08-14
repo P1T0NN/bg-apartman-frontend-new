@@ -1,0 +1,2119 @@
+{
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"AccommodationsFeature": {
+		"AccommodationCard": {
+			"featured": "Featured",
+			"AccommodationCardBody": {
+				"night": "/ night",
+				"typeInCity": "{type} in {city}"
+			},
+			"NewAccommodationBadge": {
+				"new": "New"
+			}
+		},
+		"SameDayDisplay": {
+			"noSameDayCheckIn": "No same-day check-in",
+			"sameDayCheckInAvailable": "Same-day check-in available"
+		},
+		"SingleStayDisplay": {
+			"noSingleNightStays": "No single-night stays",
+			"singleNightStaysAvailable": "Single-night stays available"
+		},
+		"SuperhostBadge": {
+			"superhost": "Superhost"
+		}
+	},
+	"accommodationsData": {
+		"archived": "Archived",
+		"expired": "Expired",
+		"pendingReview": "Pending review",
+		"published": "Published",
+		"suspended": "Suspended"
+	},
+	"ActionButton": {
+		"cancel": "Cancel",
+		"cannotBeReversed": "Action cannot be reversed",
+		"confirmDescription": "Are you sure you want to do this? This action cannot be undone.",
+		"proceed": "Proceed"
+	},
+	"BookingsFeature": {
+		"BookingsTable": {
+			"ActionsField": {
+				"viewBooking": "View booking {bookingCode}"
+			}
+		},
+		"BookingExpiryBadge": {
+			"expired": "Expired",
+			"expiresIn": "Expires in {timeRemaining}"
+		},
+		"BookingsDetailSheet": {
+			"title": "Booking details",
+			"BookingsDetailSheetActions": {
+				"cashCancellationClosedToday": "The stay starts today, so cancellation is closed. If something's wrong, contact support.",
+				"cashCancellationNeedsConfirmation": "Cancelling unlocks only if the guest ignores a stay-confirmation request — use \"{label}\" above.",
+				"emergencyContactSupport": "For a genuine emergency, contact support.",
+				"onlineCancellationClosed": "This paid booking can't be cancelled this close to check-in — the guest's stay is committed."
+			},
+			"BookingsDetailSheetCancellation": {
+				"admin": "the admin",
+				"cancelledBy": "Cancelled by {by}",
+				"declinedByHost": "Declined by host",
+				"guest": "guest",
+				"host": "host",
+				"requestExpired": "Request expired",
+				"system": "the system"
+			},
+			"BookingsDetailSheetGuestContact": {
+				"detailsStayClosed": "This request was never confirmed, so contact details stay closed.",
+				"emailAppearsAfterConfirm": "Email and phone appear once you confirm this request.",
+				"title": "Guest contact"
+			},
+			"BookingsDetailSheetPriceBreakdown": {
+				"cleaningFee": "Cleaning fee",
+				"serviceFee": "Service fee",
+				"title": "Price breakdown",
+				"total": "Total ({payment})"
+			},
+			"BookingsDetailSheetPropertyInfo": {
+				"hostLabel": "Host: {host}",
+				"title": "Property"
+			},
+			"BookingsDetailSheetSpecialRequests": {
+				"title": "Special requests"
+			},
+			"BookingsDetailSheetStayInfo": {
+				"checkIn": "Check-in",
+				"checkOut": "Check-out"
+			},
+			"CancelBookingDialog": {
+				"bodyCash": "{guest} is notified by email with your reason and the dates reopen. Use this when a guest has gone unresponsive about a cash stay — try WhatsApp or email first. Repeated cancellations are reviewed. This can't be undone.",
+				"bodyOnline": "{guest} is notified by email with your reason and gets a full refund — host cancellations are never the guest's cost. Repeated cancellations are reviewed. This can't be undone.",
+				"cancelBooking": "Cancel booking",
+				"keepBooking": "Keep booking",
+				"reasonForCancelling": "Reason for cancelling",
+				"reasonPlaceholder": "e.g. The apartment needs urgent repairs and can't host these dates.",
+				"theGuest": "the guest",
+				"title": "Cancel this confirmed booking?"
+			},
+			"ConfirmBookingDialog": {
+				"ConfirmBookingButton": {
+					"confirm": "Confirm booking"
+				},
+				"body": "{guest}'s stay is committed for these dates. {payment} Any other requests for the same nights are declined automatically.",
+				"chargedNow": "Their card will be charged now and they'll be notified by email.",
+				"notYet": "Not yet",
+				"payAtProperty": "They will be notified by email and pay you at the property.",
+				"theGuest": "The guest",
+				"title": "Confirm this booking?"
+			},
+			"DeclineBookingDialog": {
+				"body": "This declines {guest}'s request and emails them your reason. It can't be undone, so please explain your decision briefly and courteously.",
+				"declineRequest": "Decline request",
+				"keepRequest": "Keep request",
+				"reasonForDeclining": "Reason for declining",
+				"reasonPlaceholder": "e.g. These dates are no longer available for booking.",
+				"theGuest": "the guest",
+				"title": "Decline this reservation request?"
+			},
+			"StayConfirmationPanel": {
+				"askGuestToConfirm": "Ask guest to confirm",
+				"askedNoReply": "Asked {time} — no reply yet. If the guest doesn't respond within {hours} hours, cancelling unlocks.",
+				"guestConfirmed": "Guest confirmed they're coming ({time}). You can re-ask closer to the date if plans might change.",
+				"noReplyUnlocked": "No reply for over {hours} hours (asked {time}). Cancelling is now available below if you need the dates back.",
+				"notSureGuestComing": "Not sure the guest is coming? Ask for a one-click confirmation — they get an email, and you'll see the answer here.",
+				"title": "Stay confirmation"
+			}
+		},
+		"GuestBookingActions": {
+			"cancelBooking": "Cancel booking",
+			"cancelTitle": "Cancel this booking?",
+			"keepBooking": "Keep booking",
+			"keepRequest": "Keep request",
+			"windowClosed": "The cancellation window has closed — contact {hostName} if your plans changed.",
+			"withdrawBody": "{hostName} hasn't answered yet, so nothing is cancelled and nothing is charged. You can send a new request any time.",
+			"withdrawRequest": "Withdraw request",
+			"withdrawTitle": "Withdraw this request?"
+		},
+		"GuestStayConfirmation": {
+			"asked": "{hostName} asked: still coming?",
+			"confirmed": "You've confirmed you're coming — {hostName} knows.",
+			"oneClick": "One click lets them prepare for your arrival. If your plans changed, use the actions below instead.",
+			"yesComing": "Yes, I'm coming"
+		}
+	},
+	"amenitiesData": {
+		"airConditioning": "Air conditioning",
+		"balcony": "Balcony",
+		"bathtub": "Bathtub",
+		"childrensPlayground": "Children's playground",
+		"coffeeMaker": "Coffee maker",
+		"dishwasher": "Dishwasher",
+		"dryer": "Dryer",
+		"elevator": "Elevator",
+		"freeParking": "Free parking",
+		"heating": "Heating",
+		"hotTub": "Hot tub",
+		"kitchen": "Kitchen",
+		"pool": "Pool",
+		"privateParking": "Private parking",
+		"publicParking": "Public parking",
+		"sauna": "Sauna",
+		"selfCheckin": "Self check-in",
+		"shampoo": "Shampoo",
+		"shower": "Shower",
+		"smokeAlarm": "Smoke alarm",
+		"toiletPaper": "Toilet paper",
+		"towels": "Towels",
+		"tv": "TV",
+		"washer": "Washer",
+		"wifi": "Wi-Fi",
+		"workspace": "Dedicated workspace"
+	},
+	"AuthFeature": {
+		"AuthErrorBanner": {
+			"accessDenied": "Access denied",
+			"accountBanned": "Account banned",
+			"gotIt": "Got it",
+			"signInError": "Sign-in error",
+			"signInRequired": "Sign-in required"
+		},
+		"EmailVerificationForm": {
+			"cancel": "Cancel",
+			"checkYourEmail": "Check your email",
+			"continue": "Continue",
+			"invalidOrExpiredCode": "Invalid or expired code. Please try again.",
+			"verificationCode": "Verification code",
+			"verificationCodeSent": "We sent a verification code to {email}. Enter it below to continue.",
+			"EmailVerificationResend": {
+				"didntReceiveCode": "Didn't receive the code?",
+				"resend": "Resend",
+				"resendIn": "Resend in {cooldownRemaining}s"
+			}
+		},
+		"GoogleLoginButton": {
+			"continueWithGoogle": "Continue with Google"
+		},
+		"LoginButton": {
+			"login": "Login"
+		},
+		"LogoutButton": {
+			"loggedOutToast": "Logged out successfully.",
+			"logout": "Logout"
+		},
+		"PasswordInput": {
+			"hidePassword": "Hide password",
+			"showPassword": "Show password"
+		},
+		"PasswordResetForm": {
+			"cancel": "Cancel",
+			"chooseNewPassword": "Choose a new password",
+			"code": "Code",
+			"codeDescription": "Enter the 8-digit code from your email.",
+			"codeSent": "We sent a code to {email}. Enter it below along with your new password. The code is valid for 5 minutes.",
+			"confirmNewPassword": "Confirm new password",
+			"continue": "Continue",
+			"email": "Email",
+			"emailPlaceholder": "m@example.com",
+			"newPassword": "New password",
+			"resetDescription": "Enter the email for your account. We will send you a one-time code you can use to choose a new password.",
+			"resetPassword": "Reset your password",
+			"sendCode": "Send code"
+		}
+	},
+	"AvailabilityCalendar": {
+		"AvailabilityCalendarLegend": {
+			"blocked": "Blocked",
+			"booked": "Booked",
+			"selected": "Selected",
+			"today": "Today",
+			"todayUnavailable": "Today unavailable"
+		}
+	},
+	"availableBookingActions": {
+		"bookingCancelled": "Booking cancelled",
+		"bookingConfirmed": "Booking confirmed",
+		"cancelBooking": "Cancel booking",
+		"confirmBooking": "Confirm booking",
+		"decline": "Decline",
+		"requestDeclined": "Request declined"
+	},
+	"availableBookingGuestActions": {
+		"bookingCancelled": "Booking cancelled",
+		"cancelBooking": "Cancel booking",
+		"requestWithdrawn": "Request withdrawn",
+		"withdrawRequest": "Withdraw request"
+	},
+	"bookingsData": {
+		"all": "All",
+		"awaitingPayment": "Awaiting payment",
+		"cancelled": "Cancelled",
+		"cardHeld": "Card held",
+		"cashOnArrival": "Cash on arrival",
+		"checkedIn": "Checked in",
+		"checkedOut": "Checked out",
+		"confirmed": "Confirmed",
+		"declined": "Declined",
+		"expired": "Expired",
+		"holdReleased": "Hold released",
+		"hostingNow": "Hosting now",
+		"paid": "Paid",
+		"pending": "Pending",
+		"refunded": "Refunded",
+		"requests": "Requests",
+		"statusHelpAria": "Learn what each booking status means",
+		"upcoming": "Upcoming",
+		"withdrawn": "Withdrawn"
+	},
+	"Breadcrumb": {
+		"breadcrumb": "breadcrumb",
+		"BreadcrumbEllipsis": {
+			"more": "More"
+		}
+	},
+	"contactActionsRemote": {
+		"couldNotSendMessage": "Could not send your message. Please try again.",
+		"couldNotVerifyRequest": "Could not verify your request. Please try again.",
+		"emailSentSuccessfully": "Email sent successfully.",
+		"tooManyMessages": "Too many messages. Please try again later."
+	},
+	"ConvexDataList": {
+		"errorDescription": "Something went wrong while loading this list. Please try again.",
+		"errorTitle": "Couldn't load data",
+		"retry": "Retry"
+	},
+	"convexHelpers": {
+		"uploadFailed": "Could not save the uploaded file. Please try again."
+	},
+	"CopyButton": {
+		"copied": "Copied",
+		"copy": "Copy"
+	},
+	"MutationForm": {
+		"CounterField": {
+			"custom": "Custom",
+			"enterNumber": "Enter a number"
+		},
+		"back": "Back",
+		"continue": "Continue",
+		"correctFormErrors": "You need to correct form errors",
+		"goToStep": "Go to step {step}",
+		"progress": "Progress",
+		"stepOf": "Step {step} of {total}",
+		"submit": "Submit"
+	},
+	"CreatedByOmniLabs": {
+		"ariaLabel": "Created by OmniLabs — opens in a new tab",
+		"createdBy": "Created by"
+	},
+	"Footer": {
+		"account": "Account",
+		"contact": "Contact",
+		"dashboard": "Dashboard",
+		"legal": "Legal",
+		"overview": "Overview",
+		"product": "Product",
+		"reportAnIssue": "Report an issue",
+		"signIn": "Sign in",
+		"support": "Support",
+		"termsOfService": "Terms of service",
+		"copyright": "© {year} {brand}. All rights reserved.",
+		"facebook": "Facebook",
+		"instagram": "Instagram",
+		"paymentsSecuredBy": "Payments secured by",
+		"tikTok": "TikTok",
+		"youTube": "YouTube"
+	},
+	"formatters": {
+		"adult": "{count} adult",
+		"adults": "{count} adults",
+		"bathroom": "{count} bathroom",
+		"bathrooms": "{count} bathrooms",
+		"bedroom": "{count} bedroom",
+		"bedrooms": "{count} bedrooms",
+		"child": "{count} child",
+		"children": "{count} children",
+		"daySelected": "{count} day selected",
+		"daysSelected": "{count} days selected",
+		"guest": "{count} guest",
+		"guests": "{count} guests",
+		"maxGuestsAllowed": "This place allows up to {count} guest.",
+		"maxGuestsAllowedPlural": "This place allows up to {count} guests.",
+		"night": "{count} night",
+		"nights": "{count} nights",
+		"place": "{count} place",
+		"places": "{count} places",
+		"startsToday": "Starts today",
+		"upToGuest": "Up to {count} guest",
+		"upToGuests": "Up to {count} guests"
+	},
+	"guestCancelConsequence": {
+		"freeCancelCash": "Free cancellation — you're at least {freeCancelDays} days before check-in. Nothing was charged; the host is notified and the dates reopen straight away.",
+		"freeCancelOnline": "Free cancellation — you're at least {freeCancelDays} days before check-in, so you'll be refunded in full. The host is notified and the dates reopen straight away.",
+		"lateCancel": "This is less than {freeCancelDays} days before check-in, so it counts as a late cancellation and your payment won't be refunded."
+	},
+	"ImageGallery": {
+		"closeGallery": "Close gallery",
+		"nextSlide": "Next slide",
+		"openPhotoFullscreen": "Open photo {index} fullscreen",
+		"photoGallery": "{title} — photo gallery",
+		"previousSlide": "Previous slide",
+		"showAllPhotos": "Show all photos",
+		"viewPhotoOf": "View photo {index} of {total}"
+	},
+	"loader": {
+		"browserOnly": "Google Maps can only be loaded in the browser.",
+		"loadFailed": "Failed to load the Google Maps script.",
+		"mapsUnavailable": "Maps are unavailable: PUBLIC_GOOGLE_MAPS_API_KEY is not set."
+	},
+	"LocationMap": {
+		"description": "The pin and coordinates appear here automatically once you select an address above.",
+		"loadError": "Could not load the map.",
+		"title": "Map location picker"
+	},
+	"NativeCarousel": {
+		"goToSlide": "Go to slide {index}",
+		"label": "Carousel",
+		"nextSlide": "Next slide",
+		"previousSlide": "Previous slide"
+	},
+	"NativeSheet": {
+		"close": "Close"
+	},
+	"Header": {
+		"becomeAHost": "Become a host",
+		"contact": "Contact",
+		"featured": "Featured",
+		"home": "Home",
+		"newsletters": "Newsletters",
+		"testimonials": "Testimonials",
+		"login": "Login",
+		"main": "Main",
+		"NormalHeaderAuthActions": {
+			"account": "Account",
+			"accountMenu": "Account menu",
+			"becomeAHost": "Become a host",
+			"guestDashboard": "Guest Dashboard",
+			"reportAnIssue": "Report an issue",
+			"switchToHosting": "Switch to hosting"
+		},
+		"NormalHeaderMobile": {
+			"becomeAHost": "Become a host",
+			"closeMenu": "Close menu",
+			"guestDashboard": "Guest Dashboard",
+			"login": "Login",
+			"menu": "Menu",
+			"mobileMain": "Mobile main",
+			"openMenu": "Open menu",
+			"switchToHosting": "Switch to hosting"
+		}
+	},
+	"PaginatedData": {
+		"ariaLabel": "pagination",
+		"goToNextPage": "Go to next page",
+		"goToPage": "Go to page {page}",
+		"goToPreviousPage": "Go to previous page",
+		"page": "Page {page}",
+		"pageOf": "Page {page} of {total}"
+	},
+	"Pagination": {
+		"pagination": "pagination",
+		"PaginationNext": {
+			"goToNextPage": "Go to next page",
+			"next": "Next"
+		},
+		"PaginationPrevious": {
+			"goToPreviousPage": "Go to previous page",
+			"previous": "Previous"
+		}
+	},
+	"paymentFlags": {
+		"captureFailedBody": "The card hold is still in place and the booking is waiting on the host as a normal request. Check the payment in the provider dashboard; if it went through after all, mark this handled.",
+		"captureFailedTitle": "The guest's payment could not be taken",
+		"reconcileMismatchBody": "The daily reconciliation found a payment sitting in a non-final state past its window, or could not reach the provider to confirm it. Compare against the provider dashboard and finish whatever is outstanding.",
+		"reconcileMismatchTitle": "This payment has been stuck too long",
+		"refundFailedBody": "The booking is cancelled but the guest still has their money taken. Issue the refund in the provider dashboard, then mark this handled.",
+		"refundFailedTitle": "The refund did not go through",
+		"releaseFailedBody": "No money moved, but the hold may still show on the guest’s card. Release it in the provider dashboard, then mark this handled.",
+		"releaseFailedTitle": "The card hold could not be released",
+		"transferFailedBody": "The earnings stay held and the payout sweep skips this row until the flag is cleared — usually a closed or rejected bank account. Sort it with the host, then mark this handled to let the next sweep retry.",
+		"transferFailedTitle": "The host's payout failed"
+	},
+	"paymentMethods": {
+		"accommodationCashDescription": "Guests settle the full amount with you on arrival.",
+		"accommodationPayOnlineDescription": "Guests pay online when the booking is confirmed.",
+		"both": "Both — let guests choose",
+		"bothDescription": "Guests pick between cash at check-in and paying online at checkout.",
+		"cashAtCheckIn": "Cash at check-in",
+		"cashDescription": "No card needed — settle the full amount with your host on arrival.",
+		"comingSoon": " Available once online payments launch.",
+		"payOnline": "Pay online",
+		"payOnlineDescription": "Pay securely online — your card is charged when the booking is confirmed."
+	},
+	"PlacesAutocomplete": {
+		"loadSelectedError": "Could not load the selected place.",
+		"loadSuggestionsError": "Could not load address suggestions.",
+		"noMatches": "No matches found.",
+		"searchCityOrCountry": "Search for a city or country...",
+		"startTypingAddress": "Start typing an address..."
+	},
+	"RefreshQueryButton": {
+		"tryAgain": "Try again"
+	},
+	"remoteFunctionsUtils": {
+		"actionForbidden": "You're not allowed to perform this action."
+	},
+	"reportsData": {
+		"bug": "Bug",
+		"daysAgo": "{days}d ago",
+		"hoursAgo": "{hours}h ago",
+		"idea": "Idea",
+		"justNow": "just now",
+		"minutesAgo": "{minutes}m ago",
+		"other": "Other"
+	},
+	"UploadFileFeature": {
+		"SaveUploadedFile": {
+			"file": "file",
+			"save": "Save",
+			"savedMultiple": "Saved {count} file(s) to storage",
+			"savedSingle": "Saved: {name}"
+		},
+		"UploadFile": {
+			"UploadFileEmpty": {
+				"accepted": "Accepted: {format}",
+				"choosePlural": "files",
+				"chooseSingular": "file",
+				"dragPlural": "them",
+				"dragSingular": "it"
+			},
+			"UploadFileItemMultiple": {
+				"cover": "Cover",
+				"remove": "Remove {name}",
+				"setCover": "Set {name} as cover image"
+			},
+			"UploadFileItemSingle": {
+				"remove": "Remove",
+				"replace": "Replace",
+				"unknownType": "Unknown type"
+			},
+			"UploadFileMultipleDropzone": {
+				"intro": "Use the drop zone to add files — it stays put while previews show in a grid below. Remove any file",
+				"outro": "control on the top-right of each preview card"
+			},
+			"UploadFileMultipleList": {
+				"ariaLabel": "Uploaded files. Drop more files here to add.",
+				"unknown": "Unknown"
+			},
+			"UploadFileSingleContent": {
+				"ariaLabel": "File preview. Drop a file here to replace."
+			},
+			"UploadFileSingleDropzone": {
+				"intro": "Choose or drop a file, preview it, then save. Use",
+				"or": "or",
+				"outro": "on the file card if you change your mind.",
+				"remove": "Remove",
+				"replace": "Replace"
+			}
+		}
+	},
+	"SearchInput": {
+		"SearchDropdown": {
+			"searchResults": "Search results",
+			"searching": "Searching..."
+		},
+		"SearchEmpty": {
+			"noResults": "No results found",
+			"tryDifferentTerm": "Try a different search term."
+		},
+		"ariaLabel": "Search",
+		"placeholder": "Search..."
+	},
+	"ShareButton": {
+		"linkCopied": "Link copied to clipboard",
+		"share": "Share"
+	},
+	"Sidebar": {
+		"title": "Sidebar",
+		"SidebarRail": {
+			"toggle": "Toggle Sidebar"
+		},
+		"SidebarTrigger": {
+			"toggle": "Toggle Sidebar"
+		}
+	},
+	"TimeInput": {
+		"placeholder": "HH:MM"
+	},
+	"FavoritesFeature": {
+		"ToggleFavoriteButton": {
+			"removeFromSaved": "Remove from saved",
+			"removedFromList": "Removed from your list",
+			"save": "Save",
+			"saved": "Saved",
+			"savedToList": "Saved to your list"
+		}
+	},
+	"TryAgainErrorButton": {
+		"tryAgain": "Try again"
+	},
+	"useFileUpload": {
+		"notAccepted": "\"{name}\" is not an accepted format. Accepted: {format}."
+	},
+	"useProgress": {
+		"compressProgress": "Compressing {current} / {total} ({percent}%)",
+		"done": "Done",
+		"filesUploaded": "{current} of {total} files uploaded ({percent}%)",
+		"starting": "Starting...",
+		"uploadingFile": "Uploading file {current} of {total}…"
+	},
+	"HostAddAccommodationPage": {
+		"AddAccommodationForm": {
+			"accommodationTitle": "Accommodation title",
+			"additionalHouseRules": "Additional house rules",
+			"amenities": "Amenities",
+			"amenitiesDescription": "Select everything your place offers — pick at least 5 to continue.",
+			"basicsDescription": "Tell guests what kind of place they are booking.",
+			"bathrooms": "Bathrooms",
+			"bathroomsPlaceholder": "Number of bathrooms",
+			"bedrooms": "Bedrooms",
+			"bedroomsDescription": "Pick a number, or use Custom (e.g. 0 for a studio).",
+			"bedroomsPlaceholder": "Number of bedrooms",
+			"checkInTime": "Check-in time",
+			"checkOutTime": "Check-out time",
+			"choosePaymentMethodDescription": "Choose how guests pay for their stay.",
+			"city": "City",
+			"cityDescription": "Search for your city and pick it from the list — we set the country automatically and unlock the street search below.",
+			"cleaningFee": "Cleaning fee",
+			"cleaningFeeDescription": "A one-time fee added once per booking, on top of the nightly price. Leave empty if you don’t charge one.",
+			"country": "Country",
+			"countryPlaceholder": "Set automatically from your city",
+			"descriptionLabel": "Description",
+			"descriptionPlaceholder": "Describe the space, the neighbourhood and what makes it special…",
+			"discount": "Discount",
+			"discountDescription": "A lower nightly price shown to guests, with the regular price crossed out beside it. Leave empty for no discount.",
+			"findOwnerDescription": "Find the owner by name or email.",
+			"guestPaymentMethod": "Guest payment method",
+			"housePolicies": "House policies",
+			"housePoliciesDescription": "How guests can book, and what’s allowed on the property.",
+			"houseRules": "House rules",
+			"houseRulesDescription": "Anything guests should know before they book.",
+			"houseRulesPlaceholder": "Anything else guests should know? (optional)",
+			"instantBooking": "Instant booking",
+			"instantBookingDescription": "Guests can book without waiting for your approval.",
+			"leaveEmptyForNone": "Leave empty for none",
+			"location": "Location",
+			"locationDescription": "Where will guests be staying?",
+			"maxGuests": "Max guests",
+			"maxGuestsPlaceholder": "Number of guests",
+			"maximumNights": "Maximum nights",
+			"maximumNightsDescription": "The most nights a guest can book in a single stay. Leave empty for no limit.",
+			"minimumNights": "Minimum nights",
+			"minimumNightsDescription": "The fewest nights a guest can book in a single stay.",
+			"noLimit": "No limit",
+			"optional": "Optional",
+			"owner": "Owner",
+			"ownerOfApartment": "Owner of apartment",
+			"ownerOfApartmentDescription": "Create this listing on behalf of its owner.",
+			"partiesAndEvents": "Parties & events",
+			"partiesAndEventsDescription": "Events and gatherings are allowed.",
+			"paymentsAndPlan": "Payments & plan",
+			"paymentsAndPlanDescription": "How guests pay you, and how this listing pays for being on the platform. The per-booking plan is permanent for this listing — pick carefully.",
+			"paymentsDescription": "How guests pay you for their stay.",
+			"pets": "Pets",
+			"petsDescription": "Guests can bring pets.",
+			"photos": "Photos",
+			"photosDescription": "Accommodations with great photos get more bookings. Add a few to finish.",
+			"pinOnMap": "Pin on map",
+			"pricePerNight": "Price per night",
+			"pricePerNightDescription": "The standard rate a guest pays for one night.",
+			"pricing": "Pricing",
+			"pricingDescription": "Set your nightly price below. Every other field is optional — leave it empty to skip it. All amounts are in whole euros (€).",
+			"propertyType": "Property type",
+			"quietHoursEnd": "Quiet hours end",
+			"quietHoursEndDescription": "When quiet hours end the next morning (e.g. 08:00). Leave empty for none.",
+			"quietHoursStart": "Quiet hours start",
+			"quietHoursStartDescription": "When guests should start keeping noise down (e.g. 22:00). Leave empty for none.",
+			"sameDayReservations": "Same-day reservations",
+			"sameDayReservationsDescription": "Allow stays that start today.",
+			"selectTime": "Select time",
+			"selectType": "Select type",
+			"singleDayStays": "Single-day stays",
+			"singleDayStaysDescription": "Check-in and check-out on the same day.",
+			"sizeM2": "Size (m²)",
+			"smoking": "Smoking",
+			"smokingDescription": "Smoking is allowed on the property.",
+			"spaceAndCapacity": "Space & capacity",
+			"spaceAndCapacityDescription": "How many guests can comfortably stay?",
+			"streetName": "Street name",
+			"streetNameDescription": "Pick your country or city first, then search for the street.",
+			"streetNumber": "Street number",
+			"streetNumberPlaceholder": "e.g. 12a",
+			"theBasics": "The basics",
+			"timesAndLimits": "Times & limits",
+			"timesAndLimitsDescription": "Check-in and out, how long guests can stay, and quiet hours.",
+			"titlePlaceholder": "Sunny one-bedroom near the river",
+			"uploadPhotos": "Upload photos",
+			"weekendPremiumDescription": "Charged instead of the nightly price on Friday & Saturday nights. Leave empty to keep one price all week.",
+			"weekendPrice": "Weekend price (Fri–Sat)",
+			"weeklyDiscount": "Weekly discount (%)",
+			"weeklyDiscountDescription": "Percent off the total for stays of 7+ nights (e.g. 10 = 10% off). Leave empty for none.",
+			"whatThisPlaceOffers": "What this place offers",
+			"yourPlan": "Your plan",
+			"pickCityFirst": "Pick a city first",
+			"searchCityPlaceholder": "Search your city",
+			"searchStreetPlaceholder": "Search street name",
+			"submitForReview": "Submit for review"
+		},
+		"AddAccommodationHeader": {
+			"description": "Fill in the details below. Everything can be edited later — your accommodation goes live after a quick review.",
+			"title": "List your accommodation"
+		},
+		"AmenitiesField": {
+			"pickAtLeast": "Pick at least {count}",
+			"selected": "selected"
+		},
+		"MonetizationField": {
+			"bookingFeeDescription": "Guests pay a {percent}% service fee (min €{minEuros}) on each booking. Online payments only. Permanent: this plan can't be changed later — to use a listing fee instead, you'd create a new listing.",
+			"bookingFeeLabel": "Per-booking fee — free to list",
+			"bookingFeeNote": "Available once online payments launch.",
+			"listingFeeDescription": "Keep 100% of every booking. Accept cash or online payments. Your listing goes live after review and payment.",
+			"listingFeeLabel": "Listing fee — €{amount} per {periodDays} days"
+		},
+		"SEO": {
+			"description": "Fill in the details below. Everything can be edited later — your accommodation goes live after a quick review.",
+			"title": "List your accommodation"
+		}
+	},
+	"AdminAddAccommodationPage": {
+		"AdminAddAccommodationForm": {
+			"owner": "Owner",
+			"ownerDescription": "Search for the user this accommodation belongs to — they become its host.",
+			"pickCityFirst": "Pick a city first",
+			"searchCityPlaceholder": "Search your city",
+			"searchOwnerPlaceholder": "Search by name or email",
+			"searchStreetPlaceholder": "Search street name"
+		},
+		"AdminAddAccommodationHeader": {
+			"subtitle": "Create a listing on behalf of its owner. Everything can be edited later — it goes live after a quick review.",
+			"title": "Add accommodation"
+		},
+		"AdminAmenitiesField": {
+			"pickAtLeast": "Pick at least {count}",
+			"selected": "selected"
+		},
+		"SEO": {
+			"description": "Create a listing on behalf of its owner. It goes live after a quick review.",
+			"title": "Add accommodation"
+		}
+	},
+	"BookPage": {
+		"BookGuestForm": {
+			"email": "Email",
+			"emailPlaceholder": "you@example.com",
+			"firstName": "First name",
+			"firstNamePlaceholder": "Marko",
+			"lastName": "Last name",
+			"lastNamePlaceholder": "Marković",
+			"messageToHost": "Message to host",
+			"optional": "Optional",
+			"phone": "Phone",
+			"phonePlaceholder": "+381 6X XXX XXXX",
+			"specialRequestsPlaceholder": "Arrival time, special requests, anything the host should know…",
+			"yourDetails": "Your details"
+		},
+		"BookConfirmActionsField": {
+			"agreement": "By selecting {action} you agree to the host's house rules and to pay the full amount by {paymentMethod}.",
+			"confirmReservation": "Confirm reservation",
+			"pickDates": "Please pick your dates at the top of the page before you continue.",
+			"requestToBook": "Request to book"
+		},
+		"BookDetails": {
+			"guests": "Guests",
+			"yourDates": "Your dates"
+		},
+		"BookDetailsStayRules": {
+			"minimumStay": "Minimum stay of {nights}",
+			"noSameDay": "Same-day check-in isn't available — pick a start date at least a day ahead",
+			"sameDayAvailable": "Same-day check-in is available",
+			"title": "Before you book"
+		},
+		"BookGuestDetails": {
+			"dates": "Dates",
+			"guests": "Guests"
+		},
+		"BookHeader": {
+			"backToAccommodation": "Back to accommodation",
+			"confirmBooking": "Confirm your booking",
+			"datesMissing": "You haven’t picked your dates yet — add them under",
+			"datesMissingSuffix": "to see the full price and confirm.",
+			"requestToBook": "Request to book",
+			"yourTrip": "Your trip"
+		},
+		"BookPaymentField": {
+			"title": "Payment"
+		},
+		"BookPrice": {
+			"addDatesHint": "Add your dates to see the full price — from",
+			"cleaningFee": "Cleaning fee",
+			"cleaningFeeOnce": "{price}, once per stay",
+			"perNightPeriod": "/ night.",
+			"serviceFee": "Service fee",
+			"title": "Price details",
+			"total": "Total",
+			"weekendRate": "Weekend rate (Fri–Sat)",
+			"weekendRatePerNight": "{price}/night",
+			"weeklyDiscount": "Weekly discount",
+			"weeklyDiscountOff": "−{percent}% off stays of 7+ nights",
+			"weeklyDiscountPercent": "Weekly discount ({percent}%)"
+		},
+		"BookSummaryAccommodation": {
+			"in": "in"
+		},
+		"SEO": {
+			"description": "Confirm your booking details.",
+			"title": "Book {title}"
+		},
+		"loadErrorDescription": "Something went wrong while loading this accommodation. Please try again in a moment.",
+		"loadErrorTitle": "Couldn't load this accommodation"
+	},
+	"HostEditAccommodationPage": {
+		"EditAccommodationForm": {
+			"addMorePhotos": "Add more photos",
+			"currentPhotos": "Current photos",
+			"payments": "Payments",
+			"paymentsDescription": "How guests pay you for their stay.",
+			"removePhotosDescription": "Remove any photo you no longer want, and upload more to round out the accommodation."
+		},
+		"EditAccommodationExistingPhotos": {
+			"noCurrentPhotos": "No current photos. Upload some below.",
+			"photoName": "photo"
+		},
+		"EditAccommodationInformationTab": {
+			"pickCityFirst": "Pick a city first",
+			"saveChanges": "Save changes",
+			"searchCityPlaceholder": "Search your city",
+			"searchStreetPlaceholder": "Search street name"
+		},
+		"EditAccommodationPageEmpty": {
+			"backToMyAccommodations": "Back to my accommodations",
+			"notFoundDescription": "This accommodation may have been removed, or it isn't one of yours. Head back to your accommodations to keep editing.",
+			"notFoundTitle": "Accommodation not found"
+		},
+		"EditAccommodationSettingsTab": {
+			"currentStatus": "Current status",
+			"dangerZoneDescription": "Deleting an accommodation is permanent — its photos and details are removed for good.",
+			"dangerZoneTitle": "Danger zone",
+			"deleteAccommodation": "Delete accommodation",
+			"deleteDescription": "Type the accommodation title \"{title}\" to confirm. This can't be undone.",
+			"deleteTitle": "Delete this accommodation?",
+			"relist": "Relist",
+			"relistDescription": "It will be sent for review and become publicly visible once approved.",
+			"relistTitle": "Relist this property?",
+			"suspendedByAdmin": "Suspended by an administrator.",
+			"unlist": "Unlist",
+			"unlistDescription": "It will be hidden from search and its public page until you relist it.",
+			"unlistTitle": "Unlist this property?",
+			"visibilityDescription": "Control whether this accommodation is publicly discoverable.",
+			"visibilityTitle": "Visibility"
+		},
+		"EditAccommodationTabs": {
+			"description": "Edit your accommodation's details, availability and settings.",
+			"information": "Information",
+			"settings": "Settings",
+			"viewAccommodation": "View accommodation"
+		},
+		"SEO": {
+			"description": "Edit your accommodation accommodation.",
+			"title": "Edit accommodation"
+		},
+		"loadErrorDescription": "Something went wrong while loading this accommodation. Please try again in a moment.",
+		"loadErrorTitle": "Couldn't load this accommodation"
+	},
+	"LoginPage": {
+		"LoginFormNoImage": {
+			"email": "Email",
+			"emailPlaceholder": "m@example.com",
+			"forgotPassword": "Forgot your password?",
+			"login": "Login",
+			"loginDescription": "Enter your email below to login to your account",
+			"noAccount": "Don't have an account?",
+			"password": "Password",
+			"signInFailed": "Sign in failed. Please check your credentials and try again.",
+			"signUp": "Sign up",
+			"signedInToast": "Signed in successfully."
+		},
+		"LoginFormWithImage": {
+			"email": "Email",
+			"emailPlaceholder": "m@example.com",
+			"forgotPassword": "Forgot your password?",
+			"login": "Login",
+			"loginDescription": "Enter your email below to login to your account",
+			"loginTitle": "Login to your account",
+			"noAccount": "Don't have an account?",
+			"orContinueWith": "Or continue with",
+			"password": "Password",
+			"signInFailed": "Sign in failed. Please check your credentials and try again.",
+			"signUp": "Sign up",
+			"signedInToast": "Signed in successfully."
+		},
+		"SEO": {
+			"description": "Sign in to your account.",
+			"title": "Sign in"
+		}
+	},
+	"ForgotPasswordPage": {
+		"PasswordResetFormModel": {
+			"invalidOrExpiredCode": "Invalid or expired code. Please try again.",
+			"passwordResetSuccess": "Password reset successfully."
+		},
+		"SEO": {
+			"description": "Request a password reset link.",
+			"title": "Reset your password"
+		}
+	},
+	"SignUpPage": {
+		"SignUpFormNoImage": {
+			"accountCreatedToast": "Account created successfully.",
+			"alreadyHaveAccount": "Already have an account?",
+			"confirmPassword": "Confirm Password",
+			"confirmPasswordDescription": "Please confirm your password.",
+			"createAccount": "Create Account",
+			"createAccountDescription": "Enter your information below to create your account",
+			"createAccountTitle": "Create an account",
+			"email": "Email",
+			"emailDescription": "We'll use this to contact you. We will not share your email with anyone else.",
+			"emailPlaceholder": "m@example.com",
+			"fullName": "Full Name",
+			"fullNamePlaceholder": "John Doe",
+			"password": "Password",
+			"passwordDescription": "Must be at least 8 characters long.",
+			"signIn": "Sign in",
+			"signUpFailed": "We couldn't create your account. Check your details and try again, or sign in if you already have one."
+		},
+		"SignUpFormWithImage": {
+			"accountCreatedToast": "Account created successfully.",
+			"alreadyHaveAccount": "Already have an account?",
+			"confirmPassword": "Confirm Password",
+			"confirmPasswordDescription": "Please confirm your password.",
+			"createAccount": "Create Account",
+			"createAccountDescription": "Fill in the form below to create your account",
+			"createAccountTitle": "Create your account",
+			"email": "Email",
+			"emailDescription": "We'll use this to contact you. We will not share your email with anyone else.",
+			"emailPlaceholder": "m@example.com",
+			"fullName": "Full Name",
+			"fullNamePlaceholder": "John Doe",
+			"orContinueWith": "Or continue with",
+			"password": "Password",
+			"passwordDescription": "Must be at least 8 characters long.",
+			"signIn": "Sign in",
+			"signUpFailed": "We couldn't create your account. Check your details and try again, or sign in if you already have one."
+		},
+		"SEO": {
+			"description": "Sign up to save favorites, book stays and host accommodations.",
+			"title": "Create your account"
+		}
+	},
+	"HomePage": {
+		"SubscribeToNewsletterForm": {
+			"enterYourEmail": "Enter your email"
+		},
+		"BecomeHostSection": {
+			"eyebrow": "For hosts",
+			"listingsText": "Publishing status, pricing and fees at a glance — edit, renew or add another place in a click.",
+			"listingsTitle": "Every listing in one table.",
+			"numbersText": "Pending requests, arrivals and departures, occupancy against last month, and the earnings held for you.",
+			"numbersTitle": "Your numbers, live.",
+			"requestsText": "Approve, decline or ask the guest to confirm their stay — deadlines and cancellation windows handled for you.",
+			"requestsTitle": "Every request, one decision.",
+			"revenueLabel": "Revenue · last 12 months",
+			"subtitle": "Four screens do the whole job — here's what you get once your place is live.",
+			"title": "Everything that runs your hosting.",
+			"trendsText": "Revenue and bookings for any period up to 366 days, plus a per-listing breakdown of which place is carrying you.",
+			"trendsTitle": "Trends, up to a year.",
+			"pricingEyebrow": "PAYOUT",
+			"pricingTitle": "Choose how you pay us",
+			"pricingSubtitle": "Set once when you create your listing: a flat fee billed every three months, or a percentage we take from each booking.",
+			"flatFeeMeta": "BILLED QUARTERLY",
+			"flatFeeTitle": "Flat fee",
+			"flatFeeText": "One fixed charge every three months, no matter how many bookings come in. Predictable, and easy to plan around.",
+			"percentageMeta": "PER BOOKING",
+			"percentageTitle": "Percentage of bookings",
+			"percentageText": "We take a set percentage from each confirmed booking. Nothing comes out of a quiet month.",
+			"pricingOr": "OR"
+		},
+		"FeaturedAccommodationsEmpty": {
+			"emptyText": "We're curating a selection of the best apartments in Belgrade — check back soon.",
+			"emptyTitle": "No featured stays yet"
+		},
+		"FeaturedAccommodationsSection": {
+			"errorDescription": "Something went wrong while loading these. Please try again in a moment.",
+			"errorTitle": "Couldn't load featured stays",
+			"eyebrow": "Featured stays",
+			"subtitle": "A short, curated selection — verified hosts, honest photos and clear pricing.",
+			"title": "Handpicked apartments"
+		},
+		"HeroSection": {
+			"apartments": "apartments",
+			"booking": "booking",
+			"feelAtHome": "Feel at home,",
+			"handpicked": "Handpicked",
+			"local": "Local",
+			"simple": "Simple",
+			"subtitle": "Handpicked apartments for a night, a week, or a whole season — booked in minutes, no back-and-forth.",
+			"support": "support",
+			"whereverYouStay": "wherever you stay."
+		},
+		"HeroSectionSearch": {
+			"addDates": "Add dates",
+			"any": "Any",
+			"fourPlusGuests": "4+ guests",
+			"guests": "Guests",
+			"locationRequired": "Please enter a location to search.",
+			"oneGuest": "1 guest",
+			"search": "Search",
+			"threeGuests": "3 guests",
+			"twoGuests": "2 guests",
+			"when": "When",
+			"where": "Where",
+			"wherePlaceholder": "Where are you going?"
+		},
+		"NewslettersSection": {
+			"disclaimer": "By subscribing you agree to receive occasional emails. Unsubscribe anytime.",
+			"emailAriaLabel": "Email address",
+			"emailPlaceholder": "Enter your email",
+			"eyebrow": "Newsletter",
+			"subscribe": "Subscribe",
+			"subscribing": "Subscribing...",
+			"subtitle": "Get the best apartments, seasonal deals and Belgrade travel tips delivered straight to your inbox.",
+			"title": "Stay in the loop"
+		},
+		"SEO": {
+			"description": "Handpicked apartments for a night, a week, or a whole season. Search, compare and book your stay in minutes — clear pricing, instant confirmation, local support.",
+			"title": "Handpicked apartments — find & book your stay"
+		},
+		"TestimonialsSection": {
+			"aroundTheWorld": "around the world",
+			"bestPrice": "Best Price",
+			"eyebrow": "Testimonials",
+			"lovedByGuests": "Loved by guests",
+			"secureBooking": "Secure Booking",
+			"verifiedReviews": "Verified Reviews",
+			"watchReview": "Watch Review",
+			"watchReviewAlt": "Watch {name}'s review"
+		},
+		"WhyUsSection": {
+			"bookingAStay": "Booking a stay,",
+			"eyebrow": "Why BGApartman",
+			"intro": "We're the Belgrade team behind BGApartman — hands-on, accountable, and never out of reach. That's the standard below.",
+			"note": "No apps to download, no drawn-out email threads — just a good place to stay and someone to call if you need them.",
+			"reasonBookText": "Pick your dates, confirm, and get your booking details right away — no back-and-forth.",
+			"reasonBookTitle": "Book in minutes",
+			"reasonHandpickedText": "Every place is personally vetted — real photos, honest descriptions, no surprises at check-in.",
+			"reasonHandpickedTitle": "Handpicked apartments",
+			"reasonLocalText": "We're based in Belgrade. If anything comes up during your stay, a real person answers.",
+			"reasonLocalTitle": "Local support",
+			"reasonTransparentText": "The price you see is the price you pay. No hidden fees, no cleaning-fee games.",
+			"reasonTransparentTitle": "Transparent pricing",
+			"withoutTheGuesswork": "without the guesswork"
+		}
+	},
+	"AccommodationPage": {
+		"AccommodationAmenitiesSection": {
+			"showAll": "Show all {count} amenities",
+			"title": "What this place offers"
+		},
+		"AccommodationBookingPanel": {
+			"checkAvailability": "Check availability",
+			"notChargedYet": "You won’t be charged yet"
+		},
+		"AccommodationLocationMap": {
+			"mapTitle": "Map of {title}"
+		},
+		"AccommodationLocationSection": {
+			"title": "Where you’ll be"
+		},
+		"AccommodationMobileBar": {
+			"checkAvailability": "Check availability",
+			"from": "from",
+			"night": "night"
+		},
+		"AccommodationOverviewSection": {
+			"hostingSince": "Hosting since",
+			"in": "in"
+		},
+		"AccommodationPageEmpty": {
+			"browseStays": "Browse stays",
+			"text": "This stay may have been removed or is no longer published. Browse our other places to stay.",
+			"title": "Accommodation unavailable"
+		},
+		"AccommodationPoliciesSection": {
+			"bookingRulesTitle": "Booking & stay",
+			"houseRulesTitle": "House rules",
+			"title": "Things to know",
+			"checkInAfter": "Check-in after {time}",
+			"checkoutBefore": "Checkout before {time}",
+			"eventsAllowed": "Events allowed",
+			"instantBooking": "Instant booking",
+			"maximumStayNights": "Maximum stay {days} nights",
+			"minimumStayNights": "Minimum stay {days} nights",
+			"noPartiesOrEvents": "No parties or events",
+			"noPets": "No pets",
+			"noSameDay": "No same-day bookings",
+			"noSmoking": "No smoking",
+			"petsAllowed": "Pets allowed",
+			"quietHours": "Quiet hours {start}–{end}",
+			"requestToBook": "Request to book",
+			"sameDayAccepted": "Same-day bookings accepted",
+			"smokingAllowed": "Smoking allowed"
+		},
+		"AccommodationSummaryDescription": {
+			"showLess": "Show less",
+			"showMore": "Show more",
+			"title": "About this apartment"
+		},
+		"AccommodationSummarySection": {
+			"instantBookingText": "Your dates are confirmed straight away — no waiting for approval.",
+			"instantBookingTitle": "Instant booking",
+			"parkingText": "Leave the car right outside, at no extra cost.",
+			"parkingTitle": "Free parking on site",
+			"petsText": "Travelling with a furry friend? Just let the host know in advance.",
+			"petsTitle": "Pets are welcome",
+			"selfCheckInText": "Let yourself in any time with the keypad — no meet-up needed.",
+			"selfCheckInTitle": "Self check-in",
+			"superhostText": "Superhosts are experienced, highly rated hosts committed to great stays.",
+			"superhostTitle": "{name} is a Superhost"
+		},
+		"BookingCalendar": {
+			"minimumStay": "Minimum stay {nights}"
+		},
+		"BookingPanelFacts": {
+			"checkIn": "Check-in",
+			"checkOut": "Check-out",
+			"cleaningFee": "Cleaning fee",
+			"maxGuests": "Max guests",
+			"minimumStay": "Minimum stay",
+			"nightsCount": "{count} night(s)",
+			"noCleaningFee": "No cleaning fee",
+			"weekendNights": "Weekend nights (Fri–Sat)",
+			"weeklyDiscount": "Weekly discount",
+			"weeklyDiscountOff": "{percent}% off (7+ nights)"
+		},
+		"BookingPanelFooter": {
+			"instantBooking": "Instant booking"
+		},
+		"BookingPanelPrice": {
+			"perNight": "/ night"
+		},
+		"GuestStepper": {
+			"adults": "Adults",
+			"ageHint": "Age 13+",
+			"agesHint": "Ages 2–12",
+			"children": "Children",
+			"decreaseAdults": "Decrease adults",
+			"decreaseChildren": "Decrease children",
+			"increaseAdults": "Increase adults",
+			"increaseChildren": "Increase children"
+		},
+		"SEO": {
+			"fallbackDescription": "View accommodation details.",
+			"fallbackTitle": "Accommodation",
+			"title": "{title} — {city}"
+		},
+		"loadErrorDescription": "Something went wrong while loading this accommodation. Please try again in a moment.",
+		"loadErrorTitle": "Couldn't load this accommodation"
+	},
+	"AdminAccommodationsPage": {
+		"AdminAccommodationsFilters": {
+			"anyStatus": "Any status",
+			"anyType": "Any type",
+			"clear": "Clear",
+			"filterByStatus": "Filter by status",
+			"filterByType": "Filter by type"
+		},
+		"AdminAccommodationsHeader": {
+			"addAccommodation": "Add accommodation",
+			"subtitle": "Which listings need review, and what is live on the platform.",
+			"title": "Accommodations"
+		},
+		"AdminAccommodationsTable": {
+			"allListings": "All listings",
+			"featuredOnHomepage": "Featured on the homepage",
+			"searchByTitle": "Search by title…"
+		},
+		"AdminAccommodationsTableActions": {
+			"archive": "Archive",
+			"featureOnHomepage": "Feature on homepage",
+			"grantFreePublish": "Grant free publish",
+			"moreActions": "More actions",
+			"openPublicPage": "Open public page",
+			"publish": "Publish",
+			"recordFeePayment": "Record fee payment",
+			"removeFromHomepage": "Remove from homepage",
+			"suspend": "Suspend"
+		},
+		"AdminAccommodationsTableStatus": {
+			"awaitingPayment": "Awaiting payment"
+		},
+		"AdminGrantFreePublishDialog": {
+			"body": "Waives the listing fee for the chosen duration — {listing} behaves exactly as if it had paid, but no payment is recorded and nothing counts as revenue. The grant is audit-logged.",
+			"cancel": "Cancel",
+			"confirm": "Grant free publish",
+			"coveredForeverNote": "Currently covered forever — the grant keeps it that way.",
+			"coveredUntilNote": "Currently covered until {date} — the grant extends it from there.",
+			"duration": "Duration",
+			"forever": "Forever",
+			"graceNote": "Currently in the overdue grace window — the grant extends from the current expiry.",
+			"lapsedNote": "This listing expired — the grant revives it to live immediately, no re-review.",
+			"oneMonth": "1 month",
+			"oneYear": "1 year",
+			"sixMonths": "6 months",
+			"suspendedNote": "This listing is suspended — the grant covers the fee but does not unpublish it; Publish stays a moderation step.",
+			"thisListing": "this listing",
+			"threeMonths": "3 months",
+			"title": "Grant free publish?",
+			"unpaidNote": "This listing has never had a paid period — the grant covers the fee and publishes it immediately, no re-review."
+		},
+		"AdminModerateAccommodationDialog": {
+			"archiveBody": "{listing} is hidden from guests. No email is sent — archiving is tidy-up, not moderation. The host can resubmit it for review.",
+			"archiveListing": "Archive listing",
+			"archiveTitle": "Archive this listing?",
+			"cancel": "Cancel",
+			"publishBody": "{listing} goes live and becomes bookable by guests. The host is notified by email.",
+			"publishListing": "Publish listing",
+			"publishTitle": "Publish this listing?",
+			"reasonForSuspending": "Reason for suspending",
+			"suspendBody": "{listing} is pulled from search and can no longer be booked. Bookings already confirmed go ahead as planned. The host will receive this explanation by email, and only an admin can put the listing back.",
+			"suspendListing": "Suspend listing",
+			"suspendReasonPlaceholder": "e.g. The photos don't match the address given.",
+			"suspendTitle": "Suspend this listing?",
+			"thisListing": "This listing"
+		},
+		"AdminStampListingFeeDialog": {
+			"amountLabel": "Amount received (EUR) — standard is {amount}",
+			"bankReference": "Bank reference",
+			"bankReferencePlaceholder": "e.g. transfer ID or statement line",
+			"cancel": "Cancel",
+			"recordBody": "{listing} another paid period, extending from its current expiry. If the listing had expired, it goes back live immediately — no re-review. The entry is audit-logged as the record of a payment the platform never processed.",
+			"recordFeePaymentTitle": "Record a fee payment?",
+			"recordPayment": "Record payment",
+			"thisListing": "this listing"
+		}
+	},
+	"AdminBookingsPage": {
+		"AdminBookingDetailRow": {
+			"automatic": "Automatic",
+			"byThe": "By the {actor}",
+			"cancelBooking": "Cancel booking",
+			"cancellation": "Cancellation",
+			"cancelledOn": "on {date}",
+			"cleaning": "Cleaning",
+			"guest": "Guest",
+			"hostLabel": "Host: {host}",
+			"lateCancellation": "late cancellation (payment kept by the host)",
+			"markHandled": "Mark handled",
+			"night": "{count} night",
+			"nights": "{count} nights",
+			"openGuestReservationPage": "Open guest reservation page",
+			"price": "Price",
+			"serviceFee": "Service fee",
+			"specialRequests": "Special requests",
+			"stay": "Stay",
+			"subtotal": "Subtotal",
+			"total": "Total"
+		},
+		"AdminBookingsFilters": {
+			"anyPayment": "Any payment",
+			"anyStatus": "Any status",
+			"checkInFrom": "Check-in from",
+			"checkInTo": "Check-in to",
+			"clear": "Clear",
+			"code": "Code",
+			"email": "Email",
+			"filterByBookingStatus": "Filter by booking status",
+			"filterByPaymentStatus": "Filter by payment status",
+			"needsAttention": "Needs attention",
+			"searchField": "Search field"
+		},
+		"AdminBookingsTable": {
+			"accommodation": "Accommodation",
+			"bookings": "Bookings",
+			"code": "Code",
+			"guest": "Guest",
+			"host": "Host",
+			"payment": "Payment",
+			"paymentNeedsAttention": "A payment operation needs attention",
+			"searchByBookingCode": "Search by booking code…",
+			"searchByGuestEmail": "Search by guest email…",
+			"status": "Status",
+			"stay": "Stay",
+			"total": "Total"
+		},
+		"AdminCancelBookingDialog": {
+			"cancelBooking": "Cancel booking",
+			"cancelThisBooking": "Cancel this booking?",
+			"keepBooking": "Keep booking",
+			"notificationBody": "Both the guest and the host will be notified by email with this reason. If the guest paid online, they are refunded in full automatically. This cannot be undone.",
+			"reasonForCancelling": "Reason for cancelling",
+			"reasonPlaceholder": "e.g. Guest and host agreed to cancel over email."
+		},
+		"description": "Look up a booking and see what happened with it.",
+		"title": "Bookings"
+	},
+	"AdminDashboardPage": {
+		"AdminDashboardChartEmpty": {
+			"noBookingsYet": "No bookings or platform revenue yet — the trend appears with the first confirmed booking or fee"
+		},
+		"AdminDashboardHeader": {
+			"dashboard": "Dashboard",
+			"platformOverview": "Platform overview and things that need your attention."
+		},
+		"AdminDashboardPageLoading": {
+			"loadingDashboard": "Loading the dashboard"
+		},
+		"AdminDashboardReportsQueue": {
+			"allReports": "All reports",
+			"needsAttention": "Needs attention",
+			"newCount": "{count} new",
+			"reply": "Reply"
+		},
+		"AdminDashboardStatCards": {
+			"bookings": "Bookings",
+			"platform": "@render ledger('Platform', platform)",
+			"publishedListings": "Published listings",
+			"revenue": "Revenue",
+			"thisMonth": "@render ledger('This month', thisMonth)",
+			"users": "Users"
+		},
+		"SEO": {
+			"description": "Platform overview.",
+			"title": "Admin dashboard"
+		},
+		"loadDashboardErrorDescription": "Something went wrong while loading the overview. Please try again.",
+		"loadDashboardErrorTitle": "Couldn't load the dashboard"
+	},
+	"AdminLayout": {
+		"navAccommodations": "Accommodations",
+		"navBackToUser": "Back to User",
+		"navBookings": "Bookings",
+		"navDashboard": "Dashboard",
+		"navFeedback": "Feedback",
+		"navGeneral": "General",
+		"navReports": "Reports",
+		"navUsers": "Users"
+	},
+	"AdminReportsPage": {
+		"AdminReportDetail": {
+			"replyTo": "Reply to {email}",
+			"resolvedSuffix": "· Resolved"
+		},
+		"AdminReportsHeader": {
+			"reports": "Reports",
+			"subtitle": "What people are telling us, and what is unread."
+		},
+		"AdminReportsTable": {
+			"loadError": "Could not load reports. Try refreshing the page.",
+			"new": "New",
+			"newReportsLandHere": "New reports land here the moment someone files one.",
+			"noReportsYet": "No reports yet.",
+			"nobodyFiledReport": "Nobody has filed a report yet.",
+			"nothingNew": "Nothing new. All caught up.",
+			"reportRowLabel": "{label} report",
+			"reports": "Reports",
+			"resolved": "Resolved"
+		},
+		"AdminReportsTableActions": {
+			"reopen": "Reopen",
+			"resolve": "Resolve",
+			"undo": "Undo"
+		},
+		"AdminReportsTableFilters": {
+			"all": "All",
+			"anyCategory": "Any category",
+			"filterByCategory": "Filter by category",
+			"new": "New",
+			"reportView": "Report view"
+		},
+		"AdminReportsTableData": {
+			"category": "Category",
+			"new": "New",
+			"received": "Received",
+			"report": "Report",
+			"resolved": "Resolved",
+			"status": "Status"
+		}
+	},
+	"AdminUsersPage": {
+		"BanUserDialog": {
+			"description": "The user is signed out and cannot sign in again until unbanned. The optional reason is shown on next sign-in attempt.",
+			"expires1Day": "1 day",
+			"expires30Days": "30 days",
+			"expires7Days": "7 days",
+			"expiresLabel": "Expires",
+			"expiresPermanent": "Permanent",
+			"reasonLabel": "Reason (optional)",
+			"reasonPlaceholder": "Violation of terms…",
+			"title": "Ban {userEmail}",
+			"trigger": "Ban"
+		},
+		"ChangeRoleButton": {
+			"demote": "Demote to user",
+			"demoteDescription": "Are you sure you want to do this? The user will immediately lose admin privileges.",
+			"demoteTitle": "Demote {userEmail} to user?",
+			"promote": "Promote to admin",
+			"promoteDescription": "Are you sure you want to do this? The user will gain full admin privileges, including the ability to ban and delete other accounts.",
+			"promoteTitle": "Promote {userEmail} to admin?"
+		},
+		"DeleteUserDialog": {
+			"cannotDeleteDescription": "Admins must be demoted to \"user\" before they can be deleted.",
+			"cannotDeleteTitle": "Cannot delete {userEmail}",
+			"deleteDescription": "This is permanent and cascades to sessions and accounts. Type the email below to confirm.",
+			"deleteTitle": "Delete {userEmail}?",
+			"trigger": "Delete…"
+		},
+		"SEO": {
+			"description": "View and manage a user account.",
+			"title": "User details"
+		},
+		"SuperhostButton": {
+			"makeSuperhost": "Make superhost",
+			"makeSuperhostDescription": "The badge appears on every listing they own, and on any listing they add later. Their listings update in the background, so it can take a moment on a large portfolio.",
+			"makeSuperhostTitle": "Make {userEmail} a superhost?",
+			"removeSuperhost": "Remove superhost",
+			"removeSuperhostDescription": "The badge disappears from every listing they own. Their listings update in the background, so it can take a moment on a large portfolio.",
+			"removeSuperhostTitle": "Remove superhost from {userEmail}?"
+		},
+		"UnbanUserButton": {
+			"label": "Unban"
+		},
+		"UserAccounts": {
+			"createdLabel": "Created: {created}",
+			"description": "Sign-in providers connected to this user.",
+			"empty": "No linked accounts.",
+			"idLabel": "ID: {id}",
+			"loadFailed": "Failed to load accounts.",
+			"noPassword": "No password",
+			"passwordSet": "Password set",
+			"scopeLabel": "Scope: {scope}",
+			"title": "Linked accounts"
+		},
+		"UserActivity": {
+			"columnAction": "Action",
+			"columnIp": "IP",
+			"columnResource": "Resource",
+			"columnStatus": "Status",
+			"columnWhen": "When",
+			"description": "Audit log entries scoped to this user. Newest first.",
+			"statusFailed": "Failed",
+			"statusSuccess": "Success",
+			"title": "Activity"
+		},
+		"UserDangerZone": {
+			"banDescription": "Sign the user out and prevent further sign-ins.",
+			"description": "Account-level actions. Changes here are audited and may be irreversible.",
+			"grantAdminDescription": "Grant admin privileges to this account.",
+			"removeAdminDescription": "Remove admin privileges from this account.",
+			"roleTitle": "Role: {role}",
+			"statusActive": "Active",
+			"statusBanned": "Banned",
+			"title": "Danger zone",
+			"unbanDescription": "Lift the ban so the user can sign in again."
+		},
+		"UserOverview": {
+			"activityLabel": "Activity",
+			"banReasonLabel": "Ban reason",
+			"bannedPermanent": "Banned (permanent)",
+			"bannedUntil": "Banned until {date}",
+			"copyUserId": "Copy user ID",
+			"createdLabel": "Created",
+			"notSuperhostDescription": "Not a superhost. Granting it shows the badge on all of their listings.",
+			"reputationLabel": "Reputation",
+			"roleLabel": "Role",
+			"statusActive": "Active",
+			"statusLabel": "Status",
+			"superhostDescription": "Superhost — the badge shows on every listing they own.",
+			"unverified": "Unverified",
+			"updatedLabel": "Updated",
+			"userIdLabel": "User ID",
+			"verified": "Verified",
+			"viewBookings": "View bookings",
+			"viewListings": "View listings"
+		},
+		"UserPageEmpty": {
+			"backToUsers": "Back to users",
+			"description": "The user you're looking for doesn't exist or may have been deleted.",
+			"title": "User not found"
+		},
+		"UserSessions": {
+			"createdLabel": "Created: {created}",
+			"description": "Devices currently signed in. Revoking signs the device out immediately.",
+			"empty": "No active sessions.",
+			"expiresLabel": "Expires: {expires}",
+			"ipLabel": "IP: {ip}",
+			"loadFailed": "Failed to load sessions.",
+			"revoke": "Revoke",
+			"revokeAll": "Revoke all",
+			"title": "Active sessions",
+			"unknownDevice": "Unknown device"
+		},
+		"UserTabs": {
+			"accounts": "Accounts",
+			"activity": "Activity",
+			"dangerZone": "Danger zone",
+			"overview": "Overview",
+			"sessions": "Sessions"
+		},
+		"UsersFilters": {
+			"anyRole": "Any role",
+			"anyStatus": "Any status",
+			"anyVerification": "Any verification",
+			"clear": "Clear",
+			"roleAdmin": "Admin",
+			"roleUser": "User",
+			"searchFieldEmail": "Email",
+			"searchFieldName": "Name",
+			"statusActive": "Active",
+			"statusBanned": "Banned",
+			"unverified": "Unverified",
+			"verified": "Verified"
+		},
+		"active": "Active",
+		"banned": "Banned",
+		"colCreated": "Created",
+		"colEmail": "Email",
+		"colRole": "Role",
+		"colStatus": "Status",
+		"colUser": "User",
+		"colVerified": "Verified",
+		"description": "Search, filter, and manage user accounts.",
+		"loadUserErrorDescription": "Something went wrong while fetching this user. Please try again.",
+		"loadUserErrorTitle": "Failed to load user",
+		"no": "No",
+		"searchPlaceholder": "Search by {field}…",
+		"title": "Users",
+		"yes": "Yes"
+	},
+	"BookingStatusExplanationPage": {
+		"SEO": {
+			"description": "A quick guide to what each booking status means — pending, confirmed, checked in, checked out and cancelled.",
+			"title": "Booking statuses, explained"
+		},
+		"cancelledDescription": "The booking was called off — by the guest or host — and the dates have been released.",
+		"cancelledHeading": "If something changes",
+		"cancelledPolicy": "Guests can cancel a confirmed stay for free when check-in is at least 7 days away. Inside that window, contact the host directly.",
+		"checkedInDescription": "The guest has arrived and the stay is currently in progress.",
+		"checkedOutDescription": "The stay is finished and the guest has checked out.",
+		"confirmedDescription": "The host has accepted the booking. The dates are reserved and a confirmation email has been sent.",
+		"pendingDescription": "The booking request has been sent and is waiting for the host to confirm. Nothing is charged until it's accepted.",
+		"subtitle": "Every booking moves through a few simple stages. Here's what each status means, so you always know where things stand.",
+		"title": "Booking statuses, explained"
+	},
+	"ContactPage": {
+		"SEO": {
+			"description": "Questions about a stay, a booking or hosting in Belgrade? Send us a message or email us directly — we usually reply within one business day.",
+			"title": "Contact — {name}"
+		},
+		"emailLabel": "Email",
+		"emailPlaceholder": "you@example.com",
+		"emailUs": "Email us",
+		"eyebrow": "Contact",
+		"facebook": "Facebook",
+		"followAlong": "Follow along",
+		"formSubtitle": "Fill in the form and we'll get back to you by email.",
+		"formTitle": "Send us a message",
+		"heading": "Talk to a real person",
+		"instagram": "Instagram",
+		"intro": "Whether it's a question about a booking, a place you have your eye on, or hosting your own apartment — we read every message and reply personally.",
+		"messageLabel": "How can we help?",
+		"messagePlaceholder": "Tell us a little about what you need — dates, a place you saw, or a question.",
+		"nameLabel": "Your name",
+		"namePlaceholder": "Marko Marković",
+		"sendError": "Something went wrong. Please try again or email us at {email}.",
+		"submitLabel": "Send message",
+		"tiktok": "TikTok",
+		"typicalReply": "Typical reply",
+		"typicalReplyValue": "Within one business day",
+		"whereWeAre": "Where we are",
+		"whereWeAreValue": "Belgrade, Serbia",
+		"youtube": "YouTube"
+	},
+	"ErrorPage": {
+		"SEO": {
+			"pageNotFound": "Page not found",
+			"somethingWentWrong": "Something went wrong"
+		},
+		"backToHome": "Back to home",
+		"keepsHappening": "Keeps happening?",
+		"linkOutdated": "The link may be outdated, or the page may have moved. Let's get you back to a good place.",
+		"reportIssue": "Report the issue",
+		"somethingWentWrong": "Something went wrong",
+		"thisPageDoesntExist": "This page doesn't exist",
+		"tryAgain": "Try again",
+		"unexpectedError": "An unexpected error occurred. Please try again in a moment — if it keeps happening, let us know."
+	},
+	"GuestLayout": {
+		"navAdminPage": "Admin Page",
+		"navBecomeAHost": "Become a host",
+		"navBrowseStays": "Browse stays",
+		"navDashboard": "Dashboard",
+		"navMyBookings": "My bookings",
+		"navSaved": "Saved",
+		"navSwitchToHosting": "Switch to hosting"
+	},
+	"GuestDashboardPage": {
+		"DashboardHeader": {
+			"welcomeBack": "Welcome back",
+			"welcomeBackName": "Welcome back, {firstName}"
+		},
+		"DashboardNextTrip": {
+			"browseStays": "Browse stays",
+			"checkIn": "Check-in",
+			"checkOut": "Check-out",
+			"confirmation": "Confirmation",
+			"guests": "Guests",
+			"viewBooking": "View booking",
+			"yourNextTrip": "Your next trip"
+		},
+		"DashboardNextTripEmpty": {
+			"browseStays": "Browse stays",
+			"noTripsYet": "No trips yet",
+			"whenYouBook": "When you book a stay, it'll show up here."
+		},
+		"DashboardShortcuts": {
+			"checkedOut": "Checked out",
+			"savedPlaces": "Saved places",
+			"upcomingTrips": "Upcoming trips"
+		},
+		"DashboardUpcoming": {
+			"moreUpcoming": "More upcoming"
+		},
+		"SEO": {
+			"description": "Your trips at a glance.",
+			"title": "Guest dashboard"
+		},
+		"loadDashboardErrorDescription": "Something went wrong while loading your trips. Please try again in a moment.",
+		"loadDashboardErrorTitle": "Couldn't load your dashboard",
+		"nextStay": "Your next stay is {countdown}.",
+		"noTripsBooked": ": \"No trips booked yet — let's find your next one.\""
+	},
+	"GuestFavoritesPage": {
+		"FavoritesPageEmpty": {
+			"browseStays": "Browse stays",
+			"noSavedStaysYet": "No saved stays yet",
+			"tapTheHeart": "Tap the heart on any place you like and it'll show up here, ready for your next trip."
+		},
+		"SEO": {
+			"description": "Places you've saved for later.",
+			"title": "Saved stays"
+		},
+		"placesSavedForLater": "Places you've saved for later.",
+		"savedForLater": "{places} you've saved for later.",
+		"title": "Saved stays"
+	},
+	"GuestMyBookingsPage": {
+		"MyBookingsHeader": {
+			"myBookings": "My bookings",
+			"trackYourUpcoming": "Track your upcoming trips, review past stays and check the status of every reservation."
+		},
+		"SEO": {
+			"description": "Your trips, reservations and past stays.",
+			"title": "My bookings"
+		},
+		"loadBookingsErrorDescription": "Something went wrong while loading your reservations. Please try again in a moment.",
+		"loadBookingsErrorTitle": "Couldn't load your bookings"
+	},
+	"HostAnalyticsPage": {
+		"HostAnalyticsEmpty": {
+			"emptyDescription": "Try a longer range — numbers appear with your first confirmed booking.",
+			"emptyTitle": "Nothing here for this period"
+		},
+		"HostAnalyticsHeader": {
+			"description": "How your accommodations are performing — trend and per-listing.",
+			"title": "Analytics"
+		},
+		"HostAnalyticsPerAccommodationTable": {
+			"byAccommodation": "By accommodation"
+		},
+		"HostAnalyticsPeriodPicker": {
+			"custom": "Custom",
+			"minDaysError": "Select at least {days} days.",
+			"selectCustomRange": "Select custom date range"
+		},
+		"HostAnalyticsRevenueChart": {
+			"bookings": "Revenue",
+			"revenue": "revenue",
+			"revenueAndBookings": "Revenue & bookings",
+			"totalBookings": "Total revenue",
+			"totalRevenue": "revenue"
+		},
+		"SEO": {
+			"description": "How your accommodations are performing.",
+			"title": "Analytics"
+		},
+		"loadAnalyticsErrorTitle": "Could not load analytics",
+		"refreshPage": "Try refreshing the page.",
+		"HostAnalyticsTableData": {
+			"accommodation": "Accommodation",
+			"nextCheckIn": "Next check-in",
+			"occupancy": "Occupancy",
+			"revenue": "Revenue"
+		}
+	},
+	"HostCalendarPage": {
+		"ApartmentCalendar": {
+			"block": "Block",
+			"clear": "Clear",
+			"loadError": "Could not load this calendar. Refresh to try again.",
+			"unblock": "Unblock"
+		},
+		"SEO": {
+			"description": "Block and reopen nights on your listing.",
+			"title": "Calendar"
+		},
+		"blockDatesHint": "Select dates to block or reopen them. Nights a guest already booked can't be changed here",
+		"loadErrorDescription": "Something went wrong while loading this accommodation. Please try again in a moment.",
+		"loadErrorTitle": "Couldn't load this accommodation",
+		"viewReservations": "View reservations"
+	},
+	"HostDashboardPage": {
+		"HostDashboardEarnings": {
+			"addPayoutDetails": "Add payout details",
+			"onTheWay": "on the way",
+			"payoutPending": "Add your payout details — about 3 minutes — and we'll send it your way. Nothing expires, so there's no rush.",
+			"payoutSet": "Your payout details are set. We send your earnings once each stay is complete.",
+			"waitingForYou": "waiting for you"
+		},
+		"HostDashboardHeader": {
+			"subtitle": "Your accommodations at a glance. · {date}",
+			"title": "Dashboard"
+		},
+		"HostDashboardNoBookingsEmpty": {
+			"description": "Your accommodations are live. Share them to start receiving requests.",
+			"title": "You're ready for your first booking"
+		},
+		"HostDashboardPendingReservations": {
+			"description": "Requests waiting for your response — they expire automatically.",
+			"loadErrorDescription": "Open your reservations to answer them.",
+			"loadErrorTitle": "Couldn't load pending requests",
+			"reservationsLink": "Reservations",
+			"title": "Pending reservations",
+			"view": "View"
+		},
+		"HostDashboardPendingReservationsLoading": {
+			"loadingPending": "Loading pending reservations"
+		},
+		"HostDashboardStatCards": {
+			"ahead": "@render ledger('Ahead', ahead)",
+			"allLive": "All live",
+			"checkIns": "Check-ins",
+			"inReview": "{count} in review",
+			"nextDate": "Next {date}",
+			"noChange": "No change",
+			"noneInNext7Days": "None in the next 7 days",
+			"nothingLiveYet": "Nothing live yet",
+			"occupancy": "Occupancy",
+			"pts": "{count} pts",
+			"published": "Published",
+			"revenue": "Revenue",
+			"thisMonth": "@render ledger('This month', thisMonth)",
+			"vsLastMonth": "vs last month"
+		},
+		"HostDashboardStatsSectionLoading": {
+			"loading": "Loading your dashboard"
+		},
+		"HostDashboardTodayOverview": {
+			"checkInsToday": "Check-ins today",
+			"checkOutsToday": "Check-outs today",
+			"currentlyHosting": "Currently hosting",
+			"more": "+{count} more",
+			"noArrivalsOrDepartures": "No arrivals or departures today.",
+			"nothingToday": "Nothing today"
+		},
+		"SEO": {
+			"description": "Your accommodations at a glance.",
+			"title": "Dashboard"
+		},
+		"loadDashboardErrorDescription": "Something went wrong while loading your dashboard. Please try again.",
+		"loadDashboardErrorTitle": "Couldn't load dashboard"
+	},
+	"BecomeHostState": {
+		"cta": "Add your first accommodation",
+		"subtitle": "Create an accommodation and start welcoming guests — it only takes a few minutes.",
+		"title": "List your first place"
+	},
+	"HostLayout": {
+		"navAccommodations": "Accommodations",
+		"navAddAccommodation": "Add Accommodation",
+		"navAdminPage": "Admin Page",
+		"navAnalytics": "Analytics",
+		"navDashboard": "Dashboard",
+		"navMyAccommodations": "My Accommodations",
+		"navOverview": "Overview",
+		"navReservations": "Reservations",
+		"navSwitchToTraveling": "Switch to traveling"
+	},
+	"HostMyAccommodationsPage": {
+		"MyAccommodationsHeader": {
+			"addAccommodation": "Add accommodation",
+			"description": "Review accommodation status, pricing and capacity from one focused workspace.",
+			"title": "My accommodations"
+		},
+		"MyAccommodationsTable": {
+			"capacity": "{guests} guests, {bedrooms} bedrooms",
+			"emptyDescription": "Try a different search or clear the status filter.",
+			"emptyTitle": "No listings match",
+			"searchPlaceholder": "Search your listings by title…"
+		},
+		"MyAccommodationsTableAccommodationInfo": {
+			"inCity": "in {city}"
+		},
+		"MyAccommodationsTableActions": {
+			"calendar": "Calendar",
+			"edit": "Edit",
+			"editAccommodation": "Edit accommodation",
+			"openCalendar": "Open calendar",
+			"view": "View",
+			"viewAccommodation": "View accommodation"
+		},
+		"MyAccommodationsTableChangePlan": {
+			"changePlan": "Change plan",
+			"keepListingFee": "Keep my listing fee",
+			"switchBodyCoveredForever": "Your listing is covered forever; switching gives that up.",
+			"switchBodyDaysMany": "You have {daysLeft} paid days left; switching gives them up.",
+			"switchBodyDaysOne": "You have {daysLeft} paid day left; switching gives them up.",
+			"switchBodyIntro": "{title} becomes free to list — guests pay a {percent}% service fee (min €{minEuros}) on each booking, and the listing accepts online payments only.",
+			"switchBodyNoRefund": "This cannot be reversed for this listing — going back to a listing fee would mean creating a new listing. No refunds.",
+			"switchPermanently": "Switch permanently",
+			"switchTitle": "Switch to the per-booking fee?"
+		},
+		"MyAccommodationsTableFilters": {
+			"anyStatus": "Any status",
+			"clear": "Clear",
+			"filterByStatus": "Filter by status"
+		},
+		"MyAccommodationsTableListingFee": {
+			"coveredForever": "Covered forever",
+			"expired": "Expired",
+			"expiresInDays": "Expires in {days} days",
+			"expiresToday": "Expires today",
+			"listingFeeNotPaid": "Listing fee not paid — pay €{amount} to go live",
+			"overdueRenewNow": "Overdue — renew now",
+			"payNow": "Pay now",
+			"perBookingFee": "Per-booking fee ({percent}%) — permanent · new listing to change plan",
+			"untilDate": "Until {date}"
+		},
+		"MyAccommodationsTableRenewButton": {
+			"renew": "Renew"
+		},
+		"SEO": {
+			"description": "Manage your accommodation accommodations, publishing status and pricing.",
+			"title": "My accommodations"
+		},
+		"MyAccommodationsTableData": {
+			"accommodation": "Accommodation",
+			"capacity": "Capacity",
+			"created": "Created",
+			"plan": "Plan",
+			"price": "Price",
+			"status": "Status"
+		}
+	},
+	"HostReservationsPage": {
+		"ReservationsHeader": {
+			"description": "Review new requests, keep an eye on upcoming stays and manage your guests — all in one place.",
+			"title": "Reservations"
+		},
+		"ReservationsTable": {
+			"errorDescription": "Something went wrong while loading your reservations. Please try again.",
+			"errorTitle": "Couldn't load reservations"
+		},
+		"SEO": {
+			"description": "Review booking requests, track upcoming stays and manage your guests.",
+			"title": "Reservations"
+		}
+	},
+	"ReportPage": {
+		"ReportHeader": {
+			"foundABug": "Found a bug or something that didn't feel right? A few words is all we need — we read every report.",
+			"tellUsWhatHappened": "Tell us what happened"
+		},
+		"SEO": {
+			"description": "Tell us about a bug or anything else you ran into.",
+			"title": "Report an issue"
+		},
+		"categoryBroken": "Something is broken",
+		"categoryIdea": "I have an idea",
+		"categoryOther": "Something else",
+		"details": "Details",
+		"detailsPlaceholder": "Describe what you were doing and what went wrong. The more detail, the faster we can fix it.",
+		"emailDescription": "Leave your email if you'd like us to follow up.",
+		"emailOptional": "Email (optional)",
+		"emailPlaceholder": "you@example.com",
+		"sendReport": "Send report",
+		"whatsThisAbout": "What's this about?"
+	},
+	"ReservationPage": {
+		"ReservationConfirmation": {
+			"backToAccommodation": "Back to accommodation",
+			"bookAgain": "Book again",
+			"browseMoreStays": "Browse more stays",
+			"cancelled": "This booking for {apartmentTitle} was cancelled. If that's unexpected, reach out to {hostName}.",
+			"cardHeld": "Your card is held for {amount} — you're only charged if the host confirms.",
+			"checkIn": "Check-in",
+			"checkOut": "Check-out",
+			"checkedInDescription": "Enjoy your stay at {apartmentTitle}. Anything you need, {hostName} is your contact.",
+			"checkedOutDescription": "Hope you enjoyed {apartmentTitle}. Thanks for staying with us.",
+			"confirmationCode": "Confirmation code",
+			"confirmedDescription": "You're all set for {apartmentTitle}. We've emailed your confirmation details.",
+			"copyConfirmationCode": "Copy confirmation code",
+			"copySentTo": "A copy was sent to {email}",
+			"finalisingPayment": "Finalising your payment…",
+			"guests": "Guests",
+			"holdReleased": "The hold on your card was released. You were not charged.",
+			"hostCancelledThisBooking": "The host cancelled this booking",
+			"hostCouldNotAccept": "{hostName} couldn't accept this request. The dates were never reserved.",
+			"hostCouldntTakeThisOne": "The host couldn't take this one",
+			"hostDidNotRespond": "The host didn't respond in time.",
+			"nothingCharged": "Nothing was charged — you can request other dates any time.",
+			"paid": "Paid {amount}.",
+			"payOnArrival": "Pay {amount} in cash at the property.",
+			"pendingDescription": "{hostName} has {hours} hours to respond. You won't be charged unless it's confirmed.",
+			"refunded": "Refunded {amount}.",
+			"requestClosed": "Request closed",
+			"requestSent": "Request sent!",
+			"reservationCancelled": "Reservation cancelled",
+			"status": "Status",
+			"stay": "Stay",
+			"stayComplete": "Stay complete",
+			"supportCancelledThisBooking": "Support cancelled this booking",
+			"total": "Total ({method})",
+			"withdrawnDescription": "Nothing was reserved and nothing was charged. {apartmentTitle} is still there when you want it.",
+			"youCancelledThisBooking": "You cancelled this booking",
+			"youWithdrewThisRequest": "You withdrew this request",
+			"yourStayIsBooked": "Your stay is booked!",
+			"youreCheckedIn": "You're checked in"
+		},
+		"ReservationPageEmpty": {
+			"browseStays": "Browse stays",
+			"invalidLink": "This reservation link is invalid or may have been removed. Check the link from your confirmation, or browse other stays.",
+			"reservationNotFound": "Reservation not found"
+		},
+		"ReservationPageLoading": {
+			"loadingYourReservation": "Loading your reservation"
+		},
+		"SEO": {
+			"description": "Your booking details and confirmation code for {apartment}.",
+			"title": "Your reservation for {apartment} | {company}"
+		},
+		"loadErrorDescription": "We couldn't load this reservation. Please try again in a moment.",
+		"loadErrorTitle": "Something went wrong"
+	},
+	"ReservationsPage": {
+		"ReservationsForm": {
+			"bookingCode": "Booking code",
+			"bookingCodeDescription": "The code at the top of your confirmation email.",
+			"email": "Email",
+			"emailDescription": "The address you booked with.",
+			"findMyReservation": "Find my reservation"
+		},
+		"ReservationsHeader": {
+			"findYourReservation": "Find your reservation",
+			"lostEmail": "Lost the email? Enter your booking code and the email you booked with, and we'll take you straight to your reservation."
+		},
+		"SEO": {
+			"description": "Lost the email? Look your booking up with your booking code and email address.",
+			"title": "Find your reservation"
+		},
+		"contactUs": "Contact us",
+		"stillStuck": "Still stuck?",
+		"wellLookItUp": "and we'll look it up for you."
+	},
+	"SearchPage": {
+		"SEO": {
+			"title": "Stays in {location}",
+			"description": "Browse places to stay in {location}."
+		},
+		"SearchFilters": {
+			"any": "Any",
+			"clear": "Clear",
+			"done": "Done",
+			"filters": "Filters"
+		},
+		"SearchFiltersBadge": {
+			"removeFilter": "Remove {label} filter"
+		},
+		"SearchFiltersEmpty": {
+			"clearFilters": "Clear filters",
+			"newSearch": "New search",
+			"noStaysFound": "No stays found",
+			"noStaysInLocation": "We couldn't find any stays in {location}. Try loosening your filters or searching nearby.",
+			"nothingMatches": "Nothing matches your current filters. Try removing some to see more places."
+		},
+		"SearchLeftContentHeader": {
+			"clearAll": "Clear all",
+			"pricesIncludeAllFees": "Prices include all fees",
+			"searchingStaysIn": "Searching stays in {location}",
+			"staysIn": "{count} stays in {location}"
+		},
+		"SearchMarkerSelectedCard": {
+			"close": "Close",
+			"view": "View"
+		},
+		"showList": "Show list",
+		"showMap": "Show map",
+		"SearchState": {
+			"bathrooms": "Bathrooms",
+			"bathsNoun": "baths",
+			"bedrooms": "Bedrooms",
+			"bedroomsNoun": "bedrooms",
+			"chip": "{count} {noun}",
+			"guests": "Guests",
+			"guestsNoun": "guests"
+		}
+	},
+	"GenericMessages": {
+		"ACCOMMODATION_CREATED": "Accommodation submitted for review.",
+		"ACCOMMODATION_HAS_ACTIVE_BOOKINGS": "This accommodation has active bookings and can't be deleted. Cancel or decline them first.",
+		"ACCOMMODATION_NOT_AVAILABLE_TO_SAVE": "This accommodation is not available to save.",
+		"ACCOMMODATION_NOT_BOOKABLE": "This listing is no longer live, so bookings for it cannot be confirmed.",
+		"CALENDAR_UPDATED": "Calendar updated.",
+		"DATES_HAVE_CONFIRMED_STAY": "Those dates have a confirmed stay. Cancel the booking first if you need them back.",
+		"ACCOMMODATION_STATUS_UPDATED": "Accommodation visibility updated.",
+		"SUSPENDED_CANNOT_RESUBMIT": "A suspended listing is reviewed by our team — reply to the suspension email and we'll take it from there.",
+		"PHOTOS_MIN_REQUIRED": "Add at least {min} photos — guests rarely book what they can't see.",
+		"PHOTOS_MAX_EXCEEDED": "A listing can have at most {max} photos.",
+		"ACCOMMODATION_UPDATED": "Accommodation updated.",
+		"ACCOMMODATION_FEATURED": "Accommodation added to the homepage strip.",
+		"ACCOMMODATION_UNFEATURED": "Accommodation removed from the homepage strip.",
+		"LISTING_FEE_PAID": "Listing renewed — it stays live for another period.",
+		"FREE_PUBLISH_GRANTED": "Free publish granted — the listing is live with no payment recorded.",
+		"LISTING_FEE_UNPAID": "This listing's fee hasn't been paid yet, so it can't go live. Record the payment first.",
+		"MONETIZATION_CHOICE_REQUIRED": "Pick a plan for this listing — listing fee or per-booking fee.",
+		"BOOKING_FEE_REQUIRES_ONLINE": "Per-booking fee listings accept online payments only.",
+		"MONETIZATION_SWITCH_FORBIDDEN": "A per-booking fee listing cannot move to a listing fee — create a new listing instead.",
+		"MONETIZATION_SWITCHED": "Plan changed — this listing now runs on the per-booking fee.",
+		"LISTING_FEE_CHARGE_FAILED": "The payment didn't go through, so nothing was charged and the listing is unchanged. Please try again.",
+		"RENEWAL_NEEDS_SUPPORT": "Online renewal isn't available yet — reply to your renewal email or contact us and we'll take care of it.",
+		"ADMIN_ACCESS_REQUIRED": "This action requires admin privileges.",
+		"ADMIN_CANNOT_BE_DELETED": "Admins can't be deleted. Demote to \"user\" first.",
+		"ALL_SESSIONS_REVOKED": "All sessions revoked.",
+		"BATCH_TOO_LARGE": "Too many items in a single request (max {limit}).",
+		"HOST_CANCEL_WINDOW_CLOSED": "This paid booking can't be cancelled this close to check-in. Contact support for emergencies.",
+		"BOOKING_CANCEL_TOO_LATE": "The cancellation window for this booking has closed. Contact the host if your plans changed.",
+		"BOOKING_ALREADY_REQUESTED": "You've already requested these dates — here's that reservation.",
+		"BOOKING_CREATED": "Booking confirmed.",
+		"BOOKING_UPDATED": "Booking updated.",
+		"DATA_TABLE_DELETED_ALL": "Deleted {count} item(s).",
+		"DATA_TABLE_DELETED_WITH_MISSING": "Deleted {count} item(s); {missing} were already gone.",
+		"DATES_UNAVAILABLE": "Those dates were just booked by someone else. Please pick different dates.",
+		"EMAIL_SENT_SUCCESSFULLY": "Email sent successfully.",
+		"FAVORITES_MERGED": "Saved stays synced to your account.",
+		"FAVORITE_REMOVED": "Removed from your list.",
+		"FAVORITE_SAVED": "Saved to your list.",
+		"FORBIDDEN": "You're not allowed to perform this action.",
+		"INVALID_BOOKING_DATES": "Check-out must be after check-in.",
+		"MODERATION_REASON_REQUIRED": "A reason is required to suspend an accommodation.",
+		"NEWSLETTER_SUBSCRIBED": "Thanks for subscribing! Check your inbox for the best stays and deals.",
+		"NOT_AUTHENTICATED": "Please sign in to continue.",
+		"NO_ITEMS_PROVIDED": "No items provided.",
+		"NO_MATCHING_ITEMS": "No matching items found.",
+		"PASSWORD_TOO_COMMON": "That password is too common. Please choose a stronger one.",
+		"PASSWORD_TOO_LONG": "Password is too long.",
+		"PASSWORD_TOO_SHORT": "Password must be at least {min} characters.",
+		"PAYMENT_METHOD_NOT_ACCEPTED": "This accommodation doesn't accept that payment method.",
+		"CHECKOUT_READY": "Taking you to secure checkout…",
+		"CHECKOUT_EXPIRED": "This checkout has expired. Start the booking again and your dates will be re-checked.",
+		"CHECKOUT_UNAVAILABLE": "We couldn't open the payment page. Nothing was charged — please try again.",
+		"PAYMENT_NOT_READY": "This booking's payment isn't ready yet. Refresh in a moment and try again.",
+		"PAYMENT_CAPTURE_FAILED": "The guest's payment could not be taken, so the booking wasn't confirmed. Ask them to book again.",
+		"ONLINE_PAYMENTS_UNAVAILABLE": "Online payments are not available yet — listings can only accept cash at check-in for now.",
+		"PAYOUTS_UNAVAILABLE": "We couldn't open payout setup right now. Your earnings are safe — please try again shortly.",
+		"PAYOUT_ONBOARDING_READY": "Opening payout setup…",
+		"PAYMENT_FLAG_CLEARED": "Payment flag cleared.",
+		"REPORT_MESSAGE_REQUIRED": "Please add a few words about what happened.",
+		"REPORT_SUBMITTED": "Thanks for the report — we've received it.",
+		"REPORT_RESOLVED": "Report resolved.",
+		"REPORT_REOPENED": "Report reopened.",
+		"RESERVATION_FOUND": "Found it — opening your reservation.",
+		"RESERVATION_NOT_FOUND": "We couldn't find a reservation with that code and email. Check both and try again.",
+		"SESSION_REVOKED": "Session revoked.",
+		"STAY_CONFIRMATION_REQUESTED": "Confirmation request sent — the guest got an email with a one-click confirm. If they don't reply within 24 hours, cancelling unlocks.",
+		"STAY_CONFIRMATION_COOLDOWN": "You already asked recently — give the guest a bit more time to reply.",
+		"STAY_CONFIRMED": "Thanks — your stay is confirmed. Your host has been told you're coming.",
+		"HOST_CANCEL_NEEDS_CONFIRMATION": "Ask the guest to confirm their stay first — cancelling unlocks if they don't reply within 24 hours.",
+		"STORAGE_DELETE_FAILED": "Couldn't delete the file from storage. Nothing was removed.",
+		"STORAGE_URL_UNAVAILABLE": "Couldn't resolve the file URL.",
+		"TEST_ROW_CREATED": "Test row created.",
+		"TOO_MANY_REQUESTS": "Too many requests. Please try again later.",
+		"TOO_MANY_REQUESTS_MINUTES": "Too many requests. Try again in {minutes} min.",
+		"TOO_MANY_REQUESTS_SECONDS": "Too many requests. Try again in {seconds}s.",
+		"UNEXPECTED_ERROR": "An unexpected error occurred. Please try again.",
+		"UPLOAD_NOT_FOUND": "Upload not found. Please try again.",
+		"UPLOAD_SAVED": "File saved.",
+		"UPLOAD_SAVE_FAILED": "Could not save the uploaded file. Please try again.",
+		"UPLOAD_TOO_LARGE": "File is too large.",
+		"UPLOAD_TYPE_NOT_ALLOWED": "That file type is not allowed.",
+		"UPLOAD_URL_READY": "Upload URL generated.",
+		"USER_BANNED": "User banned.",
+		"USER_DELETED": "User deleted.",
+		"USER_NOT_FOUND": "User not found.",
+		"USER_ROLE_UPDATED": "User role updated.",
+		"USER_SUPERHOST_UPDATED": "Superhost status updated.",
+		"USER_UNBANNED": "User unbanned.",
+		"YOU_NEED_TO_CORRECT_FORM_ERRORS": "You need to correct form errors"
+	},
+	"ValidationMessages": {
+		"Default": {
+			"required": "This field is required.",
+			"invalidValue": "Check this field.",
+			"notANumber": "Enter a number.",
+			"invalidDate": "Enter a valid date.",
+			"invalidEmail": "Enter a valid email.",
+			"invalidUrl": "Enter a valid link.",
+			"invalidChoice": "Select a valid option.",
+			"textTooShort": "Must be at least {min} characters.",
+			"textTooLong": "Keep this under {max} characters.",
+			"tooFewItems": "Add at least {min}.",
+			"tooManyItems": "Add at most {max}.",
+			"numberNotNegative": "This can't be negative.",
+			"numberTooSmall": "Enter {min} or more.",
+			"numberTooBig": "Enter {max} or less."
+		},
+		"Field": {
+			"placeId": "Select your city from the list (typing alone won’t set it).",
+			"type": "Choose a property type.",
+			"description": "Add a short description (at least 20 characters).",
+			"amenities": "Select at least {min} amenities.",
+			"photos": "Please upload at least {min} photos.",
+			"pricePerNight": "Set a nightly price.",
+			"squareMeters": "Enter the size in m².",
+			"maxGuests": "At least one guest.",
+			"bathrooms": "At least one bathroom.",
+			"minReservationDays": "Minimum 1 night.",
+			"checkInTime": "Set a check-in time.",
+			"checkOutTime": "Set a check-out time.",
+			"hostId": "Pick the owner of this accommodation.",
+			"phone": "Enter a valid phone number.",
+			"stayDates": "Select your dates.",
+			"bookingCode": "Enter the booking code from your confirmation email.",
+			"reason": "Please write at least 4 characters.",
+			"confirmPassword": "Confirm your password.",
+			"code": "Use the {length}-digit code from your email."
+		},
+		"Accommodation": {
+			"bedroomsRequired": "At least one bedroom (studios can have none).",
+			"photosMinTotal": "Keep or add at least {min} photos in total.",
+			"monetizationRequired": "Pick a plan for this listing — listing fee or per-booking fee.",
+			"silent": ""
+		},
+		"Booking": {
+			"minOneNight": "Your stay must be at least one night.",
+			"maxStayNights": "A single stay can be at most {max} nights."
+		},
+		"Auth": {
+			"codeFormat": "Use the {length}-digit code from your email.",
+			"passwordTooCommon": "That password is too common. Please choose a stronger one.",
+			"passwordsMustMatch": "Passwords must match."
+		}
+	}
+}

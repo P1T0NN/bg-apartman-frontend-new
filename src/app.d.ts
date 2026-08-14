@@ -10,6 +10,8 @@ declare global {
 		interface PageData {
 			/** Shown in app shells (e.g. `SiteHeader`) when set by a route `load`. */
 			pageTitle?: string;
+			/** Active UI locale, resolved in the root layout load. */
+			locale?: string;
 		}
 		// interface PageState {}
 		// interface Platform {}

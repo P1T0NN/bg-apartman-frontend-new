@@ -4,6 +4,7 @@
 
 	// CONFIG
 	import { COMPANY_DATA } from '@/shared/config.js';
+	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
 	// COMPONENTS
 	import * as Sidebar from '@/components/ui/sidebar/index.js';
@@ -11,6 +12,9 @@
 	import NavSecondary from './nav-secondary.svelte';
 	import NavUser from './nav-user.svelte';
 	import Logo from '@/components/ui/logo/logo.svelte';
+
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 
 	// UTILS
 	import { isNavItemActive } from '@/utils/isNavItemActive.js';
@@ -54,7 +58,7 @@
 		<Sidebar.Menu>
 			<Sidebar.MenuItem>
 				{#if hasLogo}
-					<Logo class="size-5!" />
+					<Logo class="size-5!" href={appHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT)} />
 				{:else}
 					<span class="truncate px-2 text-base font-semibold text-sidebar-foreground">
 						{COMPANY_DATA.NAME}

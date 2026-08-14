@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 
@@ -40,9 +43,7 @@
 	const listArgs = $derived(status === undefined ? {} : { status });
 </script>
 
-<!-- realtime: admin moderation and the listing-fee cron flip a listing's status under its host. -->
 <ConvexDataTable
-	realtime
 	query={api.tables.accommodations.queries.fetchMyAccommodations.fetchMyAccommodations}
 	queryArgs={listArgs}
 	columns={MY_ACCOMMODATIONS_TABLE_COLUMNS}
@@ -61,12 +62,12 @@
 	controlsPlace="top"
 	searchable
 	bind:search
-	searchPlaceholder="Search your listings by title…"
+	searchPlaceholder={m['HostMyAccommodationsPage.MyAccommodationsTable.searchPlaceholder']()}
 	filters={accommodationFilters}
 	pageSize={8}
 	borderless
-	emptyTitle="No listings match"
-	emptyDescription="Try a different search or clear the status filter."
+	emptyTitle={m['HostMyAccommodationsPage.MyAccommodationsTable.emptyTitle']()}
+	emptyDescription={m['HostMyAccommodationsPage.MyAccommodationsTable.emptyDescription']()}
 />
 
 {#snippet accommodationFilters()}
@@ -100,7 +101,10 @@
 
 {#snippet capacityCell({ row }: DataTableCellSnippetProps<typesAccommodation>)}
 	<span class="text-sm text-muted-foreground">
-		{row.maxGuests} guests, {row.bedrooms} bedrooms
+		{m['HostMyAccommodationsPage.MyAccommodationsTable.capacity']({
+			guests: row.maxGuests,
+			bedrooms: row.bedrooms
+		})}
 	</span>
 {/snippet}
 

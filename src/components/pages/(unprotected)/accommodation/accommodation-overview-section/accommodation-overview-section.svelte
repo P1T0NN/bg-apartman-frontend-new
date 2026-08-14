@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import ToggleFavoriteButton from '@/features/favorites/components/toggle-favorite-button.svelte';
 	import ShareButton from '@/components/ui/share-button/share-button.svelte';
@@ -46,7 +49,7 @@
 			<p class="flex items-center gap-1.5 text-sm text-muted-foreground">
 				<MapPinIcon class="size-4 shrink-0" aria-hidden="true" />
 				{accommodationTypeLabel(accommodation.type)}
-				in
+				{m['AccommodationPage.AccommodationOverviewSection.in']()}
 				{accommodation.city}{#if accommodation.country}, {accommodation.country}{/if}
 			</p>
 		</div>
@@ -82,7 +85,7 @@
 					{/if}
 
 					<p class="text-sm text-muted-foreground">
-						Hosting since
+						{m['AccommodationPage.AccommodationOverviewSection.hostingSince']()}
 						{joinedYear}
 					</p>
 				</div>

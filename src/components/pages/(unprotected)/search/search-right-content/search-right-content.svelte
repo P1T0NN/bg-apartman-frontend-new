@@ -4,7 +4,7 @@
 
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
-	import { useConvexClient } from 'convex-svelte';
+	import { useQuery } from 'convex-svelte';
 
 	// COMPONENTS
 	import GoogleMap from '@/components/ui/google-map/google-map.svelte';
@@ -14,7 +14,6 @@
 	// UTILS
 	import { cn } from '@/utils/utils.js';
 	import { formatCurrency } from '@/utils/formatters';
-	import { safeQuery } from '@/utils/convexHelpers';
 
 	// TYPES
 	import type {
@@ -44,7 +43,6 @@
 		mapHandle?: GoogleMapHandle;
 	} = $props();
 
-	const convex = useConvexClient();
 	const isDesktop = new MediaQuery('(min-width: 1024px)');
 
 	const showMap = $derived(isDesktop.current || mobileView === 'map');
@@ -53,35 +51,19 @@
 	 * The preview card for the clicked pin — ONE document read, on click.
 	 *
 	 * This is what buys the lean marker payload: the card's fields (photo, title, counts) are
-	 * fetched for the pin someone actually opened instead of for all of them up front. Sequence
-	 * guard because clicking pins faster than the network can answer must not leave an older
-	 * response on screen.
+	 * fetched for the pin someone actually opened instead of for all of them up front. A live
+	 * subscription keyed on the selection, skipped while no pin is open; `useQuery` swaps its
+	 * args itself, so clicking a new pin re-runs the read with no manual sequence guard.
 	 */
-	let selected = $state.raw<SearchAccommodation | null>(null);
-	let latestRequest = 0;
+	const cardQuery = useQuery(
+		api.tables.accommodations.queries.fetchSearchAccommodationCardSafe
+			.fetchSearchAccommodationCardSafe,
+		() => (selectedId ? { id: selectedId } : 'skip')
+	);
 
-	$effect(() => {
-		const id = selectedId;
-
-		if (!id) {
-			latestRequest++;
-			selected = null;
-			return;
-		}
-
-		const mine = ++latestRequest;
-		void safeQuery(
-			convex,
-			api.tables.accommodations.queries.fetchSearchAccommodationCardSafe
-				.fetchSearchAccommodationCardSafe,
-			{ id }
-		).then((card) => {
-			if (mine !== latestRequest) return;
-			// `null` = unpublished or deleted since the markers loaded. Drop the selection
-			// rather than dock an empty card.
-			selected = card ?? null;
-		});
-	});
+	// `null` = unpublished or deleted since the markers loaded. Drop the selection rather than
+	// dock an empty card. Also null briefly while switching pins (args swap) — the card reloads.
+	const selected = $derived((cardQuery.data as SearchAccommodation | undefined) ?? null);
 
 	function selectFromMap(marker: SearchMarker) {
 		selectedId = marker.id;

@@ -1,10 +1,11 @@
 <script lang="ts">
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 </script>
 
 <p class="text-sm text-muted-foreground">
-	Use the drop zone to add files — it stays put while previews show in a grid below. Remove any file
-	with the
+	{m['UploadFileFeature.UploadFile.UploadFileMultipleDropzone.intro']()}
 	<strong class="font-medium text-foreground">×</strong>
-	control on the top-right of each preview card
+	{m['UploadFileFeature.UploadFile.UploadFileMultipleDropzone.outro']()}
 </p>

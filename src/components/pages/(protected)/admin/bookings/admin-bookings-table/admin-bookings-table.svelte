@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// SVELTEKIT
 	import { page } from '$app/state';
 
@@ -75,40 +78,47 @@
 	}
 
 	const columns: ColumnDef<AdminBookingRow>[] = [
-		{ id: 'bookingCode', header: 'Code', accessor: (r) => r.bookingCode, hasCopy: true },
-		{ id: 'guest', header: 'Guest', accessor: (r) => `${r.guestFirstName} ${r.guestLastName}` },
+		{
+			id: 'bookingCode',
+			header: m['AdminBookingsPage.AdminBookingsTable.code'](),
+			accessor: (r) => r.bookingCode,
+			hasCopy: true
+		},
+		{
+			id: 'guest',
+			header: m['AdminBookingsPage.AdminBookingsTable.guest'](),
+			accessor: (r) => `${r.guestFirstName} ${r.guestLastName}`
+		},
 		{
 			id: 'accommodation',
-			header: 'Accommodation',
+			header: m['AdminBookingsPage.AdminBookingsTable.accommodation'](),
 			accessor: (r) => r.apartment.title,
 			hideBelow: 'md'
 		},
-		{ id: 'host', header: 'Host', accessor: (r) => r.hostName, hideBelow: 'md' },
+		{ id: 'host', header: m['AdminBookingsPage.AdminBookingsTable.host'](), accessor: (r) => r.hostName, hideBelow: 'md' },
 		{
 			id: 'stay',
-			header: 'Stay',
+			header: m['AdminBookingsPage.AdminBookingsTable.stay'](),
 			accessor: (r) => `${r.checkInDate} → ${r.checkOutDate}`,
 			hideBelow: 'lg'
 		},
-		{ id: 'total', header: 'Total', accessor: (r) => r.total, hideBelow: 'lg' },
+		{ id: 'total', header: m['AdminBookingsPage.AdminBookingsTable.total'](), accessor: (r) => r.total, hideBelow: 'lg' },
 		{
 			id: 'payment',
-			header: 'Payment',
+			header: m['AdminBookingsPage.AdminBookingsTable.payment'](),
 			accessor: (r) => r.paymentStatus,
 			hideBelow: 'md',
 			wrap: true
 		},
-		{ id: 'status', header: 'Status', accessor: (r) => r.status, wrap: true }
+		{ id: 'status', header: m['AdminBookingsPage.AdminBookingsTable.status'](), accessor: (r) => r.status, wrap: true }
 	];
 </script>
 
 <!-- `listBookingsAdmin` slices by `page` and returns an exact `totalCount` — it must be
      driven in OFFSET mode. Left on the cursor default it never receives `page` (so every
      page returns the first slice) and `isDone` never lands, so Next stays enabled forever. -->
-<!-- realtime: guests create bookings and the lifecycle cron advances statuses under the admin. -->
 <ConvexDataTable
-	realtime
-	caption="Bookings"
+	caption={m['AdminBookingsPage.AdminBookingsTable.bookings']()}
 	query={api.tables.bookings.queries.listBookingsAdmin.listBookingsAdmin}
 	optimizationStrategy="offset"
 	controlsPlace="top"
@@ -126,7 +136,9 @@
 	{expandedContent}
 	searchable
 	bind:search
-	searchPlaceholder={searchField === 'code' ? 'Search by booking code…' : 'Search by guest email…'}
+	searchPlaceholder={searchField === 'code'
+		? m['AdminBookingsPage.AdminBookingsTable.searchByBookingCode']()
+		: m['AdminBookingsPage.AdminBookingsTable.searchByGuestEmail']()}
 	{filters}
 />
 
@@ -151,7 +163,7 @@
 			{#if row.paymentFlag}
 				<TriangleAlertIcon
 					class="size-3.5 shrink-0 text-amber-600 dark:text-amber-400"
-					aria-label="A payment operation needs attention"
+					aria-label={m['AdminBookingsPage.AdminBookingsTable.paymentNeedsAttention']()}
 				/>
 			{/if}
 		</span>

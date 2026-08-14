@@ -1,11 +1,13 @@
 <script lang="ts">
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 </script>
 
 <p class="text-sm text-muted-foreground">
-	Choose or drop a file, preview it, then save. Use
-	<strong class="font-medium text-foreground">Remove</strong>
-	or
-	<strong class="font-medium text-foreground">Replace</strong>
-	on the file card if you change your mind.
+	{m['UploadFileFeature.UploadFile.UploadFileSingleDropzone.intro']()}
+	<strong class="font-medium text-foreground">{m['UploadFileFeature.UploadFile.UploadFileSingleDropzone.remove']()}</strong>
+	{m['UploadFileFeature.UploadFile.UploadFileSingleDropzone.or']()}
+	<strong class="font-medium text-foreground">{m['UploadFileFeature.UploadFile.UploadFileSingleDropzone.replace']()}</strong>
+	{m['UploadFileFeature.UploadFile.UploadFileSingleDropzone.outro']()}
 </p>

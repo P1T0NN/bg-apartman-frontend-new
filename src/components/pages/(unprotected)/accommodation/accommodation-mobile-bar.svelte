@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
@@ -6,6 +9,7 @@
 	import { Button } from '@/components/ui/button/index.js';
 
 	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 	import { hasNightlyDiscount } from '@/features/accommodations/utils/accommodationPresentation';
 	import { effectiveNightlyPrice } from '@/shared/features/pricing/utils/calculatePrice';
 	import { formatCurrency } from '@/utils/formatters';
@@ -18,7 +22,7 @@
 	const nightly = $derived(effectiveNightlyPrice(accommodation));
 	const discounted = $derived(hasNightlyDiscount(accommodation));
 	const bookHref = $derived(
-		UNPROTECTED_PAGE_ENDPOINTS.BOOK_ACCOMMODATION.replace(':slug', accommodation.slug)
+		appHref(UNPROTECTED_PAGE_ENDPOINTS.BOOK_ACCOMMODATION.replace(':slug', accommodation.slug))
 	);
 </script>
 
@@ -26,12 +30,17 @@
 	class="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t bg-background/95 px-4 py-3 backdrop-blur lg:hidden"
 >
 	<p class="text-sm">
-		<span class="text-muted-foreground">from</span>
+		<span class="text-muted-foreground">{m['AccommodationPage.AccommodationMobileBar.from']()}</span
+		>
 		<span class="font-semibold {discounted ? 'text-emerald-700 dark:text-emerald-300' : ''}"
 			>{formatCurrency(nightly)}</span
 		>
-		<span class="text-muted-foreground">night</span>
+		<span class="text-muted-foreground"
+			>{m['AccommodationPage.AccommodationMobileBar.night']()}</span
+		>
 	</p>
 
-	<Button href={bookHref} size="lg" class="h-11 shrink-0 px-6">Check availability</Button>
+	<Button href={bookHref} size="lg" class="h-11 shrink-0 px-6"
+		>{m['AccommodationPage.AccommodationMobileBar.checkAvailability']()}</Button
+	>
 </div>

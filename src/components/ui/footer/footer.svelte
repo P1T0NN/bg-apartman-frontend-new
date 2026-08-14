@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { COMPANY_DATA } from '@/shared/config.js';
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
@@ -11,6 +14,7 @@
 	import Logo from '@/components/ui/logo/logo.svelte';
 
 	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 	import { cn } from '@/utils/utils.js';
 
 	// SVGS
@@ -32,15 +36,15 @@
 	const year = new Date().getFullYear();
 
 	const socials = [
-		{ icon: InstagramIcon, href: COMPANY_DATA.INSTAGRAM_URL, label: 'Instagram' },
-		{ icon: FacebookIcon, href: COMPANY_DATA.FACEBOOK_URL, label: 'Facebook' },
-		{ icon: TikTokIcon, href: COMPANY_DATA.TIKTOK_URL, label: 'TikTok' },
-		{ icon: YoutubeIcon, href: COMPANY_DATA.YOUTUBE_URL, label: 'YouTube' }
+		{ icon: InstagramIcon, href: COMPANY_DATA.INSTAGRAM_URL, label: m['Footer.instagram']() },
+		{ icon: FacebookIcon, href: COMPANY_DATA.FACEBOOK_URL, label: m['Footer.facebook']() },
+		{ icon: TikTokIcon, href: COMPANY_DATA.TIKTOK_URL, label: m['Footer.tikTok']() },
+		{ icon: YoutubeIcon, href: COMPANY_DATA.YOUTUBE_URL, label: m['Footer.youTube']() }
 	];
 
 	const paymentMethods = ['VISA', 'MC', 'AMEX'];
 
-	// Chip shared by social + payment badges â€” band-relative so it flips with the theme.
+	// Chip shared by social + payment badges — band-relative so it flips with the theme.
 	const chipClass =
 		'flex items-center justify-center rounded-full bg-background/10 text-background transition-colors';
 </script>
@@ -61,9 +65,10 @@
 						size="md"
 						class="mb-4"
 						imgClass="brightness-0 invert dark:brightness-100 dark:invert-0"
+						href={appHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT)}
 					/>
 				{:else}
-					<Link href={UNPROTECTED_PAGE_ENDPOINTS.ROOT} class="mb-4 inline-block">
+					<Link href={appHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT)} class="mb-4 inline-block">
 						<span class="font-serif text-2xl font-bold text-background">
 							{COMPANY_DATA.NAME}
 						</span>
@@ -92,7 +97,7 @@
 
 			<!-- Link columns -->
 			{#if showNav}
-				{#each footerLinkGroups as group (group.id)}
+				{#each footerLinkGroups() as group (group.id)}
 					<nav aria-label={group.heading} class="min-w-0">
 						<h3 class="mb-4 text-sm font-semibold tracking-wider text-background uppercase">
 							{group.heading}
@@ -118,12 +123,11 @@
 		<div class="border-t border-background/10 py-6 lg:py-8">
 			<div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
 				<p class="text-sm text-background/50">
-					Â© {year}
-					{COMPANY_DATA.NAME}. All rights reserved.
+					{m['Footer.copyright']({ year, brand: COMPANY_DATA.NAME })}
 				</p>
 
 				<div class="flex items-center gap-4">
-					<span class="text-xs text-background/70">Payments secured by</span>
+					<span class="text-xs text-background/70">{m['Footer.paymentsSecuredBy']()}</span>
 					<div class="flex gap-2">
 						{#each paymentMethods as method (method)}
 							<div class={cn(chipClass, 'h-8 w-12 rounded text-xs font-bold')}>

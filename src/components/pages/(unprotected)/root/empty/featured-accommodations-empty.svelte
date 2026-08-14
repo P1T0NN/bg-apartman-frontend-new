@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LUCIDE ICONS
 	import HouseIcon from '@lucide/svelte/icons/house';
 </script>
@@ -11,9 +14,9 @@
 	</div>
 
 	<div class="flex flex-col gap-1.5">
-		<h3 class="text-lg font-semibold">No featured stays yet</h3>
+		<h3 class="text-lg font-semibold">{m['HomePage.FeaturedAccommodationsEmpty.emptyTitle']()}</h3>
 		<p class="mx-auto max-w-sm text-sm text-muted-foreground">
-			We're curating a selection of the best apartments in Belgrade — check back soon.
+			{m['HomePage.FeaturedAccommodationsEmpty.emptyText']()}
 		</p>
 	</div>
 </div>

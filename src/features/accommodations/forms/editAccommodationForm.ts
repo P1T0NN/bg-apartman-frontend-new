@@ -1,3 +1,5 @@
+import { m } from '@/paraglide/messages';
+
 // FORMS
 import { addAccommodationForm, PAYMENTS_SECTION_ID } from './addAccommodationForm';
 
@@ -23,13 +25,12 @@ export const editAccommodationForm: MutationFormSection[] = addAccommodationForm
 		if (section.id === 'photos') {
 			return {
 				...section,
-				description:
-					'Remove any photo you no longer want, and upload more to round out the accommodation.',
+				description: m['HostEditAccommodationPage.EditAccommodationForm.removePhotosDescription'](),
 				fields: [
-					{ id: 'keepImageKeys', label: 'Current photos', kind: 'input', colSpan: 2 },
+					{ id: 'keepImageKeys', label: m['HostEditAccommodationPage.EditAccommodationForm.currentPhotos'](), kind: 'input', colSpan: 2 },
 					{
 						id: 'photos',
-						label: 'Add more photos',
+						label: m['HostEditAccommodationPage.EditAccommodationForm.addMorePhotos'](),
 						kind: 'upload-multiple',
 						accept: 'image/*',
 						colSpan: 2
@@ -41,8 +42,8 @@ export const editAccommodationForm: MutationFormSection[] = addAccommodationForm
 		if (section.id === PAYMENTS_SECTION_ID) {
 			return {
 				...section,
-				title: 'Payments',
-				description: 'How guests pay you for their stay.',
+				title: m['HostEditAccommodationPage.EditAccommodationForm.payments'](),
+				description: m['HostEditAccommodationPage.EditAccommodationForm.paymentsDescription'](),
 				fields: section.fields.filter((field) => field.id !== 'monetization')
 			};
 		}

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// UTILS
 	import { cn } from '@/utils/utils.js';
 	import { REPORT_CATEGORY_TONE, reportAgo } from '@/features/reports/data/reportsData';
@@ -35,7 +38,7 @@
 		</span>
 
 		{#if report.status === 'resolved'}
-			<span class="text-xs text-muted-foreground">· Resolved</span>
+			<span class="text-xs text-muted-foreground">{m['AdminReportsPage.AdminReportDetail.resolvedSuffix']()}</span>
 		{/if}
 	</div>
 
@@ -47,7 +50,7 @@
 			class="flex items-center gap-1.5 self-start text-xs text-primary hover:underline"
 		>
 			<MailIcon class="size-3.5" aria-hidden="true" />
-			Reply to {report.email}
+			{m['AdminReportsPage.AdminReportDetail.replyTo']({ email: report.email })}
 		</a>
 	{/if}
 </div>

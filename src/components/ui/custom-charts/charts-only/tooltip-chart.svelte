@@ -7,6 +7,7 @@
 	import type { Snippet, ComponentProps } from 'svelte';
 	import type { ChartConfig, TooltipPayload } from '@/components/ui/chart/chart-utils.js';
 	import type { TicksConfig } from 'layerchart';
+	import { getLocale } from '@/paraglide/runtime';
 	// ─── Types ───────────────────────────────────────────────────────────────────
 
 	type LayerBarChartProps = ComponentProps<typeof BarChart>;
@@ -140,7 +141,7 @@
 
 	const defaultXAxisFormat = (d: unknown) => {
 		try {
-			return new Date(d as string | number).toLocaleDateString('en-US', {
+			return new Date(d as string | number).toLocaleDateString(getLocale(), {
 				weekday: 'short'
 			});
 		} catch {

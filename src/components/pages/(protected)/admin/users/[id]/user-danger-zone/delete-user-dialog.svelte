@@ -1,6 +1,8 @@
 <script lang="ts">
+	// PARAGLIDE
+	import { m } from '@/paraglide/messages';
+
 	// SVELTEKIT IMPORTS
-	import { goto } from '$app/navigation';
 
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
@@ -11,6 +13,7 @@
 	import { Input } from '@/components/ui/input/index.js';
 
 	// UTILS
+	import { appGoto } from '@/utils/app-navigation.js';
 	import { safeMutation } from '@/utils/convexHelpers';
 	import { toastResult } from '@/utils/toastResult';
 
@@ -53,7 +56,7 @@
 			if (!toastResult(result)) return;
 
 			typedConfirm = '';
-			if (redirectUrl) await goto(redirectUrl);
+			if (redirectUrl) await appGoto(redirectUrl);
 		} finally {
 			isPending = false;
 		}
@@ -73,11 +76,13 @@
 	actionDisabled={role === 'admin' || typedConfirm !== userEmail}
 	isDestructive={role !== 'admin'}
 	hideProceed={role === 'admin'}
-	title={role === 'admin' ? `Cannot delete ${userEmail}` : `Delete ${userEmail}?`}
+	title={role === 'admin'
+		? m['AdminUsersPage.DeleteUserDialog.cannotDeleteTitle']({ userEmail })
+		: m['AdminUsersPage.DeleteUserDialog.deleteTitle']({ userEmail })}
 	description={role === 'admin'
-		? 'Admins must be demoted to "user" before they can be deleted.'
-		: 'This is permanent and cascades to sessions and accounts. Type the email below to confirm.'}
+		? m['AdminUsersPage.DeleteUserDialog.cannotDeleteDescription']()
+		: m['AdminUsersPage.DeleteUserDialog.deleteDescription']()}
 	body={role !== 'admin' ? deleteForm : undefined}
 >
-	Delete…
+	{m['AdminUsersPage.DeleteUserDialog.trigger']()}
 </ActionButton>

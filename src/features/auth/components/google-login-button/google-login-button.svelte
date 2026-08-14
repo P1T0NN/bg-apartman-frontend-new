@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 
@@ -34,5 +37,5 @@
 			fill="currentColor"
 		/>
 	</svg>
-	Continue with Google
+	{m['AuthFeature.GoogleLoginButton.continueWithGoogle']()}
 </Button>

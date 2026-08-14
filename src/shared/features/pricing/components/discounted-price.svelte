@@ -25,8 +25,7 @@
 {#if original && strikeFirst}
 	<span class="text-destructive line-through">{formatCurrency(original)}</span>
 {/if}
-<span
-	class={cn('font-semibold', original && 'text-emerald-700 dark:text-emerald-300', className)}
+<span class={cn('font-semibold', original && 'text-emerald-700 dark:text-emerald-300', className)}
 	>{formatCurrency(price)}</span
 >
 {#if original && !strikeFirst}

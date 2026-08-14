@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// UTILS
 	import { cn } from '@/utils/utils.js';
 
@@ -23,13 +26,13 @@
 >
 	<span class="flex items-center gap-2">
 		<span class="size-5 rounded-md bg-primary" aria-hidden="true"></span>
-		Selected
+		{m['AvailabilityCalendar.AvailabilityCalendarLegend.selected']()}
 	</span>
 
 	{#if variant === 'host' || allowToday}
 		<span class="flex items-center gap-2">
 			<span class="size-5 rounded-md bg-accent ring-1 ring-primary/40" aria-hidden="true"></span>
-			Today
+			{m['AvailabilityCalendar.AvailabilityCalendarLegend.today']()}
 		</span>
 	{:else}
 		<span class="flex items-center gap-2">
@@ -37,7 +40,7 @@
 				class="size-5 rounded-md bg-[color-mix(in_oklab,#eab308_22%,transparent)] ring-1 ring-[#eab308]/30"
 				aria-hidden="true"
 			></span>
-			Today unavailable
+			{m['AvailabilityCalendar.AvailabilityCalendarLegend.todayUnavailable']()}
 		</span>
 	{/if}
 
@@ -49,7 +52,7 @@
 			>
 				7
 			</span>
-			Blocked
+			{m['AvailabilityCalendar.AvailabilityCalendarLegend.blocked']()}
 		</span>
 	{/if}
 
@@ -60,6 +63,6 @@
 		>
 			7
 		</span>
-		Booked
+		{m['AvailabilityCalendar.AvailabilityCalendarLegend.booked']()}
 	</span>
 </div>

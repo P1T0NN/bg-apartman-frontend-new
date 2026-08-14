@@ -1,6 +1,10 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
+	// UTILS
+	import { appGoto } from '@/utils/app-navigation.js';
 	// SVELTEKIT
-	import { goto } from '$app/navigation';
 
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
@@ -26,18 +30,18 @@
 		{
 			id: 'bookingCode',
 			kind: 'input',
-			label: 'Booking code',
+			label: m['ReservationsPage.ReservationsForm.bookingCode'](),
 			placeholder: 'BK7X9M2P4Q',
-			description: 'The code at the top of your confirmation email.',
+			description: m['ReservationsPage.ReservationsForm.bookingCodeDescription'](),
 			required: true
 		},
 		{
 			id: 'email',
 			kind: 'input',
 			type: 'email',
-			label: 'Email',
+			label: m['ReservationsPage.ReservationsForm.email'](),
 			placeholder: 'you@example.com',
-			description: 'The address you booked with.',
+			description: m['ReservationsPage.ReservationsForm.emailDescription'](),
 			autocomplete: 'email',
 			required: true
 		}
@@ -54,13 +58,13 @@
 	runFunction={api.tables.bookings.mutations.findMyReservation.findMyReservation}
 	onSuccess={(data) => {
 		const bookingId = (data as { bookingId?: Id<'bookings'> } | undefined)?.bookingId;
-		if (bookingId) goto(`/reservations/${bookingId}`);
+		if (bookingId) appGoto(`/reservations/${bookingId}`);
 	}}
 >
 	{#snippet actions({ busy }: { busy: boolean })}
 		<Button type="submit" size="lg" class="w-full gap-2" disabled={busy}>
 			<SearchIcon class="size-4" />
-			Find my reservation
+			{m['ReservationsPage.ReservationsForm.findMyReservation']()}
 		</Button>
 	{/snippet}
 </ConvexMutationForm>

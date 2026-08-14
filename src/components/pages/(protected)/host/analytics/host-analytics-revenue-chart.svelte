@@ -1,10 +1,14 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import AreaChartInteractive from '@/components/ui/custom-charts/area-chart-interactive.svelte';
 
 	// UTILS
 	import { formatCurrency } from '@/utils/formatters';
 	import { cn } from '@/utils/utils.js';
+	import { getLocale } from '@/paraglide/runtime';
 
 	// TYPES
 	import type { ChartConfig } from '@/components/ui/chart/chart-utils.js';
@@ -22,14 +26,14 @@
 
 	let metric = $state<'revenue' | 'bookings'>('revenue');
 
-	const locale = 'en';
+	const locale = getLocale();
 	const data = $derived(
 		series.map((p) => ({ date: new Date(p.date), revenue: p.revenue, bookings: p.bookings }))
 	);
 
 	const config = $derived<ChartConfig>({
 		[metric]: {
-			label: metric === 'revenue' ? 'Revenue' : 'Bookings',
+			label: metric === 'revenue' ? m['HostAnalyticsPage.HostAnalyticsRevenueChart.revenue']() : m['HostAnalyticsPage.HostAnalyticsRevenueChart.bookings'](),
 			color: metric === 'revenue' ? 'var(--chart-1)' : 'var(--chart-2)'
 		}
 	});
@@ -63,8 +67,8 @@
 	}
 
 	const metrics = [
-		{ value: 'revenue', label: 'Revenue' },
-		{ value: 'bookings', label: 'Bookings' }
+		{ value: 'revenue', label: m['HostAnalyticsPage.HostAnalyticsRevenueChart.revenue']() },
+		{ value: 'bookings', label: m['HostAnalyticsPage.HostAnalyticsRevenueChart.bookings']() }
 	] as const;
 </script>
 
@@ -92,7 +96,7 @@
 		     loose in tabular-nums at this size. -->
 		<div class="flex items-baseline gap-2">
 			<span class="text-xs text-muted-foreground">
-				{metric === 'revenue' ? 'Total revenue' : 'Total bookings'}
+				{metric === 'revenue' ? m['HostAnalyticsPage.HostAnalyticsRevenueChart.totalRevenue']() : m['HostAnalyticsPage.HostAnalyticsRevenueChart.totalBookings']()}
 			</span>
 			<span class="text-lg font-semibold">{totalLabel}</span>
 		</div>
@@ -106,7 +110,7 @@
 		timeRange="custom"
 		showTimeRange={false}
 		axis={true}
-		title="Revenue & bookings"
+		title={m['HostAnalyticsPage.HostAnalyticsRevenueChart.revenueAndBookings']()}
 		description=""
 		showLegend={false}
 		containerClass="-ml-1 aspect-auto h-72 w-full"

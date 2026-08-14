@@ -1,0 +1,182 @@
+[
+	[
+		"adminAccommodations.AdminModerateAccommodationDialog.archiveListing",
+		"<NO VALUE>"
+	],
+	[
+		"adminAccommodations.AdminStampListingFeeDialog.recordFeePaymentTitle",
+		"<h2>Record a fee payment?</h2>"
+	],
+	[
+		"adminBookings.AdminBookingDetailRow.serviceFee",
+		"<span>Total</span>"
+	],
+	[
+		"adminBookings.AdminBookingDetailRow.total",
+		"<NO VALUE>"
+	],
+	[
+		"adminBookings.AdminBookingDetailRow.byThe",
+		"on {formatDate(new Date(booking.cancelledAt).toISOString().slice(0, 10))"
+	],
+	[
+		"adminBookings.AdminBookingDetailRow.lateCancellation",
+		"<NO VALUE>"
+	],
+	[
+		"adminBookings.AdminBookingsTable.bookings",
+		"<!-- realtime: guests create bookings and the lifecycle cron advances statuses under the admin. -->"
+	],
+	[
+		"adminBookings.AdminBookingsTable.searchByGuestEmail",
+		"<NO VALUE>"
+	],
+	[
+		"adminBookings.AdminCancelBookingDialog.notificationBody",
+		"<p>"
+	],
+	[
+		"adminReports.AdminReportsTableActions.resolve",
+		"<NO VALUE>"
+	],
+	[
+		"adminReports.AdminReportsTable.reports",
+		"<!-- realtime: users file reports while staff are on this screen, and status is set from it. -->"
+	],
+	[
+		"adminReports.AdminReportsTableData.new",
+		"<NO VALUE>"
+	],
+	[
+		"hostAnalytics.HostAnalyticsPeriodPicker.minDaysError",
+		"Select at least {MIN_CUSTOM_DAYS} days."
+	],
+	[
+		"hostDashboard.HostDashboardStatCards.pts",
+		"${formatSignedCount(Math.round(stats.tiles.occupancy.deltaPts))} pts"
+	],
+	[
+		"hostDashboard.HostDashboardStatCards.nextDate",
+		"Next ${formatDateShort(stats.tiles.upcomingCheckIns.nextDate)}"
+	],
+	[
+		"hostDashboard.HostDashboardTodayOverview.more",
+		"+{group.slice.total - group.slice.items.length} more"
+	],
+	[
+		"accommodation.BookingCalendar.minimumStay",
+		"Minimum stay {formatNights(minNights)"
+	],
+	[
+		"accommodation.BookingPanelFacts.noCleaningFee",
+		"<span"
+	],
+	[
+		"accommodation.AccommodationLocationMap.mapTitle",
+		"Map of {title}"
+	],
+	[
+		"accommodation.AccommodationPoliciesSection.checkInAfter",
+		"Check-in after ${formatTime12(accommodation.checkInTime)}"
+	],
+	[
+		"accommodation.AccommodationPoliciesSection.checkoutBefore",
+		"Checkout before ${formatTime12(accommodation.checkOutTime)}"
+	],
+	[
+		"accommodation.AccommodationPoliciesSection.eventsAllowed",
+		"<NO VALUE>"
+	],
+	[
+		"accommodation.AccommodationPoliciesSection.noPartiesOrEvents",
+		"<NO VALUE>"
+	],
+	[
+		"accommodation.AccommodationPoliciesSection.quietHours",
+		"<NO VALUE>"
+	],
+	[
+		"accommodation.AccommodationPoliciesSection.sameDayAccepted",
+		"<NO VALUE>"
+	],
+	[
+		"accommodation.AccommodationPoliciesSection.noSameDay",
+		"<NO VALUE>"
+	],
+	[
+		"book.BookDetailsStayRules.title",
+		"<AlertTitle>Before you book</AlertTitle>"
+	],
+	[
+		"book.BookDetailsStayRules.minimumStay",
+		"Minimum stay of {formatNights(minNights)"
+	],
+	[
+		"book.BookDetails.yourDates",
+		"<CardTitle>Your dates</CardTitle>"
+	],
+	[
+		"book.BookDetails.guests",
+		"<CardTitle>Guests</CardTitle>"
+	],
+	[
+		"book.BookPrice.weeklyDiscountPercent",
+		"Weekly discount ({quote.lengthDiscountPercent}%)"
+	],
+	[
+		"book.BookPrice.weeklyDiscount",
+		">{formatCurrency(accommodation.weekendPremium)}/night</dd"
+	],
+	[
+		"home.BecomeHostSection.title",
+		"<h2"
+	],
+	[
+		"home.HeroSection.whereverYouStay",
+		"<NO VALUE>"
+	],
+	[
+		"SaveUploadedFile.file",
+		"<NO VALUE>"
+	],
+	[
+		"UploadFileEmpty.chooseSingular",
+		"<NO VALUE>"
+	],
+	[
+		"UploadFileMultipleList.unknown",
+		"${row.file.type || 'Unknown'} · ${formatBytes(row.file.size)}"
+	],
+	[
+		"adminUsers.loadUserErrorTitle",
+		"<NO VALUE>"
+	],
+	[
+		"adminUsers.loadUserErrorDescription",
+		"<NO VALUE>"
+	],
+	[
+		"guestFavorites.title",
+		"<NO VALUE>"
+	],
+	[
+		"guestFavorites.savedForLater",
+		"<NO VALUE>"
+	],
+	[
+		"guestFavorites.placesSavedForLater",
+		"<NO VALUE>"
+	],
+	[
+		"hostCalendar.loadErrorTitle",
+		"<NO VALUE>"
+	],
+	[
+		"hostCalendar.loadErrorDescription",
+		"<NO VALUE>"
+	],
+	[
+		"error.unexpectedError",
+		"<NO VALUE>"
+	]
+]

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// SVELTEKIT IMPORTS
 	import { page } from '$app/state';
 
@@ -57,10 +60,8 @@
 
 <!-- Offset query (slices by `page`, returns an exact `totalCount`) — the cursor default
      would re-serve the first slice on every page and never end. -->
-<!-- realtime: hosts submit and edit listings while an admin watches the moderation queue. -->
 <ConvexDataTable
-	realtime
-	caption="All listings"
+	caption={m['AdminAccommodationsPage.AdminAccommodationsTable.allListings']()}
 	query={api.tables.accommodations.queries.listAccommodationsAdmin.listAccommodationsAdmin}
 	optimizationStrategy="offset"
 	controlsPlace="top"
@@ -72,7 +73,7 @@
 	bind:sortDirection
 	searchable
 	bind:search
-	searchPlaceholder="Search by title…"
+	searchPlaceholder={m['AdminAccommodationsPage.AdminAccommodationsTable.searchByTitle']()}
 	{filters}
 />
 
@@ -98,7 +99,7 @@
 				{#if row.isFeatured}
 					<StarIcon
 						class="size-3.5 shrink-0 fill-amber-500 text-amber-500"
-						aria-label="Featured on the homepage"
+						aria-label={m['AdminAccommodationsPage.AdminAccommodationsTable.featuredOnHomepage']()}
 					/>
 				{/if}
 			</p>

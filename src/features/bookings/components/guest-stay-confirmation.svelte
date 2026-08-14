@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useConvexClient } from 'convex-svelte';
@@ -71,10 +74,11 @@
 				aria-hidden="true"
 			/>
 			<div>
-				<p class="text-sm font-medium">{booking.hostName} asked: still coming?</p>
+				<p class="text-sm font-medium">
+					{m['BookingsFeature.GuestStayConfirmation.asked']({ hostName: booking.hostName })}
+				</p>
 				<p class="text-xs text-muted-foreground">
-					One click lets them prepare for your arrival. If your plans changed, use the actions below
-					instead.
+					{m['BookingsFeature.GuestStayConfirmation.oneClick']()}
 				</p>
 			</div>
 		</div>
@@ -83,12 +87,12 @@
 			{#if isPending}
 				<Loader class="h-3 w-3 animate-spin" />
 			{/if}
-			Yes, I'm coming
+			{m['BookingsFeature.GuestStayConfirmation.yesComing']()}
 		</Button>
 	</div>
 {:else if showConfirmed}
 	<p class="mt-6 flex items-center justify-center gap-2 text-xs text-muted-foreground">
 		<CircleCheckIcon class="size-4 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
-		You've confirmed you're coming — {booking.hostName} knows.
+		{m['BookingsFeature.GuestStayConfirmation.confirmed']({ hostName: booking.hostName })}
 	</p>
 {/if}

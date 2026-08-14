@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// TYPES
 	import type { typesBookingSafe } from '@/shared/features/booking/types/bookingTypes';
 
@@ -26,7 +29,9 @@
 </script>
 
 <section class="space-y-2">
-	<h3 class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Guest contact</h3>
+	<h3 class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+		{m['BookingsFeature.BookingsDetailSheet.BookingsDetailSheetGuestContact.title']()}
+	</h3>
 	{#if visible}
 		<div class="grid gap-2">
 			<a
@@ -48,9 +53,9 @@
 	{:else}
 		<p class="rounded-lg border border-dashed px-3 py-2 text-sm text-muted-foreground">
 			{#if booking.status === 'pending'}
-				Email and phone appear once you confirm this request.
+				{m['BookingsFeature.BookingsDetailSheet.BookingsDetailSheetGuestContact.emailAppearsAfterConfirm']()}
 			{:else}
-				This request was never confirmed, so contact details stay closed.
+				{m['BookingsFeature.BookingsDetailSheet.BookingsDetailSheetGuestContact.detailsStayClosed']()}
 			{/if}
 		</p>
 	{/if}

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
@@ -31,8 +34,8 @@
 		TabComponentItem<EditAccommodationTab>,
 		...TabComponentItem<EditAccommodationTab>[]
 	] = [
-		{ value: 'information', label: 'Information' },
-		{ value: 'settings', label: 'Settings' }
+		{ value: 'information', label: m['HostEditAccommodationPage.EditAccommodationTabs.information']() },
+		{ value: 'settings', label: m['HostEditAccommodationPage.EditAccommodationTabs.settings']() }
 	];
 </script>
 
@@ -43,7 +46,7 @@
 				{accommodation.title}
 			</h1>
 			<p class="max-w-2xl text-sm leading-relaxed text-muted-foreground">
-				Edit your accommodation's details, availability and settings.
+				{m['HostEditAccommodationPage.EditAccommodationTabs.description']()}
 			</p>
 		</div>
 
@@ -56,7 +59,7 @@
 			class="w-full shrink-0 sm:w-auto"
 		>
 			<ExternalLinkIcon class="size-4" aria-hidden="true" />
-			View accommodation
+			{m['HostEditAccommodationPage.EditAccommodationTabs.viewAccommodation']()}
 		</Button>
 	</header>
 

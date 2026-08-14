@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import HostAnalyticsPeriodPicker, {
 		type AnalyticsWindow
@@ -9,9 +12,9 @@
 
 <header class="flex flex-wrap items-start justify-between gap-4">
 	<div class="flex flex-col gap-1">
-		<h1 class="text-2xl font-semibold tracking-tight">Analytics</h1>
+		<h1 class="text-2xl font-semibold tracking-tight">{m['HostAnalyticsPage.HostAnalyticsHeader.title']()}</h1>
 		<p class="text-sm text-muted-foreground">
-			How your accommodations are performing — trend and per-listing.
+			{m['HostAnalyticsPage.HostAnalyticsHeader.description']()}
 		</p>
 	</div>
 

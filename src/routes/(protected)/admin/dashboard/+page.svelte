@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useQuery } from 'convex-svelte';
@@ -28,7 +31,7 @@
 	const data = $derived(dashboard.data as AdminDashboardPage | undefined);
 </script>
 
-<SvelteHead title="Admin dashboard" description="Platform overview." noIndex />
+<SvelteHead title={m['AdminDashboardPage.SEO.title']()} description={m['AdminDashboardPage.SEO.description']()} noIndex />
 
 <section class="flex w-full flex-col gap-6 p-4 md:p-6">
 	<AdminDashboardHeader />
@@ -36,8 +39,8 @@
 	{#if dashboard.error}
 		<ErrorComponent
 			variant="alert"
-			title="Couldn't load the dashboard"
-			description="Something went wrong while loading the overview. Please try again."
+			title={m['AdminDashboardPage.loadDashboardErrorTitle']()}
+			description={m['AdminDashboardPage.loadDashboardErrorDescription']()}
 		/>
 	{:else if data === undefined}
 		<AdminDashboardPageLoading />

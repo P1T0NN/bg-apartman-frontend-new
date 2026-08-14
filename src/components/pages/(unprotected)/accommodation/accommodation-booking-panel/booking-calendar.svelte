@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { DEFAULT_TIME_ZONE } from '@/shared/config';
 
@@ -78,7 +81,7 @@
 	{#if showPolicy}
 		<div class="space-y-1 border-t px-3 py-2 text-center text-xs text-muted-foreground">
 			<p>
-				Minimum stay {formatNights(minNights)}
+				{m['AccommodationPage.BookingCalendar.minimumStay']({ nights: formatNights(minNights) })}
 			</p>
 			<SameDayDisplay enabled={accommodation.sameDayReservation} />
 			<SingleStayDisplay allowed={minNights <= 1} />

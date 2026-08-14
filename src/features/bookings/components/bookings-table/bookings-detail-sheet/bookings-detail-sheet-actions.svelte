@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 
@@ -57,13 +59,14 @@
 	<footer class="mt-auto border-t p-4">
 		<p class="text-center text-xs text-muted-foreground">
 			{#if booking.paymentMethod === 'online'}
-				This paid booking can't be cancelled this close to check-in — the guest's stay is committed.
-				For a genuine emergency, contact support.
+				{m['BookingsFeature.BookingsDetailSheet.BookingsDetailSheetActions.onlineCancellationClosed']()}
+				{m['BookingsFeature.BookingsDetailSheet.BookingsDetailSheetActions.emergencyContactSupport']()}
 			{:else if stayStartsToday}
-				The stay starts today, so cancellation is closed. If something's wrong, contact support.
+				{m['BookingsFeature.BookingsDetailSheet.BookingsDetailSheetActions.cashCancellationClosedToday']()}
 			{:else}
-				Cancelling unlocks only if the guest ignores a stay-confirmation request — use "Ask guest to
-				confirm" above.
+				{m['BookingsFeature.BookingsDetailSheet.BookingsDetailSheetActions.cashCancellationNeedsConfirmation']({
+					label: m['BookingsFeature.BookingsDetailSheet.StayConfirmationPanel.askGuestToConfirm']()
+				})}
 			{/if}
 		</p>
 	</footer>

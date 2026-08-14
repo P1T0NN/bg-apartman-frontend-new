@@ -1,3 +1,5 @@
+import { m } from '@/paraglide/messages';
+
 // TYPES
 import type { OptimizeImagesProgressCallback } from './optimizeImages';
 
@@ -25,9 +27,9 @@ export function useProgress(options?: UseProgressOptions) {
 		return compressMax + (filesDone / totalFiles) * uploadSpan;
 	}
 
-	function start(message = 'Starting...') {
+	function start(message?: string) {
 		percent = 0;
-		label = message;
+		label = message ?? m['useProgress.starting']();
 	}
 
 	function clear() {
@@ -38,23 +40,31 @@ export function useProgress(options?: UseProgressOptions) {
 	const setOptimizeProgress: OptimizeImagesProgressCallback = (info) => {
 		const pct = (info.overallOptimizePercent / 100) * compressMax;
 		percent = Math.min(workMax, Math.round(pct));
-		label = `Compressing ${info.fileIndex + 1} / ${info.totalFiles} (${Math.round(info.fileCompressionPercent)}%)`;
+		label = m['useProgress.compressProgress']({
+			current: info.fileIndex + 1,
+			total: info.totalFiles,
+			percent: Math.round(info.fileCompressionPercent)
+		});
 	};
 
 	function beforeUploadFile(fileNum: number, totalFiles: number) {
 		percent = Math.round(uploadSlicePercent(fileNum - 1, totalFiles));
-		label = `Uploading file ${fileNum} of ${totalFiles}…`;
+		label = m['useProgress.uploadingFile']({ current: fileNum, total: totalFiles });
 	}
 
 	function afterUploadFile(fileNum: number, totalFiles: number) {
 		const pctOfFiles = Math.round((fileNum / totalFiles) * 100);
 		percent = Math.min(workMax, Math.round(uploadSlicePercent(fileNum, totalFiles)));
-		label = `${fileNum} of ${totalFiles} files uploaded (${pctOfFiles}%)`;
+		label = m['useProgress.filesUploaded']({
+			current: fileNum,
+			total: totalFiles,
+			percent: pctOfFiles
+		});
 	}
 
-	function markDone(doneLabel = 'Done') {
+	function markDone(doneLabel?: string) {
 		percent = 100;
-		label = doneLabel;
+		label = doneLabel ?? m['useProgress.done']();
 	}
 
 	return {

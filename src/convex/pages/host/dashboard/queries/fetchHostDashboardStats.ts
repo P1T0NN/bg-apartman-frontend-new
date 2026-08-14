@@ -45,10 +45,9 @@ async function toTodaySlice(ctx: QueryCtx, bookings: Doc<'bookings'>[]): Promise
  * earnings card, and the stat tiles. (The trend chart and per-accommodation table moved to
  * `/host/analytics` — HostSystemDesign.md §2b.)
  *
- * Realtime verdict: **one-shot** (GeneralSystemDesignRule.md). None of it moves under the
- * host without them acting — listings change when they edit one elsewhere, the today strip
- * turns over on a day boundary, and the tiles are month-scale. Remounting the page refetches,
- * which is always fresh enough. The one genuinely live thing on this page has its own query.
+ * Realtime verdict: **live subscription** (GeneralSystemDesignRule.md). The page reads it
+ * through `useQuery`; the lifecycle cron advances bookings and the payout scheduler moves
+ * earnings while the host watches, so the strips stay current without a reload.
  *
  * Cost control: hosts here are not one-apartment individuals — a sizeable minority own 100+
  * listings — so NOTHING in this query may scale with portfolio size:

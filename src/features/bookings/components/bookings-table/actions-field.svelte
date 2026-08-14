@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 
@@ -32,7 +34,7 @@
 	variant="ghost"
 	size="icon-sm"
 	class="ml-auto text-muted-foreground"
-	aria-label={`View booking ${booking.bookingCode}`}
+	aria-label={m['BookingsFeature.BookingsTable.ActionsField.viewBooking']({ bookingCode: booking.bookingCode })}
 	onclick={openDetail}
 >
 	<ChevronRightIcon />

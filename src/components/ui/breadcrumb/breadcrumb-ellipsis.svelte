@@ -3,6 +3,9 @@
 	import { cn, type WithElementRef, type WithoutChildren } from '@/utils/utils.js';
 	import MoreHorizontalIcon from '@lucide/svelte/icons/more-horizontal';
 
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -19,5 +22,5 @@
 	{...restProps}
 >
 	<MoreHorizontalIcon />
-	<span class="sr-only">More</span>
+	<span class="sr-only">{m['Breadcrumb.BreadcrumbEllipsis.more']()}</span>
 </span>

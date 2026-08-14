@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 
@@ -122,7 +125,7 @@
 	<PlacesAutocomplete
 		id={inputId}
 		variant="city"
-		placeholder="Search your city"
+		placeholder={m['AdminAddAccommodationPage.AdminAddAccommodationForm.searchCityPlaceholder']()}
 		onInput={() => setValue('')}
 		onSelect={(place) => {
 			void applyRegionToValues(values, place, setValue);
@@ -145,7 +148,9 @@
 		variant="address"
 		disabled={!regionSelected}
 		regionName={values.city}
-		placeholder={regionSelected ? 'Search street name' : 'Pick a city first'}
+		placeholder={regionSelected
+			? m['AdminAddAccommodationPage.AdminAddAccommodationForm.searchStreetPlaceholder']()
+			: m['AdminAddAccommodationPage.AdminAddAccommodationForm.pickCityFirst']()}
 		bind:value={values.address}
 		onSelect={(place) => applyStreetToValues(values, place, setValue)}
 	/>
@@ -174,7 +179,7 @@
 		query={api.tables.users.userQueries.searchUsers}
 		minQueryLength={2}
 		maxResults={7}
-		placeholder="Search by name or email"
+		placeholder={m['AdminAddAccommodationPage.AdminAddAccommodationForm.searchOwnerPlaceholder']()}
 		aria-invalid={error ? 'true' : undefined}
 		onSelect={(item) => {
 			selectedOwnerTitle = item.title;

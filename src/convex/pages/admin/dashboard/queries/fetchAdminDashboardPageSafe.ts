@@ -62,68 +62,62 @@ async function readAdminDashboardPage(ctx: QueryCtx): Promise<AdminDashboardPage
 		const now = Date.now();
 		const seriesFrom = monthStartUtc(now, 11);
 
-		const [
-			stampedNew,
-			legacyNew,
-			newReportsTotal,
-			usersTotal,
-			publishedListings,
-			metricMaps
-		] = await Promise.all([
-			// Queue rows: the `'new'` read is two index slices merged — an index match is exact,
-			// and rows filed before `status` existed stored nothing (AdminPagesSystemDesign.md §4).
-			ctx.db
-				.query('reports')
-				.withIndex('by_status', (q) => q.eq('status', 'new'))
-				.order('desc')
-				.take(REPORTS_QUEUE_LIMIT),
-			ctx.db
-				.query('reports')
-				.withIndex('by_status', (q) => q.eq('status', undefined))
-				.order('desc')
-				.take(REPORTS_QUEUE_LIMIT),
-			// The aggregate's namespace already normalizes `undefined → 'new'`.
-			counters.reports.count(ctx, 'new'),
-			// BA `user` table is component-local — the app's counter triggers can't see it,
-			// so the count lives beside the data (see `countUsers` for its stated ceiling).
-			ctx.runQuery(components.betterAuth.userQueries.countUsers, {}),
-			counters.apartments.count(ctx, 'published'),
-			// One Map per metric: UTC month start → value. Global scope (no `scope` arg).
-			// `refunds` is grouped by `plan` so ONLY the fee-portion reversals (tagged
-			// `booking_fee`, ASD §8) subtract from platform revenue — the untagged
-			// full-total refund events are guest money, not ours.
-			Promise.all([
-				analytics.fetchTimeSeries(ctx, {
-					metric: 'revenue',
-					from: seriesFrom,
-					to: now,
-					bucketUnit: 'month'
-				}),
-				analytics.fetchTimeSeries(ctx, {
-					metric: 'refunds',
-					groupBy: 'plan',
-					from: seriesFrom,
-					to: now,
-					bucketUnit: 'month'
-				}),
-				analytics.fetchTimeSeries(ctx, {
-					metric: 'bookingsConfirmed',
-					from: seriesFrom,
-					to: now,
-					bucketUnit: 'month'
-				})
-			]).then(([revenue, refundsByPlan, confirmed]) => ({
-				revenueCentsByMonth: new Map(
-					revenue.data.map((p) => [p.date, p[revenue.meta.metric] ?? 0])
-				),
-				feeRefundCentsByMonth: new Map(
-					refundsByPlan.data.map((p) => [p.date, p['booking_fee'] ?? 0])
-				),
-				confirmedByMonth: new Map(
-					confirmed.data.map((p) => [p.date, p[confirmed.meta.metric] ?? 0])
-				)
-			}))
-		]);
+		const [stampedNew, legacyNew, newReportsTotal, usersTotal, publishedListings, metricMaps] =
+			await Promise.all([
+				// Queue rows: the `'new'` read is two index slices merged — an index match is exact,
+				// and rows filed before `status` existed stored nothing (AdminPagesSystemDesign.md §4).
+				ctx.db
+					.query('reports')
+					.withIndex('by_status', (q) => q.eq('status', 'new'))
+					.order('desc')
+					.take(REPORTS_QUEUE_LIMIT),
+				ctx.db
+					.query('reports')
+					.withIndex('by_status', (q) => q.eq('status', undefined))
+					.order('desc')
+					.take(REPORTS_QUEUE_LIMIT),
+				// The aggregate's namespace already normalizes `undefined → 'new'`.
+				counters.reports.count(ctx, 'new'),
+				// BA `user` table is component-local — the app's counter triggers can't see it,
+				// so the count lives beside the data (see `countUsers` for its stated ceiling).
+				ctx.runQuery(components.betterAuth.userQueries.countUsers, {}),
+				counters.apartments.count(ctx, 'published'),
+				// One Map per metric: UTC month start → value. Global scope (no `scope` arg).
+				// `refunds` is grouped by `plan` so ONLY the fee-portion reversals (tagged
+				// `booking_fee`, ASD §8) subtract from platform revenue — the untagged
+				// full-total refund events are guest money, not ours.
+				Promise.all([
+					analytics.fetchTimeSeries(ctx, {
+						metric: 'revenue',
+						from: seriesFrom,
+						to: now,
+						bucketUnit: 'month'
+					}),
+					analytics.fetchTimeSeries(ctx, {
+						metric: 'refunds',
+						groupBy: 'plan',
+						from: seriesFrom,
+						to: now,
+						bucketUnit: 'month'
+					}),
+					analytics.fetchTimeSeries(ctx, {
+						metric: 'bookingsConfirmed',
+						from: seriesFrom,
+						to: now,
+						bucketUnit: 'month'
+					})
+				]).then(([revenue, refundsByPlan, confirmed]) => ({
+					revenueCentsByMonth: new Map(
+						revenue.data.map((p) => [p.date, p[revenue.meta.metric] ?? 0])
+					),
+					feeRefundCentsByMonth: new Map(
+						refundsByPlan.data.map((p) => [p.date, p['booking_fee'] ?? 0])
+					),
+					confirmedByMonth: new Map(
+						confirmed.data.map((p) => [p.date, p[confirmed.meta.metric] ?? 0])
+					)
+				}))
+			]);
 
 		const items = [...stampedNew, ...legacyNew]
 			.sort((a, b) => b._creationTime - a._creationTime)

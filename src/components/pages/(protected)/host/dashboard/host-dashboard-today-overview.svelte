@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Card } from '@/components/ui/card/index.js';
 
@@ -25,19 +28,19 @@
 		data
 			? [
 					{
-						title: 'Check-ins today',
+						title: m['HostDashboardPage.HostDashboardTodayOverview.checkInsToday'](),
 						slice: data.checkIns,
 						icon: LogInIcon,
 						iconClass: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
 					},
 					{
-						title: 'Check-outs today',
+						title: m['HostDashboardPage.HostDashboardTodayOverview.checkOutsToday'](),
 						slice: data.checkOuts,
 						icon: LogOutIcon,
 						iconClass: 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
 					},
 					{
-						title: 'Currently hosting',
+						title: m['HostDashboardPage.HostDashboardTodayOverview.currentlyHosting'](),
 						slice: data.hosting,
 						icon: HouseIcon,
 						iconClass: 'bg-primary/10 text-primary'
@@ -57,7 +60,7 @@
 {#if data}
 	{#if allQuiet}
 		<p class="rounded-xl border border-dashed px-4 py-3 text-sm text-muted-foreground">
-			No arrivals or departures today.
+			{m['HostDashboardPage.HostDashboardTodayOverview.noArrivalsOrDepartures']()}
 		</p>
 	{:else}
 		<div class="grid gap-3 sm:grid-cols-3">
@@ -80,7 +83,9 @@
 					</div>
 
 					{#if group.slice.total === 0}
-						<p class="text-xs text-muted-foreground">Nothing today</p>
+						<p class="text-xs text-muted-foreground">
+							{m['HostDashboardPage.HostDashboardTodayOverview.nothingToday']()}
+						</p>
 					{:else}
 						<ul class="space-y-0.5">
 							{#each group.slice.items as row (row.bookingId)}
@@ -91,7 +96,9 @@
 
 							{#if group.slice.total > group.slice.items.length}
 								<li class="text-xs text-muted-foreground">
-									+{group.slice.total - group.slice.items.length} more
+									{m['HostDashboardPage.HostDashboardTodayOverview.more']({
+										count: group.slice.total - group.slice.items.length
+									})}
 								</li>
 							{/if}
 						</ul>

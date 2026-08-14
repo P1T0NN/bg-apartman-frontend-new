@@ -1,4 +1,10 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
+
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 
@@ -15,15 +21,16 @@
 	</div>
 
 	<div class="flex flex-col gap-1.5">
-		<h1 class="text-lg font-semibold">Reservation not found</h1>
+		<h1 class="text-lg font-semibold">
+			{m['ReservationPage.ReservationPageEmpty.reservationNotFound']()}
+		</h1>
 		<p class="mx-auto max-w-sm text-sm text-muted-foreground">
-			This reservation link is invalid or may have been removed. Check the link from your
-			confirmation, or browse other stays.
+			{m['ReservationPage.ReservationPageEmpty.invalidLink']()}
 		</p>
 	</div>
 
-	<Button href="/search" variant="outline">
+	<Button href={appHref('/search')} variant="outline">
 		<SearchIcon class="size-4" aria-hidden="true" />
-		Browse stays
+		{m['ReservationPage.ReservationPageEmpty.browseStays']()}
 	</Button>
 </div>

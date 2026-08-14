@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// UTILS
 	import { formatCurrency } from '@/utils/formatters';
 	import { minNightsFor } from '@/features/accommodations/utils/accommodationPresentation';
@@ -33,14 +36,14 @@
 		<div class="px-3 py-2.5">
 			<p class="flex items-center gap-1.5 text-xs text-muted-foreground">
 				<LogInIcon class="size-3.5" aria-hidden="true" />
-				Check-in
+				{m['AccommodationPage.BookingPanelFacts.checkIn']()}
 			</p>
 			<p class="mt-0.5 text-sm font-medium">{accommodation.checkInTime ?? '—'}</p>
 		</div>
 		<div class="border-l px-3 py-2.5">
 			<p class="flex items-center gap-1.5 text-xs text-muted-foreground">
 				<LogOutIcon class="size-3.5" aria-hidden="true" />
-				Check-out
+				{m['AccommodationPage.BookingPanelFacts.checkOut']()}
 			</p>
 			<p class="mt-0.5 text-sm font-medium">{accommodation.checkOutTime ?? '—'}</p>
 		</div>
@@ -50,7 +53,7 @@
 	<div class="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2.5">
 		<span class="flex items-center gap-2 text-sm text-muted-foreground">
 			<UsersIcon class="size-4" aria-hidden="true" />
-			Max guests
+			{m['AccommodationPage.BookingPanelFacts.maxGuests']()}
 		</span>
 		<span class="text-sm font-medium">{accommodation.maxGuests}</span>
 	</div>
@@ -59,17 +62,13 @@
 	<div class="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2.5">
 		<span class="flex items-center gap-2 text-sm text-muted-foreground">
 			<SparklesIcon class="size-4" aria-hidden="true" />
-			Cleaning fee
+			{m['AccommodationPage.BookingPanelFacts.cleaningFee']()}
 		</span>
-		<span
-			class={cleaningFee > 0
-				? 'text-sm font-medium'
-				: 'text-sm text-muted-foreground'}
-		>
+		<span class={cleaningFee > 0 ? 'text-sm font-medium' : 'text-sm text-muted-foreground'}>
 			{#if cleaningFee > 0}
 				{formatCurrency(cleaningFee)}
 			{:else}
-				No cleaning fee
+				{m['AccommodationPage.BookingPanelFacts.noCleaningFee']()}
 			{/if}
 		</span>
 	</div>
@@ -78,7 +77,7 @@
 		<div class="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2.5">
 			<span class="flex items-center gap-2 text-sm text-muted-foreground">
 				<SunIcon class="size-4" aria-hidden="true" />
-				Weekend nights (Fri–Sat)
+				{m['AccommodationPage.BookingPanelFacts.weekendNights']()}
 			</span>
 			<span class="text-sm font-medium">{formatCurrency(accommodation.weekendPremium ?? 0)}</span>
 		</div>
@@ -88,9 +87,13 @@
 		<div class="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2.5">
 			<span class="flex items-center gap-2 text-sm text-muted-foreground">
 				<CalendarDaysIcon class="size-4" aria-hidden="true" />
-				Weekly discount
+				{m['AccommodationPage.BookingPanelFacts.weeklyDiscount']()}
 			</span>
-			<span class="text-sm font-medium">{accommodation.weeklyDiscount ?? 0}% off (7+ nights)</span>
+			<span class="text-sm font-medium">
+				{m['AccommodationPage.BookingPanelFacts.weeklyDiscountOff']({
+					percent: accommodation.weeklyDiscount ?? 0
+				})}
+			</span>
 		</div>
 	{/if}
 
@@ -98,10 +101,10 @@
 		<div class="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2.5">
 			<span class="flex items-center gap-2 text-sm text-muted-foreground">
 				<ClockIcon class="size-4" aria-hidden="true" />
-				Minimum stay
+				{m['AccommodationPage.BookingPanelFacts.minimumStay']()}
 			</span>
 			<span class="text-sm font-medium">
-				{minNights} night{minNights > 1 ? 's' : ''}
+				{m['AccommodationPage.BookingPanelFacts.nightsCount']({ count: minNights })}
 			</span>
 		</div>
 	{/if}

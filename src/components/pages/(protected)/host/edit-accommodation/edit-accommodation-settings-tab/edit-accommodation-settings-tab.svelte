@@ -1,6 +1,8 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// SVELTEKIT
-	import { goto } from '$app/navigation';
 
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
@@ -8,6 +10,9 @@
 
 	// CONFIG
 	import { PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
+
+	// UTILS
+	import { appGoto } from '@/utils/app-navigation.js';
 
 	// COMPONENTS
 	import {
@@ -71,7 +76,7 @@
 				{ ids: [accommodation._id] }
 			);
 			if (!toastResult(result)) return;
-			await goto(PROTECTED_PAGE_ENDPOINTS.MY_ACCOMMODATIONS);
+			await appGoto(PROTECTED_PAGE_ENDPOINTS.MY_ACCOMMODATIONS);
 		} finally {
 			deletePending = false;
 		}
@@ -85,38 +90,49 @@
 <div class="flex flex-col gap-6">
 	<Card>
 		<CardHeader>
-			<CardTitle>Visibility</CardTitle>
-			<CardDescription>Control whether this accommodation is publicly discoverable.</CardDescription
+			<CardTitle
+				>{m['HostEditAccommodationPage.EditAccommodationSettingsTab.visibilityTitle']()}</CardTitle
 			>
+			<CardDescription>
+				{m['HostEditAccommodationPage.EditAccommodationSettingsTab.visibilityDescription']()}
+			</CardDescription>
 		</CardHeader>
 		<CardContent class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 			<div class="flex items-center gap-3">
-				<span class="text-sm text-muted-foreground">Current status</span>
+				<span class="text-sm text-muted-foreground">
+					{m['HostEditAccommodationPage.EditAccommodationSettingsTab.currentStatus']()}
+				</span>
 				<FeatureStatus config={ACCOMMODATION_STATUS_CONFIG} status={accommodation.status} />
 			</div>
 
 			{#if isSuspended}
-				<p class="text-sm text-muted-foreground">Suspended by an administrator.</p>
+				<p class="text-sm text-muted-foreground">
+					{m['HostEditAccommodationPage.EditAccommodationSettingsTab.suspendedByAdmin']()}
+				</p>
 			{:else if isArchived}
 				<ActionButton
 					function={() => setStatus('pending_review')}
 					isPending={statusPending}
-					title="Relist this property?"
-					description="It will be sent for review and become publicly visible once approved."
+					title={m['HostEditAccommodationPage.EditAccommodationSettingsTab.relistTitle']()}
+					description={m[
+						'HostEditAccommodationPage.EditAccommodationSettingsTab.relistDescription'
+					]()}
 				>
 					<EyeIcon class="size-4" />
-					Relist
+					{m['HostEditAccommodationPage.EditAccommodationSettingsTab.relist']()}
 				</ActionButton>
 			{:else}
 				<ActionButton
 					function={() => setStatus('archived')}
 					variant="outline"
 					isPending={statusPending}
-					title="Unlist this property?"
-					description="It will be hidden from search and its public page until you relist it."
+					title={m['HostEditAccommodationPage.EditAccommodationSettingsTab.unlistTitle']()}
+					description={m[
+						'HostEditAccommodationPage.EditAccommodationSettingsTab.unlistDescription'
+					]()}
 				>
 					<EyeOffIcon class="size-4" />
-					Unlist
+					{m['HostEditAccommodationPage.EditAccommodationSettingsTab.unlist']()}
 				</ActionButton>
 			{/if}
 		</CardContent>
@@ -124,9 +140,11 @@
 
 	<Card class="border-destructive/30">
 		<CardHeader>
-			<CardTitle class="text-destructive">Danger zone</CardTitle>
+			<CardTitle class="text-destructive">
+				{m['HostEditAccommodationPage.EditAccommodationSettingsTab.dangerZoneTitle']()}
+			</CardTitle>
 			<CardDescription>
-				Deleting a accommodation is permanent — its photos and details are removed for good.
+				{m['HostEditAccommodationPage.EditAccommodationSettingsTab.dangerZoneDescription']()}
 			</CardDescription>
 		</CardHeader>
 		<CardContent class="flex justify-end">
@@ -136,12 +154,14 @@
 				isDestructive
 				isPending={deletePending}
 				actionDisabled={typedConfirm !== accommodation.title}
-				title="Delete this accommodation?"
-				description={`Type the accommodation title "${accommodation.title}" to confirm. This can't be undone.`}
+				title={m['HostEditAccommodationPage.EditAccommodationSettingsTab.deleteTitle']()}
+				description={m['HostEditAccommodationPage.EditAccommodationSettingsTab.deleteDescription']({
+					title: accommodation.title
+				})}
 				body={confirmBody}
 			>
 				<Trash2Icon class="size-4" />
-				Delete accommodation
+				{m['HostEditAccommodationPage.EditAccommodationSettingsTab.deleteAccommodation']()}
 			</ActionButton>
 		</CardContent>
 	</Card>

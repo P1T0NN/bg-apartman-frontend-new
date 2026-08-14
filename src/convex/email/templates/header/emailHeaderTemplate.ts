@@ -6,7 +6,7 @@ import { EMAIL_THEME } from '../shared';
 
 /**
  * Opening half of every email: the document head, the outer grey canvas, the white 600px card,
- * and the brand bar. It leaves the inner content cell **open** â€” a body template drops its
+ * and the brand bar. It leaves the inner content cell **open** — a body template drops its
  * content in, then closes everything with {@link emailFooterTemplate}. Always pair the two.
  */
 export function emailHeaderTemplate(locale: string): string {

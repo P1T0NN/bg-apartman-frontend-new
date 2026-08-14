@@ -1,6 +1,12 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { ADMIN_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
+
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
@@ -11,14 +17,16 @@
 
 <header class="flex items-start justify-between gap-4">
 	<div class="flex flex-col gap-1">
-		<h1 class="text-2xl font-semibold tracking-tight">Accommodations</h1>
+		<h1 class="text-2xl font-semibold tracking-tight">
+			{m['AdminAccommodationsPage.AdminAccommodationsHeader.title']()}
+		</h1>
 		<p class="text-sm text-muted-foreground">
-			Which listings need review, and what is live on the platform.
+			{m['AdminAccommodationsPage.AdminAccommodationsHeader.subtitle']()}
 		</p>
 	</div>
 
-	<Button href={ADMIN_PAGE_ENDPOINTS.ADD_ACCOMMODATION}>
+	<Button href={appHref(ADMIN_PAGE_ENDPOINTS.ADD_ACCOMMODATION)}>
 		<PlusIcon class="size-4" />
-		Add accommodation
+		{m['AdminAccommodationsPage.AdminAccommodationsHeader.addAccommodation']()}
 	</Button>
 </header>

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { ACCOMMODATIONS_CONFIG, PAYMENTS_CONFIG } from '@/shared/config';
 
@@ -34,21 +37,26 @@
 		{
 			value: 'listing_fee',
 			icon: ReceiptEuroIcon,
-			label: `Listing fee — €${AMOUNT} per ${PERIOD_DAYS} days`,
-			description:
-				'Keep 100% of every booking. Accept cash or online payments. Your listing goes live after review and payment.',
+			label: m['HostAddAccommodationPage.MonetizationField.listingFeeLabel']({
+				amount: AMOUNT,
+				periodDays: PERIOD_DAYS
+			}),
+			description: m['HostAddAccommodationPage.MonetizationField.listingFeeDescription'](),
 			disabled: false,
 			note: undefined as string | undefined
 		},
 		{
 			value: 'booking_fee',
 			icon: PercentIcon,
-			label: 'Per-booking fee — free to list',
-			description:
-				`Guests pay a ${PERCENT}% service fee (min €${MIN_EUROS}) on each booking. Online payments only. ` +
-				`Permanent: this plan can't be changed later — to use a listing fee instead, you'd create a new listing.`,
+			label: m['HostAddAccommodationPage.MonetizationField.bookingFeeLabel'](),
+			description: m['HostAddAccommodationPage.MonetizationField.bookingFeeDescription']({
+				percent: PERCENT,
+				minEuros: MIN_EUROS
+			}),
 			disabled: !onlineAvailable,
-			note: onlineAvailable ? undefined : 'Available once online payments launch.'
+			note: onlineAvailable
+				? undefined
+				: m['HostAddAccommodationPage.MonetizationField.bookingFeeNote']()
 		}
 	];
 </script>

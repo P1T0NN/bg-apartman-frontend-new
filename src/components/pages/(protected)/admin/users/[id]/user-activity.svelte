@@ -1,4 +1,7 @@
 <script lang="ts">
+	// PARAGLIDE
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 
@@ -7,6 +10,7 @@
 
 	// UTILS
 	import { capitalizeFirst } from '@/shared/utils/stringUtils';
+	import { getLocale } from '@/paraglide/runtime';
 
 	// TYPES
 	import type { Doc } from '@/convex/_generated/dataModel';
@@ -27,32 +31,35 @@
 	const columns: ColumnDef<Doc<'auditLogs'>>[] = [
 		{
 			id: 'action',
-			header: 'Action',
+			header: m['AdminUsersPage.UserActivity.columnAction'](),
 			accessor: (r) => formatAction(r.action)
 		},
 		{
 			id: 'status',
-			header: 'Status',
-			accessor: (r) => (r.status === 'failure' ? 'Failed' : 'Success'),
+			header: m['AdminUsersPage.UserActivity.columnStatus'](),
+			accessor: (r) =>
+				r.status === 'failure'
+					? m['AdminUsersPage.UserActivity.statusFailed']()
+					: m['AdminUsersPage.UserActivity.statusSuccess'](),
 			hideBelow: 'md'
 		},
 		{
 			id: 'resource',
-			header: 'Resource',
+			header: m['AdminUsersPage.UserActivity.columnResource'](),
 			accessor: (r) => (r.resource ? `${r.resource.table}#${r.resource.id}` : '—'),
 			hideBelow: 'lg',
 			cellClass: 'max-w-[16rem]'
 		},
 		{
 			id: 'ip',
-			header: 'IP',
+			header: m['AdminUsersPage.UserActivity.columnIp'](),
 			accessor: (r) => r.ip ?? '—',
 			hideBelow: 'lg'
 		},
 		{
 			id: 'createdAt',
-			header: 'When',
-			accessor: (r) => new Date(r._creationTime).toLocaleString(),
+			header: m['AdminUsersPage.UserActivity.columnWhen'](),
+			accessor: (r) => new Date(r._creationTime).toLocaleString(getLocale()),
 			sortable: true
 		}
 	];
@@ -60,16 +67,14 @@
 
 <div class="flex flex-col gap-4">
 	<header class="flex flex-col gap-0.5">
-		<h2 class="text-base font-semibold">Activity</h2>
+		<h2 class="text-base font-semibold">{m['AdminUsersPage.UserActivity.title']()}</h2>
 		<p class="text-sm text-muted-foreground">
-			Audit log entries scoped to this user. Newest first.
+			{m['AdminUsersPage.UserActivity.description']()}
 		</p>
 	</header>
 
-	<!-- realtime: the danger-zone actions on this very page write the audit rows below. -->
 	<ConvexDataTable
-		realtime
-		caption="Activity"
+		caption={m['AdminUsersPage.UserActivity.title']()}
 		query={api.tables.auditLog.queries.auditLogQueries.listAuditLogs}
 		{queryArgs}
 		{columns}
@@ -83,11 +88,11 @@
 {#snippet statusCell({ row }: DataTableCellSnippetProps<Doc<'auditLogs'>>)}
 	{#if row.status === 'failure'}
 		<span class="rounded bg-destructive/10 px-1.5 py-0.5 text-xs font-medium text-destructive">
-			Failed
+			{m['AdminUsersPage.UserActivity.statusFailed']()}
 		</span>
 	{:else}
 		<span class="rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
-			Success
+			{m['AdminUsersPage.UserActivity.statusSuccess']()}
 		</span>
 	{/if}
 {/snippet}

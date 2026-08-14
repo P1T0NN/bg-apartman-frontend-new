@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// SVELTEKIT
 	import { page } from '$app/state';
 
@@ -19,7 +22,7 @@
 </script>
 
 <SvelteHead
-	title={isNotFound ? 'Page not found' : 'Something went wrong'}
+	title={isNotFound ? m['ErrorPage.SEO.pageNotFound']() : m['ErrorPage.SEO.somethingWentWrong']()}
 	description="BGApartman"
 	noIndex
 />
@@ -48,31 +51,29 @@
 				{page.status}
 			</p>
 			<h1 class="text-lg font-semibold">
-				{isNotFound ? "This page doesn't exist" : 'Something went wrong'}
+				{isNotFound ? m['ErrorPage.thisPageDoesntExist']() : m['ErrorPage.somethingWentWrong']()}
 			</h1>
 			<p class="mx-auto max-w-sm text-sm text-muted-foreground">
-				{isNotFound
-					? 'The link may be outdated, or the page may have moved. Let’s get you back to a good place.'
-					: 'An unexpected error occurred. Please try again in a moment — if it keeps happening, let us know.'}
+				{isNotFound ? m['ErrorPage.linkOutdated']() : m['ErrorPage.unexpectedError']()}
 			</p>
 		</div>
 
 		<div class="flex flex-wrap items-center justify-center gap-2">
 			<Button href={UNPROTECTED_PAGE_ENDPOINTS.ROOT}>
 				<HouseIcon class="size-4" aria-hidden="true" />
-				Back to home
+				{m['ErrorPage.backToHome']()}
 			</Button>
 
 			{#if !isNotFound}
-				<Button variant="outline" onclick={() => location.reload()}>Try again</Button>
+				<Button variant="outline" onclick={() => location.reload()}>{m['ErrorPage.tryAgain']()}</Button>
 			{/if}
 		</div>
 
 		{#if !isNotFound}
 			<p class="text-xs text-muted-foreground/80">
-				Keeps happening?
+				{m['ErrorPage.keepsHappening']()}
 				<Link href={UNPROTECTED_PAGE_ENDPOINTS.REPORT} class="underline underline-offset-2">
-					Report the issue
+					{m['ErrorPage.reportIssue']()}
 				</Link>
 			</p>
 		{/if}

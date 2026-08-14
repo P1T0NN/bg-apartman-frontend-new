@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { PROTECTED_PAGE_ENDPOINTS, UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 	import { PAYMENTS_CONFIG } from '@/shared/config';
@@ -34,8 +37,8 @@
 		onclick={() => appGoto(UNPROTECTED_PAGE_ENDPOINTS.ACCOMMODATION.replace(':slug', row.slug))}
 		variant="ghost"
 		size="icon-sm"
-		aria-label="View accommodation"
-		title="View"
+		aria-label={m['HostMyAccommodationsPage.MyAccommodationsTableActions.viewAccommodation']()}
+		title={m['HostMyAccommodationsPage.MyAccommodationsTableActions.view']()}
 	>
 		<EyeIcon class="size-4" aria-hidden="true" />
 	</Button>
@@ -45,8 +48,8 @@
 		onclick={() => appGoto(PROTECTED_PAGE_ENDPOINTS.ACCOMMODATION_CALENDAR.replace(':id', row._id))}
 		variant="ghost"
 		size="icon-sm"
-		aria-label="Open calendar"
-		title="Calendar"
+		aria-label={m['HostMyAccommodationsPage.MyAccommodationsTableActions.openCalendar']()}
+		title={m['HostMyAccommodationsPage.MyAccommodationsTableActions.calendar']()}
 	>
 		<CalendarIcon class="size-4" aria-hidden="true" />
 	</Button>
@@ -55,8 +58,8 @@
 		onclick={() => appGoto(PROTECTED_PAGE_ENDPOINTS.EDIT_ACCOMMODATION.replace(':id', row._id))}
 		variant="ghost"
 		size="icon-sm"
-		aria-label="Edit accommodation"
-		title="Edit"
+		aria-label={m['HostMyAccommodationsPage.MyAccommodationsTableActions.editAccommodation']()}
+		title={m['HostMyAccommodationsPage.MyAccommodationsTableActions.edit']()}
 	>
 		<SquarePenIcon class="size-4" aria-hidden="true" />
 	</Button>

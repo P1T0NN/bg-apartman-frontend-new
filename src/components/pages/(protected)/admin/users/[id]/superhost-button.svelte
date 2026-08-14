@@ -1,4 +1,7 @@
 <script lang="ts">
+	// PARAGLIDE
+	import { m } from '@/paraglide/messages';
+
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
 	import { useConvexClient } from 'convex-svelte';
@@ -45,10 +48,12 @@
 	function={confirmSuperhostChange}
 	variant="outline"
 	{isPending}
-	title={isSuperhost ? `Remove superhost from ${userEmail}?` : `Make ${userEmail} a superhost?`}
+	title={isSuperhost
+		? m['AdminUsersPage.SuperhostButton.removeSuperhostTitle']({ userEmail })
+		: m['AdminUsersPage.SuperhostButton.makeSuperhostTitle']({ userEmail })}
 	description={isSuperhost
-		? 'The badge disappears from every listing they own. Their listings update in the background, so it can take a moment on a large portfolio.'
-		: 'The badge appears on every listing they own, and on any listing they add later. Their listings update in the background, so it can take a moment on a large portfolio.'}
+		? m['AdminUsersPage.SuperhostButton.removeSuperhostDescription']()
+		: m['AdminUsersPage.SuperhostButton.makeSuperhostDescription']()}
 >
-	{isSuperhost ? 'Remove superhost' : 'Make superhost'}
+	{isSuperhost ? m['AdminUsersPage.SuperhostButton.removeSuperhost']() : m['AdminUsersPage.SuperhostButton.makeSuperhost']()}
 </ActionButton>

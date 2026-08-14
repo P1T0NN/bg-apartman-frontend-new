@@ -1,6 +1,12 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { PROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
+
+	// UTILS
+	import { appHref } from '@/utils/app-navigation.js';
 
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
@@ -18,15 +24,16 @@
 	</div>
 
 	<div class="flex flex-col gap-1.5">
-		<h2 class="text-lg font-semibold">Accommodation not found</h2>
+		<h2 class="text-lg font-semibold">
+			{m['HostEditAccommodationPage.EditAccommodationPageEmpty.notFoundTitle']()}
+		</h2>
 		<p class="mx-auto max-w-sm text-sm text-muted-foreground">
-			This accommodation may have been removed, or it isn't one of yours. Head back to your
-			accommodations to keep editing.
+			{m['HostEditAccommodationPage.EditAccommodationPageEmpty.notFoundDescription']()}
 		</p>
 	</div>
 
-	<Button href={PROTECTED_PAGE_ENDPOINTS.MY_ACCOMMODATIONS} variant="outline">
+	<Button href={appHref(PROTECTED_PAGE_ENDPOINTS.MY_ACCOMMODATIONS)} variant="outline">
 		<ArrowLeftIcon class="size-4" aria-hidden="true" />
-		Back to my accommodations
+		{m['HostEditAccommodationPage.EditAccommodationPageEmpty.backToMyAccommodations']()}
 	</Button>
 </div>

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
 
@@ -13,7 +16,7 @@
 		class?: string;
 	};
 
-	let { value, label = 'Copy', class: className }: Props = $props();
+	let { value, label = m['CopyButton.copy'](), class: className }: Props = $props();
 
 	let copied = $state(false);
 	let timer: ReturnType<typeof setTimeout> | null = null;
@@ -47,8 +50,8 @@
 	variant="ghost"
 	size="icon-sm"
 	class={className}
-	aria-label={copied ? 'Copied' : label}
-	title={copied ? 'Copied' : label}
+	aria-label={copied ? m['CopyButton.copied']() : label}
+	title={copied ? m['CopyButton.copied']() : label}
 	onclick={handleCopy}
 >
 	{#if copied}

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// I18N
+	import { m } from '@/paraglide/messages';
+
 	// CONFIG
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
 
@@ -56,52 +59,66 @@
 				return {
 					icon: ClockIcon,
 					iconClass: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
-					title: 'Request sent!',
-					description: `${booking.hostName} has ${booking.policy.hostResponseHours} hours to respond. You won't be charged unless it's confirmed.`
+					title: m['ReservationPage.ReservationConfirmation.requestSent'](),
+					description: m['ReservationPage.ReservationConfirmation.pendingDescription']({
+						hostName: booking.hostName,
+						hours: booking.policy.hostResponseHours
+					})
 				};
 			case 'confirmed':
 				return {
 					icon: CircleCheckIcon,
 					iconClass: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
-					title: 'Your stay is booked!',
-					description: `You're all set for ${booking.apartmentTitle}. We've emailed your confirmation details.`
+					title: m['ReservationPage.ReservationConfirmation.yourStayIsBooked'](),
+					description: m['ReservationPage.ReservationConfirmation.confirmedDescription']({
+						apartmentTitle: booking.apartmentTitle
+					})
 				};
 			case 'checked_in':
 				return {
 					icon: CircleCheckIcon,
 					iconClass: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
-					title: "You're checked in",
-					description: `Enjoy your stay at ${booking.apartmentTitle}. Anything you need, ${booking.hostName} is your contact.`
+					title: m['ReservationPage.ReservationConfirmation.youreCheckedIn'](),
+					description: m['ReservationPage.ReservationConfirmation.checkedInDescription']({
+						apartmentTitle: booking.apartmentTitle,
+						hostName: booking.hostName
+					})
 				};
 			case 'checked_out':
 				return {
 					icon: CircleCheckIcon,
 					iconClass: 'bg-muted text-muted-foreground',
-					title: 'Stay complete',
-					description: `Hope you enjoyed ${booking.apartmentTitle}. Thanks for staying with us.`
+					title: m['ReservationPage.ReservationConfirmation.stayComplete'](),
+					description: m['ReservationPage.ReservationConfirmation.checkedOutDescription']({
+						apartmentTitle: booking.apartmentTitle
+					})
 				};
 			case 'declined':
 				return {
 					icon: CircleXIcon,
 					iconClass: 'bg-destructive/10 text-destructive',
-					title: "The host couldn't take this one",
+					title: m['ReservationPage.ReservationConfirmation.hostCouldntTakeThisOne'](),
 					description:
 						booking.cancelReason ??
-						`${booking.hostName} couldn't accept this request. The dates were never reserved.`
+						m['ReservationPage.ReservationConfirmation.hostCouldNotAccept']({
+							hostName: booking.hostName
+						})
 				};
 			case 'auto_declined':
 				return {
 					icon: CircleXIcon,
 					iconClass: 'bg-muted text-muted-foreground',
-					title: 'Request closed',
-					description: `${booking.cancelReason ?? "The host didn't respond in time."} Nothing was charged — you can request other dates any time.`
+					title: m['ReservationPage.ReservationConfirmation.requestClosed'](),
+					description: `${booking.cancelReason ?? m['ReservationPage.ReservationConfirmation.hostDidNotRespond']()} ${m['ReservationPage.ReservationConfirmation.nothingCharged']()}`
 				};
 			case 'withdrawn':
 				return {
 					icon: CircleXIcon,
 					iconClass: 'bg-muted text-muted-foreground',
-					title: 'You withdrew this request',
-					description: `Nothing was reserved and nothing was charged. ${booking.apartmentTitle} is still there when you want it.`
+					title: m['ReservationPage.ReservationConfirmation.youWithdrewThisRequest'](),
+					description: m['ReservationPage.ReservationConfirmation.withdrawnDescription']({
+						apartmentTitle: booking.apartmentTitle
+					})
 				};
 			case 'cancelled':
 				return {
@@ -110,7 +127,10 @@
 					title: cancelledByLabel,
 					description:
 						booking.cancelReason ??
-						`This booking for ${booking.apartmentTitle} was cancelled. If that's unexpected, reach out to ${booking.hostName}.`
+						m['ReservationPage.ReservationConfirmation.cancelled']({
+							apartmentTitle: booking.apartmentTitle,
+							hostName: booking.hostName
+						})
 				};
 		}
 	});
@@ -121,13 +141,13 @@
 	const cancelledByLabel = $derived.by(() => {
 		switch (booking.cancelledBy) {
 			case 'guest':
-				return 'You cancelled this booking';
+				return m['ReservationPage.ReservationConfirmation.youCancelledThisBooking']();
 			case 'host':
-				return 'The host cancelled this booking';
+				return m['ReservationPage.ReservationConfirmation.hostCancelledThisBooking']();
 			case 'admin':
-				return 'Support cancelled this booking';
+				return m['ReservationPage.ReservationConfirmation.supportCancelledThisBooking']();
 			default:
-				return 'Reservation cancelled';
+				return m['ReservationPage.ReservationConfirmation.reservationCancelled']();
 		}
 	});
 
@@ -135,17 +155,25 @@
 	const paymentLine = $derived.by(() => {
 		switch (booking.paymentStatus) {
 			case 'on_arrival':
-				return `Pay ${formatCurrency(booking.total)} in cash at the property.`;
+				return m['ReservationPage.ReservationConfirmation.payOnArrival']({
+					amount: formatCurrency(booking.total)
+				});
 			case 'awaiting':
-				return 'Finalising your payment…';
+				return m['ReservationPage.ReservationConfirmation.finalisingPayment']();
 			case 'authorized':
-				return `Your card is held for ${formatCurrency(booking.total)} — you're only charged if the host confirms.`;
+				return m['ReservationPage.ReservationConfirmation.cardHeld']({
+					amount: formatCurrency(booking.total)
+				});
 			case 'paid':
-				return `Paid ${formatCurrency(booking.total)}.`;
+				return m['ReservationPage.ReservationConfirmation.paid']({
+					amount: formatCurrency(booking.total)
+				});
 			case 'released':
-				return 'The hold on your card was released. You were not charged.';
+				return m['ReservationPage.ReservationConfirmation.holdReleased']();
 			case 'refunded':
-				return `Refunded ${formatCurrency(booking.total)}.`;
+				return m['ReservationPage.ReservationConfirmation.refunded']({
+					amount: formatCurrency(booking.total)
+				});
 		}
 	});
 </script>
@@ -167,7 +195,7 @@
 		     of the card: large, mono, letter-spaced, and one tap to copy. -->
 		<div class="rounded-xl border border-dashed bg-muted/30 px-4 py-4 text-center">
 			<p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-				Confirmation code
+				{m['ReservationPage.ReservationConfirmation.confirmationCode']()}
 			</p>
 
 			<div class="mt-2 flex items-center justify-center gap-2.5">
@@ -175,13 +203,16 @@
 					{booking.bookingCode}
 				</span>
 
-				<CopyButton value={booking.bookingCode} label="Copy confirmation code" />
+				<CopyButton
+					value={booking.bookingCode}
+					label={m['ReservationPage.ReservationConfirmation.copyConfirmationCode']()}
+				/>
 			</div>
 		</div>
 
 		<dl class="space-y-2 text-sm">
 			<div class="flex items-center justify-between gap-3">
-				<dt class="text-muted-foreground">Status</dt>
+				<dt class="text-muted-foreground">{m['ReservationPage.ReservationConfirmation.status']()}</dt>
 				<dd class="text-right">
 					<FeatureStatus
 						config={BOOKING_STATUS_CONFIG}
@@ -192,22 +223,22 @@
 			</div>
 
 			<div class="flex items-center justify-between gap-3">
-				<dt class="text-muted-foreground">Stay</dt>
+				<dt class="text-muted-foreground">{m['ReservationPage.ReservationConfirmation.stay']()}</dt>
 				<dd class="text-right font-medium">{booking.apartmentTitle}</dd>
 			</div>
 
 			<div class="flex items-center justify-between gap-3">
-				<dt class="text-muted-foreground">Check-in</dt>
+				<dt class="text-muted-foreground">{m['ReservationPage.ReservationConfirmation.checkIn']()}</dt>
 				<dd class="text-right font-medium">{formatDate(booking.checkInDate)}</dd>
 			</div>
 
 			<div class="flex items-center justify-between gap-3">
-				<dt class="text-muted-foreground">Check-out</dt>
+				<dt class="text-muted-foreground">{m['ReservationPage.ReservationConfirmation.checkOut']()}</dt>
 				<dd class="text-right font-medium">{formatDate(booking.checkOutDate)}</dd>
 			</div>
 
 			<div class="flex items-center justify-between gap-3">
-				<dt class="text-muted-foreground">Guests</dt>
+				<dt class="text-muted-foreground">{m['ReservationPage.ReservationConfirmation.guests']()}</dt>
 				<dd class="text-right font-medium">
 					{formatGuestsShort(booking.numberOfAdults, booking.numberOfChildren)}
 				</dd>
@@ -215,7 +246,9 @@
 
 			<div class="flex items-center justify-between gap-3">
 				<dt class="text-muted-foreground">
-					Total ({paymentMethodLabel(booking.paymentMethod)})
+					{m['ReservationPage.ReservationConfirmation.total']({
+						method: paymentMethodLabel(booking.paymentMethod)
+					})}
 				</dt>
 				<dd class="text-right font-semibold tabular-nums">{formatCurrency(booking.total)}</dd>
 			</div>
@@ -228,7 +261,7 @@
 	{#if !isClosed}
 		<p class="mt-5 flex items-center justify-center gap-2 text-xs text-muted-foreground">
 			<MailIcon class="size-4" aria-hidden="true" />
-			A copy was sent to {booking.guestEmail}
+			{m['ReservationPage.ReservationConfirmation.copySentTo']({ email: booking.guestEmail })}
 		</p>
 	{/if}
 
@@ -236,11 +269,15 @@
 		<!-- A delisted stay must not send the guest to a dead page. -->
 		{#if booking.apartmentIsBookable}
 			<Button href={appHref(accommodationHref)} variant="outline">
-				{isClosed ? 'Book again' : 'Back to accommodation'}
+				{isClosed
+					? m['ReservationPage.ReservationConfirmation.bookAgain']()
+					: m['ReservationPage.ReservationConfirmation.backToAccommodation']()}
 			</Button>
 		{/if}
 
-		<Button href={appHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT)}>Browse more stays</Button>
+		<Button href={appHref(UNPROTECTED_PAGE_ENDPOINTS.ROOT)}>
+			{m['ReservationPage.ReservationConfirmation.browseMoreStays']()}
+		</Button>
 
 		<GuestBookingActions {bookingId} {booking} />
 	</div>
