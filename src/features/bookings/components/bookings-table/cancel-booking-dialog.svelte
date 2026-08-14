@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';

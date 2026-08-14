@@ -1,5 +1,5 @@
 // I18N
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 
 // DATA
 import { ACCOMMODATION_STATUS_CONFIG } from '@/features/accommodations/data/accommodationsData';

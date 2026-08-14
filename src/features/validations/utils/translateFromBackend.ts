@@ -5,7 +5,7 @@
 // dev), which is exactly what you want for missing-message debugging.
 
 // LIBRARIES
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 
 // HELPERS
 import {

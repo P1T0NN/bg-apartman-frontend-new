@@ -1,6 +1,6 @@
 <script lang="ts">
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// COMPONENTS
 	import AreaChartInteractive from '@/components/ui/custom-charts/area-chart-interactive.svelte';
@@ -8,7 +8,7 @@
 	// UTILS
 	import { formatCurrency } from '@/utils/formatters';
 	import { cn } from '@/utils/utils.js';
-	import { getLocale } from '@/paraglide/runtime';
+	import { getLocale } from '@/lib/paraglide/runtime';
 
 	// TYPES
 	import type { ChartConfig } from '@/components/ui/chart/chart-utils.js';

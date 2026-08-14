@@ -1,6 +1,6 @@
 <script lang="ts">
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// COMPONENTS
 	import { Badge } from '@/components/ui/badge/index.js';

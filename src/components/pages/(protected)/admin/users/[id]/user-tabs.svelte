@@ -1,6 +1,6 @@
 <script lang="ts">
 	// PARAGLIDE
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// COMPONENTS
 	import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs/index.js';

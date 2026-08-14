@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// COMPONENTS
 	import UploadFileItemSingle from './upload-file-item-single.svelte';

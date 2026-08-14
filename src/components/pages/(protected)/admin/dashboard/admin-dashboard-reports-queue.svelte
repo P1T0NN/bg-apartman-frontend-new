@@ -1,6 +1,6 @@
 <script lang="ts">
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// CONFIG
 	import { ADMIN_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
@@ -17,7 +17,7 @@
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
-	import { getLocale } from '@/paraglide/runtime';
+	import { getLocale } from '@/lib/paraglide/runtime';
 
 	// TYPES
 	import type { AdminDashboardPage } from '@/convex/pages/admin/dashboard/types/adminDashboardTypes';

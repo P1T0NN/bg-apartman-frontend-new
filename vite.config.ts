@@ -37,7 +37,7 @@ export default defineConfig({
 	plugins: [
 		paraglideVitePlugin({
 			project: './project.inlang',
-			outdir: './src/paraglide',
+			outdir: './src/lib/paraglide',
 			emitTsDeclarations: true,
 			strategy: ['url', 'cookie', 'baseLocale'],
 			// Public routes localize by URL prefix (/sr/...); the signed-in areas resolve the

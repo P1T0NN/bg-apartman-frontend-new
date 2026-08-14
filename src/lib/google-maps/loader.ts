@@ -1,6 +1,6 @@
 // LIBRARIES
 import { env } from '$env/dynamic/public';
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 
 /**
  * Shared loader for the **Google Maps JS API**. Injects the official bootstrap

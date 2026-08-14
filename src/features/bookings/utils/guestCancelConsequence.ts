@@ -1,5 +1,5 @@
 // I18N
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 
 // UTILS
 import { isLateCancellation } from '@/shared/features/booking/utils/guestMayCancelConfirmedBooking';

@@ -1,5 +1,5 @@
 // I18N
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 
 // CONFIG
 import { PAYMENTS_CONFIG } from '@/shared/config';

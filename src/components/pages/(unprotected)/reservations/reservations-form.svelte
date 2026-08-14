@@ -1,6 +1,6 @@
 <script lang="ts">
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// UTILS
 	import { appGoto } from '@/utils/app-navigation.js';

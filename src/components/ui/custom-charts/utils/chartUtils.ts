@@ -1,4 +1,4 @@
-import { getLocale } from '@/paraglide/runtime';
+import { getLocale } from '@/lib/paraglide/runtime';
 
 export const defaultXAxisFormat = (v: unknown) => {
 	const locale = getLocale();

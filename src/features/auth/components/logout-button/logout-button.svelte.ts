@@ -2,7 +2,7 @@
 import { authClient } from '@/features/auth/lib/auth-client';
 
 // I18N
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 
 // CONFIG
 import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';

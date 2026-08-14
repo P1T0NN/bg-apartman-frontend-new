@@ -1,4 +1,4 @@
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 
 // DATA
 import { ACCOMMODATION_PAYMENT_METHOD_OPTIONS } from '@/features/bookings/data/paymentMethods';

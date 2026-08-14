@@ -6,8 +6,8 @@ import { isNavItemActive } from '@/utils/isNavItemActive.js';
 import { appHref } from '@/utils/app-navigation.js';
 
 // I18N
-import { deLocalizeHref } from '@/paraglide/runtime';
-import { m } from '@/paraglide/messages';
+import { deLocalizeHref } from '@/lib/paraglide/runtime';
+import { m } from '@/lib/paraglide/messages';
 
 export type NavItem = {
 	href: string;

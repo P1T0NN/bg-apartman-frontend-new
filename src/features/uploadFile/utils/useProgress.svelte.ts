@@ -1,4 +1,4 @@
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 
 // TYPES
 import type { OptimizeImagesProgressCallback } from './optimizeImages';

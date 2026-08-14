@@ -1,6 +1,6 @@
 <script lang="ts" generics="T extends Record<string, unknown>">
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// LIBRARIES
 	import { tick } from 'svelte';

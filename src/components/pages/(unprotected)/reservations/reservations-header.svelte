@@ -1,6 +1,6 @@
 <script lang="ts">
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// LUCIDE ICONS
 	import TicketIcon from '@lucide/svelte/icons/ticket';

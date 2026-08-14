@@ -1,6 +1,6 @@
 <script lang="ts">
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// COMPONENTS
 	import ToggleFavoriteButton from '@/features/favorites/components/toggle-favorite-button.svelte';

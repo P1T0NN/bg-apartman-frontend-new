@@ -66,7 +66,7 @@
 	// UTILS
 	import { cn } from '@/utils/utils.js';
 	import { formatDaysSelected, formatNights } from '@/utils/formatters';
-	import { getLocale } from '@/paraglide/runtime';
+	import { getLocale } from '@/lib/paraglide/runtime';
 
 	const defaultTimeZone = getLocalTimeZone();
 

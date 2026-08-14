@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { getLocale } from '@/paraglide/runtime';
-	import { m } from '@/paraglide/messages';
+	import { getLocale } from '@/lib/paraglide/runtime';
+	import { m } from '@/lib/paraglide/messages';
 
 	const todayLabel = $derived(
 		new Intl.DateTimeFormat(getLocale(), { weekday: 'long', month: 'long', day: 'numeric' }).format(

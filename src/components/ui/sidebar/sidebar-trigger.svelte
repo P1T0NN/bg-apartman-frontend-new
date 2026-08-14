@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 	import { Button } from '@/components/ui/button/index.js';
 	import PanelLeftIcon from '@lucide/svelte/icons/panel-left';
 	import { cn } from '@/utils/utils.js';

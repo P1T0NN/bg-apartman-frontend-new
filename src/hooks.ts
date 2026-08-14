@@ -1,6 +1,6 @@
 // UNIVERSAL hooks — run on both server and client.
 import type { Reroute } from '@sveltejs/kit';
-import { deLocalizeUrl } from '@/paraglide/runtime';
+import { deLocalizeUrl } from '@/lib/paraglide/runtime';
 
 /**
  * Public pages carry a leading locale segment (`/sr/search`, `/sr`, …). Strip it

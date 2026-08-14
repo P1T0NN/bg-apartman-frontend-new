@@ -4,7 +4,7 @@
 	import MoreHorizontalIcon from '@lucide/svelte/icons/more-horizontal';
 
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	let {
 		ref = $bindable(null),

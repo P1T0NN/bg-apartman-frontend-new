@@ -1,5 +1,5 @@
 // I18N
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 
 // DATA
 import { REPORT_CATEGORY_TONE, reportAgo } from '@/features/reports/data/reportsData';

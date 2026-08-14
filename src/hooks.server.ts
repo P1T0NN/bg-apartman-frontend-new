@@ -2,8 +2,8 @@
 import { sequence } from '@sveltejs/kit/hooks';
 
 // LIBRARIES
-import { paraglideMiddleware } from '@/paraglide/server';
-import { getTextDirection } from '@/paraglide/runtime';
+import { paraglideMiddleware } from '@/lib/paraglide/server';
+import { getTextDirection } from '@/lib/paraglide/runtime';
 import { getToken } from '@mmailaender/convex-better-auth-svelte/sveltekit';
 import { withServerConvexToken } from 'convex-svelte/sveltekit/server';
 

@@ -2,7 +2,7 @@
 	import { cn, type WithElementRef, type WithoutChildren } from '@/utils/utils.js';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { getPayloadConfigFromPayload, useChart, type TooltipPayload } from './chart-utils.js';
-	import { getLocale } from '@/paraglide/runtime';
+	import { getLocale } from '@/lib/paraglide/runtime';
 	import { getChartContext, Tooltip as TooltipPrimitive } from 'layerchart';
 	import type { Snippet } from 'svelte';
 

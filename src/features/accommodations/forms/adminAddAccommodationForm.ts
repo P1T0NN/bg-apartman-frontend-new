@@ -1,4 +1,4 @@
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 
 // FORMS
 import { addAccommodationForm } from '@/features/accommodations/forms/addAccommodationForm';

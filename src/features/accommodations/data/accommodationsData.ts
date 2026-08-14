@@ -1,4 +1,4 @@
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 
 // TYPES
 import type { typesStatusConfig } from '@/components/ui/feature-status/types';

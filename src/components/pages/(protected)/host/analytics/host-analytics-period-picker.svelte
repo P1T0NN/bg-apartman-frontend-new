@@ -5,7 +5,7 @@
 
 <script lang="ts">
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// LIBRARIES
 	import { getLocalTimeZone, parseDate, today } from '@internationalized/date';

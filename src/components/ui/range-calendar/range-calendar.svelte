@@ -2,7 +2,7 @@
 	import { RangeCalendar as RangeCalendarPrimitive } from 'bits-ui';
 	import * as RangeCalendar from './index.js';
 	import { cn, type WithoutChildrenOrChild } from '@/utils/utils.js';
-	import { getLocale } from '@/paraglide/runtime';
+	import { getLocale } from '@/lib/paraglide/runtime';
 	import type { ButtonVariant } from '@/components/ui/button/index.js';
 	import type { Snippet } from 'svelte';
 	import { isEqualMonth, type DateValue } from '@internationalized/date';

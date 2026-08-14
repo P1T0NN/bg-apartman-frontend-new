@@ -25,5 +25,8 @@ vite.config.ts.timestamp-*
 # Drizzle
 /drizzle
 
+# Local Convex dev database export — contains auth sessions, provider keys, delivery state. Never commit.
+/database
+
 # Tooling session junk
 .playwright-mcp/

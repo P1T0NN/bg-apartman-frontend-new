@@ -1,6 +1,6 @@
 <script lang="ts">
 	// LIBRARIES
-	import { getLocale, setLocale } from '@/paraglide/runtime';
+	import { getLocale, setLocale } from '@/lib/paraglide/runtime';
 
 	// COMPONENTS
 	import { Button, type ButtonVariant } from '@/components/ui/button/index.js';

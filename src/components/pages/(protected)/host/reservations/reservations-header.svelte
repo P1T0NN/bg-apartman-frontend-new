@@ -1,6 +1,6 @@
 <script lang="ts">
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// A deliberately quiet header — bookings arrive from guests, so there is no
 	// primary "create" action competing for attention. The work lives below.

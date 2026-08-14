@@ -1,6 +1,6 @@
 <script lang="ts">
 	// LIBRARIES
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// COMPONENTS
 	import Section from '@/components/ui/section/section.svelte';

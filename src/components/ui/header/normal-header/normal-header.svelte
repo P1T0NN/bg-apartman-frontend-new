@@ -10,8 +10,8 @@
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
 
 	// I18N
-	import { deLocalizeHref } from '@/paraglide/runtime';
-	import { m } from '@/paraglide/messages';
+	import { deLocalizeHref } from '@/lib/paraglide/runtime';
+	import { m } from '@/lib/paraglide/messages';
 
 	// CLASSES
 	import {

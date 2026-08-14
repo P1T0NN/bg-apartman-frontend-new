@@ -174,7 +174,7 @@
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
-	import { getLocale } from '@/paraglide/runtime';
+	import { getLocale } from '@/lib/paraglide/runtime';
 
 	// LUCIDE ICONS
 	import CalendarIcon from '@lucide/svelte/icons/calendar';

@@ -5,7 +5,7 @@
 	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
 
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	type PaginationNextProps = ComponentProps<typeof PaginationLink>;
 

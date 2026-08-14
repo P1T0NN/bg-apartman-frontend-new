@@ -6,7 +6,7 @@
 	import { useAuth } from '@mmailaender/convex-better-auth-svelte/svelte';
 
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// CONFIG
 	import { PROTECTED_PAGE_ENDPOINTS, UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';

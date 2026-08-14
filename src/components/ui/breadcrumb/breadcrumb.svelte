@@ -4,7 +4,7 @@
 	import { cn } from '@/utils/utils.js';
 
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	let {
 		ref = $bindable(null),

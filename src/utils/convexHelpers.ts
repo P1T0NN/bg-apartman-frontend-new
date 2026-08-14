@@ -25,7 +25,7 @@ import { isRateLimitError } from '@convex-dev/rate-limiter';
 import { rateLimitMessage } from '@/features/validations/utils/translateFromBackend';
 import { hasTranslatableMessage } from '@/shared/features/validations/utils/translatableMessage';
 import { translateFromBackend } from '@/features/validations/utils/translateFromBackend';
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 
 // TYPES
 import type { FunctionReference, FunctionArgs, FunctionReturnType } from 'convex/server';

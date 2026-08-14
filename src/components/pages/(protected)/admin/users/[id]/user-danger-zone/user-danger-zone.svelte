@@ -1,6 +1,6 @@
 <script lang="ts">
 	// PARAGLIDE
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// CONFIG
 	import { ADMIN_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';

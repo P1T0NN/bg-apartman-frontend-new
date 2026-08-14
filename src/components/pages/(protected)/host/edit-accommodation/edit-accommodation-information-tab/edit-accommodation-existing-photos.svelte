@@ -1,6 +1,6 @@
 <script lang="ts">
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// COMPONENTS
 	import UploadFileItemMultiple from '@/features/uploadFile/components/upload-file-multiple/upload-file-item-multiple.svelte';

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 	import { NativeSheet } from '@/components/ui/native-sheet/index.js';
 	import { cn, type WithElementRef } from '@/utils/utils.js';
 	import type { HTMLAttributes } from 'svelte/elements';

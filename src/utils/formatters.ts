@@ -1,7 +1,7 @@
 // UTILS
 import { formatMoney } from '@/shared/utils/formatMoney';
-import { getLocale } from '@/paraglide/runtime';
-import { m } from '@/paraglide/messages';
+import { getLocale } from '@/lib/paraglide/runtime';
+import { m } from '@/lib/paraglide/messages';
 
 export function formatCurrency(amount: number): string {
 	return formatMoney(amount, getLocale());

@@ -1,6 +1,6 @@
 <script lang="ts">
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// UTILS
 	import { appGoto } from '@/utils/app-navigation.js';
@@ -23,7 +23,7 @@
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
-	import { getLocale } from '@/paraglide/runtime';
+	import { getLocale } from '@/lib/paraglide/runtime';
 
 	// TYPES
 	import type { DateRange } from 'bits-ui';

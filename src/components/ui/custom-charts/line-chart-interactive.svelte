@@ -15,7 +15,7 @@
 		getInteractiveSeriesKeys,
 		getNumericSeriesTotals
 	} from './utils/interactiveChartUtils';
-	import { getLocale } from '@/paraglide/runtime';
+	import { getLocale } from '@/lib/paraglide/runtime';
 
 	// TYPES
 	import type { Snippet } from 'svelte';

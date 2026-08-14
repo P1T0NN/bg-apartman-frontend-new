@@ -1,5 +1,5 @@
 // UTILS
-import { getLocale } from '@/paraglide/runtime';
+import { getLocale } from '@/lib/paraglide/runtime';
 
 // TYPES
 import type { ColumnDef, ColumnHideBelow } from './types.js';

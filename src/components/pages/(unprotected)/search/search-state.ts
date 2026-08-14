@@ -1,5 +1,5 @@
 // nuqs URL state + filter helpers shared by the search page panes (list, map, filters).
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 import { useQueryStates, parseAsString } from 'nuqs-svelte';
 
 import type { FilterKey, SearchState } from './types';

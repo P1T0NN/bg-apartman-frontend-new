@@ -1,6 +1,6 @@
 <script lang="ts">
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 </script>
 
 <!-- Chart empty state — one line, no CTA (AdminDashboardPageSystemDesign.md §6). True

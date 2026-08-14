@@ -1,6 +1,6 @@
 <script lang="ts">
 	// PARAGLIDE
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// CONFIG
 	import { ADMIN_PAGE_ENDPOINTS } from '@/config/routeEndpoints.js';
@@ -14,7 +14,7 @@
 	// UTILS
 	import { capitalizeFirst } from '@/shared/utils/stringUtils';
 	import { appHref } from '@/utils/app-navigation';
-	import { getLocale } from '@/paraglide/runtime';
+	import { getLocale } from '@/lib/paraglide/runtime';
 
 	// TYPES
 	import type { Doc } from '@/convex/auth/component/_generated/dataModel';

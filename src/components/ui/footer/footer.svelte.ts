@@ -5,7 +5,7 @@ import { PROTECTED_PAGE_ENDPOINTS, UNPROTECTED_PAGE_ENDPOINTS } from '@/config/r
 import { appHref } from '@/utils/app-navigation.js';
 
 // I18N
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 
 export function footerLinkGroups() {
 	return [

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 	import { cn, type WithElementRef } from '@/utils/utils.js';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { useSidebar } from './context.svelte.js';

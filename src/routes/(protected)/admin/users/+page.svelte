@@ -1,6 +1,6 @@
 <script lang="ts">
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
@@ -16,7 +16,7 @@
 
 	// UTILS
 	import { capitalizeFirst } from '@/shared/utils/stringUtils';
-	import { getLocale } from '@/paraglide/runtime';
+	import { getLocale } from '@/lib/paraglide/runtime';
 
 	// TYPES
 	import type { ColumnDef, DataTableCellSnippetProps } from '@/components/ui/data-table/types.js';

@@ -1,6 +1,6 @@
 <script lang="ts">
 	// I18N
-	import { m } from '@/paraglide/messages';
+	import { m } from '@/lib/paraglide/messages';
 
 	// COMPONENTS
 	import DashboardUpcomingItem from '@/components/pages/(protected)/guest/dashboard/dashboard-upcoming/dashboard-upcoming-item.svelte';

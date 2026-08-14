@@ -1,7 +1,7 @@
 // SVELTEKIT IMPORTS
 import { RESEND_API_KEY, SEARCH_INPUT_RATE_LIMIT_SECRET } from '$env/static/private';
 import { getRequestEvent } from '$app/server';
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 
 // LIBRARIES
 import { Resend } from 'resend';

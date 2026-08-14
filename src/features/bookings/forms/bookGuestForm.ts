@@ -1,5 +1,5 @@
 // I18N
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 
 // TYPES
 import type { MutationFormSection } from '@/components/ui/mutation-form/types';

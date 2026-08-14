@@ -3,7 +3,7 @@ import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
 
 // I18N
-import { localizeHref } from '@/paraglide/runtime';
+import { localizeHref } from '@/lib/paraglide/runtime';
 
 /**
  * Signed-in areas resolve the locale from the PARAGLIDE_LOCALE cookie — never a URL

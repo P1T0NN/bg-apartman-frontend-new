@@ -1,5 +1,5 @@
 // UTILS
-import { getLocale } from '@/paraglide/runtime';
+import { getLocale } from '@/lib/paraglide/runtime';
 
 // DATA
 import { ACCOMMODATION_STATUS_CONFIG } from '@/features/accommodations/data/accommodationsData';

@@ -1,7 +1,7 @@
 // SVELTEKIT IMPORTS
 import { command, getRequestEvent } from '$app/server';
 import { error } from '@sveltejs/kit';
-import { m } from '@/paraglide/messages';
+import { m } from '@/lib/paraglide/messages';
 
 // LIBRARIES
 import { checkBotId } from 'botid/server';

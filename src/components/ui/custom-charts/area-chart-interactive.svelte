@@ -15,7 +15,7 @@
 		type TimeRangeOption,
 		type TimeRangeValue
 	} from './timerange-data.svelte';
-	import { getLocale } from '@/paraglide/runtime';
+	import { getLocale } from '@/lib/paraglide/runtime';
 
 	// TYPES
 	import type { DateRange } from 'bits-ui';
