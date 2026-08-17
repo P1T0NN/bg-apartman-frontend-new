@@ -1280,10 +1280,10 @@
 		},
 		"AdminDashboardStatCards": {
 			"bookings": "Rezervacije",
-			"platform": "@render ledger('Platform', platform)",
+			"platform": "Platforma",
 			"publishedListings": "Objavljeni smeštaji",
 			"revenue": "Prihod",
-			"thisMonth": "@render ledger('This month', thisMonth)",
+			"thisMonth": "Ovaj mesec",
 			"users": "Korisnici"
 		},
 		"SEO": {
@@ -1641,11 +1641,11 @@
 			"selectCustomRange": "Izaberi prilagođeni period"
 		},
 		"HostAnalyticsRevenueChart": {
-			"bookings": "Prihod",
-			"revenue": "prihod",
+			"bookings": "Rezervacije",
+			"revenue": "Prihod",
 			"revenueAndBookings": "Prihod i rezervacije",
-			"totalBookings": "Ukupan prihod",
-			"totalRevenue": "prihod"
+			"totalBookings": "Ukupno rezervacija",
+			"totalRevenue": "Ukupan prihod"
 		},
 		"SEO": {
 			"description": "Kako tvoji smeštaji posluju.",
@@ -1704,7 +1704,7 @@
 			"loadingPending": "Učitavanje rezervacija na čekanju"
 		},
 		"HostDashboardStatCards": {
-			"ahead": "@render ledger('Ispred', ahead)",
+			"ahead": "Ispred",
 			"allLive": "Sve aktivno",
 			"checkIns": "Prijave",
 			"inReview": "{count} na proveri",
@@ -1716,7 +1716,7 @@
 			"pts": "{count} boda",
 			"published": "Objavljeno",
 			"revenue": "Prihod",
-			"thisMonth": "@render ledger('Ovaj mesec', thisMonth)",
+			"thisMonth": "Ovaj mesec",
 			"vsLastMonth": "u odnosu na prošli mesec"
 		},
 		"HostDashboardStatsSectionLoading": {

@@ -13,12 +13,13 @@ import { toLatin } from '@/utils/cyrillicToLatin';
 import { r2PublicUrl } from '@/convex/storage/r2/r2';
 import { validateImageCount } from '@/shared/features/accommodation/utils/validateImageCount';
 import { splitRegionPlaceId } from '@/shared/features/accommodation/utils/splitRegionPlaceId';
-import { ensureHostPayoutAccount } from '@/convex/payments/onboarding';
-import { onlinePaymentsEnabled } from '@/convex/payments/adapter';
 import {
 	listingIsBookingFee,
 	listingFeeState
 } from '@/shared/features/accommodation/utils/listingFeeState';
+
+// CONFIG
+import { PAYMENTS_CONFIG } from '@/shared/config';
 
 // HELPERS
 import { deleteApartmentImageKeys } from '../helpers/deleteApartmentImages';
@@ -74,7 +75,7 @@ export const updateApartment = authMutation('updateApartment')({
 
 		// A listing cannot offer `online` while no provider is wired (PaymentsSystemDesign.md
 		// §8) — the form hides those options, and this is the server-side truth behind it.
-		if (args.paymentMethod !== 'cash' && !onlinePaymentsEnabled()) {
+		if (args.paymentMethod !== 'cash' && PAYMENTS_CONFIG.PROVIDER === 'none') {
 			return { success: false, message: { key: 'GenericMessages.ONLINE_PAYMENTS_UNAVAILABLE' } };
 		}
 
@@ -167,12 +168,6 @@ export const updateApartment = authMutation('updateApartment')({
 			updatedAt: Date.now()
 		});
 
-		// Stage 2 (PaymentsSystemDesign.md §2): flipping a listing to online creates the
-		// host's recipient account silently, with what we already know. The host is asked for
-		// nothing — that ask waits until they have earnings (stage 3). Best-effort by design:
-		// a failure here never fails the edit.
-		if (args.paymentMethod !== 'cash') await ensureHostPayoutAccount(ctx, apartment.hostId);
-
 		return { success: true, message: { key: 'GenericMessages.ACCOMMODATION_UPDATED' } };
 	}
 });
@@ -230,7 +225,8 @@ export const moderateApartmentStatus = zAdminMutation('moderateApartmentStatus')
 
 		// The ONE publish precondition beyond content review (ASD §8): an unpaid
 		// `listing_fee` listing may not go live. The queue's payment chip explains this
-		// refusal before it happens; payment lands via `renewListing` or the admin stamp.
+		// refusal before it happens; a paid period lands via the admin's free grant today,
+		// and via the listing-fee payment flow once the engine is rebuilt.
 		if (args.status === 'published' && listingFeeState(apartment).kind === 'unpaid') {
 			return { success: false, message: { key: 'GenericMessages.LISTING_FEE_UNPAID' } };
 		}

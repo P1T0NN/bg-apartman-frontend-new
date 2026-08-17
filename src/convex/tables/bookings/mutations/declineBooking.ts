@@ -3,7 +3,6 @@ import { zAuthMutation } from '@/convex/auth/middleware/authMiddleware';
 import { sendBookingDeclinedEmail } from '@/convex/email/sendBookingDeclinedEmail';
 import { hostMayPerform } from '@/shared/features/booking/utils/hostMayPerform';
 import { applyHostAction } from '@/shared/features/booking/utils/applyHostAction';
-import { settleBookingPayment } from '@/convex/payments/helpers/settleBookingPayment';
 
 // SCHEMAS
 import { declineBookingSchema } from '@/shared/features/booking/schemas/bookingsSchemas';
@@ -31,12 +30,8 @@ export const declineBooking = zAuthMutation('declineBooking')({
 			return { success: false, message: { key: 'GenericMessages.FORBIDDEN' } };
 		}
 
-		// Declining an `authorized` request releases the hold — no money ever moved (§4).
-		const settlement = await settleBookingPayment(ctx, booking);
-
 		await ctx.db.patch(args.bookingId, {
 			...patch,
-			...settlement,
 			cancelReason: args.declineReason // already trimmed by declineBookingSchema
 		});
 

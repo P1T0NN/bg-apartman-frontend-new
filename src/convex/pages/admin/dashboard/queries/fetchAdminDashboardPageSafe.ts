@@ -1,8 +1,5 @@
 // LIBRARIES
-import { query, internalQuery } from '@/convex/_generated/server';
-
-// CONFIG
-import { components } from '@/convex/_generated/api';
+import { query } from '@/convex/_generated/server';
 
 // UTILS
 import { requireAdmin } from '@/convex/auth/middleware/authMiddleware';
@@ -30,12 +27,11 @@ const REPORTS_QUEUE_LIMIT = 5;
  * Realtime verdict: **subscription** — reports, bookings and signups arrive from other
  * people while the admin watches (GeneralSystemDesignRule.md's admin-orders example).
  * The read is cheap by construction, so re-runs on writes are affordable:
- *   - NOW-questions (queue count, published) are counter reads, O(log n), never a scan;
+ *   - NOW-questions (queue count, published, users) are counter reads, O(log n), never a scan;
  *   - HAPPENED-questions (the 12-month series) are the analytics component's
  *     pre-aggregated rollups, global scope — every tracked event rolls up globally
  *     regardless of its host resource scope;
- *   - the only table reads are two `.take(5)` slices of the reports queue and the
- *     component-side user count, which is itself `.take()`-bounded.
+ *   - the only table reads are two `.take(5)` slices of the reports queue.
  *
  * That last one is why "cheap by construction" has to be enforced, not assumed: this
  * subscription's read set spans the platform, so it re-runs on every rollup write anywhere,
@@ -49,12 +45,6 @@ export const fetchAdminDashboardPageSafe = query({
 		await requireAdmin(ctx);
 		return await readAdminDashboardPage(ctx);
 	}
-});
-
-/** DEV ONLY — the same read without the auth gate, for `bunx convex run` smoke checks. */
-export const inspectAdminDashboardPage = internalQuery({
-	args: {},
-	handler: async (ctx): Promise<AdminDashboardPage> => await readAdminDashboardPage(ctx)
 });
 
 async function readAdminDashboardPage(ctx: QueryCtx): Promise<AdminDashboardPage> {
@@ -78,9 +68,9 @@ async function readAdminDashboardPage(ctx: QueryCtx): Promise<AdminDashboardPage
 					.take(REPORTS_QUEUE_LIMIT),
 				// The aggregate's namespace already normalizes `undefined → 'new'`.
 				counters.reports.count(ctx, 'new'),
-				// BA `user` table is component-local — the app's counter triggers can't see it,
-				// so the count lives beside the data (see `countUsers` for its stated ceiling).
-				ctx.runQuery(components.betterAuth.userQueries.countUsers, {}),
+				// Exact, O(log n) — maintained by the better-auth user triggers
+				// (`counters.users` in @/convex/functions).
+				counters.users.count(ctx),
 				counters.apartments.count(ctx, 'published'),
 				// One Map per metric: UTC month start → value. Global scope (no `scope` arg).
 				// `refunds` is grouped by `plan` so ONLY the fee-portion reversals (tagged
@@ -95,7 +85,6 @@ async function readAdminDashboardPage(ctx: QueryCtx): Promise<AdminDashboardPage
 					}),
 					analytics.fetchTimeSeries(ctx, {
 						metric: 'refunds',
-						groupBy: 'plan',
 						from: seriesFrom,
 						to: now,
 						bucketUnit: 'month'
@@ -151,8 +140,7 @@ async function readAdminDashboardPage(ctx: QueryCtx): Promise<AdminDashboardPage
 		return {
 			reportsQueue: { items, total: newReportsTotal },
 			platform: {
-				usersTotal: usersTotal.total,
-				usersTotalCapped: usersTotal.capped,
+				usersTotal,
 				publishedListings,
 				bookingsThisMonth: currentMonth.bookings,
 				revenueThisMonth: currentMonth.revenue,

@@ -4,14 +4,11 @@ import { PROJECT_SETTINGS } from '@/shared/config';
 // UTILS
 import { zAdminMutation } from '@/convex/auth/middleware/authMiddleware';
 import { authComponent } from '@/convex/auth/auth';
-import { analytics, ANALYTICS_EVENT, hostAnalyticsScope } from '@/convex/analytics';
-import { trackBookingNights } from '@/convex/tables/bookings/helpers/trackBookingNights';
+import { recordGmv, recordNights } from '@/convex/analytics';
 import { sendBookingCancelledEmail } from '@/convex/email/sendBookingCancelledEmail';
 import { sendBookingCancelledHostEmail } from '@/convex/email/sendBookingCancelledHostEmail';
 import { AUDIT_ACTIONS } from '@/convex/tables/auditLog/auditLogConfigs';
 import { isTerminalBookingStatus } from '@/shared/features/booking/utils/isTerminalBookingStatus';
-import { settleBookingPayment } from '@/convex/payments/helpers/settleBookingPayment';
-import { paymentNoteFrom } from '@/convex/payments/utils/paymentNoteFrom';
 
 // SCHEMAS
 import { cancelBookingAdminSchema } from '@/shared/features/booking/schemas/bookingsSchemas';
@@ -32,31 +29,21 @@ export const cancelBookingAdmin = zAdminMutation('cancelBookingAdmin')({
 			return { success: false, message: { key: 'GenericMessages.FORBIDDEN' } };
 		}
 
-		// The emergency brake refunds in full, whatever the window (§4). It stays possible on a
-		// `checked_in` stay precisely because §5 transfers only on terminal bookings — the
-		// money is still ours to give back. That invariant is what makes this row exist.
-		const settlement = await settleBookingPayment(ctx, booking);
-
 		await ctx.db.patch(args.bookingId, {
 			status: 'cancelled',
 			updatedAt: Date.now(),
 			cancelledAt: Date.now(),
 			cancelledBy: 'admin',
 			cancelReason: args.cancelReason,
-			pendingExpiresAt: undefined,
-			...settlement
+			pendingExpiresAt: undefined
 		});
 
 		// Only reverse GMV and occupancy when the booking had actually earned them — an admin
 		// can also cancel a still-pending request, which never emitted booking.confirmed and
 		// whose nights were therefore never counted.
 		if (PROJECT_SETTINGS.BOOKING_EARNING_STATUSES.some((s) => s === booking.status)) {
-			await analytics.track(ctx, ANALYTICS_EVENT.BOOKING_CANCELLED, {
-				actorId: ctx.userId,
-				scopes: [hostAnalyticsScope(booking.hostId)],
-				properties: { totalEuros: booking.total, cancelledBy: 'admin' }
-			});
-			await trackBookingNights(ctx, booking, 'released');
+			await recordGmv(ctx, booking, 'cancelled');
+			await recordNights(ctx, booking, 'released');
 		}
 
 		ctx.audit(AUDIT_ACTIONS.BOOKING_ADMIN_CANCEL, {
@@ -78,8 +65,7 @@ export const cancelBookingAdmin = zAdminMutation('cancelBookingAdmin')({
 			apartmentTitle,
 			checkInDate: booking.checkInDate,
 			checkOutDate: booking.checkOutDate,
-			cancelReason: args.cancelReason,
-			paymentNote: paymentNoteFrom(settlement, booking)
+			cancelReason: args.cancelReason
 		});
 
 		// The host gets the HOST-side email (support intervened + the reason), not a copy

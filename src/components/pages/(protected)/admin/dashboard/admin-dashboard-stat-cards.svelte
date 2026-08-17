@@ -35,7 +35,7 @@
 	const platform = $derived<LedgerRow[]>([
 		{
 			label: m['AdminDashboardPage.AdminDashboardStatCards.users'](),
-			value: data.usersTotalCapped ? `${data.usersTotal}+` : String(data.usersTotal),
+			value: String(data.usersTotal),
 			lead: true
 		},
 		{

@@ -6,7 +6,6 @@ import { mutation } from '@/convex/functions';
 import { authComponent } from '@/convex/auth/auth';
 import { sendBookingWithdrawnEmail } from '@/convex/email/sendBookingWithdrawnEmail';
 import { applyGuestAction } from '@/shared/features/booking/utils/applyGuestAction';
-import { settleBookingPayment } from '@/convex/payments/helpers/settleBookingPayment';
 
 // SCHEMAS
 import { mutationResult, type MutationResult } from '@/convex/schemas/schemas';
@@ -34,10 +33,7 @@ export const withdrawBookingGuest = mutation({
 			return { success: false, message: { key: 'GenericMessages.FORBIDDEN' } };
 		}
 
-		// Withdrawing an `authorized` request releases the hold — no money ever moved (§4).
-		const settlement = await settleBookingPayment(ctx, booking);
-
-		await ctx.db.patch(args.bookingId, { ...patch, ...settlement });
+		await ctx.db.patch(args.bookingId, { ...patch });
 
 		// No guest email — they just did this themselves, and a "cancelled" notice would
 		// dramatize a non-event. The host gets a polite FYI (BookingSystemDesign.md §8).

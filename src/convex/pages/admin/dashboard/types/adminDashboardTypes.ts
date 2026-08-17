@@ -31,9 +31,8 @@ export type AdminDashboardPage = {
 		total: number;
 	};
 	platform: {
+		/** Exact count, maintained by the better-auth user triggers (counter read, never a scan). */
 		usersTotal: number;
-		/** True once `usersTotal` hit its read cap — render it as "N+", not an exact figure. */
-		usersTotalCapped: boolean;
 		publishedListings: number;
 		bookingsThisMonth: number;
 		/**

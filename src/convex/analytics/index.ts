@@ -1,14 +1,10 @@
 /**
  * App-facing analytics barrel.
  *
- * Analytics is powered by the `@piton-/analytics-convex` component. Product code
- * tracks events with `analytics.track(ctx, ANALYTICS_EVENT.*, { ... })` and can
- * read via the `analytics.fetch*` server helpers. The registered read queries
- * the browser calls live in `./queries/analyticsQueries.ts`.
+ * Analytics is powered by `@vllnt/convex-analytics` (COUNT rollups) plus `@convex-dev/aggregate`
+ * (SUM rollups — see `./sumRollups.ts`). Product code tracks the one COUNT event with
+ * `analytics.track`, records money/occupancy with `recordGmv` / `recordNights`, and reads
+ * every series through `analytics.fetchTimeSeries`.
  */
-export {
-	analytics,
-	ANALYTICS_EVENT,
-	hostAnalyticsScope,
-	hostAnalyticsScopeInput
-} from './analytics';
+export { analytics, ANALYTICS_EVENT } from './analytics';
+export { recordGmv, recordNights } from './sumRollups';

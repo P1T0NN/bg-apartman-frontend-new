@@ -7,7 +7,7 @@ import { PROJECT_SETTINGS, OPERATIONAL_LIMITS } from '@/shared/config';
 
 // UTILS
 import { internal } from '@/convex/_generated/api';
-import { trackBookingNights } from '@/convex/tables/bookings/helpers/trackBookingNights';
+import { recordNights } from '@/convex/analytics';
 
 /**
  * One-time backfill of the occupancy ledger for bookings that predate it.
@@ -21,9 +21,9 @@ import { trackBookingNights } from '@/convex/tables/bookings/helpers/trackBookin
  * skipped entirely rather than emitting a booked/released pair that nets to zero — the pair
  * would be busywork, and the ledger only has to be right in aggregate.
  *
- * Idempotent: `trackBookingNights` stamps a `forever`-unique key per (direction, booking,
- * month), so re-running double-counts nothing and a booking the live path already recorded
- * is skipped. Paginated and self-scheduling, like `functions:backfillCounters`.
+ * Idempotent: `recordNights` keys each (booking, month) by id (`insertIfDoesNotExist`), so
+ * re-running double-counts nothing and a booking the live path already recorded is skipped.
+ * Paginated and self-scheduling, like `functions:backfillCounters`.
  *
  * ```bash
  * bunx convex run analytics/backfillOccupancyNights:backfillOccupancyNights
@@ -42,7 +42,7 @@ export const backfillOccupancyNights = internalMutation({
 			const earning = PROJECT_SETTINGS.BOOKING_EARNING_STATUSES.some(
 				(status) => status === booking.status
 			);
-			if (earning) await trackBookingNights(ctx, booking, 'booked');
+			if (earning) await recordNights(ctx, booking, 'booked');
 		}
 
 		if (!page.isDone) {

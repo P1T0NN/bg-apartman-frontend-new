@@ -9,7 +9,7 @@ import { requireAuthUserId } from '@/convex/auth/helpers/requireAuthUserId';
 import { resolveApartmentSummary } from '@/convex/tables/bookings/helpers/resolveApartmentSummary';
 
 // UTILS
-import { analytics, hostAnalyticsScopeInput } from '@/convex/analytics';
+import { analytics } from '@/convex/analytics';
 import { counters } from '@/convex/functions';
 import { APARTMENT_STATUSES } from '@/convex/tables/accommodations/schemas/accommodationsSchemas';
 import { todayInPropertyZone } from '@/shared/features/booking/utils/daysUntilCheckIn';
@@ -63,7 +63,7 @@ async function toTodaySlice(ctx: QueryCtx, bookings: Doc<'bookings'>[]): Promise
  *
  * The trade occupancy makes (`GeneralSystemDesignRule.md` § table counts): it is now a
  * HAPPENED-question answered from an event ledger, not a NOW-question recomputed from rows.
- * It no longer self-heals — see `trackBookingNights` for the obligation that creates.
+ * It no longer self-heals — see `recordNights` for the obligation that creates.
  */
 export const fetchHostDashboardStats = query({
 	args: {},
@@ -82,8 +82,6 @@ export const fetchHostDashboardStats = query({
 		const lastMonth = month(1);
 		const thisMonth = month(0);
 		const in7Days = new Date(Date.parse(today) + 7 * MS_PER_DAY).toISOString().slice(0, 10);
-
-		const scope = hostAnalyticsScopeInput(hostId);
 
 		// Portfolio counts come from the aggregate, one O(log n) read per status, clamped to
 		// this host's slice of each namespace. A `.collect().length` would pull every listing
@@ -128,7 +126,7 @@ export const fetchHostDashboardStats = query({
 						from: lastMonth.startMs,
 						to: now,
 						bucketUnit: 'month',
-						scope
+						hostId
 					})
 				)
 			).then((list) =>

@@ -1,14 +1,11 @@
 // UTILS
 import { zAuthMutation } from '@/convex/auth/middleware/authMiddleware';
 import { authComponent } from '@/convex/auth/auth';
-import { analytics, ANALYTICS_EVENT, hostAnalyticsScope } from '@/convex/analytics';
-import { trackBookingNights } from '@/convex/tables/bookings/helpers/trackBookingNights';
+import { recordGmv, recordNights } from '@/convex/analytics';
 import { sendBookingCancelledEmail } from '@/convex/email/sendBookingCancelledEmail';
 import { sendBookingCancelledHostEmail } from '@/convex/email/sendBookingCancelledHostEmail';
 import { applyHostAction } from '@/shared/features/booking/utils/applyHostAction';
 import { hostMayPerform } from '@/shared/features/booking/utils/hostMayPerform';
-import { settleBookingPayment } from '@/convex/payments/helpers/settleBookingPayment';
-import { paymentNoteFrom } from '@/convex/payments/utils/paymentNoteFrom';
 
 // SCHEMAS
 import { cancelBookingOwnerSchema } from '@/shared/features/booking/schemas/bookingsSchemas';
@@ -39,27 +36,18 @@ export const cancelBookingOwner = zAuthMutation('cancelBookingOwner')({
 			return { success: false, message: { key: 'GenericMessages.FORBIDDEN' } };
 		}
 
-		// A host cancel is ALWAYS a full refund / release — never the late-cancel keep, which
-		// exists only to compensate the host for a guest's late change of plans (§4).
-		const settlement = await settleBookingPayment(ctx, booking);
-
 		// The host's own words replace the generic transition reason — the guest reads them
 		// in the email and on the reservation page (same overwrite pattern as declineBooking).
 		await ctx.db.patch(args.bookingId, {
 			...patch,
-			...settlement,
 			cancelReason: args.cancelReason // already trimmed by cancelBookingOwnerSchema
 		});
 
 		// Hosts can only cancel confirmed bookings (see hostMayPerform), so this
 		// always reverses GMV that booking.confirmed previously added.
-		await analytics.track(ctx, ANALYTICS_EVENT.BOOKING_CANCELLED, {
-			actorId: ctx.userId,
-			scopes: [hostAnalyticsScope(booking.hostId)],
-			properties: { totalEuros: booking.total, cancelledBy: 'host' }
-		});
-		// Same reversal for occupancy — balances the `booked` events from confirmation.
-		await trackBookingNights(ctx, booking, 'released');
+		await recordGmv(ctx, booking, 'cancelled');
+		// Same reversal for occupancy — balances the `booked` rollups from confirmation.
+		await recordNights(ctx, booking, 'released');
 
 		const apartment = booking.apartmentId ? await ctx.db.get(booking.apartmentId) : null;
 		const apartmentTitle = apartment?.title ?? booking.apartmentSlug;
@@ -72,9 +60,7 @@ export const cancelBookingOwner = zAuthMutation('cancelBookingOwner')({
 			apartmentTitle,
 			checkInDate: booking.checkInDate,
 			checkOutDate: booking.checkOutDate,
-			cancelReason: args.cancelReason,
-			// A host cancel always refunds/releases in full (§4) — tell the guest which.
-			paymentNote: paymentNoteFrom(settlement, booking)
+			cancelReason: args.cancelReason
 		});
 
 		// Receipt of their own action, so the host's inbox carries the evidence trail

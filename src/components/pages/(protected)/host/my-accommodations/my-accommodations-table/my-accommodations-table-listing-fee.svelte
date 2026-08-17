@@ -5,9 +5,6 @@
 	// CONFIG
 	import { ACCOMMODATIONS_CONFIG } from '@/shared/config';
 
-	// COMPONENTS
-	import MyAccommodationsTableRenewButton from './my-accommodations-table-renew-button.svelte';
-
 	// UTILS
 	import { formatDate } from '@/utils/formatters';
 	import { cn } from '@/utils/utils.js';
@@ -38,16 +35,14 @@
 		     leaves it alone until it does. Nothing to bill, nothing to say. -->
 		<span class="text-sm text-muted-foreground">—</span>
 	{:else if fee.kind === 'unpaid'}
-		<!-- The first payment gates going live (ASD §8) — say so where the host looks. -->
+		<!-- The first payment gates going live (ASD §8) — say so where the host looks. No
+		     "Pay now" button: the payment engine is stripped, so renewal isn't a host action
+		     until it's rebuilt. -->
 		<span class="text-sm font-medium text-foreground">
 			{m['HostMyAccommodationsPage.MyAccommodationsTableListingFee.listingFeeNotPaid']({
 				amount: ACCOMMODATIONS_CONFIG.LISTING_FEE.AMOUNT
 			})}
 		</span>
-		<MyAccommodationsTableRenewButton
-			apartmentId={row._id}
-			label={m['HostMyAccommodationsPage.MyAccommodationsTableListingFee.payNow']()}
-		/>
 	{:else}
 		<span
 			class={cn(
@@ -75,10 +70,8 @@
 			{/if}
 		</span>
 
-		<!-- Renewal is one click from the row a host is already looking at. Outside the
-		     grace/expiring window there is nothing to nag about. -->
-		{#if fee.kind !== 'active'}
-			<MyAccommodationsTableRenewButton apartmentId={row._id} />
-		{/if}
+		<!-- No renew button: the payment engine is stripped, so renewal isn't a host action
+		     until it's rebuilt. The status text above is the row's whole signal. -->
+
 	{/if}
 </div>

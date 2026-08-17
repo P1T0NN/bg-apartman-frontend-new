@@ -2,55 +2,24 @@
 	// I18N
 	import { m } from '@/lib/paraglide/messages';
 
-	// LIBRARIES
-	import { api } from '@/convex/_generated/api';
-	import { useConvexClient } from 'convex-svelte';
-
 	// COMPONENTS
 	import { Card } from '@/components/ui/card/index.js';
-	import { Button } from '@/components/ui/button/index.js';
 
 	// UTILS
-	import { safeAction } from '@/utils/convexHelpers';
-	import { toastResult } from '@/utils/toastResult';
 	import { formatCurrency } from '@/utils/formatters';
 
 	// TYPES
 	import type { HostEarningsCard } from '@/convex/pages/host/dashboard/types/hostDashboardTypes';
 
 	// LUCIDE ICONS
-	import { Loader } from '@lucide/svelte';
 	import WalletIcon from '@lucide/svelte/icons/wallet';
 
 	/**
-	 * Stage 3 / 4 of host onboarding (PaymentsSystemDesign.md §2) — ONE persistent card,
-	 * zero modals, zero interstitials, and it never blocks any host action.
-	 *
-	 * Before the provider confirms transfers it shows the held balance and one button. After,
-	 * it is just an earnings summary and asks for nothing, ever again. The copy says "add
-	 * your payout details to receive €X" — never "verify your identity", "KYC" or
-	 * "compliance"; those steps live inside the provider-hosted flow this button opens.
-	 *
-	 * A host can decline forever: the money holds indefinitely and nothing expires.
+	 * The earnings summary card — one card, zero modals, never blocks any host action.
+	 * Shows the held balance and its state. Payout onboarding is inert (the payment engine
+	 * is stripped), so there is no "add payout details" step to open.
 	 */
 	let { data }: { data: HostEarningsCard | null | undefined } = $props();
-
-	const convex = useConvexClient();
-
-	let isPending = $state(false);
-
-	async function startOnboarding() {
-		isPending = true;
-		try {
-			const result = await safeAction(convex, api.payments.onboarding.startPayoutOnboarding, {});
-			if (!toastResult(result)) return;
-			// The provider owns the flow end to end; we hand the host over and get them back
-			// via its return link.
-			if (result?.data?.onboardingUrl) window.location.href = result.data.onboardingUrl;
-		} finally {
-			isPending = false;
-		}
-	}
 </script>
 
 {#if data}
@@ -77,15 +46,6 @@
 					</p>
 				</div>
 			</div>
-
-			{#if !data.payable}
-				<Button onclick={startOnboarding} disabled={isPending} class="shrink-0 self-start">
-					{#if isPending}
-						<Loader class="h-3 w-3 animate-spin" />
-					{/if}
-					{m['HostDashboardPage.HostDashboardEarnings.addPayoutDetails']()}
-				</Button>
-			{/if}
 		</div>
 	</Card>
 {/if}

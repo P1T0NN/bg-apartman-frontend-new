@@ -5,12 +5,10 @@ import { cronJobs } from 'convex/server';
 import { internal } from './_generated/api';
 
 // CRONS
-import { analytics } from './analytics/analytics';
 import { registerStorageCrons } from './storage/registerStorageCrons';
 import { registerAuditLogCrons } from './tables/auditLog/registerAuditLogCrons';
 import { registerBookingCrons } from './tables/bookings/registerBookingCrons';
 import { registerAccommodationCrons } from './tables/accommodations/registerAccommodationCrons';
-import { registerPaymentCrons } from './payments/registerPaymentCrons';
 
 /**
  * Scheduled jobs. Convex requires this file at the convex root, default-exporting
@@ -22,14 +20,13 @@ registerStorageCrons(crons, internal);
 registerAuditLogCrons(crons, internal);
 registerBookingCrons(crons, internal);
 registerAccommodationCrons(crons, internal);
-registerPaymentCrons(crons, internal);
 
-// Analytics maintenance (high-volume rollup batching + raw event/rollup retention).
-// Handlers are exported from `./analytics/analytics.ts`, so they live under
-// `internal.analytics.analytics.*`.
-analytics.registerCrons(crons, internal.analytics.analytics, {
-	highVolumeBatchIntervalMinutes: 1,
-	retentionIntervalHours: 24
-});
+// Analytics raw-event retention (rollups are kept forever). Staggered off the other daily
+// sweeps so it never queues behind the storage/audit crons.
+crons.daily(
+	'prune analytics raw events',
+	{ hourUTC: 4, minuteUTC: 30 },
+	internal.analytics.analytics.pruneAnalyticsData
+);
 
 export default crons;

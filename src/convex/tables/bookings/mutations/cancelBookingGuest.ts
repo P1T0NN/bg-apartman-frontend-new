@@ -4,13 +4,10 @@ import { mutation } from '@/convex/functions';
 
 // UTILS
 import { authComponent } from '@/convex/auth/auth';
-import { analytics, ANALYTICS_EVENT, hostAnalyticsScope } from '@/convex/analytics';
-import { trackBookingNights } from '@/convex/tables/bookings/helpers/trackBookingNights';
+import { recordGmv, recordNights } from '@/convex/analytics';
 import { sendBookingCancelledEmail } from '@/convex/email/sendBookingCancelledEmail';
 import { sendBookingCancelledHostEmail } from '@/convex/email/sendBookingCancelledHostEmail';
 import { applyGuestAction } from '@/shared/features/booking/utils/applyGuestAction';
-import { settleBookingPayment } from '@/convex/payments/helpers/settleBookingPayment';
-import { paymentNoteFrom } from '@/convex/payments/utils/paymentNoteFrom';
 
 // SCHEMAS
 import { mutationResult, type MutationResult } from '@/convex/schemas/schemas';
@@ -42,23 +39,13 @@ export const cancelBookingGuest = mutation({
 			return { success: false, message: { key: 'GenericMessages.BOOKING_CANCEL_TOO_LATE' } };
 		}
 
-		// The money mirror of the §4 window the patch just decided: an on-time cancel refunds
-		// in full, a LATE one keeps the money with the host (`lateCancellation` is the same
-		// flag the patch stamped, read from the booking's own policy snapshot).
-		const settlement = await settleBookingPayment(ctx, booking, {
-			keepMoney: patch.lateCancellation === true
-		});
-
-		await ctx.db.patch(args.bookingId, { ...patch, ...settlement });
+		await ctx.db.patch(args.bookingId, { ...patch });
 
 		// Guests can only cancel confirmed bookings (see guestMayPerform), so this
 		// always reverses GMV that booking.confirmed previously added.
-		await analytics.track(ctx, ANALYTICS_EVENT.BOOKING_CANCELLED, {
-			scopes: [hostAnalyticsScope(booking.hostId)],
-			properties: { totalEuros: booking.total, cancelledBy: 'guest' }
-		});
-		// Same reversal for occupancy — balances the `booked` events from confirmation.
-		await trackBookingNights(ctx, booking, 'released');
+		await recordGmv(ctx, booking, 'cancelled');
+		// Same reversal for occupancy — balances the `booked` rollups from confirmation.
+		await recordNights(ctx, booking, 'released');
 
 		const apartment = booking.apartmentId ? await ctx.db.get(booking.apartmentId) : null;
 		const apartmentTitle = apartment?.title ?? booking.apartmentSlug;
@@ -70,10 +57,7 @@ export const cancelBookingGuest = mutation({
 			guestEmail: booking.guestEmail,
 			apartmentTitle,
 			checkInDate: booking.checkInDate,
-			checkOutDate: booking.checkOutDate,
-			// The money outcome as it actually settled — refunded / hold released / kept
-			// on a late cancel (BookingSystemDesign.md §8's "+ refund status").
-			paymentNote: paymentNoteFrom(settlement, booking)
+			checkOutDate: booking.checkOutDate
 		});
 
 		// The host's side of the same event: their dates are free again

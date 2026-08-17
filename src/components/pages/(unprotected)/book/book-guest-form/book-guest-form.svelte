@@ -17,7 +17,6 @@
 <script lang="ts">
 	// LIBRARIES
 	import { api } from '@/convex/_generated/api';
-	import { useConvexClient } from 'convex-svelte';
 
 	// CONFIG
 	import { UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
@@ -32,11 +31,8 @@
 	import { bookGuestForm } from '@/features/bookings/forms/bookGuestForm';
 	import { ONLINE_PAYMENTS_ENABLED } from '@/features/bookings/data/paymentMethods';
 	import { appGoto } from '@/utils/app-navigation';
-	import { safeAction } from '@/utils/convexHelpers';
-	import { toastResult } from '@/utils/toastResult';
 
 	// TYPES
-	import type { Id } from '@/convex/_generated/dataModel';
 	import type { typesAccommodationEnriched } from '@/shared/features/accommodation/types/accommodationTypes';
 	import type { ZodType } from 'zod';
 
@@ -57,8 +53,6 @@
 		    surfaces this as a message rather than leaving the button mysteriously disabled. */
 		datesMissing?: boolean;
 	} = $props();
-
-	const convex = useConvexClient();
 
 	// While the provider is dark, cash is the only thing a guest can be offered — even if the
 	// listing still says `online`/`both` (PaymentsSystemDesign.md §8). UI half of the gate.
@@ -107,30 +101,13 @@
 	});
 
 	/**
-	 * Cash bookings land on their reservation page immediately. Online ones have an
-	 * `awaiting` row and nothing else yet — they go to the provider-hosted checkout first
-	 * (PaymentsSystemDesign.md §3), and the reservation page picks them up on the way back,
-	 * flipping the moment the authorization webhook lands.
-	 *
-	 * If the session can't be opened we still send them to the reservation page: the row is
-	 * reaped at its deadline and the page tells them plainly that nothing was charged.
+	 * Payments are inert (the engine is stripped), so there is no provider checkout to send
+	 * the guest to — every booking lands on its reservation page immediately. Any legacy
+	 * `awaiting` row is reaped at its deadline, and the page tells the guest plainly that
+	 * nothing was charged.
 	 */
 	const goToReservation = async (data: unknown) => {
-		const { bookingId, checkoutRequired } = data as {
-			bookingId: string;
-			checkoutRequired?: boolean;
-		};
-
-		if (checkoutRequired) {
-			const result = await safeAction(convex, api.payments.checkout.createCheckoutSession, {
-				bookingId: bookingId as Id<'bookings'>
-			});
-			if (result?.success && result.data?.checkoutUrl) {
-				window.location.href = result.data.checkoutUrl;
-				return;
-			}
-			if (result) toastResult(result);
-		}
+		const { bookingId } = data as { bookingId: string };
 
 		return appGoto(UNPROTECTED_PAGE_ENDPOINTS.RESERVATION.replace(':id', bookingId));
 	};

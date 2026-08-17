@@ -6,7 +6,6 @@ import { sendBookingAutoDeclinedEmail } from '@/convex/email/sendBookingAutoDecl
 import { sendBookingMissedEmail } from '@/convex/email/sendBookingMissedEmail';
 import { applyAutoDecline } from '@/shared/features/booking/utils/applyAutoDecline';
 import { todayInPropertyZone } from '@/shared/features/booking/utils/daysUntilCheckIn';
-import { settleBookingPayment } from '@/convex/payments/helpers/settleBookingPayment';
 
 /**
  * Idempotent booking-lifecycle sweep. Runs on a schedule (see {@link registerBookingCrons}) and
@@ -96,12 +95,7 @@ export const advanceBookingLifecycle = internalMutation({
 			const patch = applyAutoDecline(b, 'expired', now);
 			if (!patch) continue;
 
-			// Expiry of an `authorized` booking releases the hold — the guest was never
-			// charged, which is exactly what the email below tells them (PaymentsSystemDesign.md
-			// §4, §11). Cash bookings settle to an empty patch.
-			const settlement = await settleBookingPayment(ctx, b);
-
-			await ctx.db.patch(b._id, { ...patch, ...settlement });
+			await ctx.db.patch(b._id, { ...patch });
 
 			const apartment = await ctx.db.get(b.apartmentId);
 			const apartmentTitle = apartment?.title ?? b.apartmentSlug;

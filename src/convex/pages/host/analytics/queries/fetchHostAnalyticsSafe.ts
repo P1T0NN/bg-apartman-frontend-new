@@ -9,7 +9,7 @@ import { PROJECT_SETTINGS, MS_PER_DAY } from '@/shared/config';
 import { requireAuthUserId } from '@/convex/auth/helpers/requireAuthUserId';
 
 // UTILS
-import { analytics, hostAnalyticsScopeInput } from '@/convex/analytics';
+import { analytics } from '@/convex/analytics';
 import { todayInPropertyZone } from '@/shared/features/booking/utils/daysUntilCheckIn';
 import { nightsWithinWindow } from '@/shared/features/booking/utils/nightsWithinWindow';
 
@@ -115,7 +115,6 @@ export const fetchHostAnalyticsSafe = query({
 		}
 
 		const today = todayInPropertyZone();
-		const scope = hostAnalyticsScopeInput(hostId);
 
 		const windowDays = (to - from) / MS_PER_DAY;
 		const bucketUnit: 'day' | 'month' = windowDays <= DAY_BUCKET_MAX_DAYS ? 'day' : 'month';
@@ -130,7 +129,7 @@ export const fetchHostAnalyticsSafe = query({
 			// One Map per metric: UTC bucket start → value.
 			Promise.all(
 				SERIES_METRICS.map((metric) =>
-					analytics.fetchTimeSeries(ctx, { metric, from, to, bucketUnit, scope })
+					analytics.fetchTimeSeries(ctx, { metric, from, to, bucketUnit, hostId })
 				)
 			).then((list) =>
 				list.map((s) => new Map(s.data.map((p) => [p.date, p[s.meta.metric] ?? 0])))

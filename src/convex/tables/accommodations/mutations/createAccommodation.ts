@@ -10,9 +10,10 @@ import { toLatin } from '@/utils/cyrillicToLatin';
 import { r2PublicUrl } from '@/convex/storage/r2/r2';
 import { validateImageCount } from '@/shared/features/accommodation/utils/validateImageCount';
 import { splitRegionPlaceId } from '@/shared/features/accommodation/utils/splitRegionPlaceId';
-import { ensureHostPayoutAccount } from '@/convex/payments/onboarding';
-import { onlinePaymentsEnabled } from '@/convex/payments/adapter';
 import { monetizationActive } from '@/shared/features/accommodation/utils/listingFeeState';
+
+// CONFIG
+import { PAYMENTS_CONFIG } from '@/shared/config';
 
 // SCHEMAS
 import {
@@ -193,7 +194,7 @@ export const createApartment = authMutation('createApartment')({
 
 		// Server-side twin of the form's hidden options: no provider wired, no `online`
 		// listings (PaymentsSystemDesign.md §8).
-		if (args.paymentMethod !== 'cash' && !onlinePaymentsEnabled()) {
+		if (args.paymentMethod !== 'cash' && PAYMENTS_CONFIG.PROVIDER === 'none') {
 			return { success: false, message: { key: 'GenericMessages.ONLINE_PAYMENTS_UNAVAILABLE' } };
 		}
 
@@ -211,10 +212,6 @@ export const createApartment = authMutation('createApartment')({
 			'pending_review'
 		);
 		const apartmentId = await ctx.db.insert('apartments', doc);
-
-		// Stage 2 (PaymentsSystemDesign.md §2): silent recipient account, nothing asked of
-		// the host. Best-effort — a failure never fails the listing.
-		if (args.paymentMethod !== 'cash') await ensureHostPayoutAccount(ctx, ctx.userId);
 
 		const hostEmail = host?.email?.trim();
 		if (hostEmail) {
@@ -252,7 +249,7 @@ export const createApartmentAdmin = adminMutation('createApartmentAdmin')({
 		const photoCountError = validateImageCount(args.photos.length);
 		if (photoCountError) return { success: false, message: photoCountError };
 
-		if (args.paymentMethod !== 'cash' && !onlinePaymentsEnabled()) {
+		if (args.paymentMethod !== 'cash' && PAYMENTS_CONFIG.PROVIDER === 'none') {
 			return { success: false, message: { key: 'GenericMessages.ONLINE_PAYMENTS_UNAVAILABLE' } };
 		}
 
@@ -281,8 +278,6 @@ export const createApartmentAdmin = adminMutation('createApartmentAdmin')({
 			status
 		);
 		const apartmentId = await ctx.db.insert('apartments', doc);
-
-		if (args.paymentMethod !== 'cash') await ensureHostPayoutAccount(ctx, args.hostId);
 
 		ctx.audit('apartment.create', {
 			resource: { table: 'apartments', id: apartmentId },

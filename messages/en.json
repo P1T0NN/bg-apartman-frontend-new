@@ -1279,10 +1279,10 @@
 		},
 		"AdminDashboardStatCards": {
 			"bookings": "Bookings",
-			"platform": "@render ledger('Platform', platform)",
+			"platform": "Platform",
 			"publishedListings": "Published listings",
 			"revenue": "Revenue",
-			"thisMonth": "@render ledger('This month', thisMonth)",
+			"thisMonth": "This month",
 			"users": "Users"
 		},
 		"SEO": {
@@ -1640,11 +1640,11 @@
 			"selectCustomRange": "Select custom date range"
 		},
 		"HostAnalyticsRevenueChart": {
-			"bookings": "Revenue",
-			"revenue": "revenue",
+			"bookings": "Bookings",
+			"revenue": "Revenue",
 			"revenueAndBookings": "Revenue & bookings",
-			"totalBookings": "Total revenue",
-			"totalRevenue": "revenue"
+			"totalBookings": "Total bookings",
+			"totalRevenue": "Total revenue"
 		},
 		"SEO": {
 			"description": "How your accommodations are performing.",
@@ -1703,7 +1703,7 @@
 			"loadingPending": "Loading pending reservations"
 		},
 		"HostDashboardStatCards": {
-			"ahead": "@render ledger('Ahead', ahead)",
+			"ahead": "Ahead",
 			"allLive": "All live",
 			"checkIns": "Check-ins",
 			"inReview": "{count} in review",
@@ -1715,7 +1715,7 @@
 			"pts": "{count} pts",
 			"published": "Published",
 			"revenue": "Revenue",
-			"thisMonth": "@render ledger('This month', thisMonth)",
+			"thisMonth": "This month",
 			"vsLastMonth": "vs last month"
 		},
 		"HostDashboardStatsSectionLoading": {

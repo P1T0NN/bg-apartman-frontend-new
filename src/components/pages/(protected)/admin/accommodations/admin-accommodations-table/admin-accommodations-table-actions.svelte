@@ -19,7 +19,6 @@
 		DropdownMenuSeparator
 	} from '@/components/ui/dropdown-menu';
 	import AdminModerateAccommodationDialog from '../admin-moderate-accommodation-dialog.svelte';
-	import AdminStampListingFeeDialog from '../admin-stamp-listing-fee-dialog.svelte';
 	import AdminGrantFreePublishDialog from '../admin-grant-free-publish-dialog.svelte';
 
 	// UTILS
@@ -40,7 +39,6 @@
 	import ExternalLinkIcon from '@lucide/svelte/icons/external-link';
 	import StarIcon from '@lucide/svelte/icons/star';
 	import GiftIcon from '@lucide/svelte/icons/gift';
-	import ReceiptIcon from '@lucide/svelte/icons/receipt';
 	import CheckIcon from '@lucide/svelte/icons/check';
 	import BanIcon from '@lucide/svelte/icons/ban';
 	import ArchiveIcon from '@lucide/svelte/icons/archive';
@@ -65,7 +63,6 @@
 
 	let moderationAction = $state<'published' | 'suspended' | 'archived'>('published');
 	let moderationOpen = $state(false);
-	let feeOpen = $state(false);
 	let freePublishOpen = $state(false);
 
 	function openModeration(action: 'published' | 'suspended' | 'archived') {
@@ -137,15 +134,12 @@
 
 			{#if listingIsListingFee(row) && !coveredForever}
 				<DropdownMenuSeparator />
-				<!-- Billing is not moderation: the grant and the bank-transfer stamp sit in their own
-			     group, above the status actions. Hidden once covered forever — see `coveredForever`. -->
+				<!-- Billing is not moderation — it sits in its own group, above the status actions.
+			     The bank-transfer stamp is gone with the payment engine; the free grant survives
+			     because it isn't a payment. Hidden once covered forever — see `coveredForever`. -->
 				<DropdownMenuItem onclick={() => (freePublishOpen = true)}>
 					<GiftIcon aria-hidden="true" />
 					{m['AdminAccommodationsPage.AdminAccommodationsTableActions.grantFreePublish']()}
-				</DropdownMenuItem>
-				<DropdownMenuItem onclick={() => (feeOpen = true)}>
-					<ReceiptIcon aria-hidden="true" />
-					{m['AdminAccommodationsPage.AdminAccommodationsTableActions.recordFeePayment']()}
 				</DropdownMenuItem>
 			{/if}
 
@@ -184,5 +178,4 @@
 
 {#if listingIsListingFee(row)}
 	<AdminGrantFreePublishDialog accommodation={row} bind:open={freePublishOpen} />
-	<AdminStampListingFeeDialog accommodation={row} bind:open={feeOpen} />
 {/if}

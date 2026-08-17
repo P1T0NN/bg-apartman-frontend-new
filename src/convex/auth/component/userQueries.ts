@@ -24,12 +24,6 @@ import schema from './schema';
 
 // ----- listUsersPaginated -----
 
-/**
- * Ceiling for {@link countUsers}. Local rather than from `shared/config` so this component
- * folder stays self-contained and portable, same as the rest of the files here.
- */
-const USER_COUNT_CAP = 10_000;
-
 const sortColumnValidator = v.union(v.literal('name'), v.literal('email'), v.literal('createdAt'));
 const sortDirectionValidator = v.union(v.literal('asc'), v.literal('desc'));
 type SortDirection = Infer<typeof sortDirectionValidator>;
@@ -176,33 +170,15 @@ export const listUsersPaginated = query({
 	}
 });
 
-// ----- countUsers -----
+// ----- user count -----
 
 /**
- * Total registered users — the admin dashboard's headline stat. Lives here because the BA
- * `user` table is component-local: the app's aggregate triggers never see its writes, so an
- * O(log n) aggregate count is not available for it.
- *
- * BOUNDED, and it has to be. This feeds a live subscription whose read set spans the whole
- * platform, so it re-runs on every rollup write anywhere — not once per admin page view.
- * An uncapped `.collect().length` therefore multiplies signup count by platform event rate,
- * and does not degrade gracefully: it works until the table crosses Convex's per-query
- * document ceiling, at which point the admin dashboard fails outright.
- *
- * `.take(CAP + 1)` makes the read flat and the count exact below the cap, with `capped`
- * telling the UI to render "N+" past it — the same soft-count trade as the guest and host
- * dashboards. Upgrade path if an exact number is ever needed at that scale: a counter row
- * maintained by a Better Auth `databaseHooks.user.create/delete.after` hook.
+ * The dashboard's user count is `counters.users` in the app (@/convex/functions) — an exact
+ * O(log n) aggregate, maintained by the better-auth `user` triggers in
+ * `src/convex/auth/auth.ts`. The former capped `.take()` scan (`countUsers`) is gone: this
+ * component's `user` table is what feeds the tree via those triggers, so a table-wide read
+ * from here is no longer needed. (The one-time backfill reads the ids via `listUsersPaginated`.)
  */
-export const countUsers = query({
-	args: {},
-	handler: async (ctx) => {
-		const rows = await ctx.db.query('user').take(USER_COUNT_CAP + 1);
-		const capped = rows.length > USER_COUNT_CAP;
-
-		return { total: capped ? USER_COUNT_CAP : rows.length, capped };
-	}
-});
 
 // ----- listUserSessions -----
 

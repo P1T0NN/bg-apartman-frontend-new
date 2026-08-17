@@ -6,7 +6,6 @@ import type { DataModel } from '../_generated/dataModel';
 import { betterAuth, type BetterAuthOptions } from 'better-auth/minimal';
 import { admin, emailOTP } from 'better-auth/plugins';
 import authConfig from './auth.config';
-import { analytics, ANALYTICS_EVENT } from '@/convex/analytics';
 import { sendVerificationOTP } from './emails/sendVerificationOTP';
 import authSchema from './component/schema';
 import { convexCreateAuthRateLimitHook } from './convexCreateAuthRateLimitHook';
@@ -23,14 +22,6 @@ export const authComponent = createClient<DataModel, typeof authSchema>(componen
 	// Runs in app context (via the internal mutations exported below) whenever BA
 	// creates a user row — covers email/password AND Google OAuth sign-ups.
 	triggers: {
-		user: {
-			onCreate: async (ctx, user) => {
-				await analytics.track(ctx, ANALYTICS_EVENT.USER_SIGNED_UP, {
-					actorId: user._id,
-					properties: { role: user.role }
-				});
-			}
-		},
 		session: {
 			// Every sign-in (and the session BA mints after signup / OAuth) claims the user's
 			// anonymous bookings — GuestSystemDesign.md §1. Scheduled, never awaited: the claim
@@ -42,6 +33,25 @@ export const authComponent = createClient<DataModel, typeof authSchema>(componen
 					internal.tables.bookings.mutations.claimMyBookings.claimMyBookings,
 					{ userId: session.userId }
 				);
+			}
+		},
+		// The `user` table lives inside the better-auth component, so the app's table triggers
+		// can't follow it — these callbacks are how the dashboard's user count stays exact and
+		// O(log n) instead of a capped `.take()` scan (`counters.users` in @/convex/functions).
+		// Scheduled, never awaited: a counter write must never block or fail auth. Covers
+		// email/password AND Google OAuth sign-ups (both create a user row through the adapter).
+		user: {
+			onCreate: async (ctx, user) => {
+				await ctx.scheduler.runAfter(0, internal.functions.adjustUserCount, {
+					id: user._id,
+					delta: 1
+				});
+			},
+			onDelete: async (ctx, user) => {
+				await ctx.scheduler.runAfter(0, internal.functions.adjustUserCount, {
+					id: user._id,
+					delta: -1
+				});
 			}
 		}
 	},

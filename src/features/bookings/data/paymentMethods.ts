@@ -9,9 +9,9 @@ import type { typesPaymentMethodOption } from '@/features/bookings/types/booking
 
 /**
  * Whether any online-payment option may be offered (PaymentsSystemDesign.md §8). Mirrors
- * the backend's `onlinePaymentsEnabled()` — the server-side create/update mutations reject
- * non-cash listings while this is false, so this is the UI half of one gate, not the gate
- * itself.
+ * the config gate the server-side create/update mutations enforce
+ * (`PAYMENTS_CONFIG.PROVIDER !== 'none'` rejects non-cash listings), so this is the UI
+ * half of one gate, not the gate itself.
  */
 export const ONLINE_PAYMENTS_ENABLED = PAYMENTS_CONFIG.PROVIDER !== 'none';
 

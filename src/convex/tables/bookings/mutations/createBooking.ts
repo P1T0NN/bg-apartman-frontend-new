@@ -8,11 +8,9 @@ import { PAYMENTS_CONFIG } from '@/shared/config';
 
 // UTILS
 import { authComponent } from '@/convex/auth/auth';
-import { onlinePaymentsEnabled } from '@/convex/payments/adapter';
 import { getAuthUserId } from '@/convex/auth/helpers/getAuthUserId';
 import { convexRateLimiter } from '@/convex/convexRateLimiter';
-import { analytics, ANALYTICS_EVENT, hostAnalyticsScope } from '@/convex/analytics';
-import { trackBookingNights } from '@/convex/tables/bookings/helpers/trackBookingNights';
+import { analytics, ANALYTICS_EVENT, recordGmv, recordNights } from '@/convex/analytics';
 import { sendCreateBookingEmail } from '@/convex/email/sendCreateBookingEmail';
 import { calculatePrice } from '@/shared/features/pricing/utils/calculatePrice';
 import { makeBookingCode } from '@/shared/features/booking/utils/makeBookingCode';
@@ -104,7 +102,7 @@ export const createBooking = mutation({
 		// must not create an `awaiting` row that can never be finished. Legacy listings
 		// stamped `online`/`both` before the gate existed are covered by this too.
 		const isOnline = args.paymentMethod === 'online';
-		if (isOnline && !onlinePaymentsEnabled()) {
+		if (isOnline && PAYMENTS_CONFIG.PROVIDER === 'none') {
 			return {
 				success: false,
 				message: { key: 'GenericMessages.PAYMENT_METHOD_NOT_ACCEPTED' }
@@ -225,24 +223,14 @@ export const createBooking = mutation({
 			};
 		}
 
-		await analytics.track(ctx, ANALYTICS_EVENT.BOOKING_CREATED, {
-			properties: { paymentMethod: args.paymentMethod, instant: isInstant }
-		});
 		if (isInstant) {
-			await analytics.track(ctx, ANALYTICS_EVENT.BOOKING_CONFIRMED, {
-				scopes: [hostAnalyticsScope(args.hostId)],
-				properties: { totalEuros: quote.total, paymentMethod: args.paymentMethod }
-			});
-			// Occupancy ledger, split per calendar month — only instant bookings are earning
-			// at creation. A `pending` request's nights are counted when the host confirms.
-			await trackBookingNights(
+			await analytics.track(ctx, ANALYTICS_EVENT.BOOKING_CONFIRMED, { hostId: args.hostId });
+			// Money + occupancy rollups — only instant bookings are earning at creation. A
+			// `pending` request's nights are counted when the host confirms.
+			await recordGmv(ctx, { _id: bookingId, hostId: args.hostId, total: quote.total }, 'confirmed');
+			await recordNights(
 				ctx,
-				{
-					_id: bookingId,
-					hostId: args.hostId,
-					checkInDate: args.checkInDate,
-					checkOutDate: args.checkOutDate
-				},
+				{ _id: bookingId, hostId: args.hostId, checkInDate: args.checkInDate, checkOutDate: args.checkOutDate },
 				'booked'
 			);
 		}

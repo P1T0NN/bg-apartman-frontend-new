@@ -3,8 +3,7 @@ import { v } from 'convex/values';
 
 // UTILS
 import { authMutation } from '@/convex/auth/middleware/authMiddleware';
-import { analytics, ANALYTICS_EVENT, hostAnalyticsScope } from '@/convex/analytics';
-import { trackBookingNights } from '@/convex/tables/bookings/helpers/trackBookingNights';
+import { analytics, ANALYTICS_EVENT, recordGmv, recordNights } from '@/convex/analytics';
 import { sendBookingConfirmedEmail } from '@/convex/email/sendBookingConfirmedEmail';
 import { sendBookingAutoDeclinedEmail } from '@/convex/email/sendBookingAutoDeclinedEmail';
 import { applyHostAction } from '@/shared/features/booking/utils/applyHostAction';
@@ -14,9 +13,6 @@ import { hostMayPerform } from '@/shared/features/booking/utils/hostMayPerform';
 // HELPERS
 import { hasAvailabilityConflict } from '@/convex/tables/bookings/helpers/hasAvailabilityConflict';
 import { findOverlappingPendingBookings } from '@/convex/tables/bookings/helpers/findOverlappingPendingBookings';
-import { paymentsAdapter } from '@/convex/payments/adapter';
-import { recordCapturedEarnings } from '@/convex/payments/helpers/recordCapturedEarnings';
-import { settleBookingPayment } from '@/convex/payments/helpers/settleBookingPayment';
 
 // SCHEMAS
 import { mutationResult, type MutationResult } from '@/convex/schemas/schemas';
@@ -65,31 +61,14 @@ export const confirmBooking = authMutation('confirmBooking')({
 			return { success: false, message: { key: 'GenericMessages.FORBIDDEN' } };
 		}
 
-		// Money before commitment: an online booking is CAPTURED at this click
-		// (PaymentsSystemDesign.md §3). If the capture fails — hold expired, card died — the
-		// confirm fails WHOLE: the booking stays `pending`, no competing request is declined,
-		// no email goes out, and the host is told to have the guest rebook. There is no
-		// partial confirm.
-		let capturePatch: { paymentStatus?: 'paid' } = {};
+		// An `online` booking can't be confirmed while the payment engine is inert (stripped) —
+		// there is no capture, so the "money before commitment" step can't run. Cash/on_arrival
+		// confirms flow straight through.
 		if (booking.paymentMethod === 'online') {
-			if (booking.paymentStatus !== 'authorized' || !booking.paymentRef) {
-				return { success: false, message: { key: 'GenericMessages.PAYMENT_NOT_READY' } };
-			}
-			try {
-				await paymentsAdapter.capture(booking.paymentRef);
-			} catch {
-				return { success: false, message: { key: 'GenericMessages.PAYMENT_CAPTURE_FAILED' } };
-			}
-			capturePatch = { paymentStatus: 'paid' };
+			return { success: false, message: { key: 'GenericMessages.PAYMENT_NOT_READY' } };
 		}
 
-		await ctx.db.patch(args.bookingId, { ...patch, ...capturePatch });
-
-		// The ledger row is written at capture time, from the booking's price snapshot, and
-		// carries stage 3's "you earned €X" ask (PaymentsSystemDesign.md §2, §5).
-		if (capturePatch.paymentStatus === 'paid') {
-			await recordCapturedEarnings(ctx, { ...booking, paymentStatus: 'paid' });
-		}
+		await ctx.db.patch(args.bookingId, { ...patch });
 
 		// Everyone else who wanted these nights just lost. Tell them now rather than
 		// letting them wait out the full 48h for an expiry that is already decided.
@@ -107,11 +86,7 @@ export const confirmBooking = authMutation('confirmBooking')({
 			const losingPatch = applyAutoDecline(loser, 'dates_taken');
 			if (!losingPatch) continue;
 
-			// A losing request that had authorized a card gets its hold released — the
-			// "nothing was charged" line in the email below has to be true (PSD §4).
-			const losingSettlement = await settleBookingPayment(ctx, loser);
-
-			await ctx.db.patch(loser._id, { ...losingPatch, ...losingSettlement });
+			await ctx.db.patch(loser._id, { ...losingPatch });
 
 			await sendBookingAutoDeclinedEmail(ctx, {
 				// No per-guest locale is stored on the booking; these default to English.
@@ -126,13 +101,10 @@ export const confirmBooking = authMutation('confirmBooking')({
 			});
 		}
 
-		await analytics.track(ctx, ANALYTICS_EVENT.BOOKING_CONFIRMED, {
-			actorId: ctx.userId,
-			scopes: [hostAnalyticsScope(booking.hostId)],
-			properties: { totalEuros: booking.total, paymentMethod: booking.paymentMethod }
-		});
-		// Occupancy ledger, split per calendar month — the booking is now earning.
-		await trackBookingNights(ctx, booking, 'booked');
+		await analytics.track(ctx, ANALYTICS_EVENT.BOOKING_CONFIRMED, { hostId: booking.hostId });
+		// Money + occupancy rollups — the booking is now earning.
+		await recordGmv(ctx, booking, 'confirmed');
+		await recordNights(ctx, booking, 'booked');
 
 		await sendBookingConfirmedEmail(ctx, {
 			locale: args.locale ?? 'en',
