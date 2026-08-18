@@ -266,7 +266,8 @@ step describes the property, this one sets the deal, and the per-booking half ca
 undone once the listing exists.
 
 The payment method's own online options (`online`, `both`) follow the same rule as the
-per-booking card: **listed but disabled** while `PROVIDER: 'none'`, each carrying the same
+per-booking card: **listed but disabled** while `ONLINE_PAYMENTS_AVAILABLE` is false
+(provider unwired OR Phase 2 not shipped), each carrying the same
 "available once online payments launch" sentence, so one step never explains one gate two
 ways. Hiding them taught hosts nothing about where the platform is going; the server-side
 rejection in create/update is unchanged either way (`PaymentsSystemDesign.md` §8).
@@ -351,8 +352,9 @@ directly, so it works even though the platform never touches guest money.
   would be the rational pick for every cash host, so it is closed structurally, not
   documented around. Cash-friendly hosts have the listing-fee model — that pairing IS the
   product: _commission = everything through the platform; flat fee = run it your way._
-- Consequence, stated plainly: **while `PROVIDER: 'none'`, `booking_fee` is not
-  selectable, so every monetized listing is `listing_fee`** — which remains the only model
+- Consequence, stated plainly: **while `ONLINE_PAYMENTS_AVAILABLE` is false (provider
+  unwired OR Phase 2 not shipped), `booking_fee` is not selectable, so every monetized
+  listing is `listing_fee`** — which remains the only model
   that actually earns on a cash-dominant platform. The choice becomes real the day online
   payments land, with zero further schema work.
 - No fee on `withdrawn`/`declined`/`auto_declined` — the fee exists only where a stay was

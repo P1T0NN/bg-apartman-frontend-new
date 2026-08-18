@@ -157,6 +157,8 @@ export const convexRateLimitRegistry = {
 	moderateApartmentStatus: limitPresets.interactiveWrite,
 	setApartmentFeatured: limitPresets.interactiveWrite,
 	grantFreePublish: limitPresets.interactiveWrite,
+	createListingFeeCheckout: limitPresets.interactiveWrite,
+	refundListingFee: limitPresets.interactiveWrite,
 	deleteApartment: limitPresets.bulkDelete,
 	blockApartmentDates: limitPresets.interactiveWrite,
 	unblockApartmentDates: limitPresets.interactiveWrite,

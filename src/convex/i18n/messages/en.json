@@ -203,5 +203,15 @@
 		"rowEarned": "This booking",
 		"rowHeld": "Waiting for you",
 		"cta": "Add payout details"
+	},
+	"listingFeeRefunded": {
+		"subject": "Your listing fee was refunded · {title}",
+		"heading": "Listing fee refunded",
+		"intro": "Hi {name}, the {amount} listing fee for {title} was refunded by the team. The listing is back to pending review — existing stays go ahead as planned, only new bookings are paused. Re-pay the fee and it goes live again.",
+		"rowAccommodation": "Accommodation",
+		"rowStatus": "Status",
+		"statusRefunded": "Fee refunded",
+		"rowAmount": "Refunded",
+		"cta": "Go to your listings"
 	}
 }

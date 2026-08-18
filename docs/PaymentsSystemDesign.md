@@ -307,10 +307,12 @@ all.
 ```ts
 // src/shared/config.ts
 export const PAYMENTS_CONFIG = {
-	/** 'none' until an adapter implementation is wired and verified (§7). Gates every
-	 *  online-payment surface: listing forms can't offer 'online' while 'none'
-	 *  (AccommodationsSystemDesign §6). */
-	PROVIDER: 'none' as 'none' | 'stripe',
+	/** 'none' until an adapter implementation is wired and verified (§7). */
+	PROVIDER: 'stripe' as 'none' | 'stripe',
+
+	/** Phase 2 — per-booking fee + guest online checkout are NOT built (StripeTODO §9/§10).
+	 *  While false the ONLY pay surface is the listing fee. Flip with the Phase-2 build. */
+	BOOKING_FEE_ENABLED: false,
 
 	/** Minutes an 'awaiting' checkout may live before the reaper deletes the row (§3). */
 	CHECKOUT_DEADLINE_MINUTES: 30,
@@ -320,6 +322,12 @@ export const PAYMENTS_CONFIG = {
 	 *  this constant currently makes unnecessary. */
 	PAYOUT_TRIGGER: 'checked_out' as const
 } as const;
+
+/** Online guest checkout exists only when BOTH halves hold: provider wired AND Phase 2
+ *  shipped. The single gate every online surface reads — server mutations and the
+ *  host/admin forms (the listing fee is a host-side payment, independent of this). */
+export const ONLINE_PAYMENTS_AVAILABLE =
+	PAYMENTS_CONFIG.PROVIDER === 'stripe' && PAYMENTS_CONFIG.BOOKING_FEE_ENABLED;
 ```
 
 Fee _amounts_ stay where they live (`ACCOMMODATIONS_CONFIG` — `LISTING_FEE`,
@@ -367,7 +375,7 @@ released | refunded` (amends `BookingSystemDesign.md` §5 — `awaiting` added);
 | Late-cancelled paid booking                                       | Stays `paid`; earnings row stays owed; transfers on the normal sweep — the host's compensation (§4, §5).                                                           |
 | Admin cancels a `checked_in` stay (emergency brake)               | Full refund still possible — transfer hasn't happened (terminal-only trigger). The invariant at work (§5).                                                         |
 | Platform fee on a refunded booking                                | Refunded with the total — the platform never keeps fees on unstayed stays (§4).                                                                                    |
-| Guest pays online for a listing whose host is cash-only next door | Impossible — listing forms can't offer `online` while `PROVIDER: 'none'`, and per-listing `paymentMethod` gates the form (§8, `AccommodationsSystemDesign.md` §6). |
+| Guest pays online for a listing whose host is cash-only next door | Impossible — listing forms can't offer `online` while `ONLINE_PAYMENTS_AVAILABLE` is false (provider unwired OR Phase 2 not shipped), and per-listing `paymentMethod` gates the form (§8, `AccommodationsSystemDesign.md` §6). |
 
 ## 12. Considered and rejected
 
@@ -403,13 +411,17 @@ released | refunded` (amends `BookingSystemDesign.md` §5 — `awaiting` added);
 2. **Adapter skeleton** (§7) with typed no-op implementations — mutations wire to it now;
    `'none'` throws on reach (unreachable while listings can't offer `online`).
 3. **Checkout flow** (§3): `createBooking` online branch, webhook endpoint, reaper in the
-   lifecycle cron, capture in `confirmBooking`. Ships dark behind `PROVIDER: 'none'`.
+   lifecycle cron, capture in `confirmBooking`. Ships dark behind `BOOKING_FEE_ENABLED:
+   false` — the listing fee (StripeTODO §1–§8) shipped first and is unaffected.
 4. **Refund/release wiring** (§4) into the existing cancel/decline/withdraw mutations.
 5. **Onboarding stages** (§2): stage-2 silent creation on the listing toggle, stage-3
    card + email, account webhooks → `hostPayoutAccounts`.
 6. **Payout sweep + reconciliation crons** (§5, §6) + admin flag filters.
 7. **Stripe implementation** of the adapter (§7 reference notes), sandbox end-to-end, THEN
-   `PROVIDER: 'stripe'` — the go-live gate includes the §7 jurisdiction check.
+   `PROVIDER: 'stripe'` — done (the listing-fee go-live, StripeTODO §8). The guest-side
+   surfaces stay dark behind `BOOKING_FEE_ENABLED: false` until the Phase-2 build
+   (StripeTODO §9–§10) flips it — that flip IS the Phase-2 launch. The §7 jurisdiction
+   check remains part of that go-live gate.
 
 Steps 1–6 are provider-independent and shippable dark, in order, today. Step 7 is the only
 one that touches Stripe, and flipping the config constant is the launch.

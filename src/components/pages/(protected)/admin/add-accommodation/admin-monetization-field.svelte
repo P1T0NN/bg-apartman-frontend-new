@@ -1,6 +1,6 @@
 <script lang="ts">
 	// CONFIG
-	import { ACCOMMODATIONS_CONFIG, PAYMENTS_CONFIG } from '@/shared/config';
+	import { ACCOMMODATIONS_CONFIG, ONLINE_PAYMENTS_AVAILABLE } from '@/shared/config';
 
 	// UTILS
 	import { cn } from '@/utils/utils.js';
@@ -28,7 +28,7 @@
 
 	const { AMOUNT, PERIOD_DAYS } = ACCOMMODATIONS_CONFIG.LISTING_FEE;
 	const { PERCENT, MIN_EUROS } = ACCOMMODATIONS_CONFIG.BOOKING_FEE;
-	const onlineAvailable = PAYMENTS_CONFIG.PROVIDER !== 'none';
+	const onlineAvailable = ONLINE_PAYMENTS_AVAILABLE;
 
 	const options = [
 		{

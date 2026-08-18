@@ -21,9 +21,15 @@ import type { Id } from '@/convex/_generated/dataModel';
  * - nightsBooked / nightsReleased: MONTH-keyed (the stay split by `nightsByMonth`), sum of
  *   nights. Read at month granularity only — /host/analytics charts money+bookings, not
  *   occupancy.
+ * - platformRevenue: DAY-keyed cents, one GLOBAL `__platform__` namespace (never per-host).
+ *   Written by `stampListingFeePayment`; read by /admin/dashboard's `revenue` metric.
+ * - platformFeeRefunds: DAY-keyed cents, namespace = the plan. `listing_fee` now;
+ *   `booking_fee` when Phase 2 lands. Read per plan by the `refunds` metric.
  *
- * Idempotency: `insertIfDoesNotExist` keyed by `bookingId` (gmv) or `${bookingId}:${month}`
- * (nights), so a re-run of the backfill or a duplicate write is a no-op.
+ * Idempotency: `insertIfDoesNotExist` keyed by `bookingId` (gmv), `${bookingId}:${month}`
+ * (nights), or `invoice.paid:${paymentRef}` / `refund.created:${paymentRef}` (platform) — a
+ * redelivered webhook or a re-run backfill is a no-op, and a re-pay after refund gets its
+ * own row (fresh `paymentRef`).
  */
 
 export type SumAggregate = DirectAggregate<{ Key: number; Id: string; Namespace: string }>;
@@ -39,6 +45,12 @@ const nightsBooked = new DirectAggregate<{ Key: number; Id: string; Namespace: s
 );
 const nightsReleased = new DirectAggregate<{ Key: number; Id: string; Namespace: string }>(
 	components.aggregateNightsReleased
+);
+export const platformRevenue = new DirectAggregate<{ Key: number; Id: string; Namespace: string }>(
+	components.aggregatePlatformRevenue
+);
+export const platformFeeRefunds = new DirectAggregate<{ Key: number; Id: string; Namespace: string }>(
+	components.aggregatePlatformFeeRefunds
 );
 
 /** UTC midnight of the day containing `ms` — the gmv key convention. */
@@ -85,6 +97,55 @@ export async function recordNights(
 			sumValue: nights
 		});
 	}
+}
+
+/**
+ * The namespace every platform-revenue point lives under — global by design, never a
+ * host's (the host's money lives under their `gmv` namespace). Named so the writer
+ * (`stampListingFeePayment`) and the reader (`fetchTimeSeries`'s `revenue` metric) can't
+ * drift apart: a namespace typo would silently split the money.
+ */
+export const PLATFORM_REVENUE_NAMESPACE = '__platform__';
+
+/**
+ * The plans whose fee refunds subtract from platform revenue — the namespaces of
+ * `platformFeeRefunds`. `booking_fee` has no writer yet (Phase 2); it exists so the
+ * dashboard's refunds metric already carries the key instead of the reader growing a
+ * `booking_fee` branch later. Phase 2 touches ONLY this list.
+ */
+export const PLATFORM_PLANS = ['booking_fee', 'listing_fee'] as const;
+
+/** Record a paid listing fee into platform revenue (cents). Fired by `stampListingFeePayment`. */
+export function recordPlatformRevenue(
+	ctx: MutationCtx,
+	paymentRef: string,
+	amountCents: number
+): Promise<void> {
+	return platformRevenue.insertIfDoesNotExist(ctx, {
+		namespace: PLATFORM_REVENUE_NAMESPACE,
+		key: dayStartUtc(Date.now()),
+		id: `invoice.paid:${paymentRef}`,
+		sumValue: amountCents
+	});
+}
+
+/**
+ * Record a refunded listing fee into `platformFeeRefunds` (cents), namespace `'listing_fee'`
+ * — the only plan with a refund writer today (Phase 2 brings booking-fee refunds; the reader
+ * already merges `PLATFORM_PLANS`). Fired by `resetListingAfterRefund`, so /admin/dashboard
+ * revenue nets to zero for the refunded period.
+ */
+export function recordPlatformFeeRefund(
+	ctx: MutationCtx,
+	paymentRef: string,
+	amountCents: number
+): Promise<void> {
+	return platformFeeRefunds.insertIfDoesNotExist(ctx, {
+		namespace: 'listing_fee',
+		key: dayStartUtc(Date.now()),
+		id: `refund.created:${paymentRef}`,
+		sumValue: amountCents
+	});
 }
 
 /** Sum `agg` over `[start, end)` ranges (upper bound exclusive), one number per bucket. */

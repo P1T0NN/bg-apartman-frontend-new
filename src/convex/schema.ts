@@ -164,6 +164,23 @@ const schema = defineSchema({
 		paymentAmount: v.optional(v.number()), // amount paid (in euros)
 		paymentOrderId: v.optional(v.string()), // bank OrderID linking payment callback to apartment
 		apartmentSubscriptionExpiryDate: v.optional(v.number()), // timestamp when subscription expires (3 months from paidAt)
+		/** When admin granted the listing free publish (grantFreePublish). Presence = covered
+		 * free, NOT paid — the payment fields above are absent. Drives the admin "Free grants"
+		 * filter, and is the one field that tells a free-grant period from a paid one. */
+		freeGrantedAt: v.optional(v.number()),
+		/** Stripe payment_intent id (`pi_...`) once the listing fee is paid. Refund target
+		 * for the admin refund action; absence = never paid via Stripe. Not set by the
+		 * bank-OrderID legacy path. */
+		paymentRef: v.optional(v.string()),
+		/** Stripe payment_intent id (`pi_...`) of the LAST REFUNDED fee. Written by the refund
+		 * reset, read by the stamp: a redelivered `checkout.session.completed` for a refunded
+		 * payment must not resurrect the listing (StripeTODO §6c replay guard). */
+		refundedPaymentRef: v.optional(v.string()),
+		/** Live Checkout Session awaiting payment — one per listing, so a double-open can't
+		 * spawn two payable sessions. Cleared on `checkout.session.completed` and
+		 * `checkout.session.expired`. */
+		checkoutSessionId: v.optional(v.string()),
+		checkoutSessionExpiresAt: v.optional(v.number()),
 		/**
 		 * When the T−7 "your listing expires soon" email went out for the CURRENT period.
 		 * Cleared on every payment, which is what makes the sweep idempotent: a daily cron

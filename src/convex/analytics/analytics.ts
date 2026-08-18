@@ -7,7 +7,15 @@ import { components } from '@/convex/_generated/api';
 import { internalMutation } from '@/convex/_generated/server';
 
 // HELPERS
-import { dayStartUtc, readSumSeries, sumAggregates } from './sumRollups';
+import {
+	PLATFORM_PLANS,
+	PLATFORM_REVENUE_NAMESPACE,
+	dayStartUtc,
+	platformFeeRefunds,
+	platformRevenue,
+	readSumSeries,
+	sumAggregates
+} from './sumRollups';
 import type { SumAggregate } from './sumRollups';
 
 // TYPES
@@ -82,7 +90,7 @@ function bucketRanges(from: number, to: number, unit: 'day' | 'month'): Array<{ 
  * - `bookingsConfirmed` → vllnt day rollups (grouped to month on read when the bucket is a
  *   month — vllnt has no month granularity).
  * - `gmv` / `gmvCancelled` / `nightsBooked` / `nightsReleased` → aggregate sum rollups.
- * - `revenue` / `refunds` → honest empty (payments are stripped — no invoice/refund events).
+ * - `revenue` / `refunds` → aggregate sum rollups, global scope (StripeTODO §7).
  */
 async function fetchTimeSeries(ctx: QueryCtx, opts: FetchTimeSeriesOpts): Promise<TimeSeries> {
 	const { metric, from, to, bucketUnit, hostId } = opts;
@@ -110,8 +118,34 @@ async function fetchTimeSeries(ctx: QueryCtx, opts: FetchTimeSeriesOpts): Promis
 		};
 	}
 
-	if (metric === 'revenue' || metric === 'refunds') {
-		return { data: [], meta: { metric } };
+	if (metric === 'revenue') {
+		// Global by design — the `__platform__` namespace is never a host's. The admin
+		// dashboard is the only reader; a host's money lives under their `gmv` namespace.
+		const ranges = bucketRanges(from, to, bucketUnit);
+		const sums = await readSumSeries(ctx, platformRevenue, PLATFORM_REVENUE_NAMESPACE, ranges);
+		return {
+			data: ranges.map((r, i) => ({ date: r.start, revenue: sums[i] ?? 0 })),
+			meta: { metric: 'revenue' }
+		};
+	}
+
+	if (metric === 'refunds') {
+		// One series per plan namespace, merged per bucket — `PLATFORM_PLANS` is the single
+		// list to extend when Phase 2 lands (booking-fee refunds appear here automatically).
+		const ranges = bucketRanges(from, to, bucketUnit);
+		const perPlan = await Promise.all(
+			PLATFORM_PLANS.map((plan) => readSumSeries(ctx, platformFeeRefunds, plan, ranges))
+		);
+		return {
+			data: ranges.map((r, i) => {
+				const point: SeriesPoint = { date: r.start };
+				PLATFORM_PLANS.forEach((plan, j) => {
+					point[plan] = perPlan[j][i] ?? 0;
+				});
+				return point;
+			}),
+			meta: { metric: 'refunds' }
+		};
 	}
 
 	const agg = SUM_METRICS[metric];

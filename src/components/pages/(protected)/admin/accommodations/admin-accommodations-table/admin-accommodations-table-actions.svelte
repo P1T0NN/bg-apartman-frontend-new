@@ -20,6 +20,7 @@
 	} from '@/components/ui/dropdown-menu';
 	import AdminModerateAccommodationDialog from '../admin-moderate-accommodation-dialog.svelte';
 	import AdminGrantFreePublishDialog from '../admin-grant-free-publish-dialog.svelte';
+	import AdminRefundListingFeeDialog from '../admin-refund-listing-fee-dialog.svelte';
 
 	// UTILS
 	import { appHref } from '@/utils/app-navigation';
@@ -39,6 +40,7 @@
 	import ExternalLinkIcon from '@lucide/svelte/icons/external-link';
 	import StarIcon from '@lucide/svelte/icons/star';
 	import GiftIcon from '@lucide/svelte/icons/gift';
+	import Undo2Icon from '@lucide/svelte/icons/undo-2';
 	import CheckIcon from '@lucide/svelte/icons/check';
 	import BanIcon from '@lucide/svelte/icons/ban';
 	import ArchiveIcon from '@lucide/svelte/icons/archive';
@@ -55,15 +57,26 @@
 
 	const convex = useConvexClient();
 
-	// Once a listing is covered forever, both billing actions are no-ops: a re-grant does
-	// nothing, and recording a payment would stamp revenue nobody paid — so the menu hides
-	// them. Finite grants keep both (extending or topping up is still meaningful).
+	// The free grant is a fee WAIVER, so it only exists for a listing with no live coverage:
+	// `unpaid` (never paid), `grace` (lapsed inside grace, still live), or `lapsed` (expired).
+	// Once a period is running (`active`/`expiring`) the host already paid — granting on top
+	// would just extend a covered period and muddy the dashboard's revenue story, since a
+	// grant stamps no payment. Booking-fee listings never show it at all: `listingIsListingFee`
+	// excludes them (there is no listing fee to waive).
 	const fee = $derived(listingIsListingFee(row) ? listingFeeState(row) : null);
-	const coveredForever = $derived(fee?.kind === 'active' && fee.daysLeft === null);
+	const grantable = $derived(
+		fee?.kind === 'unpaid' || fee?.kind === 'grace' || fee?.kind === 'lapsed'
+	);
+
+	// A refund reverses a Stripe payment — `paymentRef` is the proof one exists. booking_fee
+	// listings never have one (no listing fee was charged), and a free-granted listing never
+	// paid, so neither is refundable (StripeTODO §8a). The server re-checks both.
+	const refundable = $derived(listingIsListingFee(row) && !!row.paymentRef);
 
 	let moderationAction = $state<'published' | 'suspended' | 'archived'>('published');
 	let moderationOpen = $state(false);
 	let freePublishOpen = $state(false);
+	let refundOpen = $state(false);
 
 	function openModeration(action: 'published' | 'suspended' | 'archived') {
 		moderationAction = action;
@@ -132,15 +145,27 @@
 					: m['AdminAccommodationsPage.AdminAccommodationsTableActions.featureOnHomepage']()}
 			</DropdownMenuItem>
 
-			{#if listingIsListingFee(row) && !coveredForever}
+			{#if grantable || refundable}
 				<DropdownMenuSeparator />
 				<!-- Billing is not moderation — it sits in its own group, above the status actions.
-			     The bank-transfer stamp is gone with the payment engine; the free grant survives
-			     because it isn't a payment. Hidden once covered forever — see `coveredForever`. -->
-				<DropdownMenuItem onclick={() => (freePublishOpen = true)}>
-					<GiftIcon aria-hidden="true" />
-					{m['AdminAccommodationsPage.AdminAccommodationsTableActions.grantFreePublish']()}
-				</DropdownMenuItem>
+			     The free grant survives the payment engine because it isn't a payment. It only
+			     shows for uncovered listings (see `grantable`); once a period is running the host
+			     already paid, so there's nothing left to waive. A Stripe-paid listing gets the
+			     refund next to it: money was taken, money can go back. -->
+				{#if grantable}
+					<DropdownMenuItem onclick={() => (freePublishOpen = true)}>
+						<GiftIcon aria-hidden="true" />
+						{row.status === 'published'
+							? m['AdminAccommodationsPage.AdminAccommodationsTableActions.grantFreeCoverage']()
+							: m['AdminAccommodationsPage.AdminAccommodationsTableActions.grantFreePublish']()}
+					</DropdownMenuItem>
+				{/if}
+				{#if refundable}
+					<DropdownMenuItem onclick={() => (refundOpen = true)}>
+						<Undo2Icon aria-hidden="true" />
+						{m['AdminAccommodationsPage.AdminAccommodationsTableActions.refundListingFee']()}
+					</DropdownMenuItem>
+				{/if}
 			{/if}
 
 			<DropdownMenuSeparator />
@@ -178,4 +203,7 @@
 
 {#if listingIsListingFee(row)}
 	<AdminGrantFreePublishDialog accommodation={row} bind:open={freePublishOpen} />
+{/if}
+{#if refundable}
+	<AdminRefundListingFeeDialog accommodation={row} bind:open={refundOpen} />
 {/if}

@@ -33,6 +33,7 @@ export const AUDIT_ACTIONS = {
 
 	// Money recorded by a human — the audit entry IS the trail (AccommodationsSystemDesign.md §8).
 	APARTMENT_FEE_STAMP: 'apartment.fee.stamp',
+	APARTMENT_FEE_REFUND: 'apartment.fee.refund',
 	// Free publish grants: paid coverage with no payment — even less money trail, so it audits.
 	APARTMENT_FREE_PUBLISH: 'apartment.fee.free_publish',
 	// The one-way listing_fee → booking_fee switch (ASD §8) — irreversible, so it leaves a trail.
@@ -65,7 +66,8 @@ export const AUDIT_RETENTION_DAYS: Partial<Record<AuditAction, number>> = {
 	// as long as the financial records they stand in for.
 	'booking.payment_flag.clear': 365 * 5,
 	'apartment.fee.stamp': 365 * 5,
-	'apartment.fee.free_publish': 365 * 5
+	'apartment.fee.free_publish': 365 * 5,
+	'apartment.fee.refund': 365 * 5
 };
 
 /**

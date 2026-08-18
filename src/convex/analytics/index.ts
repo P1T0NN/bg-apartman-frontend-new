@@ -7,4 +7,9 @@
  * every series through `analytics.fetchTimeSeries`.
  */
 export { analytics, ANALYTICS_EVENT } from './analytics';
-export { recordGmv, recordNights } from './sumRollups';
+export {
+	recordGmv,
+	recordNights,
+	recordPlatformRevenue,
+	recordPlatformFeeRefund
+} from './sumRollups';

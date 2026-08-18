@@ -4,7 +4,7 @@
 
 	// CONFIG
 	import { PROTECTED_PAGE_ENDPOINTS, UNPROTECTED_PAGE_ENDPOINTS } from '@/config/routeEndpoints';
-	import { PAYMENTS_CONFIG } from '@/shared/config';
+	import { ONLINE_PAYMENTS_AVAILABLE } from '@/shared/config';
 
 	// COMPONENTS
 	import { Button } from '@/components/ui/button/index.js';
@@ -24,9 +24,9 @@
 
 	let { row }: { row: typesAccommodation } = $props();
 
-	// One-way door (ASD §8): only listing_fee rows can change plan, and only once the
-	// provider is live — the switch makes the listing online-only in the same click.
-	const canChangePlan = $derived(listingIsListingFee(row) && PAYMENTS_CONFIG.PROVIDER !== 'none');
+	// One-way door (ASD §8): only listing_fee rows can change plan, and only once online
+	// payments exist — the switch makes the listing online-only in the same click.
+	const canChangePlan = $derived(listingIsListingFee(row) && ONLINE_PAYMENTS_AVAILABLE);
 </script>
 
 <div class="flex items-center justify-end gap-1">

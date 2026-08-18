@@ -1125,11 +1125,14 @@
 	},
 	"AdminAccommodationsPage": {
 		"AdminAccommodationsFilters": {
+			"anyGrant": "Any coverage",
 			"anyStatus": "Any status",
 			"anyType": "Any type",
 			"clear": "Clear",
+			"filterByGrant": "Filter by grant",
 			"filterByStatus": "Filter by status",
-			"filterByType": "Filter by type"
+			"filterByType": "Filter by type",
+			"freeGrantsOnly": "Free grants"
 		},
 		"AdminAccommodationsHeader": {
 			"addAccommodation": "Add accommodation",
@@ -1144,11 +1147,14 @@
 		"AdminAccommodationsTableActions": {
 			"archive": "Archive",
 			"featureOnHomepage": "Feature on homepage",
+			"grantFreeCoverage": "Grant free coverage",
 			"grantFreePublish": "Grant free publish",
 			"moreActions": "More actions",
 			"openPublicPage": "Open public page",
 			"publish": "Publish",
 			"recordFeePayment": "Record fee payment",
+			"refundListingFee": "Refund listing fee",
+			"refundListingFeeConfirm": "Refund €{amount} for \"{title}\"? The listing returns to pending review, and existing stays go ahead as planned.",
 			"removeFromHomepage": "Remove from homepage",
 			"suspend": "Suspend"
 		},
@@ -1173,6 +1179,11 @@
 			"threeMonths": "3 months",
 			"title": "Grant free publish?",
 			"unpaidNote": "This listing has never had a paid period — the grant covers the fee and publishes it immediately, no re-review."
+		},
+		"AdminRefundListingFeeDialog": {
+			"cancel": "Cancel",
+			"reasonDefault": "Listing fee refunded",
+			"thisListing": "this listing"
 		},
 		"AdminModerateAccommodationDialog": {
 			"archiveBody": "{listing} is hidden from guests. No email is sent — archiving is tidy-up, not moderation. The host can resubmit it for review.",
@@ -1796,14 +1807,12 @@
 			"expired": "Expired",
 			"expiresInDays": "Expires in {days} days",
 			"expiresToday": "Expires today",
-			"listingFeeNotPaid": "Listing fee not paid — pay €{amount} to go live",
-			"overdueRenewNow": "Overdue — renew now",
-			"payNow": "Pay now",
+			"listingFeeNotPaid": "Listing fee not paid",
+			"overdueRenewNow": "Overdue",
+			"payNow": "Pay €{amount}",
 			"perBookingFee": "Per-booking fee ({percent}%) — permanent · new listing to change plan",
+			"renew": "Renew",
 			"untilDate": "Until {date}"
-		},
-		"MyAccommodationsTableRenewButton": {
-			"renew": "Renew"
 		},
 		"SEO": {
 			"description": "Manage your accommodation accommodations, publishing status and pricing.",
@@ -1987,6 +1996,8 @@
 		"ACCOMMODATION_UNFEATURED": "Accommodation removed from the homepage strip.",
 		"LISTING_FEE_PAID": "Listing renewed — it stays live for another period.",
 		"FREE_PUBLISH_GRANTED": "Free publish granted — the listing is live with no payment recorded.",
+		"REFUND_LISTING_FEE_DONE": "Listing fee refunded — the listing is back to pending review.",
+		"REFUND_LISTING_FEE_ERROR": "The refund couldn't be processed. The fee was not refunded.",
 		"LISTING_FEE_UNPAID": "This listing's fee hasn't been paid yet, so it can't go live. Record the payment first.",
 		"MONETIZATION_CHOICE_REQUIRED": "Pick a plan for this listing — listing fee or per-booking fee.",
 		"BOOKING_FEE_REQUIRES_ONLINE": "Per-booking fee listings accept online payments only.",
@@ -2025,6 +2036,7 @@
 		"CHECKOUT_EXPIRED": "This checkout has expired. Start the booking again and your dates will be re-checked.",
 		"CHECKOUT_UNAVAILABLE": "We couldn't open the payment page. Nothing was charged — please try again.",
 		"PAYMENT_NOT_READY": "This booking's payment isn't ready yet. Refresh in a moment and try again.",
+		"PAYMENT_START_FAILED": "Payment couldn't be started.",
 		"PAYMENT_CAPTURE_FAILED": "The guest's payment could not be taken, so the booking wasn't confirmed. Ask them to book again.",
 		"ONLINE_PAYMENTS_UNAVAILABLE": "Online payments are not available yet — listings can only accept cash at check-in for now.",
 		"PAYOUTS_UNAVAILABLE": "We couldn't open payout setup right now. Your earnings are safe — please try again shortly.",

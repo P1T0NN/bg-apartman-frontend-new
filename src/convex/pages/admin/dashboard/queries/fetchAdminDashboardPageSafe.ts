@@ -74,8 +74,8 @@ async function readAdminDashboardPage(ctx: QueryCtx): Promise<AdminDashboardPage
 				counters.apartments.count(ctx, 'published'),
 				// One Map per metric: UTC month start → value. Global scope (no `scope` arg).
 				// `refunds` is grouped by `plan` so ONLY the fee-portion reversals (tagged
-				// `booking_fee`, ASD §8) subtract from platform revenue — the untagged
-				// full-total refund events are guest money, not ours.
+				// `booking_fee` / `listing_fee`, ASD §8) subtract from platform revenue — the
+				// untagged full-total refund events are guest money, not ours.
 				Promise.all([
 					analytics.fetchTimeSeries(ctx, {
 						metric: 'revenue',
@@ -100,7 +100,9 @@ async function readAdminDashboardPage(ctx: QueryCtx): Promise<AdminDashboardPage
 						revenue.data.map((p) => [p.date, p[revenue.meta.metric] ?? 0])
 					),
 					feeRefundCentsByMonth: new Map(
-						refundsByPlan.data.map((p) => [p.date, p['booking_fee'] ?? 0])
+						refundsByPlan.data.map(
+							(p) => [p.date, (p['booking_fee'] ?? 0) + (p['listing_fee'] ?? 0)]
+						)
 					),
 					confirmedByMonth: new Map(
 						confirmed.data.map((p) => [p.date, p[confirmed.meta.metric] ?? 0])

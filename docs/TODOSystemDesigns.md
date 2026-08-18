@@ -30,7 +30,7 @@ Three small deploys, not one.
 - [x] New table `apartmentBlocks` `{ apartmentId, startDate, endDate }` + `by_apartment` index (BSD §6)
 - [x] New tables `bookingEarnings`, `hostPayoutAccounts` (PSD §5, §9) — declared, unused
 - [x] Config: `ACCOMMODATIONS_CONFIG` with `MONETIZATION: 'none'`, `LISTING_FEE`, `BOOKING_FEE`, `MIN_IMAGES`, `MAX_IMAGES` (ASD §8)
-- [x] Config: `PAYMENTS_CONFIG` with `PROVIDER: 'none'`, `CHECKOUT_DEADLINE_MINUTES`, `PAYOUT_TRIGGER: 'checked_out'` (PSD §8)
+- [x] Config: `PAYMENTS_CONFIG` with `PROVIDER: 'stripe'`, `BOOKING_FEE_ENABLED: false`, `CHECKOUT_DEADLINE_MINUTES`, `PAYOUT_TRIGGER: 'checked_out'` (PSD §8)
 - [x] Config: `BOOKING_POLICY.PROPERTY_TIMEZONE = 'Europe/Belgrade'` (BSD §3)
 - [x] Aggregate re-backfill ritual for changed namespaces (`bookings`, `apartments`) (GSDR § table counts)
 - [x] New earnings aggregate (namespace `hostId`, sum `net`) declared + backfilled (PSD §5)
@@ -89,9 +89,9 @@ Three small deploys, not one.
 - [x] Subscription wiring per verdict (HSD §2) — `fetchApartmentCalendarSafe` via `useQuery`
 - [x] Booked nights link to their reservation: `fetchApartmentCalendarSafe` carries `bookingId` on booked ranges, the cell click navigates to `/host/reservations?booking=<id>`, and the queue opens that booking's sheet via `fetchHostBookingSafe` (fetched directly — the deep-linked stay is rarely on the current filtered page). Closing the sheet drops the param. **HSD §6's host emails should now link to this same address.**
 
-## 8. Payments dark-ship — PSD §13.2–6 (everything behind `PROVIDER: 'none'`)
+## 8. Payments dark-ship — PSD §13.2–6 (guest-side surfaces behind `BOOKING_FEE_ENABLED: false`; the listing fee shipped, StripeTODO §1–§8)
 
-- [x] Adapter skeleton `src/convex/payments/adapter.ts` — full §7 contract + `fetchPaymentState` (§6's reconciliation read), typed no-op impl that throws under `'none'`. `onlinePaymentsEnabled()` is the one gate every surface reads, so the launch is one constant.
+- [x] Adapter skeleton `src/convex/payments/adapter.ts` — full §7 contract + `fetchPaymentState` (§6's reconciliation read); `getPaymentAdapter()` throws while `PROVIDER: 'none'` and now selects the real Stripe adapter for the listing fee (StripeTODO §1–§8). `ONLINE_PAYMENTS_AVAILABLE` (provider wired AND Phase 2 shipped) is the one gate every surface reads.
 - [x] Checkout flow: `createBooking` online branch (`awaiting`, `paymentDeadlineAt`, no emails/clock/analytics — instant listings start `pending` too), `createCheckoutSession` **action** (mutations can't do network I/O), webhook endpoint at `/payments/webhook` with idempotent handlers; authorization → emails + 48h clock; instant → capture + confirm + ledger row; lost-race → release + `auto_declined` (PSD §3)
 - [x] `awaiting` rows made genuinely invisible: excluded from `collectScopedBookings` (both booking tables + tab counts), the host dashboard pending strip, the duplicate-request guard and the confirm-time loser sweep
 - [x] Abandoned-checkout reaper in the lifecycle cron (hard-delete `awaiting` past deadline); expiry of an `authorized` request now releases the hold (PSD §3–4)
@@ -99,7 +99,7 @@ Three small deploys, not one.
 - [x] Refund/release wiring into cancel-guest/owner/admin, decline, withdraw and the cron per the §4 matrix; failure → `paymentFlag` on the row (schema delta). The matrix itself is a pure, self-checked function (`paymentSettlementAction` + `.check.ts`) so the closed table can't drift.
 - [x] Onboarding stages: silent recipient-account creation on listing `online` toggle (best-effort — never fails the listing); stage-3 earnings card on `/host/dashboard` (aggregate-backed held balance) + "you earned €X" email (en + sr); account/transfer webhooks → `hostPayoutAccounts` (PSD §2, HSD §5)
 - [x] Payout sweep cron (three-condition eligibility, transfer-math only) + reconciliation cron (flags stuck/mismatched states) + `flagged` filter arg on `listBookingsAdmin` — the `/admin/bookings` UI that consumes it lands with step 10 (PSD §5–6)
-- [x] Dark-ship gate made real: `online` disappears from the listing form's options and is rejected server-side in create/update accommodation and in `createBooking` while `PROVIDER: 'none'` (PSD §8, §11's last row) — step 11's "enable `online` in listing forms" is now just the constant flip
+- [x] Dark-ship gate made real: `online` disappears from the listing form's options and is rejected server-side in create/update accommodation, `switchListingMonetization` and in `createBooking` while `ONLINE_PAYMENTS_AVAILABLE` is false — provider unwired OR `BOOKING_FEE_ENABLED: false` (PSD §8, §11's last row) — step 11's "enable `online` in listing forms" is now just the `BOOKING_FEE_ENABLED` flip
 
 > **Known seam for step 11**: `confirmBooking` calls `adapter.capture()` from a mutation, and
 > Convex only allows network I/O in actions. Inert today (`'none'` throws before any I/O), but
@@ -251,10 +251,15 @@ four gaps. Three are fixed here; the fourth is listed under the launch checklist
 
 ## 11. Go live with Stripe — PSD §13.7 (LAST — gated on business decision)
 
+> The **listing-fee half is live** (StripeTODO §1–§8): `PROVIDER: 'stripe'`, sandbox E2E
+> verified (pay, refund, expiry, replay + signature rejection). The items below are the
+> **Phase-2 guest-checkout (booking-fee) build**, gated on `BOOKING_FEE_ENABLED: false` —
+> flipping it together with the build IS the launch (PSD §8).
+
 - [ ] **Business gate**: verify provider support for platform entity jurisdiction + host payout country (PSD §7) — decides whether flow B/C proceed or only flow A via bank API
 - [ ] Stripe adapter implementation (Accounts v2 recipient, separate charges & transfers, Checkout Sessions manual capture, transfer-math fees, restricted key) (PSD §7)
 - [ ] Sandbox end-to-end: request→authorize→confirm→capture→checkout→transfer; decline/withdraw/late-cancel/refund paths; onboarding stages 2–4 (PSD §3–5)
-- [ ] Flip `PAYMENTS_CONFIG.PROVIDER: 'stripe'`; enable `online` in listing forms (PSD §8)
+- [ ] Flip `BOOKING_FEE_ENABLED: true` together with the Phase-2 build — enables `online` in listing forms + guest checkout (PSD §8; StripeTODO §9–§10)
 
 ---
 

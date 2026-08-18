@@ -203,5 +203,15 @@
 		"rowEarned": "Ova rezervacija",
 		"rowHeld": "Čeka vas",
 		"cta": "Dodajte podatke za isplatu"
+	},
+	"listingFeeRefunded": {
+		"subject": "Naknada za oglas refundirana · {title}",
+		"heading": "Naknada za oglas refundirana",
+		"intro": "Zdravo {name}, naknada od {amount} za oglas {title} refundirana je od strane tima. Oglas se vraća na čekanje odobrenja — zakazani boravci idu kako je planirano, pauziraju se samo nove rezervacije. Ponovo platite naknadu i oglas ide uživo.",
+		"rowAccommodation": "Smeštaj",
+		"rowStatus": "Status",
+		"statusRefunded": "Naknada refundirana",
+		"rowAmount": "Refundirano",
+		"cta": "Idite na svoje oglase"
 	}
 }

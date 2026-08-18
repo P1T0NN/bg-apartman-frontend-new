@@ -4,7 +4,7 @@ import { zodToConvexFields } from 'convex-helpers/server/zod4';
 import { mutation } from '@/convex/functions';
 
 // CONFIG
-import { PAYMENTS_CONFIG } from '@/shared/config';
+import { ONLINE_PAYMENTS_AVAILABLE, PAYMENTS_CONFIG } from '@/shared/config';
 
 // UTILS
 import { authComponent } from '@/convex/auth/auth';
@@ -98,11 +98,12 @@ export const createBooking = mutation({
 		}
 
 		// The dark-ship gate, enforced server-side rather than trusted from the form: while
-		// `PROVIDER: 'none'` there is no checkout to send the guest to, so an online request
-		// must not create an `awaiting` row that can never be finished. Legacy listings
-		// stamped `online`/`both` before the gate existed are covered by this too.
+		// `PROVIDER: 'none'` or Phase 2 is not shipped there is no checkout to send the guest
+		// to, so an online request must not create an `awaiting` row that can never be
+		// finished. Legacy listings stamped `online`/`both` before the gate existed are
+		// covered by this too.
 		const isOnline = args.paymentMethod === 'online';
-		if (isOnline && PAYMENTS_CONFIG.PROVIDER === 'none') {
+		if (isOnline && !ONLINE_PAYMENTS_AVAILABLE) {
 			return {
 				success: false,
 				message: { key: 'GenericMessages.PAYMENT_METHOD_NOT_ACCEPTED' }

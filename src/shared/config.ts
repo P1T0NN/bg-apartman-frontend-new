@@ -232,11 +232,20 @@ export const ACCOMMODATIONS_CONFIG = {
  */
 export const PAYMENTS_CONFIG = {
 	/**
-	 * `'none'` until an adapter implementation is wired and verified
-	 * (PaymentsSystemDesign.md §7). Gates every online-payment surface: listing forms
-	 * cannot offer `online` while this is `'none'`.
+	 * `'stripe'` — the adapter is wired and verified (StripeTODO §8). Sandbox E2E runs on
+	 * test-mode keys; the provider is the same, the environment split is the keys.
+	 * Gates every online-payment surface: listing forms cannot offer `online` while `'none'`.
 	 */
-	PROVIDER: 'none' as 'none' | 'stripe',
+	PROVIDER: 'stripe' as 'none' | 'stripe',
+
+	/**
+	 * Phase 2 — the per-booking fee and guest online checkout are NOT built
+	 * (StripeTODO §9/§10). While `false` the ONLY pay surface is the listing fee:
+	 * `booking_fee` monetization, `online`/`both` payment methods, and online guest
+	 * bookings stay gated everywhere (server mutations + host/admin forms).
+	 * Flip this with the Phase-2 build, never before.
+	 */
+	BOOKING_FEE_ENABLED: false,
 
 	/** Minutes an `awaiting` checkout may live before the reaper deletes the row (§3). */
 	CHECKOUT_DEADLINE_MINUTES: 30,
@@ -250,6 +259,14 @@ export const PAYMENTS_CONFIG = {
 	 */
 	PAYOUT_TRIGGER: 'checked_out'
 } as const;
+
+/**
+ * Online guest checkout exists only when BOTH halves hold: a wired provider AND Phase 2
+ * shipped. The listing fee is independent of this — it is a host-side payment, not a
+ * guest-side one. The single gate shared by the server mutations and the host/admin forms.
+ */
+export const ONLINE_PAYMENTS_AVAILABLE =
+	PAYMENTS_CONFIG.PROVIDER === 'stripe' && PAYMENTS_CONFIG.BOOKING_FEE_ENABLED;
 
 /**
  * Server-side operational caps — batch sizes and per-run ceilings for crons and bulk

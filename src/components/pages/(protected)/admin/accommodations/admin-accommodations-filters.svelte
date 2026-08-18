@@ -26,10 +26,12 @@
 	 */
 	let {
 		status = $bindable<typesAccommodationStatus | undefined>(undefined),
-		type = $bindable<typesAccommodationType | undefined>(undefined)
+		type = $bindable<typesAccommodationType | undefined>(undefined),
+		grantedFree = $bindable<boolean | undefined>(undefined)
 	}: {
 		status?: typesAccommodationStatus | undefined;
 		type?: typesAccommodationType | undefined;
+		grantedFree?: boolean | undefined;
 	} = $props();
 
 	const statusOptions = [
@@ -45,11 +47,19 @@
 		...ACCOMMODATION_TYPES.map((t) => ({ value: t.value, label: t.label }))
 	];
 
-	const hasActiveFilter = $derived(status !== undefined || type !== undefined);
+	const grantOptions = [
+		{ value: '', label: m['AdminAccommodationsPage.AdminAccommodationsFilters.anyGrant']() },
+		{ value: 'granted', label: m['AdminAccommodationsPage.AdminAccommodationsFilters.freeGrantsOnly']() }
+	];
+
+	const hasActiveFilter = $derived(
+		status !== undefined || type !== undefined || grantedFree !== undefined
+	);
 
 	function clearFilters() {
 		status = undefined;
 		type = undefined;
+		grantedFree = undefined;
 	}
 </script>
 
@@ -67,6 +77,14 @@
 	onChange={(v) => (type = v === '' ? undefined : (v as typesAccommodationType))}
 	options={typeOptions}
 	ariaLabel={m['AdminAccommodationsPage.AdminAccommodationsFilters.filterByType']()}
+/>
+
+<NativeSelect
+	class="w-40"
+	value={grantedFree === true ? 'granted' : ''}
+	onChange={(v) => (grantedFree = v === 'granted' ? true : undefined)}
+	options={grantOptions}
+	ariaLabel={m['AdminAccommodationsPage.AdminAccommodationsFilters.filterByGrant']()}
 />
 
 {#if hasActiveFilter}

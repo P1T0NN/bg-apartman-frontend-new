@@ -1126,11 +1126,14 @@
 	},
 	"AdminAccommodationsPage": {
 		"AdminAccommodationsFilters": {
+			"anyGrant": "Bilo koje pokriće",
 			"anyStatus": "Bilo koji status",
 			"anyType": "Bilo koji tip",
 			"clear": "Obriši",
+			"filterByGrant": "Filtriraj po grantu",
 			"filterByStatus": "Filtriraj po statusu",
-			"filterByType": "Filtriraj po tipu"
+			"filterByType": "Filtriraj po tipu",
+			"freeGrantsOnly": "Samo besplatna pokrića"
 		},
 		"AdminAccommodationsHeader": {
 			"addAccommodation": "Dodaj smeštaj",
@@ -1145,11 +1148,14 @@
 		"AdminAccommodationsTableActions": {
 			"archive": "Arhiviraj",
 			"featureOnHomepage": "Istakni na početnoj stranici",
+			"grantFreeCoverage": "Odobri besplatno pokriće",
 			"grantFreePublish": "Odobri besplatno objavljivanje",
 			"moreActions": "Još radnji",
 			"openPublicPage": "Otvori javnu stranicu",
 			"publish": "Objavi",
 			"recordFeePayment": "Evidentiraj uplatu naknade",
+			"refundListingFee": "Refunduj naknadu za oglas",
+			"refundListingFeeConfirm": "Refundovati €{amount} za \"{title}\"? Oglas se vraća na čekanje odobrenja, a zakazani boravci idu kako je planirano.",
 			"removeFromHomepage": "Ukloni sa početne stranice",
 			"suspend": "Suspenduj"
 		},
@@ -1174,6 +1180,11 @@
 			"threeMonths": "3 meseca",
 			"title": "Odobriti besplatno objavljivanje?",
 			"unpaidNote": "Ovaj smeštaj nikada nije imao plaćen period — odobrenje pokriva naknadu i odmah ga objavljuje, bez novog pregleda."
+		},
+		"AdminRefundListingFeeDialog": {
+			"cancel": "Otkaži",
+			"reasonDefault": "Naknada za oglas refundirana",
+			"thisListing": "ovaj smeštaj"
 		},
 		"AdminModerateAccommodationDialog": {
 			"archiveBody": "{listing} je sakriven od gostiju. Imejl se ne šalje — arhiviranje služi za sređivanje, a ne za moderaciju. Domaćin može ponovo da ga pošalje na pregled.",
@@ -1797,14 +1808,12 @@
 			"expired": "Isteklo",
 			"expiresInDays": "Ističe za {days} dana",
 			"expiresToday": "Ističe danas",
-			"listingFeeNotPaid": "Naknada za oglas nije plaćena — plati €{amount} da bi oglas bio aktivan",
-			"overdueRenewNow": "Isteklo — obnovi sada",
-			"payNow": "Plati sada",
+			"listingFeeNotPaid": "Naknada za oglas nije plaćena",
+			"overdueRenewNow": "Isteklo",
+			"payNow": "Plati €{amount}",
 			"perBookingFee": "Naknada po rezervaciji ({percent}%) — trajno · novi oglas za promenu plana",
+			"renew": "Obnovi",
 			"untilDate": "Do {date}"
-		},
-		"MyAccommodationsTableRenewButton": {
-			"renew": "Obnovi"
 		},
 		"SEO": {
 			"description": "Upravljaj svojim smeštajima, statusom objavljivanja i cenama.",
@@ -1988,6 +1997,8 @@
 		"ACCOMMODATION_UNFEATURED": "Smeštaj je uklonjen iz istaknutog dela početne stranice.",
 		"LISTING_FEE_PAID": "Oglas je obnovljen — ostaje aktivan još jedan period.",
 		"FREE_PUBLISH_GRANTED": "Odobreno je besplatno objavljivanje — oglas je aktivan bez evidentirane uplate.",
+		"REFUND_LISTING_FEE_DONE": "Naknada za oglas refundirana — oglas se vraća na čekanje odobrenja.",
+		"REFUND_LISTING_FEE_ERROR": "Refund nije mogao da se obradi. Naknada nije refundirana.",
 		"LISTING_FEE_UNPAID": "Naknada za ovaj oglas još nije plaćena, pa oglas ne može biti aktivan. Prvo evidentiraj uplatu.",
 		"MONETIZATION_CHOICE_REQUIRED": "Izaberi plan za ovaj oglas — naknada za oglas ili naknada po rezervaciji.",
 		"BOOKING_FEE_REQUIRES_ONLINE": "Oglasi sa naknadom po rezervaciji prihvataju samo online plaćanja.",
@@ -2026,6 +2037,7 @@
 		"CHECKOUT_EXPIRED": "Ova sesija plaćanja je istekla. Ponovo započni rezervaciju i ponovo ćemo proveriti dostupnost datuma.",
 		"CHECKOUT_UNAVAILABLE": "Nismo mogli da otvorimo stranicu za plaćanje. Ništa nije naplaćeno — pokušaj ponovo.",
 		"PAYMENT_NOT_READY": "Plaćanje ove rezervacije još nije spremno. Osveži stranicu za koji trenutak i pokušaj ponovo.",
+		"PAYMENT_START_FAILED": "Plaćanje nije moglo da počne.",
 		"PAYMENT_CAPTURE_FAILED": "Plaćanje gosta nije moglo da bude naplaćeno, pa rezervacija nije potvrđena. Zamoli gosta da ponovo rezerviše.",
 		"ONLINE_PAYMENTS_UNAVAILABLE": "Online plaćanja još nisu dostupna — smeštaji za sada mogu da prihvate samo gotovinu prilikom prijave.",
 		"PAYOUTS_UNAVAILABLE": "Trenutno nismo mogli da otvorimo podešavanje isplate. Tvoja zarada je bezbedna — pokušaj ponovo uskoro.",

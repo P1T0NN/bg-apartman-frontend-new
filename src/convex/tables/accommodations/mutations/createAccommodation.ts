@@ -13,7 +13,7 @@ import { splitRegionPlaceId } from '@/shared/features/accommodation/utils/splitR
 import { monetizationActive } from '@/shared/features/accommodation/utils/listingFeeState';
 
 // CONFIG
-import { PAYMENTS_CONFIG } from '@/shared/config';
+import { ONLINE_PAYMENTS_AVAILABLE } from '@/shared/config';
 
 // SCHEMAS
 import {
@@ -192,9 +192,9 @@ export const createApartment = authMutation('createApartment')({
 		const photoCountError = validateImageCount(args.photos.length);
 		if (photoCountError) return { success: false, message: photoCountError };
 
-		// Server-side twin of the form's hidden options: no provider wired, no `online`
-		// listings (PaymentsSystemDesign.md §8).
-		if (args.paymentMethod !== 'cash' && PAYMENTS_CONFIG.PROVIDER === 'none') {
+		// Server-side twin of the form's hidden options: no provider wired or Phase 2 not
+		// shipped, no `online` listings (PaymentsSystemDesign.md §8, StripeTODO §10).
+		if (args.paymentMethod !== 'cash' && !ONLINE_PAYMENTS_AVAILABLE) {
 			return { success: false, message: { key: 'GenericMessages.ONLINE_PAYMENTS_UNAVAILABLE' } };
 		}
 
@@ -249,7 +249,7 @@ export const createApartmentAdmin = adminMutation('createApartmentAdmin')({
 		const photoCountError = validateImageCount(args.photos.length);
 		if (photoCountError) return { success: false, message: photoCountError };
 
-		if (args.paymentMethod !== 'cash' && PAYMENTS_CONFIG.PROVIDER === 'none') {
+		if (args.paymentMethod !== 'cash' && !ONLINE_PAYMENTS_AVAILABLE) {
 			return { success: false, message: { key: 'GenericMessages.ONLINE_PAYMENTS_UNAVAILABLE' } };
 		}
 

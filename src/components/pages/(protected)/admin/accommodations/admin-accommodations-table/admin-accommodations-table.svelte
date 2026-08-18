@@ -47,6 +47,7 @@
 
 	let status = $state<typesAccommodationStatus | undefined>(undefined);
 	let type = $state<typesAccommodationType | undefined>(undefined);
+	let grantedFree = $state<boolean | undefined>(undefined);
 	let sortColumn = $state<string | undefined>(undefined);
 	let sortDirection = $state<'asc' | 'desc' | undefined>(undefined);
 	let search = $state<string>('');
@@ -54,6 +55,7 @@
 	const queryArgs = $derived({
 		...(status !== undefined && { status }),
 		...(type !== undefined && { type }),
+		...(grantedFree !== undefined && { grantedFree }),
 		...(hostId !== undefined && { hostId })
 	});
 </script>
@@ -78,7 +80,7 @@
 />
 
 {#snippet filters()}
-	<AdminAccommodationsFilters bind:status bind:type />
+	<AdminAccommodationsFilters bind:status bind:type bind:grantedFree />
 {/snippet}
 
 {#snippet titleCell({ row }: DataTableCellSnippetProps<AdminAccommodationRow>)}

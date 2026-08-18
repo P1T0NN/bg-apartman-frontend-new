@@ -202,6 +202,14 @@ export type AdminAccommodationRow = Pick<
 	monetization?: Doc<'apartments'>['monetization'];
 	/** `listing_fee` listings only — drives the renewal state shown next to the fee action. */
 	apartmentSubscriptionExpiryDate?: number;
+	/** Presence = this listing got a free-publish grant (not paid) — admin "Free grants" filter. */
+	freeGrantedAt?: number;
+	/** Stripe payment_intent id once the fee is paid — the refund action's gate (StripeTODO §8a). */
+	paymentRef?: string;
+	/** When the fee was paid. */
+	paidAt?: number;
+	/** What was actually paid, EUR — the refund dialog's amount. */
+	paymentAmount?: number;
 };
 
 // ─── Add / edit accommodation forms ───────────────────────────────────────────

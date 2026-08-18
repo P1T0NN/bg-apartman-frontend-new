@@ -10,7 +10,7 @@ import {
 } from '@/shared/features/accommodation/utils/listingFeeState';
 
 // CONFIG
-import { PAYMENTS_CONFIG } from '@/shared/config';
+import { ONLINE_PAYMENTS_AVAILABLE } from '@/shared/config';
 
 // SCHEMAS
 import { mutationResult, type MutationResult } from '@/convex/schemas/schemas';
@@ -38,7 +38,7 @@ export const switchListingMonetization = authMutation('switchListingMonetization
 			return { success: false, message: { key: 'GenericMessages.FORBIDDEN' } };
 		}
 
-		if (!monetizationActive() || PAYMENTS_CONFIG.PROVIDER === 'none') {
+		if (!monetizationActive() || !ONLINE_PAYMENTS_AVAILABLE) {
 			return { success: false, message: { key: 'GenericMessages.ONLINE_PAYMENTS_UNAVAILABLE' } };
 		}
 

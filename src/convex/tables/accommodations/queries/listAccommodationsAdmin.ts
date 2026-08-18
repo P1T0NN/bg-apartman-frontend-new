@@ -40,6 +40,7 @@ export const listAccommodationsAdmin = query({
 		page: v.optional(v.number()),
 		status: v.optional(apartmentStatus),
 		type: v.optional(apartmentType),
+		grantedFree: v.optional(v.boolean()),
 		hostId: v.optional(v.string()),
 		search: v.optional(v.string()),
 		sortColumn: v.optional(v.union(v.literal('createdAt'), v.literal('price'))),
@@ -88,6 +89,7 @@ export const listAccommodationsAdmin = query({
 			if (args.hostId !== undefined && args.status !== undefined && a.status !== args.status)
 				return false;
 			if (args.type !== undefined && a.type !== args.type) return false;
+			if (args.grantedFree && !a.freeGrantedAt) return false;
 			if (needle && !a.title.toLowerCase().includes(needle)) return false;
 			return true;
 		});
@@ -117,6 +119,10 @@ export const listAccommodationsAdmin = query({
 				isFeatured: a.isFeatured,
 				monetization: a.monetization,
 				apartmentSubscriptionExpiryDate: a.apartmentSubscriptionExpiryDate,
+				freeGrantedAt: a.freeGrantedAt,
+				paymentRef: a.paymentRef,
+				paidAt: a.paidAt,
+				paymentAmount: a.paymentAmount,
 				imageUrl: a.images[0]?.url ?? '',
 				hostId: a.hostId,
 				hostName: hosts.get(a.hostId)?.name?.trim() || (hosts.get(a.hostId)?.email ?? '—')

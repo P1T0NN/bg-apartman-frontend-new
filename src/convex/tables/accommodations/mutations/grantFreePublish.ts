@@ -32,7 +32,7 @@ const GRANT_DAYS = { '1m': 30, '3m': 90, '6m': 182, '1y': 365 } as const;
  * Admin grants a listing-fee waiver — "free publish" (AccommodationsSystemDesign.md §8's
  * first-period gate, waived). The listing gets the same coverage a payment would stamp on
  * `apartmentSubscriptionExpiryDate`, but deliberately NOT the payment fields (`paidAt` /
- * `paymentAmount` / `paymentOrderId`) and NOT the `INVOICE_PAID` analytics event — so
+ * `paymentAmount` / `paymentOrderId`) and NOT `recordPlatformRevenue` — so
  * `/admin/dashboard` revenue is untouched: nobody paid, and the row says so honestly
  * (the same honesty rule as the monetization backfill).
  *
@@ -75,6 +75,9 @@ export const grantFreePublish = zAdminMutation('grantFreePublish')({
 
 		await ctx.db.patch(args.id, {
 			apartmentSubscriptionExpiryDate: expiry,
+			// Mark it as a free grant so the admin "Free grants" filter — and any future
+			// payment-vs-grant read — can tell this period apart from a paid one.
+			freeGrantedAt: now,
 			// A fresh period gets a fresh reminder — same rule as a payment.
 			feeReminderSentAt: undefined,
 			...(shouldPublish

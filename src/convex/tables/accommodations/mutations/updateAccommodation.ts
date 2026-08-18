@@ -19,7 +19,7 @@ import {
 } from '@/shared/features/accommodation/utils/listingFeeState';
 
 // CONFIG
-import { PAYMENTS_CONFIG } from '@/shared/config';
+import { ONLINE_PAYMENTS_AVAILABLE } from '@/shared/config';
 
 // HELPERS
 import { deleteApartmentImageKeys } from '../helpers/deleteApartmentImages';
@@ -73,9 +73,10 @@ export const updateApartment = authMutation('updateApartment')({
 		const apartment = await ctx.db.get(args.id);
 		if (!apartment || apartment.hostId !== ctx.userId) return forbiddenResult();
 
-		// A listing cannot offer `online` while no provider is wired (PaymentsSystemDesign.md
-		// §8) — the form hides those options, and this is the server-side truth behind it.
-		if (args.paymentMethod !== 'cash' && PAYMENTS_CONFIG.PROVIDER === 'none') {
+		// A listing cannot offer `online` while no provider is wired or Phase 2 is not shipped
+		// (PaymentsSystemDesign.md §8, StripeTODO §10) — the form hides those options, and
+		// this is the server-side truth behind it.
+		if (args.paymentMethod !== 'cash' && !ONLINE_PAYMENTS_AVAILABLE) {
 			return { success: false, message: { key: 'GenericMessages.ONLINE_PAYMENTS_UNAVAILABLE' } };
 		}
 

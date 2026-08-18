@@ -17,10 +17,11 @@ app.use(resend);
 // Counters + sum rollups — one `@convex-dev/aggregate` component instance per tree. The
 // name IS the tree's identity: renaming one orphans its stored data.
 //
-// The first three are the table counters declared in `functions.ts`; the last four are the
-// write-time SUM rollups (gmv / cancelled gmv / booked nights / released nights) declared in
-// `analytics/sumRollups.ts`. `@vllnt/convex-analytics` handles COUNT metrics only — it has no
-// SUM time-series — so the money/occupancy sums live on aggregate instead.
+// The first three are the table counters declared in `functions.ts`; the last six are the
+// write-time SUM rollups (gmv / cancelled gmv / booked nights / released nights / platform
+// revenue / platform fee refunds) declared in `analytics/sumRollups.ts`.
+// `@vllnt/convex-analytics` handles COUNT metrics only — it has no SUM time-series — so the
+// money/occupancy sums live on aggregate instead.
 app.use(aggregate, { name: 'aggregateReports' });
 app.use(aggregate, { name: 'aggregateApartments' });
 app.use(aggregate, { name: 'aggregateHostEarnings' });
@@ -29,5 +30,7 @@ app.use(aggregate, { name: 'aggregateGmv' });
 app.use(aggregate, { name: 'aggregateGmvCancelled' });
 app.use(aggregate, { name: 'aggregateNightsBooked' });
 app.use(aggregate, { name: 'aggregateNightsReleased' });
+app.use(aggregate, { name: 'aggregatePlatformRevenue' });
+app.use(aggregate, { name: 'aggregatePlatformFeeRefunds' });
 
 export default app;
